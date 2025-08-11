@@ -1,6 +1,6 @@
 <script>
   const accountHash = "4bRSwPonOXfEIBVZiDXg0w";
-  const imageId = ""f8a136eb-363e-4a24-0f54-70bb4f4bf800; // Replace with your actual image ID
+  const imageId = "f8a136eb-363e-4a24-0f54-70bb4f4bf800"; // Replace with your actual image ID
   const customDomain = "antoine.patraldo.com";
   
   // Test different URLs
