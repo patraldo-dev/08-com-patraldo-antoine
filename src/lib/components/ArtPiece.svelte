@@ -1,40 +1,16 @@
 <script>
   export let artwork;
-  export let CF_IMAGES_BASE;
+  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
   
   let showFullSize = false;
   let isLoading = true;
   
   function getThumbnailUrl(thumbnailId, variant = 'thumbnail') {
-    return `${CF_IMAGES_BASE}/${thumbnailId}/${variant}`;
+    return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${thumbnailId}/${variant}`;
   }
   
-  function handleClick() {
-    if (artwork.type === 'still') {
-      showFullSize = true;
-      isLoading = true;
-    }
-  }
-  
-  function closeFullSize() {
-    showFullSize = false;
-  }
-  
-  function handleKeydown(event) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      handleClick();
-    }
-    if (event.key === 'Escape') {
-      closeFullSize();
-    }
-  }
-  
-  function handleContentKeydown(event) {
-    if (event.key === 'Escape') {
-      closeFullSize();
-    }
-  }
 </script>
+
 
 <div class="art-piece">
   <div 
