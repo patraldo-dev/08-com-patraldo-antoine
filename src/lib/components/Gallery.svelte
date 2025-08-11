@@ -175,4 +175,5 @@ let selectedType = 'all';
     h3 {
       font-size: 2rem;
     }
+}
 </style>
