@@ -1,6 +1,11 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+  
+  // Function to create Cloudflare Images URL with custom domain
+  function createImageUrl(imageId, variant = 'full') {
+    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/${variant}`;
+  }
 
 
   // Sample artwork data - update with your actual URLs
@@ -60,7 +65,6 @@
       year: 2023
     }
   ];
-
 let selectedType = 'all';
   
   $: filteredArtworks = selectedType === 'all' 
@@ -171,5 +175,4 @@ let selectedType = 'all';
     h3 {
       font-size: 2rem;
     }
-  }
 </style>
