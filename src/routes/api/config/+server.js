@@ -1,11 +1,13 @@
-// src/routes/api/config/+server.js
-export async function GET() {
+export async function GET({ platform }) {
   try {
-    // Check if the environment variable exists
-    if (!process.env.CF_IMAGES_ACCOUNT_HASH) {
-      console.error('CF_IMAGES_ACCOUNT_HASH environment variable is not set');
+    // In Cloudflare Workers, environment variables are accessed via platform.env
+    const accountHash = platform?.env?.CF_IMAGES_ACCOUNT_HASH;
+    console.log('Account hash from platform.env:', accountHash);
+    
+    if (!accountHash) {
+      console.error('CF_IMAGES_ACCOUNT_HASH is not set in platform.env');
       return new Response(JSON.stringify({
-        error: 'Configuration not set',
+        error: 'Environment variable not set',
         cfImagesAccountHash: null
       }), {
         status: 500,
@@ -16,7 +18,7 @@ export async function GET() {
     }
     
     return new Response(JSON.stringify({
-      cfImagesAccountHash: process.env.CF_IMAGES_ACCOUNT_HASH
+      cfImagesAccountHash: accountHash
     }), {
       headers: {
         'Content-Type': 'application/json'
@@ -25,7 +27,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error in /api/config:', error);
     return new Response(JSON.stringify({
-      error: 'Internal server error',
+      error: error.message,
       cfImagesAccountHash: null
     }), {
       status: 500,

@@ -76,19 +76,25 @@
     { value: 'animation', label: 'Videos' },
     { value: 'gif', label: 'Animated GIFs' }
   ];
-  
-  onMount(async () => {
-    try {
-      const response = await fetch('/api/config');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      config = await response.json();
-    } catch (error) {
-      console.error('Failed to load configuration:', error);
-      configError = error.message;
+
+   onMount(async () => {
+  try {
+    // Use the custom domain for both production and development
+    const baseUrl = 'https://antoine.patraldo.com';
+    
+    const response = await fetch(`${baseUrl}/api/config`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
+    
+    config = await response.json();
+  } catch (error) {
+    console.error('Failed to load configuration:', error);
+    configError = error.message;
+  }
+});
+ 
 </script>
 
 <div class="gallery">

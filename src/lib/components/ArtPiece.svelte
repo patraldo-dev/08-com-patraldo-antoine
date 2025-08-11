@@ -19,6 +19,7 @@
   function closeFullSize() {
     showFullSize = false;
   }
+  
   function handleKeydown(event) {
     if (event.key === 'Enter' || event.key === ' ') {
       handleClick();
@@ -27,7 +28,14 @@
       closeFullSize();
     }
   }
+  
+  function handleContentKeydown(event) {
+    if (event.key === 'Escape') {
+      closeFullSize();
+    }
+  }
 </script>
+
 <div class="art-piece">
   <div 
     class="media-container" 
@@ -45,8 +53,20 @@
         loading="lazy"
       />
       {#if showFullSize}
-        <div class="fullsize-overlay" on:click={closeFullSize} on:keydown={handleKeydown} role="button" tabindex="0">
-          <div class="fullsize-content" on:click|stopPropagation>
+        <div 
+          class="fullsize-overlay" 
+          on:click={closeFullSize} 
+          on:keydown={handleContentKeydown}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full size image viewer"
+          tabindex="0"
+        >
+          <div 
+            class="fullsize-content" 
+            role="document"
+            tabindex="0"
+          >
             {#if isLoading}
               <div class="loading">Loading full resolution...</div>
             {/if}
@@ -56,11 +76,18 @@
               on:load={() => isLoading = false}
               on:error={() => isLoading = false}
             />
-            <button class="close-btn" on:click={closeFullSize} aria-label="Close full size view">&times;</button>
+            <button 
+              class="close-btn" 
+              on:click={closeFullSize} 
+              aria-label="Close full size view"
+            >
+              &times;
+            </button>
           </div>
         </div>
       {/if}
     {:else if artwork.type === 'animation'}
+      <!-- svelte-ignore a11y_media_has_caption -->
       <video 
         src={artwork.r2Url}
         poster={getThumbnailUrl(artwork.thumbnailId, 'poster')}
@@ -69,6 +96,7 @@
         aria-label={artwork.title}
       >
         Your browser doesn't support video.
+        <track kind="captions" label="English captions" src="#" />
       </video>
     {:else if artwork.type === 'gif'}
       <div class="gif-container">
@@ -105,6 +133,7 @@
     {/if}
   </div>
 </div>
+
 <style>
   .art-piece {
     background: white;

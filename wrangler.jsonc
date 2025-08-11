@@ -31,11 +31,6 @@
       "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
     }
   ],
-  "env": {
-    "production": {
-      "vars": {
-        "CF_IMAGES_ACCOUNT_HASH": "@cf_images_account_hash"
-      }
 }
  
 	/**
