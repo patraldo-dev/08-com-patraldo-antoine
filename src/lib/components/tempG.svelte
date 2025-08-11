@@ -1,68 +1,38 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
   import { onMount } from 'svelte';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
-
-
-  // Sample artwork data - update with your actual URLs
+  
+  // Your Cloudflare Images account hash
+  const CF_IMAGES_ACCOUNT_HASH = "4bRSwPonOXfEIBVZiDXg0w"; // Replace with your actual hash
+  
+  console.log("Gallery component loaded");
+  console.log("Account hash:", CF_IMAGES_ACCOUNT_HASH);
+  
+  // Sample artwork data - update with your actual image IDs
   const artworks = [
-{
+    {
       id: 1,
-      title: "MujerFaceAntoine",
+      title: "Mujer Face",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-meta-1",
+      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/mujer-face/full`,
+      thumbnailId: "mujer-face",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
     },
     {
       id: 2,
-      title: "MujerFaceAntoine",
-      type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-temporal",
+      title: "Temporal Fragments",
+      type: "animation",
+      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/temporal-fragments/full`,
+      thumbnailId: "temporal-fragments",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
-    },
-    {
-      id: 3,
-      title: "MujerFaceAntoine",
-      type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-memory",
-      description: "Animated sequence, 2024",
-      year: 2024
-    },
-    {
-      id: 4,
-      title: "MujerFaceAntoine",
-      type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-arch",
-      description: "Mixed media on canvas, 2024",
-      year: 2024
-    },
-    {
-      id: 5,
-      title: "MujerFaceAntoine",
-      type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-fluid",
-      description: "Video study, 1:20 min, 2023",
-      year: 2023
-    },
-    {
-      id: 6,
-      title: "MujerFaceAntoine",
-      type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-glitch",
-      description: "Digital manipulation, 2023",
-      year: 2023
     }
   ];
-
-let selectedType = 'all';
+  
+  console.log("Artworks data:", artworks);
+  
+  let selectedType = 'all';
   
   $: filteredArtworks = selectedType === 'all' 
     ? artworks 
