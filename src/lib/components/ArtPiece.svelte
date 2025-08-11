@@ -7,7 +7,7 @@
   
   // Function to create Cloudflare Images URL with custom domain
   function createImageUrl(imageId, variant = 'full') {
-    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/${variant}`;
+    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/public`;
   }
   
   function handleClick() {

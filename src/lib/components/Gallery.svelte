@@ -4,7 +4,7 @@
   
   // Function to create Cloudflare Images URL with custom domain
   function createImageUrl(imageId, variant = 'full') {
-    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/${variant}`;
+    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/public`;
   }
 
 
@@ -14,7 +14,7 @@
       id: 1,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
@@ -23,7 +23,7 @@
       id: 2,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
@@ -32,7 +32,7 @@
       id: 3,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Animated sequence, 2024",
       year: 2024
@@ -41,7 +41,7 @@
       id: 4,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Mixed media on canvas, 2024",
       year: 2024
@@ -50,7 +50,7 @@
       id: 5,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Video study, 1:20 min, 2023",
       year: 2023
@@ -59,7 +59,7 @@
       id: 6,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "full"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Digital manipulation, 2023",
       year: 2023
