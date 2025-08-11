@@ -36,33 +36,73 @@ export default {
         return jsonResponse({ message: 'No se pudo enviar el correo de verificación. Inténtalo de nuevo.' }, 500);
       }
     }
-    // Handle email verification
-    if (request.method === 'GET' && url.pathname === '/verify') {
-      try {
-        const token = url.searchParams.get('token');
-        if (!token) {
-          return new Response('Invalid verification token', { status: 400 });
-        }
-        const subscriber = await env.DB.prepare(`
-          SELECT email, token_expires_at FROM subscribers 
-          WHERE token = ? AND type = 'art-updates'
-        `).bind(token).first();
+// Alternative subscription handler:
 
-        if (!subscriber) {
-          return new Response('Invalid verification token', { status: 400 });
-        }
-
-        if (new Date(subscriber.token_expires_at) < new Date()) {
-          return new Response('Verification token expired', { status: 400 });
-        }
-
-        // Update subscriber as confirmed
-        await env.DB.prepare(`
-          UPDATE subscribers 
-          SET confirmed = 1, token = NULL, token_expires_at = NULL 
-          WHERE email = ? AND type = 'art-updates'
-        `).bind(subscriber.email).run();
-
+if (request.method === 'POST' && url.pathname === '/subscribe') {
+  try {
+    const { email } = await request.json();
+    console.log('Subscription request received for email:', email);
+    
+    if (!email || !isValidEmail(email)) {
+      console.log('Invalid email address:', email);
+      return jsonResponse({ message: 'Dirección de correo electrónico no válida' }, 400);
+    }
+    
+    // Check if already subscribed
+    console.log('Checking if email already exists in database...');
+    const existingSubscriber = await env.DB.prepare(`
+      SELECT * FROM subscribers 
+      WHERE email = ? AND type = 'art-updates'
+    `).bind(email).first();
+    
+    console.log('Existing subscriber check result:', existingSubscriber);
+    
+    if (existingSubscriber && existingSubscriber.confirmed) {
+      console.log('Email already confirmed:', email);
+      return jsonResponse({ message: 'Ya está registrado, gracias!' }, 200);
+    }
+    
+    // Generate token and expiration
+    const token = generateToken();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    console.log('Generated token:', token);
+    
+    // Check if subscriber exists and update accordingly
+    let result;
+    if (existingSubscriber) {
+      // Update existing subscriber
+      console.log('Updating existing subscriber...');
+      result = await env.DB.prepare(`
+        UPDATE subscribers 
+        SET token = ?, token_expires_at = ?, confirmed = 0
+        WHERE email = ? AND type = 'art-updates'
+      `).bind(token, expiresAt.toISOString(), email).run();
+    } else {
+      // Insert new subscriber
+      console.log('Inserting new subscriber...');
+      result = await env.DB.prepare(`
+        INSERT INTO subscribers (email, type, token, token_expires_at, confirmed, created_at)
+        VALUES (?, 'art-updates', ?, ?, 0, datetime('now'))
+      `).bind(email, token, expiresAt.toISOString()).run();
+    }
+    
+    console.log('Database operation result:', result);
+    
+    // Send verification email (this might fail, but subscriber is already in DB)
+    try {
+      await sendVerificationEmail(email, env);
+      console.log('Verification email sent successfully');
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Don't return an error here - the subscriber is already in the database
+    }
+    
+    return jsonResponse({ message: 'Por favor revise su correo electrónico para confirmar su suscripción.' }, 200);
+  } catch (error) {
+    console.error('Subscription error:', error);
+    return jsonResponse({ message: 'No se pudo enviar el correo de verificación. Inténtalo de nuevo.' }, 500);
+  }
+}
         // Redirect to success page
         return Response.redirect('https://antoine.patraldo.com/subscription-confirmed', 302);
       } catch (error) {
