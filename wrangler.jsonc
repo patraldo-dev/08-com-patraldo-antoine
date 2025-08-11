@@ -27,10 +27,15 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "subscribers-db",
-      "database_id": "215a6b19-a550-4d91-acd9-dcf756dc9438"
+      "database_name": "artist-portfolio-db",
+      "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
     }
-  ]
+  ],
+  "env": {
+    "production": {
+      "vars": {
+        "CF_IMAGES_ACCOUNT_HASH": "@cf_images_account_hash"
+      }
 }
  
 	/**
