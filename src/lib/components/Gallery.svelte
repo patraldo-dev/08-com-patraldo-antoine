@@ -8,7 +8,7 @@
       id: 1,
       title: "Metamorphosis Series #1",
       type: "still",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-meta-1",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
@@ -17,7 +17,7 @@
       id: 2,
       title: "Temporal Fragments",
       type: "animation",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-temporal",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
@@ -26,7 +26,7 @@
       id: 3,
       title: "Memory Loop",
       type: "gif",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-memory",
       description: "Animated sequence, 2024",
       year: 2024
@@ -35,7 +35,7 @@
       id: 4,
       title: "Digital Archaeology",
       type: "still",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-arch",
       description: "Mixed media on canvas, 2024",
       year: 2024
@@ -44,7 +44,7 @@
       id: 5,
       title: "Fluid Motion Study",
       type: "animation",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-fluid",
       description: "Video study, 1:20 min, 2023",
       year: 2023
@@ -53,7 +53,7 @@
       id: 6,
       title: "Glitch Portrait",
       type: "gif",
-      r2Url: "https://antoine-patraldo.r2.cloudflarestorage.com/MujerFaceAntoine.jpg",
+      r2Url: "https://antoine-patraldo.r2.dev/MujerFaceAntoine.jpg",
       thumbnailId: "thumb-glitch",
       description: "Digital manipulation, 2023",
       year: 2023
