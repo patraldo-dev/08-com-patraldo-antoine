@@ -138,7 +138,7 @@ async function sendVerificationEmail(email, env) {
     VALUES (?, 'art-updates', ?, ?, 0)
   `).bind(email, token, expiresAt.toISOString()).run();
 
-  const verificationUrl = `https://your-worker.your-subdomain.workers.dev/verify?token=${token}`;
+  const verificationUrl = `https://antoine.patraldo.com/verify?token=${token}`;
   
   const htmlContent = `
     <!DOCTYPE html>
