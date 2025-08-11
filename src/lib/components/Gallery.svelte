@@ -1,6 +1,5 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { onMount } from 'svelte';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
 
@@ -10,8 +9,8 @@
       id: 1,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-meta-1",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
     },
@@ -19,8 +18,8 @@
       id: 2,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-temporal",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
     },
@@ -28,8 +27,8 @@
       id: 3,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-memory",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Animated sequence, 2024",
       year: 2024
     },
@@ -37,8 +36,8 @@
       id: 4,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-arch",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Mixed media on canvas, 2024",
       year: 2024
     },
@@ -46,8 +45,8 @@
       id: 5,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-fluid",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Video study, 1:20 min, 2023",
       year: 2023
     },
@@ -55,8 +54,8 @@
       id: 6,
       title: "MujerFaceAntoine",
       type: "still",
-      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/MujerFaceAntoine.jpg",
-      thumbnailId: "thumb-glitch",
+      r2Url: "https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Digital manipulation, 2023",
       year: 2023
     }
@@ -68,18 +67,12 @@ let selectedType = 'all';
     ? artworks 
     : artworks.filter(artwork => artwork.type === selectedType);
   
-  console.log("Filtered artworks:", filteredArtworks);
-  
   const artworkTypes = [
     { value: 'all', label: 'All Work' },
     { value: 'still', label: 'Still Images' },
     { value: 'animation', label: 'Videos' },
     { value: 'gif', label: 'Animated GIFs' }
   ];
-  
-  onMount(() => {
-    console.log("Gallery component mounted");
-  });
 </script>
 
 <div class="gallery">

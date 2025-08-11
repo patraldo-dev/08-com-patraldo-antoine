@@ -1,21 +1,16 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { onMount } from 'svelte';
+  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
   
-  // Your Cloudflare Images account hash
-  const CF_IMAGES_ACCOUNT_HASH = "4bRSwPonOXfEIBVZiDXg0w"; // Replace with your actual hash
-  
-  console.log("Gallery component loaded");
-  console.log("Account hash:", CF_IMAGES_ACCOUNT_HASH);
-  
-  // Sample artwork data - update with your actual image IDs
+  // Sample artwork data - update with your actual Cloudflare Images IDs
   const artworks = [
     {
       id: 1,
       title: "Mujer Face",
       type: "still",
-      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/mujer-face/full`,
-      thumbnailId: "mujer-face",
+      // Use Cloudflare Images URL format with your actual image ID
+      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/YOUR_CLOUDFLARE_IMAGES_ID_1/full`,
+      thumbnailId: "YOUR_CLOUDFLARE_IMAGES_ID_1",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
     },
@@ -23,14 +18,13 @@
       id: 2,
       title: "Temporal Fragments",
       type: "animation",
-      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/temporal-fragments/full`,
-      thumbnailId: "temporal-fragments",
+      r2Url: `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/YOUR_CLOUDFLARE_IMAGES_ID_2/full`,
+      thumbnailId: "YOUR_CLOUDFLARE_IMAGES_ID_2",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
     }
+    // Add more artworks as needed
   ];
-  
-  console.log("Artworks data:", artworks);
   
   let selectedType = 'all';
   
@@ -38,18 +32,12 @@
     ? artworks 
     : artworks.filter(artwork => artwork.type === selectedType);
   
-  console.log("Filtered artworks:", filteredArtworks);
-  
   const artworkTypes = [
     { value: 'all', label: 'All Work' },
     { value: 'still', label: 'Still Images' },
     { value: 'animation', label: 'Videos' },
     { value: 'gif', label: 'Animated GIFs' }
   ];
-  
-  onMount(() => {
-    console.log("Gallery component mounted");
-  });
 </script>
 
 <div class="gallery">

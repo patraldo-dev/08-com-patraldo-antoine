@@ -4,11 +4,6 @@
   
   let showFullSize = false;
   let isLoading = true;
-
-  function getThumbnailUrl(thumbnailId, variant = 'thumbnail') {
-    // Use the account hash directly
-    return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${thumbnailId}/${variant}`;
-  }
   
   function handleClick() {
     if (artwork.type === 'still') {
@@ -34,6 +29,11 @@
     if (event.key === 'Escape') {
       closeFullSize();
     }
+  }
+  
+  function getThumbnailUrl(thumbnailId, variant = 'thumbnail') {
+    // Use Cloudflare Images URL format for thumbnails
+    return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${thumbnailId}/${variant}`;
   }
 </script>
 
