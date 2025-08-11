@@ -1,10 +1,14 @@
 <script>
   export let artwork;
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
   
   let showFullSize = false;
   let isLoading = true;
-
+  
+  // Add the account hash directly in this component
+  const CF_IMAGES_ACCOUNT_HASH = "4bRSwPonOXfEIBVZiDXg0w"; // Replace with your actual hash
+  
+  console.log("ArtPiece component loaded for:", artwork.title);
+  
   function getThumbnailUrl(thumbnailId, variant = 'thumbnail') {
     // Use the account hash directly
     return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${thumbnailId}/${variant}`;
