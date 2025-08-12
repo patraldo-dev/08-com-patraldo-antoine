@@ -49,12 +49,16 @@ export async function POST({ request, platform }) {
       `).bind(email, token, expiresAt.toISOString()).run();
     }
     
-    // Send verification email (this might fail, but subscriber is already in DB)
+    console.log('Subscriber added/updated in database:', result);
+    
+    // Try to send verification email, but don't fail if it doesn't work
     try {
       await sendVerificationEmail(email, platform.env, token, expiresAt);
+      console.log('Verification email sent successfully');
     } catch (emailError) {
       console.error('Failed to send verification email:', emailError);
-      // Don't return an error here - the subscriber is already in the database
+      // Log the error but don't fail the subscription
+      // The subscriber is already in the database
     }
     
     return new Response(
@@ -126,24 +130,47 @@ async function sendVerificationEmail(email, env, token, expiresAt) {
 }
 
 async function sendEmail(to, subject, htmlContent, env) {
-  const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      from: `artoine@patraldo.com`,
-      to: to,
-      subject: subject,
-      html: htmlContent
-    })
-  });
+  const maxRetries = 3;
+  const retryDelay = 1000; // 1 second between retries
   
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Email sending failed: ${error}`);
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          from: `artoine@patraldo.com`,
+          to: to,
+          subject: subject,
+          html: htmlContent
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Mailgun API error: ${error}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`Email sending attempt ${attempt} failed:`, error.message);
+      
+      if (attempt === maxRetries) {
+        console.error('All email sending attempts failed');
+        throw new Error(`Failed to send email after ${maxRetries} attempts: ${error.message}`);
+      }
+      
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
   }
-  
-  return await response.json();
 }
