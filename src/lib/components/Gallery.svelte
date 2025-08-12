@@ -30,10 +30,10 @@
       artworks = data.map(artwork => ({
         ...artwork,
         imageUrl: artwork.type === 'still' || artwork.type === 'gif' 
-          ? createImageUrl(artwork.imageId, 'desktop')
+          ? createImageUrl(artwork.image_id, 'desktop')
           : undefined,
-        thumbnailId: artwork.imageId,
-        videoUrl: artwork.videoId ? createVideoUrl(artwork.videoId) : undefined
+        thumbnailId: artwork.image_id,
+        videoUrl: artwork.video_id ? createVideoUrl(artwork.video_id) : undefined
       }));
     } catch (err) {
       error = err.message;

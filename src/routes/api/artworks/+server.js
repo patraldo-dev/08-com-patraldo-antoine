@@ -1,35 +1,31 @@
-import fs from 'fs';
-import path from 'path';
 import { json } from '@sveltejs/kit';
 
-const filePath = path.resolve('src/data/artworks.json');
-
-export async function GET() {
+export async function GET({ platform }) {
   try {
-    const data = fs.readFileSync(filePath, 'utf8');
-    return json(JSON.parse(data));
+    const { results } = await platform.env.DB.prepare('SELECT * FROM artworks ORDER BY created_at DESC').all();
+    return json(results);
   } catch (error) {
-    return json({ error: 'Failed to read artworks data' }, { status: 500 });
+    console.error('Error fetching artworks:', error);
+    return json({ error: 'Failed to fetch artworks' }, { status: 500 });
   }
 }
 
-export async function POST({ request }) {
+export async function POST({ request, platform }) {
   try {
-    const newArtwork = await request.json();
+    const { title, type, image_id, video_id, description, year, featured } = await request.json();
     
-    // Read current artworks
-    const data = fs.readFileSync(filePath, 'utf8');
-    const artworks = JSON.parse(data);
+    const { success, results } = await platform.env.DB.prepare(`
+      INSERT INTO artworks (title, type, image_id, video_id, description, year, featured)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).bind(title, type, image_id, video_id, description, year, featured ? 1 : 0).run();
     
-    // Add new artwork
-    artworks.push(newArtwork);
+    if (!success) {
+      throw new Error('Failed to create artwork');
+    }
     
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(artworks, null, 2));
-    
-    return json({ success: true, artwork: newArtwork });
+    return json({ success: true, id: results.meta.last_row_id });
   } catch (error) {
-    console.error('Error adding artwork:', error);
-    return json({ error: 'Failed to add artwork' }, { status: 500 });
+    console.error('Error creating artwork:', error);
+    return json({ error: 'Failed to create artwork' }, { status: 500 });
   }
 }

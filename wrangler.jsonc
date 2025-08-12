@@ -30,7 +30,13 @@
       "binding": "DB",
       "database_name": "artist-portfolio-db",
       "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
+    },
+    {
+      "binding": "DB",
+      "database_name": "antoine-artworks",
+      "database_id": "3598ab99-fd4f-410d-a6bc-55e4958dc158"
     }
+
   ]
 }
  
