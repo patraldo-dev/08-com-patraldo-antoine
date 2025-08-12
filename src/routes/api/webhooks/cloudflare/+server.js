@@ -1,71 +1,92 @@
+// src/routes/api/webhooks/cloudflare/+server.js
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, platform }) {
-  const signature = request.headers.get('Webhook-Signature');
+  // Get the raw body for debugging
   const body = await request.text();
+  console.log('Webhook received:', body);
   
-  // Verify the webhook signature (you'll need to set up a secret in Cloudflare)
-  // This is a simplified example; in production, use proper verification
-  // const isValid = verifySignature(signature, body, SECRET);
-  // if (!isValid) {
-  //   return json({ error: 'Invalid signature' }, { status: 401 });
-  // }
-  
-  const payload = JSON.parse(body);
-  
-  // Handle Cloudflare Images webhook
-  if (payload.event === 'image.uploaded') {
-    const { id: imageId, meta } = payload;
+  try {
+    const payload = JSON.parse(body);
+    console.log('Parsed payload:', payload);
     
-    try {
-      const { success } = await platform.env.ARTWORKS_DB.prepare(`
-        INSERT INTO artworks (title, type, image_id, description, year)
-        VALUES (?, ?, ?, ?, ?)
-      `).bind(
-        `Untitled ${meta?.name || 'Artwork'}`,
-        'still',
-        imageId,
-        'Description pending',
-        new Date().getFullYear()
-      ).run();
+    // Handle Cloudflare Images webhook
+    if (payload.event === 'image.uploaded') {
+      const { id: imageId, meta } = payload;
       
-      if (!success) {
-        throw new Error('Failed to insert artwork');
+      try {
+        // Check if artwork already exists
+        const existing = await platform.env.ARTWORKS_DB.prepare('SELECT * FROM artworks WHERE image_id = ?')
+          .bind(imageId)
+          .first();
+        
+        if (existing) {
+          return json({ success: true, message: 'Artwork already exists' });
+        }
+        
+        // Create new artwork entry
+        const { success } = await platform.env.ARTWORKS_DB.prepare(`
+          INSERT INTO artworks (title, type, image_id, description, year)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(
+          `Untitled ${meta?.name || 'Artwork'}`,
+          'still',
+          imageId,
+          'Description pending',
+          new Date().getFullYear()
+        ).run();
+        
+        if (!success) {
+          throw new Error('Failed to insert artwork');
+        }
+        
+        return json({ success: true, imageId });
+      } catch (error) {
+        console.error('Error inserting artwork:', error);
+        return json({ error: 'Failed to process image upload' }, { status: 500 });
       }
-      
-      return json({ success: true, imageId });
-    } catch (error) {
-      console.error('Error inserting artwork:', error);
-      return json({ error: 'Failed to process image upload' }, { status: 500 });
     }
-  }
-  
-  // Handle Cloudflare Stream webhook
-  if (payload.event === 'video.uploaded') {
-    const { uid: videoId, meta } = payload;
     
-    try {
-      const { success } = await platform.env.ARTWORKS_DB.prepare(`
-        INSERT INTO artworks (title, type, video_id, description, year)
-        VALUES (?, ?, ?, ?, ?)
-      `).bind(
-        `Untitled ${meta?.name || 'Video'}`,
-        'animation',
-        null, // We don't have an image_id for videos, but you might want to generate a thumbnail
-        'Description pending',
-        new Date().getFullYear()
-      ).run();
+    // Handle Cloudflare Stream webhook
+    if (payload.event === 'video.uploaded') {
+      const { uid: videoId, meta } = payload;
       
-      if (!success) {
-        throw new Error('Failed to insert artwork');
+      try {
+        // Check if artwork already exists
+        const existing = await platform.env.ARTWORKS_DB.prepare('SELECT * FROM artworks WHERE video_id = ?')
+          .bind(videoId)
+          .first();
+        
+        if (existing) {
+          return json({ success: true, message: 'Artwork already exists' });
+        }
+        
+        // Create new artwork entry
+        const { success } = await platform.env.ARTWORKS_DB.prepare(`
+          INSERT INTO artworks (title, type, video_id, description, year)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(
+          `Untitled ${meta?.name || 'Video'}`,
+          'animation',
+          videoId,
+          'Description pending',
+          new Date().getFullYear()
+        ).run();
+        
+        if (!success) {
+          throw new Error('Failed to insert artwork');
+        }
+        
+        return json({ success: true, videoId });
+      } catch (error) {
+        console.error('Error inserting artwork:', error);
+        return json({ error: 'Failed to process video upload' }, { status: 500 });
       }
-      
-      return json({ success: true, videoId });
-    } catch (error) {
-      console.error('Error inserting artwork:', error);
-      return json({ error: 'Failed to process video upload' }, { status: 500 });
     }
+    
+    return json({ error: 'Unsupported event type' }, { status: 400 });
+  } catch (error) {
+    console.error('Error parsing webhook payload:', error);
+    return json({ error: 'Invalid JSON payload' }, { status: 400 });
   }
-  
-  return json({ error: 'Unsupported event type' }, { status: 400 });
 }
