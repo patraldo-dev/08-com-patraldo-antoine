@@ -5,7 +5,7 @@ export async function PUT({ request, platform, params }) {
     const { id } = params;
     const { title, type, image_id, video_id, description, year, featured } = await request.json();
     
-    const { success } = await platform.env.DB.prepare(`
+    const { success } = await platform.env.ARTWORKS_DB.prepare(`
       UPDATE artworks 
       SET title = ?, type = ?, image_id = ?, video_id = ?, description = ?, year = ?, featured = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?

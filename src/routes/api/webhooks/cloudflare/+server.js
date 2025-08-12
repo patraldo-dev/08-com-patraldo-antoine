@@ -18,7 +18,7 @@ export async function POST({ request, platform }) {
     const { id: imageId, meta } = payload;
     
     try {
-      const { success } = await platform.env.DB.prepare(`
+      const { success } = await platform.env.ARTWORKS_DB.prepare(`
         INSERT INTO artworks (title, type, image_id, description, year)
         VALUES (?, ?, ?, ?, ?)
       `).bind(
@@ -45,7 +45,7 @@ export async function POST({ request, platform }) {
     const { uid: videoId, meta } = payload;
     
     try {
-      const { success } = await platform.env.DB.prepare(`
+      const { success } = await platform.env.ARTWORKS_DB.prepare(`
         INSERT INTO artworks (title, type, video_id, description, year)
         VALUES (?, ?, ?, ?, ?)
       `).bind(
