@@ -9,13 +9,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet">
 </svelte:head>
-<!-- Hero Section -->
+
+        <!-- Hero Section -->
 <section class="hero">
+  <div class="hero-image-container">
+    <img 
+      src="https://antoine.patraldo.com/cdn-cgi/imagedelivery/JsnF2V1MJTW8vwnC8V8gBGzR6gupRNOZ/YOUR_IMAGE_ID/public" 
+      alt="Antoine Patraldo Art" 
+      class="hero-background"
+      loading="eager"
+      importance="high"
+    />
+    <div class="hero-overlay"></div>
+  </div>
   <div class="hero-content">
-    <h2>Descubriendo</h2>
-    <p>emoción, aventura, curiosidad, placer, alegría, tristeza, todo </p>
+<h2>Descubriendo</h2>
+<p>emoción, aventura, curiosidad, placer, alegría, tristeza, todo </p>
   </div>
 </section>
+
 <!-- Gallery Section -->
 <section id="work" class="work-section">
   <Gallery />
