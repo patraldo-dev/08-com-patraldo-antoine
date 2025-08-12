@@ -12,8 +12,8 @@
 <!-- Hero Section -->
 <section class="hero">
   <div class="hero-content">
-    <h2>Visual Narratives</h2>
-    <p>Exploring the intersection of digital and traditional media</p>
+    <h2>Descubriendo</h2>
+    <p>emoción, aventura, curiosidad, placer, alegría, tristeza, todo </p>
   </div>
 </section>
 <!-- Gallery Section -->
@@ -24,7 +24,7 @@
 <section id="about" class="about-section">
   <div class="container">
     <div class="about-content">
-      <h3>About</h3>
+      <h3>Cerca de</h3>
       <p>Dibujando lo que me da la ganas, cuando me da la ganas, para quienes me dan la ganas"</p>
       <p>Trabajando de mi studio en Santa Teresita, Guadalajara, México.</p>
     </div>
@@ -34,31 +34,74 @@
 <section id="contact" class="signup-section">
   <div class="container">
     <h3>Mantente al dia</h3>
-    <p>Recibe - muy de vez en cuand - invitaciones a exhibiciones en mi galería La Musa que Más Aplauda en Santa Tere.</p>
+    <p>Recibe - muy de vez en cuando - invitaciones a exhibiciones en mi galería La Musa que Más Aplauda en Santa Tere.</p>
     <EmailSignup />
   </div>
 </section>
 <style>
-  .hero {
-    height: 70vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-align: center;
-  }
-  .hero-content h2 {
-    font-size: 3.5rem;
-    font-weight: 100;
-    margin: 0 0 1rem 0;
-    letter-spacing: 3px;
-  }
-  .hero-content p {
-    font-size: 1.2rem;
-    font-weight: 300;
-    opacity: 0.9;
-  }
+.hero {
+  height: 70vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 10s ease-out;
+}
+
+.hero:hover .hero-background {
+  transform: scale(1);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  padding: 0 2rem;
+  max-width: 800px;
+}
+
+.hero-content h2 {
+  font-size: 3.5rem;
+  font-weight: 100;
+  margin: 0 0 1rem 0;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  font-weight: 300;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
   .work-section {
     padding: 4rem 0;
   }
