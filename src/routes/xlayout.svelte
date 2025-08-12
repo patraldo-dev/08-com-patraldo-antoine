@@ -6,51 +6,16 @@
   
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
-    // Prevent body scroll when menu is open
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    }
   }
   
   function closeMenu() {
     isMenuOpen = false;
-    // Restore body scroll
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
-    }
   }
   
   // Close menu when clicking on a link
   function handleLinkClick() {
     closeMenu();
   }
-  
-  // Close menu when clicking outside
-  function handleOutsideClick(event) {
-    if (isMenuOpen && !event.target.closest('nav')) {
-      closeMenu();
-    }
-  }
-  
-  // Handle escape key
-  function handleKeydown(event) {
-    if (event.key === 'Escape' && isMenuOpen) {
-      closeMenu();
-    }
-  }
-  
-  onMount(() => {
-    // Add event listeners
-    document.addEventListener('click', handleOutsideClick);
-    document.addEventListener('keydown', handleKeydown);
-    
-    // Clean up
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.removeEventListener('keydown', handleKeydown);
-      document.body.style.overflow = '';
-    };
-  });
 </script>
 
 <div class="app">
@@ -69,21 +34,22 @@
     <!-- Mobile/Tablet Menu Button -->
     <button 
       class="menu-button" 
-      class:open={isMenuOpen}
       aria-label="Toggle menu"
       aria-expanded={isMenuOpen}
-      on:click|stopPropagation={toggleMenu}
+      on:click={toggleMenu}
     >
       <span class="menu-line"></span>
       <span class="menu-line"></span>
     </button>
     
     <!-- Mobile/Tablet Menu -->
-    <div class="mobile-menu" class:open={isMenuOpen}>
-      <a href="#work" on:click={handleLinkClick}>Work</a>
-      <a href="#about" on:click={handleLinkClick}>About</a>
-      <a href="#contact" on:click={handleLinkClick}>Stay Updated</a>
-    </div>
+    {#if isMenuOpen}
+      <div class="mobile-menu">
+        <a href="#work" on:click={handleLinkClick}>Work</a>
+        <a href="#about" on:click={handleLinkClick}>About</a>
+        <a href="#contact" on:click={handleLinkClick}>Stay Updated</a>
+      </div>
+    {/if}
   </nav>
   
   <main>
@@ -155,15 +121,14 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.8rem; /* Increased padding */
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
+    gap: 6px; /* Increased gap */
     z-index: 101;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* Fixed width */
+    height: 48px; /* Fixed height */
     box-sizing: border-box;
-    position: relative;
   }
   
   .menu-line {
@@ -171,27 +136,7 @@
     height: 2px;
     background-color: #2a2a2a;
     transition: all 0.3s ease;
-    position: absolute;
-    left: 8px;
-  }
-  
-  .menu-line:first-child {
-    top: 12px;
-  }
-  
-  .menu-line:last-child {
-    bottom: 12px;
-  }
-  
-  /* Menu open state */
-  .menu-button.open .menu-line:first-child {
-    transform: rotate(45deg);
-    top: 19px;
-  }
-  
-  .menu-button.open .menu-line:last-child {
-    transform: rotate(-45deg);
-    bottom: 19px;
+    position: relative;
   }
   
   /* Mobile Menu Styles */
@@ -208,14 +153,10 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    z-index: 99;
+    z-index: 100;
     transform: translateX(100%);
     transition: transform 0.3s ease;
-    overflow-y: auto;
-  }
-  
-  .mobile-menu.open {
-    transform: translateX(0);
+    overflow-y: auto; /* Allow scrolling if needed */
   }
   
   .mobile-menu a {
@@ -231,6 +172,15 @@
   
   .mobile-menu a:hover {
     color: #667eea;
+  }
+  
+  /* Menu open state */
+  .menu-button[aria-expanded="true"] .menu-line:first-child {
+    transform: rotate(45deg) translate(4px, 4px);
+  }
+  
+  .menu-button[aria-expanded="true"] .menu-line:last-child {
+    transform: rotate(-45deg) translate(4px, -4px);
   }
   
   main {

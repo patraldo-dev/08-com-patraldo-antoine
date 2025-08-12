@@ -4,6 +4,7 @@
   
   let showFullSize = false;
   let isLoading = true;
+  let imageError = false;
   
   // Function to create Cloudflare Images URL with custom domain and variant
   function createImageUrl(imageId, variant = '') {
@@ -15,18 +16,31 @@
     if (artwork.type === 'still') {
       showFullSize = true;
       isLoading = true;
+      imageError = false;
+      // Prevent body scroll when modal is open
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = 'hidden';
+      }
     }
   }
   
-  function closeFullSize() {
+  function closeFullSize(event) {
+    // Prevent event bubbling to avoid conflicts
+    if (event) {
+      event.stopPropagation();
+    }
     showFullSize = false;
+    // Restore body scroll
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
   }
   
   function handleKeydown(event) {
     if (event.key === 'Enter' || event.key === ' ') {
       handleClick();
     }
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && showFullSize) {
       closeFullSize();
     }
   }
@@ -41,6 +55,7 @@
     return createImageUrl(thumbnailId, variant);
   }
 </script>
+
 <div class="art-piece">
   <div 
     class="media-container" 
@@ -57,39 +72,6 @@
         alt={artwork.title}
         loading="lazy"
       />
-      {#if showFullSize}
-        <div 
-          class="fullsize-overlay" 
-          on:click={closeFullSize} 
-          on:keydown={handleContentKeydown}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Full size image viewer"
-          tabindex="0"
-        >
-          <div 
-            class="fullsize-content" 
-            role="document"
-          >
-            {#if isLoading}
-              <div class="loading">Loading full resolution...</div>
-            {/if}
-            <img 
-              src={createImageUrl(artwork.thumbnailId, 'desktop')}
-              alt={artwork.title}
-              on:load={() => isLoading = false}
-              on:error={() => isLoading = false}
-            />
-            <button 
-              class="close-btn" 
-              on:click={closeFullSize} 
-              aria-label="Close full size view"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      {/if}
     {:else if artwork.type === 'animation'}
       <!-- svelte-ignore a11y_media_has_caption -->
       <video 
@@ -137,6 +119,57 @@
     {/if}
   </div>
 </div>
+
+{#if showFullSize}
+  <!-- Modal overlay -->
+  <div 
+    class="modal-overlay"
+    on:click={closeFullSize}
+    role="dialog"
+    aria-modal="true"
+    aria-label="Full size image viewer"
+    tabindex="0"
+    on:keydown={handleContentKeydown}
+  >
+    <!-- Modal content -->
+    <div 
+      class="modal-content"
+      on:click|stopPropagation={() => {}}
+    >
+      {#if isLoading}
+        <div class="loading">Loading full resolution...</div>
+      {/if}
+      
+      {#if imageError}
+        <div class="error-message">
+          <p>Failed to load image</p>
+          <button class="retry-btn" on:click={handleClick}>Try Again</button>
+        </div>
+      {:else}
+        <img 
+          src={createImageUrl(artwork.thumbnailId, 'desktop')}
+          alt={artwork.title}
+          class:loading={isLoading}
+          on:load={() => isLoading = false}
+          on:error={() => {
+            isLoading = false;
+            imageError = true;
+          }}
+        />
+      {/if}
+      
+      <!-- Close button with better mobile support -->
+      <button 
+        class="close-btn"
+        on:click={closeFullSize}
+        aria-label="Close full size view"
+      >
+        <span class="close-icon">&times;</span>
+      </button>
+    </div>
+  </div>
+{/if}
+
 <style>
   .art-piece {
     border-radius: 8px;
@@ -187,7 +220,8 @@
     transform: scale(1.03);
   }
   
-  .fullsize-overlay {
+  /* Modal styles */
+  .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -198,37 +232,61 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 2rem;
+    padding: 1rem;
+    overflow: hidden;
   }
   
-  .fullsize-content {
+  .modal-content {
     position: relative;
     max-width: 100%;
     max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
   
-  .fullsize-content img {
+  .modal-content img {
     max-width: 100%;
     max-height: 90vh;
     object-fit: contain;
     border-radius: 4px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .modal-content img.loading {
+    opacity: 0;
   }
   
   .close-btn {
     position: absolute;
-    top: -40px;
-    right: 0;
-    background: none;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
     border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 0;
-    width: 40px;
-    height: 40px;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+  }
+  
+  .close-btn:hover {
+    background: white;
+    transform: scale(1.1);
+  }
+  
+  .close-icon {
+    font-size: 2rem;
+    line-height: 1;
+    color: #333;
   }
   
   .loading {
@@ -238,6 +296,37 @@
     transform: translate(-50%, -50%);
     color: white;
     font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+  }
+  
+  .error-message p {
+    margin: 0 0 1rem;
+  }
+  
+  .retry-btn {
+    padding: 0.5rem 1rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .retry-btn:hover {
+    background: #5a67d8;
   }
   
   .gif-container {
@@ -314,5 +403,27 @@
     font-size: 0.8rem;
     color: #777;
     font-style: italic;
+  }
+  
+  /* Mobile-specific adjustments */
+  @media (max-width: 768px) {
+    .modal-overlay {
+      padding: 0;
+    }
+    
+    .close-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+    
+    .close-icon {
+      font-size: 1.5rem;
+    }
+    
+    .modal-content img {
+      max-height: 85vh;
+    }
   }
 </style>
