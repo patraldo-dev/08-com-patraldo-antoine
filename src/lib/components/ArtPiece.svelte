@@ -58,38 +58,38 @@
         loading="lazy"
       />
       {#if showFullSize}
-        <div 
-          class="fullsize-overlay" 
-          on:click={closeFullSize} 
-          on:keydown={handleContentKeydown}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Full size image viewer"
-          tabindex="0"
-        >
-          <div 
-            class="fullsize-content" 
-            role="document"
-            tabindex="0"
-          >
-            {#if isLoading}
-              <div class="loading">Loading full resolution...</div>
-            {/if}
-            <img 
-              src={artwork.imageUrl}
-              alt={artwork.title}
-              on:load={() => isLoading = false}
-              on:error={() => isLoading = false}
-            />
-            <button 
-              class="close-btn" 
-              on:click={closeFullSize} 
-              aria-label="Close full size view"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
+
+<div 
+  class="fullsize-overlay" 
+  on:click={closeFullSize} 
+  on:keydown={handleContentKeydown}
+  role="dialog"
+  aria-modal="true"
+  aria-label="Full size image viewer"
+  tabindex="0"
+>
+  <div 
+    class="fullsize-content" 
+    role="document"
+  >
+    {#if isLoading}
+      <div class="loading">Loading full resolution...</div>
+    {/if}
+    <img 
+      src={artwork.imageUrl}
+      alt={artwork.title}
+      on:load={() => isLoading = false}
+      on:error={() => isLoading = false}
+    />
+    <button 
+      class="close-btn" 
+      on:click={closeFullSize} 
+      aria-label="Close full size view"
+    >
+      &times;
+    </button>
+  </div>
+</div>
       {/if}
     {:else if artwork.type === 'animation'}
       <!-- svelte-ignore a11y_media_has_caption -->
