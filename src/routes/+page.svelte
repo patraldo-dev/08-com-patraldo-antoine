@@ -14,7 +14,7 @@
 <section class="hero">
   <div class="hero-image-container">
     <img 
-      src="https://antoine.patraldo.com/cdn-cgi/imagedelivery/JsnF2V1MJTW8vwnC8V8gBGzR6gupRNOZ/92c712f4-aec1-4e68-1cec-fcd9682eae00/public" 
+      src="https://antoine.patraldo.com/cdn-cgi/imagedelivery/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/public" 
       alt="Antoine Patraldo Art" 
       class="hero-background"
       loading="eager"
