@@ -39,7 +39,7 @@
     <div class="about-content">
       <h3>Acerca</h3>
       <p>Dibujando lo que me da la gana, cuando me da la gana, para quienes me dan las ganas</p>
-      <p>Trabajo muy agusto en mi estudio en Santa Teresita, Guadalajara, México.</p>
+      <p>Trabajo muy a gusto en mi estudio en Santa Teresita, Guadalajara, México.</p>
     </div>
   </div>
 </section>
