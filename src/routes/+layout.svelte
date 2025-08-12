@@ -26,9 +26,9 @@
     
     <!-- Desktop Menu -->
     <div class="nav-links desktop-menu">
-      <a href="#work" on:click={handleLinkClick}>Obra</a>
-      <a href="#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+      <a href="#work" on:click={handleLinkClick}>Work</a>
+      <a href="#about" on:click={handleLinkClick}>About</a>
+      <a href="#contact" on:click={handleLinkClick}>Stay Updated</a>
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
@@ -121,11 +121,14 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.8rem; /* Increased padding */
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
+    gap: 6px; /* Increased gap */
     z-index: 101;
+    width: 48px; /* Fixed width */
+    height: 48px; /* Fixed height */
+    box-sizing: border-box;
   }
   
   .menu-line {
@@ -133,6 +136,7 @@
     height: 2px;
     background-color: #2a2a2a;
     transition: all 0.3s ease;
+    position: relative;
   }
   
   /* Mobile Menu Styles */
@@ -152,6 +156,7 @@
     z-index: 100;
     transform: translateX(100%);
     transition: transform 0.3s ease;
+    overflow-y: auto; /* Allow scrolling if needed */
   }
   
   .mobile-menu a {
@@ -162,6 +167,7 @@
     padding: 0.5rem 0;
     border-bottom: 1px solid #eee;
     transition: color 0.3s;
+    display: block;
   }
   
   .mobile-menu a:hover {
@@ -170,11 +176,11 @@
   
   /* Menu open state */
   .menu-button[aria-expanded="true"] .menu-line:first-child {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: rotate(45deg) translate(4px, 4px);
   }
   
   .menu-button[aria-expanded="true"] .menu-line:last-child {
-    transform: rotate(-45deg) translate(5px, -5px);
+    transform: rotate(-45deg) translate(4px, -4px);
   }
   
   main {
