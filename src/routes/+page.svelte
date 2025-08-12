@@ -38,7 +38,7 @@
   <div class="container">
     <div class="about-content">
       <h3>Acerca</h3>
-      <p>Dibujando lo que me da la gana, cuando me da la gana, para quienes me dan las ganas"</p>
+      <p>Dibujando lo que me da la gana, cuando me da la gana, para quienes me dan las ganas</p>
       <p>Trabajando de mi estudio en Santa Teresita, Guadalajara, México.</p>
     </div>
   </div>
