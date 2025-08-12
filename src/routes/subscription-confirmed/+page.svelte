@@ -7,11 +7,13 @@
     <div class="confirmation-content">
       <h2>¡Subscripción Confirmada!</h2>
       <div class="icon">✓</div>
-      <p><Gracias por suscribirte a las actualizaciones sobre mi trabajo. Recibirás correos electrónicos ocasionales - muy pocos, muy de vez en cuando - sobre nuevas obras, exposiciones y novedades del estudio.</p>
-      <a href="/" class="button">Return to Gallery</a>
+      <p>Gracias por suscribirte a las actualizaciones sobre mi trabajo.</p>
+      <p>Recibirás correos electrónicos ocasionales sobre nuevas obras, exposiciones y novedades del estudio.</p>
+      <a href="/" class="button">Volver a la Galería</a>
     </div>
   </div>
 </section>
+
 <style>
   .confirmation {
     min-height: 70vh;
@@ -82,3 +84,4 @@
     }
   }
 </style>
+
