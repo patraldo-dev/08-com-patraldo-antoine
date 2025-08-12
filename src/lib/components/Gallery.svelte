@@ -2,19 +2,19 @@
   import ArtPiece from './ArtPiece.svelte';
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   
-  // Function to create Cloudflare Images URL with custom domain
-  function createImageUrl(imageId, variant = 'full') {
-    return `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/public`;
+  // Function to create Cloudflare Images URL with custom domain and variant
+  function createImageUrl(imageId, variant = '') {
+    const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
+    return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
-
 
   // Sample artwork data - update with your actual URLs
   const artworks = [
-{
+    {
       id: 1,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
@@ -22,17 +22,18 @@
     {
       id: 2,
       title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      type: "animation",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
     },
     {
       id: 3,
       title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      type: "gif",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Animated sequence, 2024",
       year: 2024
@@ -41,7 +42,7 @@
       id: 4,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Mixed media on canvas, 2024",
       year: 2024
@@ -49,9 +50,10 @@
     {
       id: 5,
       title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      type: "animation",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
       description: "Video study, 1:20 min, 2023",
       year: 2023
     },
@@ -59,13 +61,14 @@
       id: 6,
       title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800"),
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
       thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Digital manipulation, 2023",
       year: 2023
     }
   ];
-let selectedType = 'all';
+  
+  let selectedType = 'all';
   
   $: filteredArtworks = selectedType === 'all' 
     ? artworks 
@@ -78,7 +81,6 @@ let selectedType = 'all';
     { value: 'gif', label: 'GIFs' }
   ];
 </script>
-
 <div class="gallery">
   <div class="container">
     <div class="header">
@@ -106,7 +108,6 @@ let selectedType = 'all';
     {/if}
   </div>
 </div>
-
 <style>
   .gallery {
     padding: 2rem 0;
@@ -175,5 +176,5 @@ let selectedType = 'all';
     h3 {
       font-size: 2rem;
     }
-}
+  }
 </style>
