@@ -5,10 +5,10 @@
 <section class="confirmation">
   <div class="container">
     <div class="confirmation-content">
-      <h2>Subscription Confirmed!</h2>
+      <h2>¡Subscripción Confirmada!</h2>
       <div class="icon">✓</div>
-      <p>Thank you for subscribing to updates about my work.</p>
-      <p>You'll receive occasional emails about new artwork, exhibitions, and studio insights.</p>
+      <p><Gracias por suscribirte a las actualizaciones sobre mi trabajo.</p>
+      <p>Recibirás correos electrónicos ocasionales - muy pocos, muy de vez en cuando - sobre nuevas obras, exposiciones y novedades del estudio.</p>
       <a href="/" class="button">Return to Gallery</a>
     </div>
   </div>
