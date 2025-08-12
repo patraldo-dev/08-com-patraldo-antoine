@@ -1,28 +1,71 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   
-  // Sample artwork data - update with your actual Cloudflare Images IDs
+  // Function to create Cloudflare Images URL with custom domain and variant
+  function createImageUrl(imageId, variant = '') {
+    const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
+    return variant ? `${baseUrl}/${variant}` : baseUrl;
+  }
+
+  // Sample artwork data - update with your actual URLs
   const artworks = [
     {
       id: 1,
-      title: "Mujer Face",
+      title: "MujerFaceAntoine",
       type: "still",
-      imageUrl: `https://antoine.patraldo.com/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/92c712f4-aec1-4e68-1cec-fcd9682eae00/full`,
-      thumbnailId: "92c712f4-aec1-4e68-1cec-fcd9682eae00",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
       description: "Charcoal and digital manipulation, 2024",
       year: 2024
     },
     {
       id: 2,
-      title: "Temporal Fragments",
+      title: "MujerFaceAntoine",
       type: "animation",
-      imageUrl: `https://antoine.patraldo.com/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/your-second-image-id/full`,
-      thumbnailId: "your-second-image-id",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
       description: "Video installation, 3:42 min, 2024",
       year: 2024
+    },
+    {
+      id: 3,
+      title: "MujerFaceAntoine",
+      type: "gif",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Animated sequence, 2024",
+      year: 2024
+    },
+    {
+      id: 4,
+      title: "MujerFaceAntoine",
+      type: "still",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Mixed media on canvas, 2024",
+      year: 2024
+    },
+    {
+      id: 5,
+      title: "MujerFaceAntoine",
+      type: "animation",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
+      description: "Video study, 1:20 min, 2023",
+      year: 2023
+    },
+    {
+      id: 6,
+      title: "MujerFaceAntoine",
+      type: "still",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Digital manipulation, 2023",
+      year: 2023
     }
-    // Add more artworks as needed
   ];
   
   let selectedType = 'all';
@@ -32,17 +75,16 @@
     : artworks.filter(artwork => artwork.type === selectedType);
   
   const artworkTypes = [
-    { value: 'all', label: 'All Work' },
-    { value: 'still', label: 'Still Images' },
+    { value: 'all', label: 'Obras Completas' },
+    { value: 'still', label: 'Dibujos' },
     { value: 'animation', label: 'Videos' },
-    { value: 'gif', label: 'Animated GIFs' }
+    { value: 'gif', label: 'GIFs' }
   ];
 </script>
-
 <div class="gallery">
   <div class="container">
     <div class="header">
-      <h3>Recent Work</h3>
+      <h3>Obra destacada</h3>
       
       <div class="filter-container">
         <select bind:value={selectedType} class="filter-select">
@@ -66,36 +108,30 @@
     {/if}
   </div>
 </div>
-
 <style>
   .gallery {
     padding: 2rem 0;
   }
-  
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
   }
-  
   .header {
     text-align: center;
     margin-bottom: 3rem;
   }
-  
   h3 {
     font-size: 2.5rem;
     font-weight: 200;
     margin-bottom: 2rem;
     color: #2a2a2a;
   }
-  
   .filter-container {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
   }
-  
   .filter-select {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
@@ -107,12 +143,38 @@
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
     font-family: inherit;
-    width: 100%;
-    max-width: 300px;
   }
-  
   .filter-select:hover {
     border-color: #667eea;
   }
-  
-  .
+  .filter-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    transition: all 0.3s ease;
+  }
+  .no-results {
+    text-align: center;
+    padding: 4rem 0;
+    color: #666;
+    font-style: italic;
+  }
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    h3 {
+      font-size: 2rem;
+    }
+  }
+</style>

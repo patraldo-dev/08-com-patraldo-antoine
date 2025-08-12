@@ -64,6 +64,7 @@
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+      <a href="/admin">Admin</a>
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
@@ -83,6 +84,7 @@
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+      <a href="/admin">Admin</a>
     </div>
   </nav>
   
