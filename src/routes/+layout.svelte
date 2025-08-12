@@ -177,10 +177,6 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
   
-  .mobile-menu.menu-open {
-    transform: translateX(0);
-  }
-  
   main {
     flex: 1;
     margin-top: 80px;
