@@ -1,14 +1,55 @@
 <script>
   import '../app.css';
+  import { onMount } from 'svelte';
+  
+  let isMenuOpen = false;
+  
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+  }
+  
+  function closeMenu() {
+    isMenuOpen = false;
+  }
+  
+  // Close menu when clicking on a link
+  function handleLinkClick() {
+    closeMenu();
+  }
 </script>
+
 <div class="app">
   <nav>
-    <h1>Antoine Patraldo</h1>
-    <div class="nav-links">
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="#contact">Stay Updated</a>
+    <a href="/" class="logo-link">
+      <h1>ANTOINE PATRALDO</h1>
+    </a>
+    
+    <!-- Desktop Menu -->
+    <div class="nav-links desktop-menu">
+      <a href="#work" on:click={handleLinkClick}>Obra</a>
+      <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
     </div>
+    
+    <!-- Mobile/Tablet Menu Button -->
+    <button 
+      class="menu-button" 
+      aria-label="Toggle menu"
+      aria-expanded={isMenuOpen}
+      on:click={toggleMenu}
+    >
+      <span class="menu-line"></span>
+      <span class="menu-line"></span>
+    </button>
+    
+    <!-- Mobile/Tablet Menu -->
+    {#if isMenuOpen}
+      <div class="mobile-menu">
+        <a href="#work" on:click={handleLinkClick}>Work</a>
+        <a href="#about" on:click={handleLinkClick}>About</a>
+        <a href="#contact" on:click={handleLinkClick}>Stay Updated</a>
+      </div>
+    {/if}
   </nav>
   
   <main>
@@ -19,12 +60,14 @@
     <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
   </footer>
 </div>
+
 <style>
   .app {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
+  
   nav {
     display: flex;
     justify-content: space-between;
@@ -39,29 +82,110 @@
     z-index: 100;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
+  
+  .logo-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .logo-link:hover h1 {
+    opacity: 0.8;
+  }
+  
   h1 {
     font-size: 1.5rem;
     font-weight: 300;
     letter-spacing: 2px;
     margin: 0;
+    transition: opacity 0.3s;
   }
+  
   .nav-links {
     display: flex;
     gap: 2rem;
   }
+  
   .nav-links a {
     text-decoration: none;
     color: inherit;
     font-weight: 300;
     transition: opacity 0.3s;
   }
+  
   .nav-links a:hover {
     opacity: 0.6;
   }
+  
+  .menu-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    z-index: 101;
+  }
+  
+  .menu-line {
+    width: 24px;
+    height: 2px;
+    background-color: #2a2a2a;
+    transition: all 0.3s ease;
+  }
+  
+  /* Mobile Menu Styles */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 6rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu a {
+    text-decoration: none;
+    color: #2a2a2a;
+    font-size: 1.2rem;
+    font-weight: 300;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    transition: color 0.3s;
+  }
+  
+  .mobile-menu a:hover {
+    color: #667eea;
+  }
+  
+  /* Menu open state */
+  .menu-button[aria-expanded="true"] .menu-line:first-child {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .menu-button[aria-expanded="true"] .menu-line:last-child {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+  
+  .mobile-menu.menu-open {
+    transform: translateX(0);
+  }
+  
   main {
     flex: 1;
     margin-top: 80px;
   }
+  
   footer {
     padding: 2rem 4rem;
     text-align: center;
@@ -69,22 +193,38 @@
     color: #666;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
   }
+  
+  /* Responsive Styles */
   @media (max-width: 768px) {
     nav {
       padding: 1rem 2rem;
-      flex-direction: column;
-      gap: 1rem;
     }
     
-    .nav-links {
-      gap: 1.5rem;
+    .desktop-menu {
+      display: none;
+    }
+    
+    .menu-button {
+      display: flex;
+    }
+    
+    main {
+      margin-top: 70px;
     }
     
     footer {
       padding: 1rem 2rem;
     }
-    main {
-      margin-top: 120px;
+  }
+  
+  /* Tablet Styles */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .desktop-menu {
+      display: none;
+    }
+    
+    .menu-button {
+      display: flex;
     }
   }
 </style>
