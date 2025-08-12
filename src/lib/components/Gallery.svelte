@@ -72,17 +72,17 @@ let selectedType = 'all';
     : artworks.filter(artwork => artwork.type === selectedType);
   
   const artworkTypes = [
-    { value: 'all', label: 'All Work' },
-    { value: 'still', label: 'Still Images' },
+    { value: 'all', label: 'Obras Completas' },
+    { value: 'still', label: 'Dibujos' },
     { value: 'animation', label: 'Videos' },
-    { value: 'gif', label: 'Animated GIFs' }
+    { value: 'gif', label: 'GIFs' }
   ];
 </script>
 
 <div class="gallery">
   <div class="container">
     <div class="header">
-      <h3>Recent Work</h3>
+      <h3>Obra destacada</h3>
       
       <div class="filter-container">
         <select bind:value={selectedType} class="filter-select">
