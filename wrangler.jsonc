@@ -14,6 +14,7 @@
     }
   ],
   "compatibility_date": "2025-08-10",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
     "directory": ".svelte-kit/cloudflare"
