@@ -61,9 +61,9 @@
     
     <!-- Desktop Menu -->
     <div class="nav-links desktop-menu">
-      <a href="#work" on:click={handleLinkClick}>Work</a>
-      <a href="#about" on:click={handleLinkClick}>About</a>
-      <a href="#contact" on:click={handleLinkClick}>Stay Updated</a>
+      <a href="#work" on:click={handleLinkClick}>Obra</a>
+      <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
