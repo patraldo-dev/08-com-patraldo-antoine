@@ -5,11 +5,15 @@ export async function POST({ request, platform }) {
     // Get metadata from the request
     const { metadata } = await request.json();
     
+    // Get secrets from platform.env
+    const apiToken = platform.env.CLOUDFLARE_API_TOKEN;
+    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    
     // Request a one-time upload URL from Cloudflare
-    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/images/v2/direct_upload`, {
+    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v2/direct_upload`, {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer YOUR_API_TOKEN',
+        'Authorization': `Bearer ${apiToken}`,
       },
       body: new URLSearchParams({
         requireSignedURLs: 'true',

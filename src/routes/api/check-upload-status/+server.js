@@ -4,10 +4,14 @@ export async function POST({ request, platform }) {
   try {
     const { imageId } = await request.json();
     
+    // Get secrets from platform.env
+    const apiToken = platform.env.CLOUDFLARE_API_TOKEN;
+    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    
     // Check the image status with Cloudflare
-    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/images/v1/${imageId}`, {
+    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1/${imageId}`, {
       headers: {
-        'Authorization': 'Bearer YOUR_API_TOKEN',
+        'Authorization': `Bearer ${apiToken}`,
       }
     });
     
