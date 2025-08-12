@@ -21,15 +21,15 @@
       const result = await response.json();
       
       if (response.ok) {
-        message = 'Please check your email to confirm your subscription!';
-        messageType = 'success';
+        message = 'Por favor, verifique su correo electrónico para confirm su subscripción.';
+        messageType = 'éxito';
         email = '';
       } else {
-        message = result.message || 'Something went wrong. Please try again.';
+        message = result.message || 'Algo salió mal. Por favor, intente de nuevo.';
         messageType = 'error';
       }
     } catch (error) {
-      message = 'Network error. Please try again.';
+      message = 'Error. Por favor, intente de nuevo.';
       messageType = 'error';
     }
     
@@ -41,13 +41,13 @@
     <input
       type="email"
       bind:value={email}
-      placeholder="your@email.com"
+      placeholder="su@correoelectrónico.com"
       required
       disabled={isSubmitting}
       aria-label="Email address"
     />
     <button type="submit" disabled={isSubmitting || !email}>
-      {isSubmitting ? 'Joining...' : 'Join'}
+      {isSubmitting ? 'Joining...' : '¡Unamos!'}
     </button>
   </div>
   
