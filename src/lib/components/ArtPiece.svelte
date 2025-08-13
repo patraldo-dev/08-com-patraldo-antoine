@@ -1,41 +1,36 @@
 <script>
   export let artwork;
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
-  
+
   let showFullSize = false;
   let isLoading = true;
   let imageError = false;
-  
+
   // Function to create Cloudflare Images URL with custom domain and variant
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
-  
+
   function handleClick() {
     if (artwork.type === 'still') {
       showFullSize = true;
       isLoading = true;
       imageError = false;
-      // Prevent body scroll when modal is open
       if (typeof document !== 'undefined') {
         document.body.style.overflow = 'hidden';
       }
     }
   }
-  
+
   function closeFullSize(event) {
-    // Prevent event bubbling to avoid conflicts
-    if (event) {
-      event.stopPropagation();
-    }
+    if (event) event.stopPropagation();
     showFullSize = false;
-    // Restore body scroll
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
     }
   }
-  
+
   function handleKeydown(event) {
     if (event.key === 'Enter' || event.key === ' ') {
       handleClick();
@@ -44,55 +39,61 @@
       closeFullSize();
     }
   }
-  
+
   function handleContentKeydown(event) {
     if (event.key === 'Escape') {
       closeFullSize();
     }
   }
-  
+
   function getThumbnailUrl(thumbnailId, variant = 'thumbnail') {
     return createImageUrl(thumbnailId, variant);
   }
+
+  // Determine poster image for video
+  $: posterUrl = artwork.thumbnailUrl
+    ? artwork.thumbnailUrl.split('?')[0] // Strip GIF params if present
+    : artwork.thumbnailId
+      ? getThumbnailUrl(artwork.thumbnailId, 'thumbnail')
+      : createImageUrl('f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'thumbnail'); // fallback
 </script>
 
 <div class="art-piece">
-  <div 
-    class="media-container" 
+  <div
+    class="media-container"
     class:clickable={artwork.type === 'still'}
-    on:click={handleClick} 
+    on:click={handleClick}
     on:keydown={handleKeydown}
-    role="button" 
+    role="button"
     tabindex="0"
     aria-label={artwork.type === 'still' ? `View ${artwork.title} full size` : artwork.title}
   >
     {#if artwork.type === 'still'}
-      <img 
+      <img
         src={getThumbnailUrl(artwork.thumbnailId, 'gallery')}
         alt={artwork.title}
         loading="lazy"
       />
-    {:else if artwork.type === 'animation'}
-      <!-- svelte-ignore a11y_media_has_caption -->
-      <video 
-        src={artwork.videoUrl || artwork.imageUrl}
-        poster={getThumbnailUrl(artwork.thumbnailId, 'thumbnail')}
-        controls
-        preload="metadata"
-        aria-label={artwork.title}
-      >
-        Your browser doesn't support video.
-        <track kind="captions" label="English captions" src="#" />
-      </video>
+    {:else if artwork.type === 'animation' && artwork.videoId}
+      <!-- Responsive iframe embed for Cloudflare Stream -->
+      <div class="video-responsive-wrapper">
+        <iframe
+          src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.videoId}/iframe?poster={encodeURIComponent(posterUrl)}"
+          loading="lazy"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          style="border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+        ></iframe>
+      </div>
     {:else if artwork.type === 'gif'}
       <div class="gif-container">
-        <img 
+        <img
           class="gif-thumbnail"
           src={getThumbnailUrl(artwork.thumbnailId, 'thumbnail')}
           alt={`${artwork.title} (static preview)`}
           loading="lazy"
         />
-        <img 
+        <img
           class="gif-animated"
           src={artwork.imageUrl}
           alt={artwork.title}
@@ -101,7 +102,7 @@
       </div>
     {/if}
   </div>
-  
+
   <div class="info">
     <h4>{artwork.title}</h4>
     <p>{artwork.description}</p>
@@ -122,7 +123,7 @@
 
 {#if showFullSize}
   <!-- Modal overlay -->
-  <div 
+  <div
     class="modal-overlay"
     on:click={closeFullSize}
     role="dialog"
@@ -131,35 +132,30 @@
     tabindex="0"
     on:keydown={handleContentKeydown}
   >
-    <!-- Modal content -->
-    <div 
-      class="modal-content"
-      on:click|stopPropagation={() => {}}
-    >
+    <div class="modal-content" on:click|stopPropagation={() => {}}>
       {#if isLoading}
         <div class="loading">Loading full resolution...</div>
       {/if}
-      
+
       {#if imageError}
         <div class="error-message">
           <p>Failed to load image</p>
           <button class="retry-btn" on:click={handleClick}>Try Again</button>
         </div>
       {:else}
-        <img 
+        <img
           src={createImageUrl(artwork.thumbnailId, 'desktop')}
           alt={artwork.title}
           class:loading={isLoading}
-          on:load={() => isLoading = false}
+          on:load={() => (isLoading = false)}
           on:error={() => {
             isLoading = false;
             imageError = true;
           }}
         />
       {/if}
-      
-      <!-- Close button with better mobile support -->
-      <button 
+
+      <button
         class="close-btn"
         on:click={closeFullSize}
         aria-label="Close full size view"
@@ -178,12 +174,12 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: white;
   }
-  
+
   .art-piece:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
-  
+
   .media-container {
     position: relative;
     width: 100%;
@@ -192,7 +188,7 @@
     overflow: hidden;
     background: #f5f5f5;
   }
-  
+
   .media-container img {
     position: absolute;
     top: 0;
@@ -202,7 +198,7 @@
     object-fit: cover;
     transition: transform 0.3s ease;
   }
-  
+
   .media-container video {
     position: absolute;
     top: 0;
@@ -211,15 +207,24 @@
     height: 100%;
     object-fit: cover;
   }
-  
+
   .clickable {
     cursor: pointer;
   }
-  
+
   .clickable:hover img {
     transform: scale(1.03);
   }
-  
+
+  /* Responsive video wrapper */
+  .video-responsive-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
   /* Modal styles */
   .modal-overlay {
     position: fixed;
@@ -235,7 +240,7 @@
     padding: 1rem;
     overflow: hidden;
   }
-  
+
   .modal-content {
     position: relative;
     max-width: 100%;
@@ -247,7 +252,7 @@
     width: 100%;
     height: 100%;
   }
-  
+
   .modal-content img {
     max-width: 100%;
     max-height: 90vh;
@@ -255,11 +260,11 @@
     border-radius: 4px;
     transition: opacity 0.3s ease;
   }
-  
+
   .modal-content img.loading {
     opacity: 0;
   }
-  
+
   .close-btn {
     position: absolute;
     top: 1rem;
@@ -277,18 +282,18 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
   }
-  
+
   .close-btn:hover {
     background: white;
     transform: scale(1.1);
   }
-  
+
   .close-icon {
     font-size: 2rem;
     line-height: 1;
     color: #333;
   }
-  
+
   .loading {
     position: absolute;
     top: 50%;
@@ -298,7 +303,7 @@
     font-size: 1.2rem;
     text-align: center;
   }
-  
+
   .error-message {
     position: absolute;
     top: 50%;
@@ -310,11 +315,11 @@
     background: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
   }
-  
+
   .error-message p {
     margin: 0 0 1rem;
   }
-  
+
   .retry-btn {
     padding: 0.5rem 1rem;
     background: #667eea;
@@ -324,17 +329,17 @@
     cursor: pointer;
     font-size: 1rem;
   }
-  
+
   .retry-btn:hover {
     background: #5a67d8;
   }
-  
+
   .gif-container {
     position: relative;
     width: 100%;
     height: 100%;
   }
-  
+
   .gif-thumbnail {
     position: absolute;
     top: 0;
@@ -345,7 +350,7 @@
     filter: blur(2px);
     z-index: 1;
   }
-  
+
   .gif-animated {
     position: absolute;
     top: 0;
@@ -355,24 +360,24 @@
     object-fit: contain;
     z-index: 2;
   }
-  
+
   .info {
     padding: 1.5rem;
   }
-  
+
   .info h4 {
     margin: 0 0 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
   }
-  
+
   .info p {
     margin: 0 0 1rem;
     color: #555;
     font-size: 0.9rem;
     line-height: 1.5;
   }
-  
+
   .type-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
@@ -381,22 +386,22 @@
     font-weight: 500;
     margin-right: 0.5rem;
   }
-  
+
   .type-badge.still {
     background: #e3f2fd;
     color: #1976d2;
   }
-  
+
   .type-badge.animation {
     background: #e8f5e9;
     color: #388e3c;
   }
-  
+
   .type-badge.gif {
     background: #fff3e0;
     color: #f57c00;
   }
-  
+
   .click-hint {
     display: block;
     margin-top: 0.5rem;
@@ -404,24 +409,23 @@
     color: #777;
     font-style: italic;
   }
-  
-  /* Mobile-specific adjustments */
+
   @media (max-width: 768px) {
     .modal-overlay {
       padding: 0;
     }
-    
+
     .close-btn {
       width: 2.5rem;
       height: 2.5rem;
       top: 0.5rem;
       right: 0.5rem;
     }
-    
+
     .close-icon {
       font-size: 1.5rem;
     }
-    
+
     .modal-content img {
       max-height: 85vh;
     }

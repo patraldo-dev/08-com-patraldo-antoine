@@ -10,64 +10,64 @@
 
   // Sample artwork data - update with your actual URLs
   const artworks = [
-    {
-      id: 1,
-      title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      description: "Charcoal and digital manipulation, 2024",
-      year: 2024
-    },
-    {
-      id: 2,
-      title: "MujerFaceAntoine",
-      type: "animation",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
-      description: "Video installation, 3:42 min, 2024",
-      year: 2024
-    },
-    {
-      id: 3,
-      title: "MujerFaceAntoine",
-      type: "gif",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      description: "Animated sequence, 2024",
-      year: 2024
-    },
-    {
-      id: 4,
-      title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      description: "Mixed media on canvas, 2024",
-      year: 2024
-    },
-    {
-      id: 5,
-      title: "MujerFaceAntoine",
-      type: "animation",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
-      description: "Video study, 1:20 min, 2023",
-      year: 2023
-    },
-    {
-      id: 6,
-      title: "MujerFaceAntoine",
-      type: "still",
-      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
-      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
-      description: "Digital manipulation, 2023",
-      year: 2023
-    }
-  ];
-  
+  {
+    id: 1,
+    title: "MujerFaceAntoine",
+    type: "still",
+    imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+    thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+    description: "Charcoal and digital manipulation, 2024",
+    year: 2024
+  },
+  {
+  id: 2,
+  title: "Rosa-Mini-Monstruo",
+  type: "animation",
+  videoId: "d77df62b6d368a7f9ab846913611ff09",
+  thumbnailUrl: "https://customer-9kroafxwku5qm6fx.cloudflarestream.com/d77df62b6d368a7f9ab846913611ff09/thumbnails/thumbnail.gif?duration=3&size=480",
+  description: "Video installation, 16 seg, 2024",
+  year: 2024
+
+  },
+  {
+    id: 3,
+    title: "MujerFaceAntoine",
+    type: "gif",
+    imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+    thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+    description: "Animated sequence, 2024",
+    year: 2024
+  },
+  {
+    id: 4,
+    title: "MujerFaceAntoine",
+    type: "still",
+    imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+    thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+    description: "Mixed media on canvas, 2024",
+    year: 2024
+  },
+  {
+    id: 5,
+    title: "MujerFaceAntoine",
+    type: "animation",
+    imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+    thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+    videoId: "d77df62b6d368a7f9ab846913611ff09", // ✅ Same video ID (or use a different one if it's a different clip)
+    description: "Video study, 1:20 min, 2023",
+    year: 2023
+  },
+  {
+    id: 6,
+    title: "MujerFaceAntoine",
+    type: "still",
+    imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+    thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+    description: "Digital manipulation, 2023",
+    year: 2023
+  }
+];
+
   let selectedType = 'all';
   
   $: filteredArtworks = selectedType === 'all' 
