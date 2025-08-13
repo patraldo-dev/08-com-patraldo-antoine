@@ -23,6 +23,7 @@
   id: 2,
   title: "Rosa-Mini-Monstruo",
   type: "animation",
+  imageUrl: createImageUrl("e63e1c85-a520-4f39-b737-2e4faf880c00", "Desktop"),
   videoId: "d77df62b6d368a7f9ab846913611ff09",
   thumbnailUrl: "https://customer-9kroafxwku5qm6fx.cloudflarestream.com/d77df62b6d368a7f9ab846913611ff09/thumbnails/thumbnail.gif?duration=3&size=480",
   description: "Video installation, 16 seg, 2024",
