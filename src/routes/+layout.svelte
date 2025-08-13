@@ -1,4 +1,3 @@
-<!-- src/routes/+layout.svelte -->
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
@@ -25,6 +24,33 @@
   function handleLinkClick() {
     closeMenu();
   }
+  
+  // Close menu when clicking outside
+  function handleOutsideClick(event) {
+    if (isMenuOpen && !event.target.closest('nav')) {
+      closeMenu();
+    }
+  }
+  
+  // Handle escape key
+  function handleKeydown(event) {
+    if (event.key === 'Escape' && isMenuOpen) {
+      closeMenu();
+    }
+  }
+  
+  onMount(() => {
+    // Add event listeners
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('keydown', handleKeydown);
+    
+    // Clean up
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('keydown', handleKeydown);
+      document.body.style.overflow = '';
+    };
+  });
 </script>
 
 <div class="app">
@@ -35,10 +61,9 @@
     
     <!-- Desktop Menu -->
     <div class="nav-links desktop-menu">
-      <a href="/#work" on:click={handleLinkClick}>Obra</a>
-      <a href="/#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="/#contact" on:click={handleLinkClick}>Contacto</a>
-      <a href="/admin">Admin</a>
+      <a href="#work" on:click={handleLinkClick}>Obra</a>
+      <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
@@ -47,21 +72,18 @@
       class:open={isMenuOpen}
       aria-label="Toggle menu"
       aria-expanded={isMenuOpen}
-      on:click={toggleMenu}
+      on:click|stopPropagation={toggleMenu}
     >
       <span class="menu-line"></span>
       <span class="menu-line"></span>
     </button>
     
     <!-- Mobile/Tablet Menu -->
-    {#if isMenuOpen}
-      <div class="mobile-menu">
-        <a href="/#work" on:click={handleLinkClick}>Obra</a>
-        <a href="/#about" on:click={handleLinkClick}>Acerca</a>
-        <a href="/#contact" on:click={handleLinkClick}>Contacto</a>
-        <a href="/admin">Admin</a>
-      </div>
-    {/if}
+    <div class="mobile-menu" class:open={isMenuOpen}>
+      <a href="#work" on:click={handleLinkClick}>Obra</a>
+      <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+    </div>
   </nav>
   
   <main>
