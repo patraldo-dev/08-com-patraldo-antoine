@@ -1,51 +1,72 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { onMount } from 'svelte';
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
-  
-  let artworks = [];
-  let loading = true;
-  let error = null;
   
   // Function to create Cloudflare Images URL with custom domain and variant
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
-  
-  // Function to create Cloudflare Stream URL
-  function createVideoUrl(videoId) {
-    return `https://customer-<your-account-id>.cloudflarestream.com/${videoId}/downloads/default.mp4`;
-  }
-  
-  async function loadArtworks() {
-    try {
-      const response = await fetch('/api/artworks');
-      if (!response.ok) {
-        throw new Error('Failed to fetch artworks');
-      }
-      const data = await response.json();
-      
-      // Transform the data to include URLs
-      artworks = data.map(artwork => ({
-        ...artwork,
-        imageUrl: artwork.type === 'still' || artwork.type === 'gif' 
-          ? createImageUrl(artwork.image_id, 'desktop')
-          : undefined,
-        thumbnailId: artwork.image_id,
-        videoUrl: artwork.video_id ? createVideoUrl(artwork.video_id) : undefined
-      }));
-    } catch (err) {
-      error = err.message;
-      console.error('Error loading artworks:', err);
-    } finally {
-      loading = false;
+
+  // Sample artwork data - update with your actual URLs
+  const artworks = [
+    {
+      id: 1,
+      title: "MujerFaceAntoine",
+      type: "still",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Charcoal and digital manipulation, 2024",
+      year: 2024
+    },
+    {
+      id: 2,
+      title: "MujerFaceAntoine",
+      type: "animation",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
+      description: "Video installation, 3:42 min, 2024",
+      year: 2024
+    },
+    {
+      id: 3,
+      title: "MujerFaceAntoine",
+      type: "gif",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Animated sequence, 2024",
+      year: 2024
+    },
+    {
+      id: 4,
+      title: "MujerFaceAntoine",
+      type: "still",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Mixed media on canvas, 2024",
+      year: 2024
+    },
+    {
+      id: 5,
+      title: "MujerFaceAntoine",
+      type: "animation",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      videoUrl: "https://customer-<your-account-id>.cloudflarestream.com/<video-id>/downloads/default.mp4",
+      description: "Video study, 1:20 min, 2023",
+      year: 2023
+    },
+    {
+      id: 6,
+      title: "MujerFaceAntoine",
+      type: "still",
+      imageUrl: createImageUrl("f8a136eb-363e-4a24-0f54-70bb4f4bf800", "desktop"),
+      thumbnailId: "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+      description: "Digital manipulation, 2023",
+      year: 2023
     }
-  }
-  
-  onMount(() => {
-    loadArtworks();
-  });
+  ];
   
   let selectedType = 'all';
   
@@ -60,7 +81,6 @@
     { value: 'gif', label: 'GIFs' }
   ];
 </script>
-
 <div class="gallery">
   <div class="container">
     <div class="header">
@@ -75,41 +95,86 @@
       </div>
     </div>
     
-    {#if loading}
-      <div class="loading-container">
-        <p>Loading artworks...</p>
+    <div class="grid">
+      {#each filteredArtworks as artwork (artwork.id)}
+        <ArtPiece {artwork} />
+      {/each}
+    </div>
+    
+    {#if filteredArtworks.length === 0}
+      <div class="no-results">
+        <p>No {selectedType} artworks to display yet.</p>
       </div>
-    {:else if error}
-      <div class="error-container">
-        <p>Error: {error}</p>
-      </div>
-    {:else}
-      <div class="grid">
-        {#each filteredArtworks as artwork (artwork.id)}
-          <ArtPiece {artwork} />
-        {/each}
-      </div>
-      
-      {#if filteredArtworks.length === 0}
-        <div class="no-results">
-          <p>No {selectedType} artworks to display yet.</p>
-        </div>
-      {/if}
     {/if}
   </div>
 </div>
-
 <style>
-  /* Keep existing styles */
-  
-  .loading-container,
-  .error-container {
+  .gallery {
+    padding: 2rem 0;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  h3 {
+    font-size: 2.5rem;
+    font-weight: 200;
+    margin-bottom: 2rem;
+    color: #2a2a2a;
+  }
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .filter-select {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    color: #2a2a2a;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+  }
+  .filter-select:hover {
+    border-color: #667eea;
+  }
+  .filter-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    transition: all 0.3s ease;
+  }
+  .no-results {
     text-align: center;
     padding: 4rem 0;
     color: #666;
+    font-style: italic;
   }
-  
-  .error-container {
-    color: #e53e3e;
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    h3 {
+      font-size: 2rem;
+    }
   }
 </style>
