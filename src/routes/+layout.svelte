@@ -61,10 +61,10 @@
     
     <!-- Desktop Menu -->
     <div class="nav-links desktop-menu">
-      <a href="#work" on:click={handleLinkClick}>Obra</a>
-      <a href="#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
-      <a href="/admin">Admin</a>
+      <a href="/work" on:click={handleLinkClick}>Obra</a>
+      <a href="/about" on:click={handleLinkClick}>Acerca</a>
+      <a href="/contact" on:click={handleLinkClick}>Contacto</a>
+      <a href="/admin" on:clicke={handleLinkClick}>Admin</a>
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
@@ -81,10 +81,10 @@
     
     <!-- Mobile/Tablet Menu -->
     <div class="mobile-menu" class:open={isMenuOpen}>
-      <a href="#work" on:click={handleLinkClick}>Obra</a>
-      <a href="#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
-      <a href="/admin">Admin</a>
+      <a href="/work" on:click={handleLinkClick}>Obra</a>
+      <a href="/about" on:click={handleLinkClick}>Acerca</a>
+      <a href="/contact" on:click={handleLinkClick}>Contacto</a>
+      <a href="/admin" on:click={handleLinkClick}>Admin</a>
     </div>
   </nav>
   
