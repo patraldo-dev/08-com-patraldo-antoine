@@ -12,78 +12,71 @@ export async function POST({ request, platform }) {
       );
     }
     
-    // Check if email already exists (regardless of confirmation status)
+    // Check if already subscribed
     const existingSubscriber = await platform.env.DB.prepare(`
       SELECT * FROM subscribers 
       WHERE email = ? AND type = 'art-updates'
     `).bind(email).first();
     
+    if (existingSubscriber && existingSubscriber.confirmed) {
+      return new Response(
+        JSON.stringify({ message: 'Ya está registrado, gracias!' }),
+        { 
+          status: 200, 
+          headers: { 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    
     // Generate token and expiration
     const token = generateToken();
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     
-    // Handle different subscription states
+    // Check if subscriber exists and update accordingly
+    let result;
     if (existingSubscriber) {
-      // Case 1: Already confirmed
-      if (existingSubscriber.confirmed) {
-        return new Response(
-          JSON.stringify({ 
-            message: 'Ya está registrado, gracias!',
-            status: 'confirmed'
-          }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      // Case 2: Pending confirmation - update token but keep status
-      const result = await platform.env.DB.prepare(`
+      // Update existing subscriber
+      result = await platform.env.DB.prepare(`
         UPDATE subscribers 
         SET token = ?, token_expires_at = ?
         WHERE email = ? AND type = 'art-updates'
       `).bind(token, expiresAt.toISOString(), email).run();
     } else {
-      // Case 3: New subscriber - insert record
-      const result = await platform.env.DB.prepare(`
+      // Insert new subscriber
+      result = await platform.env.DB.prepare(`
         INSERT INTO subscribers (email, type, token, token_expires_at, confirmed, created_at)
         VALUES (?, 'art-updates', ?, ?, 0, datetime('now'))
       `).bind(email, token, expiresAt.toISOString()).run();
     }
     
-    console.log('Subscriber processed:', { 
-      email, 
-      status: existingSubscriber ? (existingSubscriber.confirmed ? 'confirmed' : 'pending') : 'new' 
-    });
+    console.log('Subscriber added/updated in database:', result);
     
     // Try to send verification email, but don't fail if it doesn't work
     try {
       await sendVerificationEmail(email, platform.env, token, expiresAt);
       console.log('Verification email sent successfully');
-      
-      return new Response(
-        JSON.stringify({ 
-          message: 'Por favor revise su correo electrónico para confirmar su suscripción.',
-          status: 'pending'
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
     } catch (emailError) {
       console.error('Failed to send verification email:', emailError);
-      
-      return new Response(
-        JSON.stringify({ 
-          message: 'Suscripción registrada, pero no pudimos enviar el correo de confirmación.',
-          status: 'pending'
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
+      // Log the error but don't fail the subscription
+      // The subscriber is already in the database
     }
     
+    return new Response(
+      JSON.stringify({ message: 'Por favor revise su correo electrónico para confirmar su suscripción.' }),
+      { 
+        status: 200, 
+        headers: { 'Content-Type': 'application/json' } 
+      }
+    );
   } catch (error) {
     console.error('Subscription error:', error);
     
     return new Response(
-      JSON.stringify({ message: 'No se pudo procesar la suscripción.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ message: 'No se pudo enviar el correo de verificación. Inténtalo de nuevo.' }),
+      { 
+        status: 500, 
+        headers: { 'Content-Type': 'application/json' } 
+      }
     );
   }
 }
@@ -152,7 +145,7 @@ async function sendEmail(to, subject, htmlContent, env) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
-          from: `antoine@patraldo.com`,
+          from: `artoine@patraldo.com`,
           to: to,
           subject: subject,
           html: htmlContent

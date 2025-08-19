@@ -3,11 +3,13 @@
   let isSubmitting = false;
   let message = '';
   let messageType = '';
+  
   async function handleSubmit() {
     if (!email) return;
     
     isSubmitting = true;
     message = '';
+    messageType = '';
     
     try {
       const response = await fetch('/api/subscribe', {
@@ -21,15 +23,21 @@
       const result = await response.json();
       
       if (response.ok) {
-        message = 'Por favor, verifique su correo electrónico para confirm su subscripción.';
-        messageType = 'éxito';
-        email = '';
+        // This is the key change - check the status field
+        if (result.status === 'confirmed') {
+          message = '¡Ya está registrado, gracias!';
+          messageType = 'success';
+        } else {
+          message = 'Por favor, verifique su correo electrónico para confirmar su suscripción.';
+          messageType = 'success';
+          email = '';
+        }
       } else {
         message = result.message || 'Algo salió mal. Por favor, intente de nuevo.';
         messageType = 'error';
       }
     } catch (error) {
-      message = 'Error. Por favor, intente de nuevo.';
+      message = 'Error de conexión. Por favor, intente de nuevo.';
       messageType = 'error';
     }
     
