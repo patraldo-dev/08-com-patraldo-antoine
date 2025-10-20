@@ -15,23 +15,21 @@
 <section class="hero">
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
-
-<div style="position: relative; padding-top: 56.25%;">
-  <iframe
-    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/290be99262047e068deed8caa0fbc9fb/iframe?poster=https%3A%2F%2Fcustomer-9kroafxwku5qm6fx.cloudflarestream.com%2F290be99262047e068deed8caa0fbc9fb%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&title=Monos+Bailando+"
-    loading="lazy"
-    style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-    allowfullscreen="true"
-  ></iframe>
-</div>
+    <iframe
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/290be99262047e068deed8caa0fbc9fb/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+      class="hero-video"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen="true"
+      loading="eager"
+      title="Monos Bailando"
+    ></iframe>
     
     <div class="hero-overlay"></div>
   </div>
   
   <div class="hero-content">
     <h2 class="fade-in-up">Descubrimiento</h2>
-    <p class="fade-in-up delay">ilusión e improvisación a través de mis plumas</p>
+    <p class="fade-in-up delay">ilustración, ilusión e improvisación</p>
     <div class="scroll-indicator fade-in delay-2">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
@@ -170,7 +168,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    filter: brightness(1.5) contrast(1.05) saturate(1.1);
+    filter: brightness(1.4) contrast(1.05) saturate(1.1);
   }
   
   .hero-overlay {
