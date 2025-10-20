@@ -76,6 +76,7 @@
 </section>
 
 <style>
+  /* Mobile-first base styles */
   .hero {
     height: 100vh;
     position: relative;
@@ -89,7 +90,7 @@
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -102,7 +103,7 @@
       transform: translateY(0);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
     }
   }
   
@@ -121,7 +122,7 @@
   }
   
   .scroll-indicator {
-    margin-top: 3rem;
+    margin-top: 2rem;
     animation: float 2s ease-in-out infinite;
     animation-delay: 1.5s;
   }
@@ -164,7 +165,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
     z-index: 2;
     pointer-events: none;
   }
@@ -174,20 +175,20 @@
     z-index: 3;
     text-align: center;
     color: white;
-    padding: 0 2rem;
+    padding: 0 1rem;
     max-width: 800px;
   }
   
   .hero-content h2 {
-    font-size: 3.5rem;
+    font-size: 2rem;
     font-weight: 100;
     margin: 0 0 1rem 0;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
   
   .hero-content p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 300;
     opacity: 0.9;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
@@ -211,7 +212,7 @@
   .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
   }
   
   .about-content {
@@ -220,14 +221,14 @@
   }
   
   h3 {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
     font-weight: 200;
     margin-bottom: 2rem;
     text-align: center;
   }
   
   .about-content p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 1.5rem;
     color: #555;
   }
@@ -239,28 +240,81 @@
   .signup-section p {
     margin-bottom: 2rem;
     color: #666;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
-  @media (max-width: 768px) {
-    .hero {
-      height: 100vh;
+  /* Tablet and up - Other sections */
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 2rem;
+    }
+    
+    h3 {
+      font-size: 2.5rem;
+    }
+    
+    .about-content p {
+      font-size: 1.1rem;
+    }
+    
+    .signup-section p {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* Tablet and up */
+  @media (min-width: 768px) {
+    .hero-content {
+      padding: 0 2rem;
     }
     
     .hero-content h2 {
       font-size: 2.5rem;
+      letter-spacing: 2.5px;
+    }
+    
+    .hero-content p {
+      font-size: 1.1rem;
     }
     
     .scroll-indicator {
-      margin-top: 2rem;
+      margin-top: 2.5rem;
     }
     
-    h3 {
-      font-size: 2rem;
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+  }
+  
+  /* Desktop and up */
+  @media (min-width: 1024px) {
+    .hero-content h2 {
+      font-size: 3.5rem;
+      letter-spacing: 3px;
     }
     
-    .container {
-      padding: 0 1rem;
+    .hero-content p {
+      font-size: 1.2rem;
+    }
+    
+    .scroll-indicator {
+      margin-top: 3rem;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   }
 </style>
