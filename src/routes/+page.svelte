@@ -66,7 +66,7 @@
 <style>
   /* Mobile-first base styles */
   .hero {
-    height: 100vh;
+    height: 70vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -158,6 +158,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+    padding: 0 !important; /* Override any inline padding */
   }
   
   .hero-video {
@@ -168,7 +169,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    filter: brightness(1.6) contrast(1.10) saturate(1.1);
+    filter: brightness(1.3) contrast(1.15) saturate(1.3);
   }
   
   .hero-overlay {
