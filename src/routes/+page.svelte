@@ -16,14 +16,15 @@
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
 
-  <iframe
-    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&preload=true&loop=true&autoplay=true&poster=https%3A%2F%2Fcustomer-9kroafxwku5qm6fx.cloudflarestream.com%2Ffd7341d70b1a5517bb56a569d2a0cb38%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600"
-    style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-    allowfullscreen="true"
-  ></iframe>
+<iframe
+   src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+  class="hero-video"
+  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+  allowfullscreen="true"
+  loading="eager"
+  title="Hero video"
+></iframe>
 
-   
     <div class="hero-overlay"></div>
   </div>
   
