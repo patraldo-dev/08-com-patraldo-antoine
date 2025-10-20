@@ -168,7 +168,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    filter: brightness(1.4) contrast(1.05) saturate(1.1);
+    filter: brightness(1.6) contrast(1.10) saturate(1.1);
   }
   
   .hero-overlay {
@@ -198,14 +198,15 @@
     letter-spacing: 2px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     color: white;
+    opacity: 0; /* Start hidden */
   }
   
   .hero-content p {
     font-size: 1rem;
     font-weight: 300;
-    opacity: 0.9;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     color: white;
+    opacity: 0; /* Start hidden */
   }
   
   .work-section {
