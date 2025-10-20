@@ -148,6 +148,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    filter: brightness(1.2) contrast(1.05) saturate(1.1);
   }
   
   .hero-fallback {
@@ -165,7 +166,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
     z-index: 2;
     pointer-events: none;
   }
