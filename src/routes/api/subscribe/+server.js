@@ -101,38 +101,32 @@ function generateToken() {
 async function sendVerificationEmail(email, env, token, expiresAt) {
   const verificationUrl = `https://antoine.patraldo.com/verify?token=${token}`;
   
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <title>Confirmar suscripción</title>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .container { border: 1px solid #ddd; border-radius: 5px; padding: 20px; }
-        .button { display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-        .footer { margin-top: 30px; font-size: 12px; color: #888; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <h2>Confirmar su suscripción</h2>
-        <p>Gracias por registrarse con Antoine Patraldo. Haga clic para confirmar su correo electrónico.</p>
-        <p style="text-align: center; margin: 30px 0;">
-          <a href="${verificationUrl}" class="button">Confirmar correo electrónico</a>
-        </p>
-        <p>Si el botón no funciona, puede copiar y pegar el siguiente enlace en su navegador:</p>
-        <p>${verificationUrl}</p>
-        <p>Este enlace caducará en 24 horas.</p>
-        <div class="footer">
-          <p>© 2025 Antoine Patraldo. Todos los derechos reservados.</p>
-          <p>Si no se suscribió a estas actualizaciones, puede ignorar este correo electrónico.</p>
-        </div>
+const htmlContent = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Confirmar suscripción</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="border: 1px solid #ddd; border-radius: 5px; padding: 20px;">
+      <h2>Confirmar su suscripción</h2>
+      <p>Gracias por registrarse con Antoine Patraldo. Haga clic para confirmar su correo electrónico.</p>
+      <p style="text-align: center; margin: 30px 0;">
+        <a href="${verificationUrl}" style="display: inline-block; background-color: #667eea; color: #ffffff !important; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Confirmar correo electrónico</a>
+      </p>
+      <p>Si el botón no funciona, puede copiar y pegar el siguiente enlace en su navegador:</p>
+      <p style="word-break: break-all;">${verificationUrl}</p>
+      <p>Este enlace caducará en 24 horas.</p>
+      <div style="margin-top: 30px; font-size: 12px; color: #888;">
+        <p>© 2025 Antoine Patraldo. Todos los derechos reservados.</p>
+        <p>Si no se suscribió a estas actualizaciones, puede ignorar este correo electrónico.</p>
       </div>
-    </body>
-    </html>
-  `;
-  
+    </div>
+  </body>
+  </html>
+`;
+
   await sendEmail(email, 'Confirme su suscripción a Antoine Patraldo', htmlContent, env);
 }
 
