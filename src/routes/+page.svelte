@@ -24,7 +24,7 @@
   </div>
   <div class="hero-content">
     <h2>Descubrimiento</h2>
-    <p>revelando emociones a través de mis plumas</p>
+    <p>ilusión e improvisación a través de mis plumas</p>
   </div>
 </section>
 
