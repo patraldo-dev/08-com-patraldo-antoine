@@ -1,8 +1,6 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
-  
-
 </script>
 
 <svelte:head>
@@ -17,23 +15,21 @@
 <section class="hero">
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
-
-<div style="position: relative; padding-top: 56.25%;">
-  <iframe
-    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/7ddba432ec49bc35490b7f01c4c608c0/iframe?poster=https%3A%2F%2Fcustomer-9kroafxwku5qm6fx.cloudflarestream.com%2F7ddba432ec49bc35490b7f01c4c608c0%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600"
-    loading="lazy"
-    style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-    allowfullscreen="true"
-  ></iframe>
-</div>
+    <iframe
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/ae704cadc61df756c41bc2f3404f2cf0/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+      class="hero-video"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen="true"
+      loading="eager"
+      title="Hero video"
+    ></iframe>
     
     <div class="hero-overlay"></div>
   </div>
   
   <div class="hero-content">
     <h2 class="fade-in-up">Descubrimiento</h2>
-    <p class="fade-in-up delay">ilustración, ilusión e improvisación</p>
+    <p class="fade-in-up delay">ilusión e improvisación a través de mis plumas</p>
     <div class="scroll-indicator fade-in delay-2">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
@@ -66,6 +62,7 @@
     <EmailSignup />
   </div>
 </section>
+
 <style>
   /* Mobile-first base styles */
   .hero {
@@ -77,7 +74,7 @@
     overflow: hidden;
   }
   
-  /* Text Animations */
+  /* Text Animations - with specific delays */
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -86,39 +83,6 @@
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-  
-  /* New animations for Option 4: Ink Reveal Effect */
-  @keyframes inkReveal {
-    0% {
-      opacity: 0;
-      clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-    }
-    50% {
-      opacity: 0.7;
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    }
-    100% {
-      opacity: 1;
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    }
-  }
-  
-  @keyframes fadeInRight {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes backgroundShift {
-    to {
-      background-position: 0 0;
     }
   }
   
@@ -136,19 +100,51 @@
     opacity: 0;
   }
   
-  .fade-in-up.delay {
-    animation-delay: 0.3s;
+  /* h2 appears at 8 seconds */
+  .hero-content h2.fade-in-up {
+    animation-delay: 8s;
   }
   
+  /* p appears at 10 seconds */
+  .hero-content p.fade-in-up.delay {
+    animation-delay: 10s;
+  }
+  
+  /* Scroll indicator appears at 12 seconds */
   .fade-in.delay-2 {
-    animation: fadeInUp 1s ease-out 0.8s forwards;
+    animation: fadeInUp 1s ease-out 12s forwards;
     opacity: 0;
   }
   
   .scroll-indicator {
     margin-top: 2rem;
     animation: float 2s ease-in-out infinite;
-    animation-delay: 1.5s;
+    animation-delay: 13s;
+    opacity: 0;
+  }
+  
+  /* Make scroll indicator visible after fade-in */
+  .scroll-indicator.fade-in.delay-2 {
+    opacity: 0;
+  }
+  
+  @keyframes floatVisible {
+    0% { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+    50% { 
+      opacity: 1;
+      transform: translateY(-8px);
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .scroll-indicator {
+    animation: fadeInUp 1s ease-out 12s forwards, floatVisible 2s ease-in-out 13s infinite;
   }
   
   .scroll-indicator svg {
@@ -172,7 +168,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    filter: brightness(1.2) contrast(1.05) saturate(1.1);
+    filter: brightness(1.5) contrast(1.05) saturate(1.1);
   }
   
   .hero-overlay {
@@ -201,19 +197,15 @@
     margin: 0 0 1rem 0;
     letter-spacing: 2px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    opacity: 0;
-    background: linear-gradient(to right, transparent 50%, white 50%);
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    animation: inkReveal 2s ease-out 3s forwards, backgroundShift 3s ease-out 5s forwards;
+    color: white;
   }
   
   .hero-content p {
     font-size: 1rem;
     font-weight: 300;
-    opacity: 0;
+    opacity: 0.9;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    animation: fadeInRight 1.5s ease-out 7s forwards;
+    color: white;
   }
   
   .work-section {
@@ -265,25 +257,6 @@
     font-size: 1rem;
   }
   
-  /* Tablet and up - Other sections */
-  @media (min-width: 768px) {
-    .container {
-      padding: 0 2rem;
-    }
-    
-    h3 {
-      font-size: 2.5rem;
-    }
-    
-    .about-content p {
-      font-size: 1.1rem;
-    }
-    
-    .signup-section p {
-      font-size: 1.1rem;
-    }
-  }
-  
   /* Tablet and up */
   @media (min-width: 768px) {
     .hero-content {
@@ -310,6 +283,37 @@
       50% {
         transform: translateY(-10px);
       }
+    }
+    
+    @keyframes floatVisible {
+      0% { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+      50% { 
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      100% { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .container {
+      padding: 0 2rem;
+    }
+    
+    h3 {
+      font-size: 2.5rem;
+    }
+    
+    .about-content p {
+      font-size: 1.1rem;
+    }
+    
+    .signup-section p {
+      font-size: 1.1rem;
     }
   }
   
