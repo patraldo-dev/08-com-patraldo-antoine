@@ -2,7 +2,7 @@
   import Gallery from '$lib/components/Gallery.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
   
-  let videoReady = false;
+
 </script>
 
 <svelte:head>
@@ -23,25 +23,15 @@
       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
       allowfullscreen="true"
       loading="eager"
-      on:load={() => videoReady = true}
+      title="Hero video"
     ></iframe>
-    
-    <!-- Fallback image while video loads -->
-    {#if !videoReady}
-    <img 
-      src="https://antoine.patraldo.com/cdn-cgi/imagedelivery/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/desktop" 
-      alt="Antoine Patraldo Art" 
-      class="hero-fallback"
-      loading="eager"
-    />
-    {/if}
     
     <div class="hero-overlay"></div>
   </div>
   
   <div class="hero-content">
     <h2 class="fade-in-up">Descubrimiento</h2>
-    <p class="fade-in-up delay">ilusión e improvisación a través de mis plumas</p>
+    <p class="fade-in-up delay">ilustración, ilusión e improvisación</p>
     <div class="scroll-indicator fade-in delay-2">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
@@ -151,15 +141,6 @@
     filter: brightness(1.2) contrast(1.05) saturate(1.1);
   }
   
-  .hero-fallback {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
   .hero-overlay {
     position: absolute;
     top: 0;
@@ -175,7 +156,7 @@
     position: relative;
     z-index: 3;
     text-align: center;
-    color: white;
+    color: darkslategray;
     padding: 0 1rem;
     max-width: 800px;
   }
