@@ -15,14 +15,16 @@
 <section class="hero">
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
-    <iframe
-      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/ae704cadc61df756c41bc2f3404f2cf0/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
-      class="hero-video"
-      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-      allowfullscreen="true"
-      loading="eager"
-      title="Hero video"
-    ></iframe>
+
+<div style="position: relative; padding-top: 56.25%;">
+  <iframe
+    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/290be99262047e068deed8caa0fbc9fb/iframe?poster=https%3A%2F%2Fcustomer-9kroafxwku5qm6fx.cloudflarestream.com%2F290be99262047e068deed8caa0fbc9fb%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&title=Monos+Bailando+"
+    loading="lazy"
+    style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+    allowfullscreen="true"
+  ></iframe>
+</div>
     
     <div class="hero-overlay"></div>
   </div>
