@@ -1,7 +1,10 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
+  
+  let videoReady = false;
 </script>
+
 <svelte:head>
   <title>Antoine PATRALDO - Arte</title>
   <meta name="description" content="Disfrutando la vida un dibujo a la vez." />
@@ -10,21 +13,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<!-- Hero Section -->
+<!-- Hero Section with Video -->
 <section class="hero">
-  <div class="hero-image-container">
+  <div class="hero-video-container">
+    <!-- Cloudflare Stream video -->
+    <iframe
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/ae704cadc61df756c41bc2f3404f2cf0/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+      class="hero-video"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen="true"
+      loading="eager"
+      on:load={() => videoReady = true}
+    ></iframe>
+    
+    <!-- Fallback image while video loads -->
+    {#if !videoReady}
     <img 
       src="https://antoine.patraldo.com/cdn-cgi/imagedelivery/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/desktop" 
       alt="Antoine Patraldo Art" 
-      class="hero-background"
+      class="hero-fallback"
       loading="eager"
-      importance="high"
     />
+    {/if}
+    
     <div class="hero-overlay"></div>
   </div>
+  
   <div class="hero-content">
-    <h2>Descubrimiento</h2>
-    <p>ilusión e improvisación a través de mis plumas</p>
+    <h2 class="fade-in-up">Descubrimiento</h2>
+    <p class="fade-in-up delay">ilusión e improvisación a través de mis plumas</p>
+    <div class="scroll-indicator fade-in delay-2">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M19 12l-7 7-7-7"/>
+      </svg>
+    </div>
   </div>
 </section>
 
@@ -55,7 +77,7 @@
 
 <style>
   .hero {
-    height: 70vh;
+    height: 100vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -63,7 +85,52 @@
     overflow: hidden;
   }
   
-  .hero-image-container {
+  /* Text Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .fade-in-up.delay {
+    animation-delay: 0.3s;
+  }
+  
+  .fade-in.delay-2 {
+    animation: fadeInUp 1s ease-out 0.8s forwards;
+    opacity: 0;
+  }
+  
+  .scroll-indicator {
+    margin-top: 3rem;
+    animation: float 2s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+  
+  .scroll-indicator svg {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  
+  .hero-video-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -72,16 +139,23 @@
     z-index: 1;
   }
   
-  .hero-background {
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .hero-fallback {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.1);
-    transition: transform 10s ease-out;
-  }
-  
-  .hero:hover .hero-background {
-    transform: scale(1);
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   
   .hero-overlay {
@@ -90,8 +164,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
     z-index: 2;
+    pointer-events: none;
   }
   
   .hero-content {
@@ -168,8 +243,16 @@
   }
   
   @media (max-width: 768px) {
+    .hero {
+      height: 100vh;
+    }
+    
     .hero-content h2 {
       font-size: 2.5rem;
+    }
+    
+    .scroll-indicator {
+      margin-top: 2rem;
     }
     
     h3 {
