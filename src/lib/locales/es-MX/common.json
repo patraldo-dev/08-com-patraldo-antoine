@@ -1,12 +1,18 @@
 {
-  "site.title": "Antoine Patraldo",
-  "nav.home": "Inicio",
-  "nav.work": "Obra",
-  "nav.about": "Acerca",
-  "nav.stories": "Historias",
-  "nav.contact": "Contacto",
-  "nav.subscribe": "Suscríbete",
-  "lang.es": "Español (México)",
-  "lang.en": "Inglés (EE.UU.)",
-  "lang.fr": "Francés (Canadá)"
+  "site": {
+    "title": "Antoine Patraldo"
+  },
+  "nav": {
+    "home": "Inicio",
+    "work": "Obra",
+    "about": "Acerca",
+    "stories": "Historias",
+    "contact": "Contacto",
+    "subscribe": "Suscríbete"
+  },
+  "lang": {
+    "es": "Español (México)",
+    "en": "Inglés (EE.UU.)",
+    "fr": "Francés (Canadá)"
+  }
 }
