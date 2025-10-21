@@ -1,7 +1,10 @@
 {
   "site.title": "Antoine Patraldo",
   "nav.home": "Home",
+  "nav.work": "Work",
   "nav.about": "About",
+  "nav.stories": "Stories",
+  "nav.contact": "Contact",
   "nav.subscribe": "Subscribe",
   "lang.es": "Spanish (Mexico)",
   "lang.en": "English (US)",

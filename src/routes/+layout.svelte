@@ -68,14 +68,15 @@
       <h1>ANTOINE PATRALDO</h1>
     </a>
     
-    <!-- Desktop Menu -->
-    <div class="nav-links desktop-menu">
-      <a href="#work" on:click={handleLinkClick}>Obra</a>
-      <a href="#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="/stories">Historias</a>
-      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
-      <LanguageSwitcherDesktop />
-    </div>
+<!-- Desktop Menu -->
+<div class="nav-links desktop-menu">
+  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
+  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
+  <a href="/story">{$t('nav.stories')}</a>
+  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
+  <LanguageSwitcherDesktop />
+</div>
+
     
     <!-- Mobile/Tablet Menu Button -->
     <button 
@@ -88,17 +89,17 @@
       <span class="menu-line"></span>
       <span class="menu-line"></span>
     </button>
-    
-    <!-- Mobile/Tablet Menu -->
-    <div class="mobile-menu" class:open={isMenuOpen}>
-      <a href="#work" on:click={handleLinkClick}>Obra</a>
-      <a href="#about" on:click={handleLinkClick}>Acerca</a>
-      <a href="/stories">Historias</a>
-      <a href="#contact" on:click={handleLinkClick}>Contacto</a>
-      <div class="mobile-language-switcher">
-        <LanguageSwitcherMobile />
-      </div>
-    </div>
+
+   <!-- Mobile Menu -->
+<div class="mobile-menu" class:open={isMenuOpen}>
+  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
+  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
+  <a href="/story">{$t('nav.stories')}</a>
+  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
+  <div class="mobile-lang-switcher">
+    <LanguageSwitcherMobile />
+  </div>
+</div> 
   </nav>
   
   <main>
