@@ -1,149 +1,70 @@
+// src/lib/translations.js
 import i18n from 'sveltekit-i18n';
 
-/** @type {import('sveltekit-i18n').Config} */
+/**
+ * Internationalization config for Antoine.patraldo.com
+ * Supports: Mexican Spanish (es-MX), American English (en-US), Canadian French (fr-CA)
+ * @type {import('sveltekit-i18n').Config}
+ */
 const config = {
+  fallbackLocale: 'es-MX',
+
   loaders: [
-    // ─── English ───────────────────────────────────────
-    {
-      locale: 'en',
-      key: 'common',
-      loader: async () => (await import('./locales/en/common.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.admin',
-      loader: async () => (await import('./locales/en/pages/admin.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.about',
-      loader: async () => (await import('./locales/en/pages/about.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.blog',
-      loader: async () => (await import('./locales/en/pages/blog.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.books',
-      loader: async () => (await import('./locales/en/pages/books.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.home',
-      loader: async () => (await import('./locales/en/pages/home.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.privacy',
-      loader: async () => (await import('./locales/en/pages/privacy.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.reviews',
-      loader: async () => (await import('./locales/en/pages/reviews.json')).default,
-    },
-    {
-      locale: 'en',
-      key: 'pages.bookReview',
-      loader: async () => (await import('./locales/en/pages/bookReview.json')).default,
-    },
+    // ───────────────────────────────────────
+    // COMMON STRINGS (shared across all pages)
+    // ───────────────────────────────────────
+    { locale: 'es-MX', key: 'common', loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', loader: () => import('./locales/fr-CA/common.json') },
 
-    // ─── Spanish ───────────────────────────────────────
-    {
-      locale: 'es',
-      key: 'common',
-      loader: async () => (await import('./locales/es/common.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.admin',
-      loader: async () => (await import('./locales/es/pages/admin.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.about',
-      loader: async () => (await import('./locales/es/pages/about.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.blog',
-      loader: async () => (await import('./locales/es/pages/blog.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.books',
-      loader: async () => (await import('./locales/es/pages/books.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.home',
-      loader: async () => (await import('./locales/es/pages/home.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.privacy',
-      loader: async () => (await import('./locales/es/pages/privacy.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.reviews',
-      loader: async () => (await import('./locales/es/pages/reviews.json')).default,
-    },
-    {
-      locale: 'es',
-      key: 'pages.bookReview',
-      loader: async () => (await import('./locales/es/pages/bookReview.json')).default,
-    },
+    // ───────────────────────────────────────
+    // MAIN SITE PAGES (from your existing structure)
+    // ───────────────────────────────────────
+    { locale: 'es-MX', key: 'pages.home', routes: ['/'], loader: () => import('./locales/es-MX/pages/home.json') },
+    { locale: 'en-US', key: 'pages.home', routes: ['/'], loader: () => import('./locales/en-US/pages/home.json') },
+    { locale: 'fr-CA', key: 'pages.home', routes: ['/'], loader: () => import('./locales/fr-CA/pages/home.json') },
 
-    // ─── French ───────────────────────────────────────
-    {
-      locale: 'fr',
-      key: 'common',
-      loader: async () => (await import('./locales/fr/common.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.admin',
-      loader: async () => (await import('./locales/fr/pages/admin.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.about',
-      loader: async () => (await import('./locales/fr/pages/about.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.blog',
-      loader: async () => (await import('./locales/fr/pages/blog.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.books',
-      loader: async () => (await import('./locales/fr/pages/books.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.home',
-      loader: async () => (await import('./locales/fr/pages/home.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.privacy',
-      loader: async () => (await import('./locales/fr/pages/privacy.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.reviews',
-      loader: async () => (await import('./locales/fr/pages/reviews.json')).default,
-    },
-    {
-      locale: 'fr',
-      key: 'pages.bookReview',
-      loader: async () => (await import('./locales/fr/pages/bookReview.json')).default,
-    },
+    { locale: 'es-MX', key: 'pages.about', routes: ['/about'], loader: () => import('./locales/es-MX/pages/about.json') },
+    { locale: 'en-US', key: 'pages.about', routes: ['/about'], loader: () => import('./locales/en-US/pages/about.json') },
+    { locale: 'fr-CA', key: 'pages.about', routes: ['/about'], loader: () => import('./locales/fr-CA/pages/about.json') },
+
+    { locale: 'es-MX', key: 'pages.blog', routes: ['/blog'], loader: () => import('./locales/es-MX/pages/blog.json') },
+    { locale: 'en-US', key: 'pages.blog', routes: ['/blog'], loader: () => import('./locales/en-US/pages/blog.json') },
+    { locale: 'fr-CA', key: 'pages.blog', routes: ['/blog'], loader: () => import('./locales/fr-CA/pages/blog.json') },
+
+    { locale: 'es-MX', key: 'pages.books', routes: ['/books'], loader: () => import('./locales/es-MX/pages/books.json') },
+    { locale: 'en-US', key: 'pages.books', routes: ['/books'], loader: () => import('./locales/en-US/pages/books.json') },
+    { locale: 'fr-CA', key: 'pages.books', routes: ['/books'], loader: () => import('./locales/fr-CA/pages/books.json') },
+
+    { locale: 'es-MX', key: 'pages.reviews', routes: ['/reviews'], loader: () => import('./locales/es-MX/pages/reviews.json') },
+    { locale: 'en-US', key: 'pages.reviews', routes: ['/reviews'], loader: () => import('./locales/en-US/pages/reviews.json') },
+    { locale: 'fr-CA', key: 'pages.reviews', routes: ['/reviews'], loader: () => import('./locales/fr-CA/pages/reviews.json') },
+
+    { locale: 'es-MX', key: 'pages.bookReview', routes: ['/book-review'], loader: () => import('./locales/es-MX/pages/bookReview.json') },
+    { locale: 'en-US', key: 'pages.bookReview', routes: ['/book-review'], loader: () => import('./locales/en-US/pages/bookReview.json') },
+    { locale: 'fr-CA', key: 'pages.bookReview', routes: ['/book-review'], loader: () => import('./locales/fr-CA/pages/bookReview.json') },
+
+    { locale: 'es-MX', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/es-MX/pages/privacy.json') },
+    { locale: 'en-US', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/en-US/pages/privacy.json') },
+    { locale: 'fr-CA', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/fr-CA/pages/privacy.json') },
+
+    { locale: 'es-MX', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/es-MX/pages/admin.json') },
+    { locale: 'en-US', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/en-US/pages/admin.json') },
+    { locale: 'fr-CA', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/fr-CA/pages/admin.json') },
+
+    // ───────────────────────────────────────
+    // STORYBOOK PAGES (new interactive content)
+    // ───────────────────────────────────────
+    { locale: 'es-MX', key: 'story.home', routes: ['/story'], loader: () => import('./locales/es-MX/story/home.json') },
+    { locale: 'en-US', key: 'story.home', routes: ['/story'], loader: () => import('./locales/en-US/story/home.json') },
+    { locale: 'fr-CA', key: 'story.home', routes: ['/story'], loader: () => import('./locales/fr-CA/story/home.json') },
+
+    { locale: 'es-MX', key: 'story.chapter1', routes: ['/story/chapter1'], loader: () => import('./locales/es-MX/story/chapter1.json') },
+    { locale: 'en-US', key: 'story.chapter1', routes: ['/story/chapter1'], loader: () => import('./locales/en-US/story/chapter1.json') },
+    { locale: 'fr-CA', key: 'story.chapter1', routes: ['/story/chapter1'], loader: () => import('./locales/fr-CA/story/chapter1.json') },
+
+    // Add more story chapters as needed...
   ],
 };
 
-export const { t, locale, locales, loadTranslations } = new i18n(config);
+export const { t, locale, locales, loading, loadTranslations } = new i18n(config);

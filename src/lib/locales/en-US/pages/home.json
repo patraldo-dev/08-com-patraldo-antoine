@@ -1,5 +1,20 @@
 {
-  "hero.title": "Obras de Antoine Patraldo",
-  "hero.subtitle": "Explora una colección íntima de arte digital y narrativas visuales.",
-  "cta.subscribe": "Recibe actualizaciones exclusivas"
+  "meta": {
+    "title": "Art",
+    "description": "Enjoying life, one drawing at a time."
+  },
+  "hero": {
+    "videoTitle": "Dancing Dolls",
+    "title": "Discovery",
+    "subtitle": "illustration, illusion, and improvisation"
+  },
+  "about": {
+    "title": "About",
+    "p1": "Drawing whatever I feel like, whenever I feel like it, for whoever I feel like.",
+    "p2": "I work happily from my studio in Santa Teresita, Guadalajara, Mexico."
+  },
+  "signup": {
+    "title": "Stay Updated",
+    "description": "Receive occasional news and invitations to exhibitions at my gallery, La Musa que Más Aplauda, in Santa Tere."
+  }
 }

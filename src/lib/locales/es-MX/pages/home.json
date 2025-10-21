@@ -1,5 +1,20 @@
 {
-  "hero.title": "Obras de Antoine Patraldo",
-  "hero.subtitle": "Explora una colección íntima de arte digital y narrativas visuales.",
-  "cta.subscribe": "Recibe actualizaciones exclusivas"
+  "meta": {
+    "title": "Arte",
+    "description": "Disfrutando la vida un dibujo a la vez."
+  },
+  "hero": {
+    "videoTitle": "Monos Bailando",
+    "title": "Descubrimiento",
+    "subtitle": "ilustración, ilusión e improvisación"
+  },
+  "about": {
+    "title": "Acerca",
+    "p1": "Dibujando lo que me da la gana, cuando me da la gana, para quienes me dan las ganas",
+    "p2": "Trabajo muy a gusto en mi estudio en Santa Teresita, Guadalajara, México."
+  },
+  "signup": {
+    "title": "Manténgase al día",
+    "description": "Recibe noticias - muy de vez en cuando - e invitaciones a exhibiciones en mi galería La Musa que Más Aplauda en Santa Tere."
+  }
 }
