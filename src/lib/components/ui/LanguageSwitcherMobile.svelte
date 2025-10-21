@@ -1,24 +1,24 @@
-<!-- src/lib/components/LanguageSwitcherMobile.svelte -->
+<!-- src/lib/components/ui/LanguageSwitcherMobile.svelte -->
 <script>
-  import { locale, locales } from '$lib/i18n';
+  import { locale } from '$lib/translations';
   import { fade, fly } from 'svelte/transition';
-  
+
   const languages = [
     { code: 'en-US', name: 'English', region: 'US' },
     { code: 'es-MX', name: 'Español', region: 'MX' },
     { code: 'fr-CA', name: 'Français', region: 'CA' }
   ];
-  
+
   let isOpen = false;
-  
+
   function switchLanguage(lang) {
     locale.set(lang);
     isOpen = false;
   }
-  
+
   function getLanguageName(code) {
     const lang = languages.find(l => l.code === code);
-    return lang ? `${lang.region}` : code;
+    return lang ? `${lang.name} (${lang.region})` : code; // Show full name
   }
 </script>
 
@@ -41,7 +41,7 @@
       >
         <div class="modal-header">
           <h3>Select Language</h3>
-          <button class="close-button" on:click={() => isOpen = false}>✕</button>
+          <button class="close-button" on:click={() => isOpen = false} aria-label="Close">✕</button>
         </div>
         
         <div class="language-options">
@@ -50,6 +50,7 @@
               class="language-option" 
               class:selected={$locale === lang.code}
               on:click={() => switchLanguage(lang.code)}
+              aria-label={`Switch to ${lang.name} (${lang.region})`}
             >
               <span class="language-name">{lang.name}</span>
               <span class="language-region">{lang.region}</span>

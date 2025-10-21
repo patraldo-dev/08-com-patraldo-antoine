@@ -1,21 +1,22 @@
-<!-- src/lib/components/LanguageSwitcherDesktop.svelte -->
+<!-- src/lib/components/ui/LanguageSwitcherDesktop.svelte -->
 <script>
-  import { locale, locales } from '$lib/i18n';
-  import { fade, fly } from 'svelte/transition';
-  
+  import { locale } from '$lib/translations';
+  import { clickOutside } from '$lib/actions/clickOutside';
+  import { fly } from 'svelte/transition';
+
   const languages = [
     { code: 'en-US', name: 'English', region: 'US' },
     { code: 'es-MX', name: 'Español', region: 'MX' },
     { code: 'fr-CA', name: 'Français', region: 'CA' }
   ];
-  
+
   let isOpen = false;
-  
+
   function switchLanguage(lang) {
     locale.set(lang);
     isOpen = false;
   }
-  
+
   function getLanguageName(code) {
     const lang = languages.find(l => l.code === code);
     return lang ? `${lang.name} (${lang.region})` : code;
@@ -38,13 +39,14 @@
     <div 
       class="language-dropdown" 
       transition:fly={{ y: -10, duration: 200 }}
-      on:click_outside={() => isOpen = false}
+      use:clickOutside={() => isOpen = false}
     >
       {#each languages as lang}
         {#if lang.code !== $locale}
           <button 
             class="language-option"
             on:click={() => switchLanguage(lang.code)}
+            aria-label={`Switch to ${lang.name} (${lang.region})`}
           >
             <span class="language-name">{lang.name}</span>
             <span class="language-region">{lang.region}</span>

@@ -1,50 +1,59 @@
+<!-- src/routes/+layout.svelte -->
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
-  
+  import { locale, loadTranslations } from '$lib/translations';
+  import LanguageSwitcherDesktop from '$lib/components/ui/LanguageSwitcherDesktop.svelte';
+  import LanguageSwitcherMobile from '$lib/components/ui/LanguageSwitcherMobile.svelte';
+
   let isMenuOpen = false;
-  
+
+  // Initialize i18n on client
+  onMount(() => {
+    const savedLang = localStorage.getItem('preferredLanguage') || 'es-MX';
+    locale.set(savedLang);
+    loadTranslations(savedLang, location.pathname);
+    
+    // Save locale changes to localStorage
+    const unsubscribe = locale.subscribe((lang) => {
+      localStorage.setItem('preferredLanguage', lang);
+    });
+
+    // Cleanup
+    return () => unsubscribe();
+  });
+
+  // === Your existing nav logic (unchanged) ===
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
-    // Prevent body scroll when menu is open
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    }
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
   }
-  
+
   function closeMenu() {
     isMenuOpen = false;
-    // Restore body scroll
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = '';
   }
-  
-  // Close menu when clicking on a link
+
   function handleLinkClick() {
     closeMenu();
   }
-  
-  // Close menu when clicking outside
+
   function handleOutsideClick(event) {
     if (isMenuOpen && !event.target.closest('nav')) {
       closeMenu();
     }
   }
-  
-  // Handle escape key
+
   function handleKeydown(event) {
     if (event.key === 'Escape' && isMenuOpen) {
       closeMenu();
     }
   }
-  
+
   onMount(() => {
-    // Add event listeners
     document.addEventListener('click', handleOutsideClick);
     document.addEventListener('keydown', handleKeydown);
     
-    // Clean up
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.removeEventListener('keydown', handleKeydown);
@@ -64,6 +73,7 @@
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+      <LanguageSwitcherDesktop />
     </div>
     
     <!-- Mobile/Tablet Menu Button -->
@@ -83,6 +93,9 @@
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
+      <div class="mobile-language-switcher">
+        <LanguageSwitcherMobile />
+      </div>
     </div>
   </nav>
   
@@ -137,6 +150,7 @@
   .nav-links {
     display: flex;
     gap: 2rem;
+    align-items: center; /* Aligns LanguageSwitcher vertically */
   }
   
   .nav-links a {
@@ -183,7 +197,6 @@
     bottom: 12px;
   }
   
-  /* Menu open state */
   .menu-button.open .menu-line:first-child {
     transform: rotate(45deg);
     top: 19px;
@@ -194,7 +207,6 @@
     bottom: 19px;
   }
   
-  /* Mobile Menu Styles */
   .mobile-menu {
     position: fixed;
     top: 0;
@@ -231,6 +243,13 @@
   
   .mobile-menu a:hover {
     color: #667eea;
+  }
+
+  /* New: Mobile language switcher styling */
+  .mobile-language-switcher {
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    margin-top: auto;
   }
   
   main {
@@ -277,6 +296,6 @@
     
     .menu-button {
       display: flex;
-    }
+    } 
   }
 </style>
