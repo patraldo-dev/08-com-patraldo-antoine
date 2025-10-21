@@ -7,6 +7,14 @@
   let pElement;
   let scrollElement;
   
+  // Smooth scroll to gallery section
+  function scrollToGallery() {
+    const gallerySection = document.getElementById('work');
+    if (gallerySection) {
+      gallerySection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+  
   onMount(() => {
     // Reset animations on video loop
     // Adjust videoLength to match your actual video duration
@@ -54,7 +62,7 @@
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
     <iframe
-      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/290be99262047e068deed8caa0fbc9fb/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
       class="hero-video"
       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
       allowfullscreen="true"
@@ -68,7 +76,7 @@
   <div class="hero-content">
     <h2 class="fade-in-up" bind:this={h2Element}>Descubrimiento</h2>
     <p class="fade-in-up delay" bind:this={pElement}>ilustración, ilusión e improvisación</p>
-    <div class="scroll-indicator fade-in delay-2" bind:this={scrollElement}>
+    <div class="scroll-indicator fade-in delay-2" bind:this={scrollElement} on:click={scrollToGallery} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && scrollToGallery()}>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
       </svg>
