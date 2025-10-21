@@ -15,33 +15,27 @@
     }
   }
   
+  function resetAnimations() {
+    if (h2Element) {
+      h2Element.style.animation = 'none';
+      setTimeout(() => { h2Element.style.animation = ''; }, 10);
+    }
+    if (pElement) {
+      pElement.style.animation = 'none';
+      setTimeout(() => { pElement.style.animation = ''; }, 10);
+    }
+    if (scrollElement) {
+      scrollElement.style.animation = 'none';
+      setTimeout(() => { scrollElement.style.animation = ''; }, 10);
+    }
+  }
+  
   onMount(() => {
-    // Reset animations on video loop
-    // Adjust videoLength to match your actual video duration
-    const videoLength = 15000; // 15 seconds in milliseconds
+    // Exact video duration: 16.034 seconds
+    const videoLength = 16034; // milliseconds
     
     const interval = setInterval(() => {
-      // Reset h2 animation
-      if (h2Element) {
-        h2Element.style.animation = 'none';
-        setTimeout(() => {
-          h2Element.style.animation = '';
-        }, 10);
-      }
-      // Reset p animation
-      if (pElement) {
-        pElement.style.animation = 'none';
-        setTimeout(() => {
-          pElement.style.animation = '';
-        }, 10);
-      }
-      // Reset scroll indicator animation
-      if (scrollElement) {
-        scrollElement.style.animation = 'none';
-        setTimeout(() => {
-          scrollElement.style.animation = '';
-        }, 10);
-      }
+      resetAnimations();
     }, videoLength);
     
     // Cleanup on component destroy
