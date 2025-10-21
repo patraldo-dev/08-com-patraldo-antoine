@@ -1,6 +1,44 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
+  import { onMount } from 'svelte';
+  
+  let h2Element;
+  let pElement;
+  let scrollElement;
+  
+  onMount(() => {
+    // Reset animations on video loop
+    // Adjust videoLength to match your actual video duration
+    const videoLength = 15000; // 15 seconds in milliseconds
+    
+    const interval = setInterval(() => {
+      // Reset h2 animation
+      if (h2Element) {
+        h2Element.style.animation = 'none';
+        setTimeout(() => {
+          h2Element.style.animation = '';
+        }, 10);
+      }
+      // Reset p animation
+      if (pElement) {
+        pElement.style.animation = 'none';
+        setTimeout(() => {
+          pElement.style.animation = '';
+        }, 10);
+      }
+      // Reset scroll indicator animation
+      if (scrollElement) {
+        scrollElement.style.animation = 'none';
+        setTimeout(() => {
+          scrollElement.style.animation = '';
+        }, 10);
+      }
+    }, videoLength);
+    
+    // Cleanup on component destroy
+    return () => clearInterval(interval);
+  });
 </script>
 
 <svelte:head>
@@ -15,23 +53,22 @@
 <section class="hero">
   <div class="hero-video-container">
     <!-- Cloudflare Stream video -->
-
-<iframe
-   src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
-  class="hero-video"
-  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-  allowfullscreen="true"
-  loading="eager"
-  title="Hero video"
-></iframe>
-
+    <iframe
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/290be99262047e068deed8caa0fbc9fb/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
+      class="hero-video"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen="true"
+      loading="eager"
+      title="Monos Bailando"
+    ></iframe>
+    
     <div class="hero-overlay"></div>
   </div>
   
   <div class="hero-content">
-    <h2 class="fade-in-up">Descubrimiento</h2>
-    <p class="fade-in-up delay">ilustración, ilusión e improvisación</p>
-    <div class="scroll-indicator fade-in delay-2">
+    <h2 class="fade-in-up" bind:this={h2Element}>Descubrimiento</h2>
+    <p class="fade-in-up delay" bind:this={pElement}>ilustración, ilusión e improvisación</p>
+    <div class="scroll-indicator fade-in delay-2" bind:this={scrollElement}>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
       </svg>
@@ -73,6 +110,9 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a; /* Dark background to reduce flash - adjust to match video */
   }
   
   /* Text Animations - with specific delays */
@@ -153,23 +193,24 @@
   }
   
   .hero-video-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     z-index: 1;
-    padding: 0 !important; /* Override any inline padding */
+    padding: 0 !important;
+    margin: 0 !important;
   }
   
   .hero-video {
-    width: 100%;
-    height: 100%;
-    border: none;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
     object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     filter: brightness(1.3) contrast(1.15) saturate(1.3);
   }
   
