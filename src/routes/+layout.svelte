@@ -70,10 +70,10 @@
     
 <!-- Desktop Menu -->
 <div class="nav-links desktop-menu">
-  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
-  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
-  <a href="/stories">{$t('nav.stories')}</a>
-  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
+  <a href="#work" on:click={handleLinkClick}>{$t('common.nav.work')}</a>
+  <a href="#about" on:click={handleLinkClick}>{$t('common.nav.about')}</a>
+  <a href="/stories">{$t('common.nav.stories')}</a>
+  <a href="#contact" on:click={handleLinkClick}>{$t('common.nav.contact')}</a>
   <LanguageSwitcherDesktop />
 </div>
 
@@ -92,10 +92,10 @@
 
    <!-- Mobile Menu -->
 <div class="mobile-menu" class:open={isMenuOpen}>
-  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
-  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
-  <a href="/stories">{$t('nav.stories')}</a>
-  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
+  <a href="#work" on:click={handleLinkClick}>{$t('common.nav.work')}</a>
+  <a href="#about" on:click={handleLinkClick}>{$t('common.nav.about')}</a>
+  <a href="/stories">{$t('common.nav.stories')}</a>
+  <a href="#contact" on:click={handleLinkClick}>{$t('common.nav.contact')}</a>
   <div class="mobile-lang-switcher">
     <LanguageSwitcherMobile />
   </div>
