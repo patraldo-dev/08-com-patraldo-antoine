@@ -129,6 +129,17 @@
     }
   }
   
+  @keyframes fadeOutDown {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+  
   @keyframes float {
     0%, 100% {
       transform: translateY(0);
@@ -143,19 +154,19 @@
     opacity: 0;
   }
   
-  /* h2 appears at 8 seconds */
+  /* h2 appears at 8 seconds, fades out at 15 seconds */
   .hero-content h2.fade-in-up {
-    animation-delay: 8s;
+    animation: fadeInUp 1s ease-out 8s forwards, fadeOutDown 1s ease-out 15s forwards;
   }
   
-  /* p appears at 10 seconds */
+  /* p appears at 10 seconds, fades out at 15 seconds */
   .hero-content p.fade-in-up.delay {
-    animation-delay: 10s;
+    animation: fadeInUp 1s ease-out 10s forwards, fadeOutDown 1s ease-out 15s forwards;
   }
   
-  /* Scroll indicator appears at 12 seconds */
+  /* Scroll indicator appears at 12 seconds, fades out at 15 seconds */
   .fade-in.delay-2 {
-    animation: fadeInUp 1s ease-out 12s forwards;
+    animation: fadeInUp 1s ease-out 12s forwards, fadeOutDown 1s ease-out 15s forwards;
     opacity: 0;
   }
   
