@@ -9,19 +9,36 @@
   let isMenuOpen = false;
 
   // Initialize i18n on client
-  onMount(() => {
-    const savedLang = localStorage.getItem('preferredLanguage') || 'es-MX';
-    locale.set(savedLang);
-    loadTranslations(savedLang, location.pathname);
-    
-    // Save locale changes to localStorage
-    const unsubscribe = locale.subscribe((lang) => {
-      localStorage.setItem('preferredLanguage', lang);
-    });
-
-    // Cleanup
-    return () => unsubscribe();
+onMount(() => {
+  // 1. Check localStorage first
+  let lang = localStorage.getItem('preferredLanguage');
+  
+  // 2. If none, default to es-MX (NOT browser language)
+  if (!lang) {
+    lang = 'es-MX';
+    localStorage.setItem('preferredLanguage', lang);
+  }
+  
+  // 3. Only allow supported locales
+  if (!['es-MX', 'en-US', 'fr-CA'].includes(lang)) {
+    lang = 'es-MX';
+    localStorage.setItem('preferredLanguage', lang);
+  }
+  
+  // 4. Set locale and load translations
+  locale.set(lang);
+  loadTranslations(lang, location.pathname);
+  
+  // 5. Save locale changes when user switches language
+  const unsubscribe = locale.subscribe((newLang) => {
+    if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang)) {
+      localStorage.setItem('preferredLanguage', newLang);
+    }
   });
+  
+  // 6. Cleanup subscription on component destroy
+  return () => unsubscribe();
+});
 
   // === Your existing nav logic (unchanged) ===
   function toggleMenu() {
@@ -248,12 +265,12 @@
     color: #667eea;
   }
 
-  /* New: Mobile language switcher styling */
-  .mobile-language-switcher {
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-    margin-top: auto;
-  }
+.mobile-lang-switcher {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}
   
   main {
     flex: 1;
