@@ -78,6 +78,7 @@
       <!-- Responsive iframe embed for Cloudflare Stream -->
       <div class="video-responsive-wrapper">
         <iframe
+	  title="Video artwork: {artwork.title}"
           src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.videoId}/iframe?poster={encodeURIComponent(posterUrl)}"
           loading="lazy"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"

@@ -18,7 +18,20 @@
 
   function getLanguageName(code) {
     const lang = languages.find(l => l.code === code);
-    return lang ? `${lang.name} (${lang.region})` : code; // Show full name
+    return lang ? `${lang.name} (${lang.region})` : code;
+  }
+
+  function closeOnEscape(e) {
+    if (e.key === 'Escape') {
+      isOpen = false;
+    }
+  }
+
+  // Handle keyboard navigation for modal
+  $: if (isOpen) {
+    document.addEventListener('keydown', closeOnEscape);
+  } else {
+    document.removeEventListener('keydown', closeOnEscape);
   }
 </script>
 
@@ -27,35 +40,52 @@
     class="language-button" 
     on:click={() => isOpen = true}
     aria-label="Change language"
+    aria-expanded={isOpen}
   >
     <span class="globe-icon">🌎</span>
     <span class="current-language">{getLanguageName($locale)}</span>
   </button>
   
   {#if isOpen}
-    <div class="modal-backdrop" transition:fade on:click={() => isOpen = false}>
+    <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+    <div 
+      class="modal-backdrop" 
+      transition:fade
+      on:click={() => isOpen = false}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Language selection"
+    >
       <div 
         class="language-modal" 
         transition:fly={{ y: 100, duration: 300 }}
         on:click|stopPropagation
+        tabindex="-1"
       >
         <div class="modal-header">
           <h3>Select Language</h3>
-          <button class="close-button" on:click={() => isOpen = false} aria-label="Close">✕</button>
+          <button 
+            class="close-button" 
+            on:click={() => isOpen = false}
+            aria-label="Close language menu"
+          >
+            ✕
+          </button>
         </div>
         
-        <div class="language-options">
+        <div class="language-options" role="listbox">
           {#each languages as lang}
             <button 
               class="language-option" 
               class:selected={$locale === lang.code}
               on:click={() => switchLanguage(lang.code)}
-              aria-label={`Switch to ${lang.name} (${lang.region})`}
+              aria-selected={$locale === lang.code}
+              role="option"
             >
               <span class="language-name">{lang.name}</span>
               <span class="language-region">{lang.region}</span>
               {#if $locale === lang.code}
-                <span class="selected-icon">✓</span>
+                <span class="selected-icon" aria-hidden="true">✓</span>
               {/if}
             </button>
           {/each}
