@@ -2,6 +2,7 @@
 <script>
   import { locale } from '$lib/translations';
   import { fade, fly } from 'svelte/transition';
+  import { browser } from '$app/environment'; // ← Add this
 
   const languages = [
     { code: 'en-US', name: 'English', region: 'US' },
@@ -27,11 +28,13 @@
     }
   }
 
-  // Handle keyboard navigation for modal
-  $: if (isOpen) {
-    document.addEventListener('keydown', closeOnEscape);
-  } else {
-    document.removeEventListener('keydown', closeOnEscape);
+  // ✅ Only run in browser
+  $: if (browser) {
+    if (isOpen) {
+      document.addEventListener('keydown', closeOnEscape);
+    } else {
+      document.removeEventListener('keydown', closeOnEscape);
+    }
   }
 </script>
 
