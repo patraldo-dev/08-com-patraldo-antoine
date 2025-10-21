@@ -1,16 +1,104 @@
-/* Reset and base styles */
+/* ───────────────────────────────────────
+   RESET + BASE STYLES (your original core)
+   ─────────────────────────────────────── */
 * {
   box-sizing: border-box;
-}
-body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   background: #fafafa;
   color: #2a2a2a;
   line-height: 1.6;
+  font-size: 16px; /* Mobile-first base */
 }
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+
+/* ───────────────────────────────────────
+   DESIGN TOKENS (your spacing system)
+   ─────────────────────────────────────── */
+:root {
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+}
+
+/* ───────────────────────────────────────
+   LAYOUT CONTAINER (mobile-first)
+   ─────────────────────────────────────── */
+.layout {
+  width: 100%;
+  max-width: 100%;
+  padding-left: var(--space-sm);
+  padding-right: var(--space-sm);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .layout {
+    max-width: 750px;
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .layout {
+    max-width: 1000px;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+/* ───────────────────────────────────────
+   HERO VIDEO READY (your existing intent)
+   ─────────────────────────────────────── */
+/* Example: if you use a hero video later, this ensures it’s responsive */
+.hero-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: var(--space-md);
+}
+
+/* Optional: full-bleed sections */
+.full-bleed {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOutDown {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes floatVisible {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-8px); }
+}
+
+/* Optional: base class for consistency */
+.ink-reveal {
+  display: inline-block;
+  opacity: 0; /* Start hidden */
 }
