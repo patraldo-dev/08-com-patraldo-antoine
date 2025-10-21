@@ -72,6 +72,7 @@
     <div class="nav-links desktop-menu">
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="/stories">Historias</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
       <LanguageSwitcherDesktop />
     </div>
@@ -92,6 +93,7 @@
     <div class="mobile-menu" class:open={isMenuOpen}>
       <a href="#work" on:click={handleLinkClick}>Obra</a>
       <a href="#about" on:click={handleLinkClick}>Acerca</a>
+      <a href="/stories">Historias</a>
       <a href="#contact" on:click={handleLinkClick}>Contacto</a>
       <div class="mobile-language-switcher">
         <LanguageSwitcherMobile />
