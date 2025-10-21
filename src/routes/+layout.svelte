@@ -2,7 +2,7 @@
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
-  import { locale, loadTranslations } from '$lib/translations';
+  import { t, locale, loadTranslations } from '$lib/translations';
   import LanguageSwitcherDesktop from '$lib/components/ui/LanguageSwitcherDesktop.svelte';
   import LanguageSwitcherMobile from '$lib/components/ui/LanguageSwitcherMobile.svelte';
 
