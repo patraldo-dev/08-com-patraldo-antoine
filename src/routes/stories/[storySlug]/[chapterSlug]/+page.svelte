@@ -5,7 +5,7 @@
 
 <svelte:head>
   <title>{chapter.title}</title>
-</script>
+</svelte:head>
 
 <div class="layout">
   <h1>{chapter.title}</h1>
