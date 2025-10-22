@@ -1,12 +1,12 @@
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params, locals }) {
+export async function load({ platform,  params, locals }) {
   const { storySlug } = params;
   const { preferredLanguage } = locals;
   const langSuffix = preferredLanguage === 'es-MX' ? 'es' :
                      preferredLanguage === 'en-US' ? 'en' : 'fr';
 
   // Fetch story
-  const story = await platform.env.DB_stories_stories.prepare(`
+  const story = await platform.platform.env.DB_stories_stories_stories_stories.prepare(`
     SELECT 
       slug,
       title_${langSuffix} AS title,
@@ -20,7 +20,7 @@ export async function load({ params, locals }) {
   if (!story) throw error(404, 'Story not found');
 
   // Fetch chapters
-  const chapters = await platform.env.DB_stories_stories.prepare(`
+  const chapters = await platform.platform.env.DB_stories_stories_stories_stories.prepare(`
     SELECT 
       slug,
       title_${langSuffix} AS title

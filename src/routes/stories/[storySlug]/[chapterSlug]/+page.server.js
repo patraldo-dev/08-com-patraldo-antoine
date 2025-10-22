@@ -1,11 +1,11 @@
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params, locals }) {
+export async function load({ platform,  params, locals }) {
   const { storySlug, chapterSlug } = params;
   const { preferredLanguage } = locals;
   const langSuffix = preferredLanguage === 'es-MX' ? 'es' :
                      preferredLanguage === 'en-US' ? 'en' : 'fr';
 
-  const chapter = await platform.env.DB_stories_stories.prepare(`
+  const chapter = await platform.platform.env.DB_stories_stories_stories_stories.prepare(`
     SELECT 
       title_${langSuffix} AS title,
       content_${langSuffix} AS content,
