@@ -15,9 +15,9 @@
     ...restProps
   } = $props();
   
-  // Convert seconds to milliseconds for animation delays
-  $: fadeInDelay = `${fadeInAt}s`;
-  $: fadeOutDelay = `${fadeOutAt}s`;
+  // Convert seconds to CSS time values using $derived
+  let fadeInDelay = $derived(`${fadeInAt}s`);
+  let fadeOutDelay = $derived(`${fadeOutAt}s`);
 </script>
 
 {#if isScroll}

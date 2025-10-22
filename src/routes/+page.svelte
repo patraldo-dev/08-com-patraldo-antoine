@@ -154,30 +154,6 @@
     }
   }
   
-  .fade-in-up {
-    animation: fadeInUp 1s ease-out forwards;
-    opacity: 0;
-  }
-  
-  .fade-in-up.delay {
-    animation-delay: 0.3s;
-  }
-  
-  .fade-in.delay-2 {
-    animation: fadeInUp 1s ease-out 0.8s forwards;
-    opacity: 0;
-  }
-  
-  .scroll-indicator {
-    margin-top: 2rem;
-    animation: float 2s ease-in-out infinite;
-    animation-delay: 1.5s;
-  }
-  
-  .scroll-indicator svg {
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-  }
-  
   .hero-video-container {
     position: absolute;
     top: 0;
