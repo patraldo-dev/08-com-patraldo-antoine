@@ -66,26 +66,6 @@ body {
   }
 }
 
-/* ───────────────────────────────────────
-   HERO VIDEO READY (your existing intent)
-   ─────────────────────────────────────── */
-/* Example: if you use a hero video later, this ensures it’s responsive */
-.hero-video-container,
-.hero-video {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  border: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.hero-video {
-  object-fit: cover; /* critical for full-bleed video */
-}
-
 /* Optional: full-bleed sections */
 .full-bleed {
   width: 100vw;
@@ -117,22 +97,3 @@ body {
   opacity: 0; /* Start hidden */
 }
 
-.hero {
-  position: relative;
-  height: 100vh; /* full viewport height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  color: white;
-  padding: 0 1rem;
-  max-width: 800px;
-  /* Ensure it's centered over video */
-  margin: 0 auto;
-}
