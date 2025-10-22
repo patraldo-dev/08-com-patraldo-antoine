@@ -6,7 +6,6 @@
   let isLoading = true;
   let imageError = false;
 
-  // Function to create Cloudflare Images URL with custom domain and variant
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
     return variant ? `${baseUrl}/${variant}` : baseUrl;
@@ -50,12 +49,11 @@
     return createImageUrl(thumbnailId, variant);
   }
 
-  // Determine poster image for video
   $: posterUrl = artwork.thumbnailUrl
-    ? artwork.thumbnailUrl.split('?')[0] // Strip GIF params if present
+    ? artwork.thumbnailUrl.split('?')[0]
     : artwork.thumbnailId
       ? getThumbnailUrl(artwork.thumbnailId, 'thumbnail')
-      : createImageUrl('f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'thumbnail'); // fallback
+      : createImageUrl('f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'thumbnail');
 </script>
 
 <div class="art-piece">
@@ -75,15 +73,13 @@
         loading="lazy"
       />
     {:else if artwork.type === 'animation' && artwork.videoId}
-      <!-- Responsive iframe embed for Cloudflare Stream -->
       <div class="video-responsive-wrapper">
         <iframe
-	  title="Video artwork: {artwork.title}"
+          title="Video artwork: {artwork.title}"
           src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.videoId}/iframe?poster={encodeURIComponent(posterUrl)}"
           loading="lazy"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen
-          style="border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
         ></iframe>
       </div>
     {:else if artwork.type === 'gif'}
@@ -123,7 +119,6 @@
 </div>
 
 {#if showFullSize}
-  <!-- Modal overlay -->
   <div
     class="modal-overlay"
     on:click={closeFullSize}
@@ -185,21 +180,12 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 75%; /* 4:3 aspect ratio */
+    padding-bottom: 75%;
     overflow: hidden;
     background: #f5f5f5;
   }
 
-  .media-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
+  .media-container img,
   .media-container video {
     position: absolute;
     top: 0;
@@ -217,7 +203,6 @@
     transform: scale(1.03);
   }
 
-  /* Responsive video wrapper */
   .video-responsive-wrapper {
     position: absolute;
     top: 0;
@@ -226,7 +211,7 @@
     height: 100%;
   }
 
-  /* Modal styles */
+  /* MODAL: z-index from app.css */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -238,19 +223,14 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    overflow: hidden;
+    z-index: var(--z-modal); /* 1000 */
   }
 
   .modal-content {
     position: relative;
     max-width: 100%;
-    max-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+    max-height: 90vh;
+    z-index: var(--z-modal-content); /* 1001 */
   }
 
   .modal-content img {
@@ -258,6 +238,7 @@
     max-height: 90vh;
     object-fit: contain;
     border-radius: 4px;
+    opacity: 1;
     transition: opacity 0.3s ease;
   }
 
@@ -279,7 +260,6 @@
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
   }
 
   .close-btn:hover {
@@ -289,20 +269,10 @@
 
   .close-icon {
     font-size: 2rem;
-    line-height: 1;
     color: #333;
   }
 
-  .loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 1.2rem;
-    text-align: center;
-  }
-
+  .loading,
   .error-message {
     position: absolute;
     top: 50%;
@@ -326,7 +296,6 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
   }
 
   .retry-btn:hover {
@@ -374,7 +343,6 @@
     margin: 0 0 1rem;
     color: #555;
     font-size: 0.9rem;
-    line-height: 1.5;
   }
 
   .type-badge {
@@ -386,20 +354,9 @@
     margin-right: 0.5rem;
   }
 
-  .type-badge.still {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .type-badge.animation {
-    background: #e8f5e9;
-    color: #388e3c;
-  }
-
-  .type-badge.gif {
-    background: #fff3e0;
-    color: #f57c00;
-  }
+  .type-badge.still { background: #e3f2fd; color: #1976d2; }
+  .type-badge.animation { background: #e8f5e9; color: #388e3c; }
+  .type-badge.gif { background: #fff3e0; color: #f57c00; }
 
   .click-hint {
     display: block;
@@ -410,28 +367,9 @@
   }
 
   @media (max-width: 768px) {
-    .modal-overlay {
-      padding: 0;
-    }
-
-    .close-btn {
-      width: 2.5rem;
-      height: 2.5rem;
-      top: 0.5rem;
-      right: 0.5rem;
-    }
-
-    .close-icon {
-      font-size: 1.5rem;
-    }
-
-.modal-backdrop {
-  z-index: var(--z-modal); /* 1000 */
-}
-
-    .modal-content img {
-      max-height: 85vh;
-      z-index: calc(var(--z-modal) + 1); /* 1001 */
-    }
+    .modal-overlay { padding: 0; }
+    .close-btn { width: 2.5rem; height: 2.5rem; top: 0.5rem; right: 0.5rem; }
+    .close-icon { font-size: 1.5rem; }
+    .modal-content img { max-height: 85vh; }
   }
 </style>

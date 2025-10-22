@@ -93,13 +93,59 @@
   /* Mobile-first base styles */
 
 .hero {
-    height: 70vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000; /* or your dark bg */
+}
+
+.hero-video-container,
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-hero-video); /* 1 */
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+  z-index: var(--z-hero-overlay); /* 2 */
+}
+
+.hero-content {
+  position: relative;
+  z-index: var(--z-hero-content); /* 3 */
+  text-align: center;
+  color: white;
+  padding: 0 1rem;
+  max-width: 800px;
+}
+
+.hero-content h2 {
+  font-size: 2rem;
+  font-weight: 100;
+  margin: 0 0 1rem 0;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+  font-size: 1rem;
+  font-weight: 300;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+
 
   /* Text Animations */
   @keyframes fadeInUp {
@@ -155,63 +201,6 @@
     }
   }
   
-  .hero-video-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-  
-  .hero-video {
-    width: 100%;
-    height: 100%;
-    border: none;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    filter: brightness(1.2) contrast(1.05) saturate(1.1);
-  }
-  
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
-    z-index: 2;
-    pointer-events: none;
-  }
-  
-  .hero-content {
-    position: relative;
-    z-index: 3;
-    text-align: center;
-    color: white;
-    padding: 0 1rem;
-    max-width: 800px;
-  }
-
-  .hero-content h2 {
-  font-size: 2rem;
-  font-weight: 100;
-  margin: 0 0 1rem 0;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  color: white;
-  /* Remove all opacity and animation properties - InkReveal handles it */
-}
-  
-  .hero-content p {
-  font-size: 1rem;
-  font-weight: 300;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-  color: white;
-  /* Remove all opacity and animation properties - InkReveal handles it */
-}
   .work-section {
     padding: 4rem 0;
   }
@@ -263,6 +252,13 @@
   
   /* Tablet and up - Other sections */
   @media (min-width: 768px) {
+  .hero-content h2 {
+    font-size: 2.5rem;
+    letter-spacing: 2.5px;
+  }
+  .hero-content p {
+    font-size: 1.1rem;
+  }
     .container {
       padding: 0 2rem;
     }
@@ -317,8 +313,6 @@
   z-index: 3; /* or var(--z-hero) + 1 if you define it */
 }
   /* Desktop and up */
-
-
   @media (min-width: 1024px) {
     .hero-content h2 {
       font-size: 3.5rem;

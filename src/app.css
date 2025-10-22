@@ -40,6 +40,7 @@ body {
   --z-base: 0;
   --z-content: 1;
   --z-hero: 2;
+  --z-hero-content: 3;
   --z-nav: 100;
   --z-dropdown: 200;
   --z-modal: 1000;
