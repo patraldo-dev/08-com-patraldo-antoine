@@ -168,13 +168,13 @@ body {
 }
 
 /* Base spacing for fixed nav */
-main {
+body main {
   margin-top: 80px;
 }
 
 /* Mobile adjustment */
 @media (max-width: 768px) {
-  main {
+body  main {
     margin-top: 70px;
   }
 }
