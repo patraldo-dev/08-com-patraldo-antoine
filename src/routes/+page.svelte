@@ -91,15 +91,19 @@
 
 <style>
   /* Mobile-first base styles */
-  .hero {
-    height: 100vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  
+
+ .hero {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1 !important; /* Force it below nav */
+  margin-top: -80px; /* Offset the nav height */
+  padding-top: 80px; /* Add padding to compensate */
+} 
+
   /* Text Animations */
   @keyframes fadeInUp {
     from {
@@ -309,6 +313,19 @@
   }
   
   /* Desktop and up */
+
+.hero {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1 !important; /* Force it below nav */
+  margin-top: -80px; /* Offset the nav height */
+  padding-top: 80px; /* Add padding to compensate */
+}
+
   @media (min-width: 1024px) {
     .hero-content h2 {
       font-size: 3.5rem;
