@@ -135,20 +135,16 @@ onMount(() => {
     flex-direction: column;
   }
   
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 4rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    z-index: var(--z-nav);
-  }
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px; /* explicitly set */
+  z-index: var(--z-nav);
+  background: rgba(255,255,255,0.95);
+  padding: 1rem 2rem; /* adjust accordingly */
+}
   
   .logo-link {
     text-decoration: none;
