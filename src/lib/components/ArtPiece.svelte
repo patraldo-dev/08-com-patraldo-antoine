@@ -326,7 +326,7 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    z-index: calc(var(--z-content) + 1); } /* = 2 */
+    z-index: calc(var(--z-content) + 1); 
   }
 
   .info {
