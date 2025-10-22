@@ -134,6 +134,10 @@ onMount(() => {
     display: flex;
     flex-direction: column;
   }
+
+body {
+  padding-top: 80px; /* push content down */
+}
   
 nav {
   position: fixed;
