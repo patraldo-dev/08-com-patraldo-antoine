@@ -316,7 +316,7 @@
     height: 100%;
     object-fit: cover;
     filter: blur(2px);
-    z-index: 1;
+    z-index: var(--z-content); }     /* = 1 */
   }
 
   .gif-animated {
@@ -326,7 +326,7 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    z-index: 2;
+    z-index: calc(var(--z-content) + 1); } /* = 2 */
   }
 
   .info {
