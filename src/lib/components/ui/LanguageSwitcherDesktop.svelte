@@ -1,155 +1,68 @@
-<!-- src/lib/components/ui/LanguageSwitcherDesktop.svelte -->
+<!-- Minimalist language switcher for desktop -->
 <script>
   import { locale } from '$lib/translations';
-  import { clickOutside } from '$lib/actions/clickOutside';
-  import { fly } from 'svelte/transition';
-
-  const languages = [
-    { code: 'en-US', name: 'English', region: 'US' },
-    { code: 'es-MX', name: 'Español', region: 'MX' },
-    { code: 'fr-CA', name: 'Français', region: 'CA' }
-  ];
-
-  let isOpen = false;
-
-  function switchLanguage(lang) {
-    locale.set(lang);
-    isOpen = false;
+  import { browser } from '$app/environment';
+  
+  // Map locale to 2-letter code
+  const localeToCode = {
+    'es-MX': 'ES',
+    'en-US': 'EN',
+    'fr-CA': 'FR'
+  };
+  
+  // Cycle order
+  const cycle = ['es-MX', 'en-US', 'fr-CA'];
+  
+  function cycleLanguage() {
+    if (!browser) return;
+    
+    const current = $locale;
+    const currentIndex = cycle.indexOf(current);
+    const nextIndex = (currentIndex + 1) % cycle.length;
+    const nextLocale = cycle[nextIndex];
+    
+    locale.set(nextLocale);
+    localStorage.setItem('preferredLanguage', nextLocale);
+    
+    // Also set cookie for server-side
+    document.cookie = `preferredLanguage=${nextLocale}; path=/; max-age=31536000`;
   }
-
-  function getLanguageName(code) {
-    const lang = languages.find(l => l.code === code);
-    return lang ? `${lang.name} (${lang.region})` : code;
-  }
+  
+  $: displayCode = localeToCode[$locale] || 'ES';
 </script>
 
-<div class="language-switcher-desktop">
-  <button 
-    class="language-button" 
-    on:click={() => isOpen = !isOpen}
-    aria-label="Change language"
-    aria-expanded={isOpen}
-  >
-    <span class="globe-icon">🌎</span>
-    <span class="current-language">{getLanguageName($locale)}</span>
-    <span class="dropdown-icon" class:rotated={isOpen}>▼</span>
-  </button>
-  
-  {#if isOpen}
-    <div 
-      class="language-dropdown" 
-      transition:fly={{ y: -10, duration: 200 }}
-      use:clickOutside={() => isOpen = false}
-    >
-      {#each languages as lang}
-        {#if lang.code !== $locale}
-          <button 
-            class="language-option"
-            on:click={() => switchLanguage(lang.code)}
-            aria-label={`Switch to ${lang.name} (${lang.region})`}
-          >
-            <span class="language-name">{lang.name}</span>
-            <span class="language-region">{lang.region}</span>
-          </button>
-        {/if}
-      {/each}
-    </div>
-  {/if}
-</div>
+<button
+  class="lang-code-switcher"
+  on:click|preventDefault={cycleLanguage}
+  aria-label="Change language: {$locale}"
+>
+  {displayCode}
+</button>
 
 <style>
-  .language-switcher-desktop {
-    position: relative;
-    z-index: 1000;
-  }
-  
-  .language-button {
+  .lang-code-switcher {
+    background: rgba(0, 0, 0, 0.05);
+    color: #2a2a2a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 30px;
-    padding: 8px 16px;
-    color: white;
+    justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    font-weight: 500;
+    transition: all 0.2s;
   }
   
-  .language-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  .lang-code-switcher:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.05);
+    border-color: rgba(0, 0, 0, 0.2);
   }
   
-  .globe-icon {
-    font-size: 18px;
-  }
-  
-  .current-language {
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .dropdown-icon {
-    font-size: 12px;
-    transition: transform 0.3s ease;
-  }
-  
-  .dropdown-icon.rotated {
-    transform: rotate(180deg);
-  }
-  
-  .language-dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    min-width: 180px;
-  }
-  
-  .language-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 12px 16px;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    color: #333;
-  }
-  
-  .language-option:hover {
-    background-color: #f5f5f5;
-  }
-  
-  .language-option:first-child {
-    border-radius: 12px 12px 0 0;
-  }
-  
-  .language-option:last-child {
-    border-radius: 0 0 12px 12px;
-  }
-  
-  .language-name {
-    font-weight: 500;
-  }
-  
-  .language-region {
-    font-size: 12px;
-    color: #666;
-    background: #f0f0f0;
-    padding: 2px 6px;
-    border-radius: 10px;
+  .lang-code-switcher:active {
+    transform: scale(0.95);
   }
 </style>
