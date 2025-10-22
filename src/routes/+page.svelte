@@ -217,28 +217,24 @@
     padding: 0 1rem;
     max-width: 800px;
   }
-  
+
   .hero-content h2 {
-    font-size: 2rem;
-    font-weight: 100;
-    margin: 0 0 1rem 0;
-    letter-spacing: 2px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    opacity: 0;
-    background: linear-gradient(to right, transparent 50%, white 50%);
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    animation: inkReveal 2s ease-out 3s forwards, backgroundShift 3s ease-out 5s forwards;
-  }
+  font-size: 2rem;
+  font-weight: 100;
+  margin: 0 0 1rem 0;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  color: white;
+  /* Remove all opacity and animation properties - InkReveal handles it */
+}
   
   .hero-content p {
-    font-size: 1rem;
-    font-weight: 300;
-    opacity: 0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    animation: fadeInRight 1.5s ease-out 7s forwards;
-  }
-  
+  font-size: 1rem;
+  font-weight: 300;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  color: white;
+  /* Remove all opacity and animation properties - InkReveal handles it */
+}
   .work-section {
     padding: 4rem 0;
   }
