@@ -146,8 +146,8 @@ onMount(() => {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: var(--z-nav);
   }
   
   .logo-link {
@@ -193,7 +193,6 @@ onMount(() => {
     flex-direction: column;
     justify-content: center;
     gap: 4px;
-    z-index: 101;
     width: 40px;
     height: 40px;
     box-sizing: border-box;
@@ -240,11 +239,13 @@ onMount(() => {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    z-index: 99;
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
     position: relative;
+    z-index: calc(var(--z-nav) + 1); /* 101 */
+
+
   }
   
   .mobile-menu.open {
@@ -270,9 +271,8 @@ onMount(() => {
     position: absolute;
     top: 1.5rem;
     right: 2rem;
-    z-index: 10;
   }
-  
+
   main {
     flex: 1;
     margin-top: 80px;

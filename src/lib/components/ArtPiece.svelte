@@ -237,7 +237,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
     padding: 1rem;
     overflow: hidden;
   }
@@ -279,7 +278,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1001;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
   }
@@ -427,8 +425,13 @@
       font-size: 1.5rem;
     }
 
+.modal-backdrop {
+  z-index: var(--z-modal); /* 1000 */
+}
+
     .modal-content img {
       max-height: 85vh;
+      z-index: calc(var(--z-modal) + 1); /* 1001 */
     }
   }
 </style>

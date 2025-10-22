@@ -92,17 +92,14 @@
 <style>
   /* Mobile-first base styles */
 
- .hero {
-  height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  z-index: 1 !important; /* Force it below nav */
-  margin-top: -80px; /* Offset the nav height */
-  padding-top: 80px; /* Add padding to compensate */
-} 
+.hero {
+    height: 70vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
   /* Text Animations */
   @keyframes fadeInUp {
@@ -312,19 +309,15 @@
     }
   }
   
-  /* Desktop and up */
 
 .hero {
-  height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  z-index: 1 !important; /* Force it below nav */
-  margin-top: -80px; /* Offset the nav height */
-  padding-top: 80px; /* Add padding to compensate */
+  z-index: var(--z-hero); /* 2 */
 }
+.hero-content {
+  z-index: 3; /* or var(--z-hero) + 1 if you define it */
+}
+  /* Desktop and up */
+
 
   @media (min-width: 1024px) {
     .hero-content h2 {

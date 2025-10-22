@@ -26,14 +26,25 @@ body {
 }
 
 /* ───────────────────────────────────────
-   DESIGN TOKENS (your spacing system)
+   DESIGN TOKENS (spacing + z-index)
    ─────────────────────────────────────── */
 :root {
+  /* Spacing */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
   --space-lg: 2rem;
   --space-xl: 3rem;
+
+  /* Z-index scale (stacking context) */
+  --z-base: 0;
+  --z-content: 1;
+  --z-hero: 2;
+  --z-nav: 100;
+  --z-dropdown: 200;
+  --z-modal: 1000;
+  --z-toast: 1100;
+  --z-tooltip: 1200;
 }
 
 /* ───────────────────────────────────────
