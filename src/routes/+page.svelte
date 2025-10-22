@@ -89,4 +89,277 @@
   </div>
 </section>
 
-
+<style>
+  /* Mobile-first base styles */
+  .hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  /* Text Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* New animations for Option 4: Ink Reveal Effect */
+  @keyframes inkReveal {
+    0% {
+      opacity: 0;
+      clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    }
+    50% {
+      opacity: 0.7;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    100% {
+      opacity: 1;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes backgroundShift {
+    to {
+      background-position: 0 0;
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .fade-in-up.delay {
+    animation-delay: 0.3s;
+  }
+  
+  .fade-in.delay-2 {
+    animation: fadeInUp 1s ease-out 0.8s forwards;
+    opacity: 0;
+  }
+  
+  .scroll-indicator {
+    margin-top: 2rem;
+    animation: float 2s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+  
+  .scroll-indicator svg {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  
+  .hero-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: brightness(1.2) contrast(1.05) saturate(1.1);
+  }
+  
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+    z-index: 2;
+    pointer-events: none;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: white;
+    padding: 0 1rem;
+    max-width: 800px;
+  }
+  
+  .hero-content h2 {
+    font-size: 2rem;
+    font-weight: 100;
+    margin: 0 0 1rem 0;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    opacity: 0;
+    background: linear-gradient(to right, transparent 50%, white 50%);
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    animation: inkReveal 2s ease-out 3s forwards, backgroundShift 3s ease-out 5s forwards;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    animation: fadeInRight 1.5s ease-out 7s forwards;
+  }
+  
+  .work-section {
+    padding: 4rem 0;
+  }
+  
+  .about-section {
+    padding: 4rem 0;
+    background: white;
+  }
+  
+  .signup-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+    text-align: center;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .about-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  h3 {
+    font-size: 1.75rem;
+    font-weight: 200;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .about-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+  }
+  
+  .signup-section h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .signup-section p {
+    margin-bottom: 2rem;
+    color: #666;
+    font-size: 1rem;
+  }
+  
+  /* Tablet and up - Other sections */
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 2rem;
+    }
+    
+    h3 {
+      font-size: 2.5rem;
+    }
+    
+    .about-content p {
+      font-size: 1.1rem;
+    }
+    
+    .signup-section p {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* Tablet and up */
+  @media (min-width: 768px) {
+    .hero-content {
+      padding: 0 2rem;
+    }
+    
+    .hero-content h2 {
+      font-size: 2.5rem;
+      letter-spacing: 2.5px;
+    }
+    
+    .hero-content p {
+      font-size: 1.1rem;
+    }
+    
+    .scroll-indicator {
+      margin-top: 2.5rem;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+  }
+  
+  /* Desktop and up */
+  @media (min-width: 1024px) {
+    .hero-content h2 {
+      font-size: 3.5rem;
+      letter-spacing: 3px;
+    }
+    
+    .hero-content p {
+      font-size: 1.2rem;
+    }
+    
+    .scroll-indicator {
+      margin-top: 3rem;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+</style>
