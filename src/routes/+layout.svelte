@@ -170,7 +170,7 @@ onMount(() => {
   .nav-links {
     display: flex;
     gap: 2rem;
-    align-items: center; /* Aligns LanguageSwitcher vertically */
+    align-items: center;
   }
   
   .nav-links a {
@@ -244,6 +244,7 @@ onMount(() => {
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
+    position: relative;
   }
   
   .mobile-menu.open {
@@ -265,12 +266,12 @@ onMount(() => {
     color: #667eea;
   }
 
-.mobile-lang-switcher {
-  position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 10;
-}
+  .mobile-lang-switcher {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    z-index: 10;
+  }
   
   main {
     flex: 1;
