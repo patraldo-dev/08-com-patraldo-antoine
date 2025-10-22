@@ -5,7 +5,7 @@ export async function load({ locals }) {
                      preferredLanguage === 'en-US' ? 'en' : 'fr';
 
   // Fetch all published stories, ordered
-  const stories = await env.DB.prepare(`
+  const stories = await platform.env.DB_stories_stories.prepare(`
     SELECT 
       slug,
       title_${langSuffix} AS title

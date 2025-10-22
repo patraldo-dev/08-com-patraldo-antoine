@@ -6,7 +6,7 @@ export async function load({ params, locals }) {
                      preferredLanguage === 'en-US' ? 'en' : 'fr';
 
   // Fetch story
-  const story = await platform.env.DB_stories_stories.prepare(`
+  const story = await env.DB.prepare(`
     SELECT 
       slug,
       title_${langSuffix} AS title,
@@ -20,7 +20,7 @@ export async function load({ params, locals }) {
   if (!story) throw error(404, 'Story not found');
 
   // Fetch chapters
-  const chapters = await platform.env.DB_stories_stories.prepare(`
+  const chapters = await env.DB.prepare(`
     SELECT 
       slug,
       title_${langSuffix} AS title

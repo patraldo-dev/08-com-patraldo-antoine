@@ -5,7 +5,7 @@ export async function load({ params, locals }) {
   const langSuffix = preferredLanguage === 'es-MX' ? 'es' :
                      preferredLanguage === 'en-US' ? 'en' : 'fr';
 
-  const chapter = await platform.env.DB_stories_stories.prepare(`
+  const chapter = await env.DB.prepare(`
     SELECT 
       title_${langSuffix} AS title,
       content_${langSuffix} AS content,
