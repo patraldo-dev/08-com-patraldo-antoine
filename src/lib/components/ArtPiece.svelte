@@ -316,7 +316,7 @@
     height: 100%;
     object-fit: cover;
     filter: blur(2px);
-    z-index: var(--z-content); }     /* = 1 */
+    z-index: var(--z-content);      
   }
 
   .gif-animated {
