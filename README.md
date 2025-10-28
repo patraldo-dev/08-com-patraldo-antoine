@@ -1,4 +1,4 @@
-# AGR-Video-Studio
+# AGRia-Video-Studio
 
 Personal archive and workflow for AI-generated video projects.
 
