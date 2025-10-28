@@ -1,0 +1,63 @@
+# =============== SECRETS ===============
+.env
+.env.local
+.env.*.local
+
+# =============== MEDIA OUTPUT ===============
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.gif
+*.mp3
+*.wav
+*.flac
+*.aac
+*.m4a
+
+# Large images (keep only tiny refs if needed)
+*.png
+*.jpg
+*.jpeg
+*.webp
+!**/drawings/*.png   # Allow small sketch PNGs in drawings/
+!**/drawings/*.jpg
+
+# =============== WAN / TEMP / CACHE ===============
+WAN-*/
+03A_wan_output_compatible/
+03B_wan_output_noaudio/
+07Rembg/
+WAN-dups/
+WAN-uploads/
+Public_Clips/
+
+# =============== AUTO-GENERATED / TEMP FILES ===============
+*.log
+list.txt
+real_mp4_files.txt
+mp4_paths.txt
+parisfiles.txt
+keyframes_*.png
+loop*.txt
+loop*.mp4
+cancan*.mp4
+test_*.mp4
+*_output.mp4
+still-output.png
+.DS_Store
+Thumbs.db
+
+# =============== FONTS & AUDIO ===============
+Fonts/
+Audio/
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# =============== EDITOR / SHELL ===============
+*.swp
+*.swo
+*~

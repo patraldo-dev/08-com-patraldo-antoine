@@ -1,0 +1,90 @@
+Ug5dj6DnByrYHLqabEsVgXTbCLrBPITWVGG3QpLr   for api token named Studio Patraldo CF Watermark gen Oct 20, 2025
+
+- this is to test the png image, the api token should be for images not stream otherwise you get a success:false message:  curl -H 'Authorization: Bearer <image-api-token>' https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/images/v1/f70e532c-cbf2-485e-e066-aa7500a65b00
+
+Get watermark UUID: The watermark profile creation response you shared confirms your watermark profile UID is "92b3d3bed363cd5287b4edcc71711891". This UID is what you use to apply the watermark to your existing Cloudflare Stream videos.
+
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream/watermarks" \
+-H "Authorization: Bearer BPTFxeofyZo9eBpeE0kljHCdIY4NS6bQzzbI19N9" \
+-H "Content-Type: multipart/form-data" \
+-F "file=@/home/patrouch/AGR-Video-Studio/Branding/watermark.png" \
+-F "name=Studio Patraldo Watermark" \
+-F "opacity=0.5" \
+-F "position=lowerRight" \
+-F "scale=0.15" \
+-F "padding=0.05"
+{
+  "result": {
+    "uid": "92b3d3bed363cd5287b4edcc71711891",
+    "size": 2564,
+    "height": 400,
+    "width": 600,
+    "created": "2025-10-20T18:08:29.958862Z",
+    "downloadedFrom": null,
+    "name": "Studio Patraldo Watermark",
+    "opacity": 0.5,
+    "padding": 0.05,
+    "scale": 0.15,
+    "position": "lowerRight"
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+
+Step 1: Create a profile
+
+curl -X POST -H 'Authorization: Bearer Ug5dj6DnByrYHLqabEsVgXTbCLrBPITWVGG3QpLr' \
+-F file=@/home/patrouch/AGR-Video-Studio/Branding/watermark.png \
+https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream/watermarks
+{
+  "result": {
+    "uid": "2fde9aa29c274d38097545d9c29eb740",
+    "size": 2564,
+    "height": 400,
+    "width": 600,
+    "created": "2025-10-20T19:23:04.579704Z",
+    "downloadedFrom": null,
+    "name": "",
+    "opacity": 1,
+    "padding": 0.05,
+    "scale": 0.15,
+    "position": "upperRight"
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+
+Step 2: Specify the profile UID at upload
+
+curl \
+  -d '{"url":"<video_url>","meta":{"name":"<video_name>"}}' \
+  -H "Authorization: Bearer <api_token>" \
+  https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream/copy
+
+Step 2: Specify the profile UID at upload
+
+for example, from the above output: 2fde9aa29c274d38097545d9c29eb740
+
+Step 3: activate venv and install tus.py with pip -- done.  Better use node index.js.   
+tus-upload --chunk-size 5242880 \
+--header Authentication 'Bearer Ug5dj6DnByrYHLqabEsVgXTbCLrBPITWVGG3QpLr' \
+--metadata watermark 92b3d3bed363cd5287b4edcc71711891\
+/home/patrouch/AGR-Video-Studio/Public_Clips/AGR-FigurasBailandoEnRonda_16S_compatible.mp4  https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream
+
+Step X Get a watermark profile
+To view a watermark profile that you created:
+
+Terminal window
+curl -H "Authorization: Bearer Ug5dj6DnByrYHLqabEsVgXTbCLrBPITWVGG3QpLr" \
+https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream/watermarks/92b3d3bed363cd5287b4edcc71711891
+
+
+Step XI:  List watermark profiles
+To list watermark profiles that you created:
+
+Terminal window
+curl -H "Authorization: Bearer Ug5dj6DnByrYHLqabEsVgXTbCLrBPITWVGG3QpLr" \
+https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/stream/watermarks/
+

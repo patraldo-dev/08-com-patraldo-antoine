@@ -1,0 +1,107 @@
+import subprocess
+import json
+import os
+
+def get_video_duration(filename):
+    """Uses ffprobe to get the duration of a video file."""
+    try:
+        cmd = [
+            "ffprobe", "-v", "error", "-show_entries",
+            "format=duration", "-of", "json", filename
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        data = json.loads(result.stdout)
+        return float(data["format"]["duration"])
+    except (subprocess.CalledProcessError, FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error probing duration for {filename}: {e}")
+        return None
+
+def create_video_compilation(input_file_list, output_filename, transition_type="fade", transition_duration=1.0, resolution="1920x1080"):
+    """
+    Creates a video compilation from a list of video files with transitions.
+    
+    Args:
+        input_file_list (str): Path to a text file listing input video filenames.
+        output_filename (str): The desired output filename.
+        transition_type (str): The type of xfade transition (e.g., 'fade', 'wipeleft').
+        transition_duration (float): The duration of each transition in seconds.
+        resolution (str): The target resolution for all videos (e.g., '1920x1080').
+    """
+    if not os.path.exists(input_file_list):
+        print(f"Error: Input file list '{input_file_list}' not found.")
+        return
+
+    with open(input_file_list, 'r') as f:
+        video_files = [line.strip() for line in f if line.strip()]
+
+    if len(video_files) < 2:
+        print("At least two video files are required for transitions.")
+        return
+
+    # Generate input arguments and get durations
+    input_args = []
+    durations = []
+    for file in video_files:
+        input_args.extend(["-i", file])
+        duration = get_video_duration(file)
+        if duration is None:
+            return
+        durations.append(duration)
+
+    # Split resolution string
+    res_width, res_height = resolution.split('x')
+    
+    # Build the complex filtergraph
+    filter_complex_parts = []
+    
+    # Scale and pad filters for each input video
+    scaled_streams = []
+    for i, file in enumerate(video_files):
+        stream_name = f"[v{i}]"
+        scaled_streams.append(stream_name)
+        filter_complex_parts.append(
+            # NOTE: Use 'w=1920:h=1080' syntax for older FFmpeg versions.
+            f"[{i}:v]scale={resolution}:force_original_aspect_ratio=decrease,pad=w={res_width}:h={res_height}:x=-1:y=-1{stream_name};"
+        )
+    
+    # Chain xfade filters for video transitions
+    current_stream = "[v0]"
+    current_offset = 0.0
+    for i in range(len(scaled_streams) - 1):
+        # The offset is the cumulative time of the previous clips minus the overlap
+        current_offset += durations[i] - transition_duration
+        next_stream = f"[v_tmp{i+1}]"
+        filter_complex_parts.append(
+            f"{current_stream}{scaled_streams[i+1]}xfade=transition={transition_type}:duration={transition_duration}:offset={current_offset}{next_stream};"
+        )
+        current_stream = next_stream
+
+    # Concatenate audio streams
+    audio_inputs = "".join([f"[{i}:a]" for i in range(len(video_files))])
+    filter_complex_parts.append(f"{audio_inputs}concat=n={len(video_files)}:v=0:a=1[outa]")
+
+    # Construct the final command
+    filter_complex_string = "".join(filter_complex_parts)
+    ffmpeg_command = [
+        "ffmpeg", *input_args,
+        "-filter_complex", filter_complex_string,
+        "-map", current_stream,
+        "-map", "[outa]",
+        "-c:v", "libx264", "-c:a", "aac",
+        "-y", output_filename
+    ]
+    
+    print("Executing FFmpeg command:")
+    print(" ".join(ffmpeg_command))
+    subprocess.run(ffmpeg_command, check=True)
+    print(f"Compilation finished successfully. Output saved to {output_filename}")
+
+if __name__ == "__main__":
+    create_video_compilation(
+        input_file_list="threevideos.txt",
+        output_filename="Paris3take7.mp4",
+        transition_type="fade",
+        transition_duration=1.0,
+        resolution="1920x1080"
+    )
+
