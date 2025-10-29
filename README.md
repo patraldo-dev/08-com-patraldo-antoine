@@ -21,3 +21,10 @@ cd Tools
 ./new_project.sh "MyStory"
 ./new_scene.sh "001-20251029-MyStory" "opening-shot"
 ./sync_manifest.sh  # generates project index
+
+## 🧑‍🎨 Client / Collaborator Workflow
+
+To associate a project with a friend or collaborator, **prefix the name**:
+
+```bash
+./new_project.sh "Antoine-MujerMisteriosa"

@@ -31,7 +31,7 @@ while IFS= read -r -d '' prompt_file; do
     echo ""
     found=1
   fi
-done < <(find "$PROJECTS_DIR" -path "*/prompts/prompt.txt" -type f -print0 2>/dev/null)
+done < <(find "$PROJECTS_DIR" -path "*/scenes/*/prompts/prompt.txt" -type f -print0 2>/dev/null)
 
 if [ "$found" -eq 0 ]; then
   echo "📭 No matches found for '$SEARCH_TERM'."

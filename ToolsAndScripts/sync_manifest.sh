@@ -26,20 +26,19 @@ mkdir -p "$PROJECTS_DIR"
       proj_name="$proj_base"
     fi
 
-    scene_found=false
-    while IFS= read -r -d '' scene_dir; do
-      scene_base=$(basename "$scene_dir")
-      if [[ $scene_base =~ ^([0-9]{2})-(.+)$ ]]; then
-        scene_id="${BASH_REMATCH[1]}"
-        scene_name="${BASH_REMATCH[2]}"
-        
-        wan_count=$(find "$scene_dir/wan_output" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
-        edit_count=$(find "$scene_dir/edited_clips" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
-
-        echo -e "${proj_id}\t${proj_name}\t${date_part}\t${scene_id}\t${scene_name}\t${wan_count}\t${edit_count}"
-        scene_found=true
-      fi
-    done < <(find "$proj/scenes" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null)
+scene_found=false
+if [ -d "$proj/scenes" ]; then
+  while IFS= read -r -d '' scene_dir; do
+    scene_base=$(basename "$scene_dir")
+    # Accept ANY non-hidden directory as a scene
+    if [ -n "$scene_base" ] && [ "${scene_base:0:1}" != "." ]; then
+      wan_count=$(find "$scene_dir/wan_output" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
+      edit_count=$(find "$scene_dir/edited_clips" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
+      echo -e "${proj_id}\t${proj_name}\t${date_part}\t${scene_base}\t${scene_base}\t${wan_count}\t${edit_count}"
+      scene_found=true
+    fi
+  done < <(find "$proj/scenes" -mindepth 1 -maxdepth 1 -type d -print0)
+fi
 
     if [ "$scene_found" = false ]; then
       echo -e "${proj_id}\t${proj_name}\t${date_part}\t-\t(no scenes)\t0\t0"
@@ -70,18 +69,20 @@ echo "✅ Manifest updated: $MANIFEST"
       proj_name="$proj_base"
     fi
 
-    scene_found=false
-    while IFS= read -r -d '' scene_dir; do
-      scene_base=$(basename "$scene_dir")
-      if [[ $scene_base =~ ^([0-9]{2})-(.+)$ ]]; then
-        scene_id="${BASH_REMATCH[1]}"
-        scene_name="${BASH_REMATCH[2]}"
-        wan_count=$(find "$scene_dir/wan_output" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
-        edit_count=$(find "$scene_dir/edited_clips" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
-        echo -e "${proj_id}\t${proj_name}\t${date_part}\t${scene_id}\t${scene_name}\t${wan_count}\t${edit_count}"
-        scene_found=true
-      fi
-    done < <(find "$proj/scenes" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null)
+scene_found=false
+if [ -d "$proj/scenes" ]; then
+  while IFS= read -r -d '' scene_dir; do
+    scene_base=$(basename "$scene_dir")
+    # Accept ANY non-hidden directory as a scene
+    if [ -n "$scene_base" ] && [ "${scene_base:0:1}" != "." ]; then
+      wan_count=$(find "$scene_dir/wan_output" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
+      edit_count=$(find "$scene_dir/edited_clips" -type f \( -iname "*.mp4" -o -iname "*.gif" \) 2>/dev/null | wc -l)
+      echo -e "${proj_id}\t${proj_name}\t${date_part}\t${scene_base}\t${scene_base}\t${wan_count}\t${edit_count}"
+      scene_found=true
+    fi
+  done < <(find "$proj/scenes" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null)
+fi
+
     if [ "$scene_found" = false ]; then
       echo -e "${proj_id}\t${proj_name}\t${date_part}\t-\t(no scenes)\t0\t0"
     fi
