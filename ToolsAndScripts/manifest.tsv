@@ -1,1 +1,6 @@
 2025-10-31 12:53:48	../Pipeline/HornedOrangeMonster.mp4	32	5	10	0
+2025-10-31 13:38:02	../Pipeline/HornedOrangeMonster.mp4	30	../Pipeline/spinning_HornedOrangeMonster.mp4
+2025-10-31 13:40:06	../Pipeline/cropped_HornedOrangeMonster.mp4	45	../Pipeline/spinning_cropped_HornedOrangeMonster.mp4
+2025-10-31 13:43:51	../Pipeline/cropped_HornedOrangeMonster.mp4	360	../Pipeline/spinning_cropped_HornedOrangeMonster.mp4
+2025-10-31 13:53:06	../Pipeline/cropped_HornedOrangeMonster.mp4	5x rotations	300 frames	zoom:true	circle:true	../Pipeline/spinning_cropped_HornedOrangeMonster.mp4
+2025-10-31 14:19:10	../Pipeline/cropped_HornedOrangeMonster.mp4	30s	10x rotations	180 frames generated	60fps	zoom:true	circle:true	../Pipeline/spinning_cropped_HornedOrangeMonster.mp4
