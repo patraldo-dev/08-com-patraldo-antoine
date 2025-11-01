@@ -1,0 +1,63 @@
+#!/bin/bash
+
+LIBDIR="$HOME/AGRia-Video-Studio/CLI-Library"
+CATALOG="$LIBDIR/catalog.tsv"
+
+# Ensure directory and catalog exist
+mkdir -p "$LIBDIR"
+if [[ ! -f "$CATALOG" ]]; then
+  echo -e "type\tname\tdescription\tcontext" > "$CATALOG"
+  echo "✅ Created new catalog: $CATALOG"
+fi
+
+echo "➕ Add a new entry to your CLI library"
+echo "-------------------------------------"
+
+# 1. Type
+PS3="Select type: "
+select type in "script" "oneliner" "snippet" "function"; do
+  if [[ -n "$type" ]]; then break; fi
+  echo "⚠️  Invalid selection. Try again."
+done
+
+# 2. Name
+read -rp "Enter name (e.g., strip_audio.sh): " name
+while [[ -z "$name" ]]; do
+  read -rp "Name is required: " name
+done
+
+# 3. Description
+read -rp "Enter description: " desc
+while [[ -z "$desc" ]]; do
+  read -rp "Description is required: " desc
+done
+
+# 4. Context — with suggestions
+echo
+echo "📌 Common contexts:"
+echo "   • portable       → works anywhere (default)"
+echo "   • AGRia-Video-Studio → your main project"
+echo "   • web-i18n       → SvelteKit i18n work"
+echo "   • Wan-AI         → Wan Video/Image prompts"
+echo "   • Cloudflare     → Wrangler/Workers scripts"
+
+# Show existing unique contexts (excluding header)
+EXISTING_CONTEXTS=$(tail -n +2 "$CATALOG" | cut -f4 | sort -u | grep -v '^$')
+if [[ -n "$EXISTING_CONTEXTS" ]]; then
+  echo
+  echo "📚 Your existing contexts:"
+  echo "$EXISTING_CONTEXTS" | sed 's/^/   • /'
+fi
+
+echo
+read -rp "Enter context (press Enter for 'portable'): " context
+context=${context:-portable}
+
+# Append to catalog
+echo -e "$type\t$name\t$desc\t$context" >> "$CATALOG"
+
+echo
+echo "✅ Added:"
+printf "%-10s %-25s %s [%s]\n" "$type" "$name" "$desc" "$context"
+echo
+echo "💡 Tip: Edit $CATALOG anytime in Vim to refine entries."

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+LIBDIR="$HOME/AGRia-Video-Studio/CLI-Library"
+CATALOG="$LIBDIR/catalog.tsv"
+
+if [[ $# -eq 0 ]]; then
+  echo "Usage: mylib <keyword>"
+  echo "Example: mylib ffmpeg"
+  echo
+  echo "Known commands:"
+  column -t -s $'\t' "$CATALOG"
+  exit 0
+fi
+
+grep -i "$*" "$CATALOG" | column -t -s $'\t'
+#!/bin/bash
+
+# Check if catalog exists
+if [[ ! -f "$CATALOG" ]]; then
+  echo "❌ Catalog not found: $CATALOG"
+  echo "Run: mkdir -p ~/lib/cli && touch ~/lib/cli/catalog.tsv"
+  exit 1
+fi
+
+# If no arguments, show full catalog with context
+if [[ $# -eq 0 ]]; then
+  echo "📚 CLI Command Library"
+  echo "Usage: mylib <keyword>"
+  echo
+  # Detect if catalog has 3 or 4 columns
+  COLS=$(head -n1 "$CATALOG" | awk -F$'\t' '{print NF}')
+  if [[ $COLS -ge 4 ]]; then
+    column -t -s $'\t' "$CATALOG"
+  else
+    # Fallback for 3-column format
+    column -t -s $'\t' "$CATALOG"
+  fi
+  exit 0
+fi
+
+# Search (case-insensitive)
+RESULTS=$(grep -i "$*" "$CATALOG")
+
+if [[ -z "$RESULTS" ]]; then
+  echo "🔍 No matches for: $*"
+  exit 1
+fi
+
+# Auto-detect column count from results
+COLS=$(echo "$RESULTS" | head -n1 | awk -F$'\t' '{print NF}')
+
+if [[ $COLS -ge 4 ]]; then
+  echo "$RESULTS" | column -t -s $'\t'
+else
+  # Pad with empty context for 3-column files
+  echo "$RESULTS" | awk -F$'\t' -v OFS=$'\t' '{print $1, $2, $3, ""}' | column -t -s $'\t'
+fi
