@@ -1,0 +1,17 @@
+type	name	description	context
+script	convert_all.sh	Batch convert all MP4 files in current folder using FFmpeg (e.g., to H.265 or lower bitrate)	portable
+script	crop.sh	Interactively crop video using FFmpeg; prompts for x,y,w,h coordinates	portable
+script	FFprobeVideoSizes.sh	List resolution, duration, and codec of all videos in folder	portable
+script	find_prompt.sh	Search all prompt.txt files in Projects/ for a keyword (e.g., 'cat')	AGRia-Video-Studio
+script	list_by_clients.sh	List top-level client folders and project counts (structured asset overview)	AGRia-Video-Studio
+script	new_project.sh	Create new project folder under Projects/ with ID, date, and basic structure	AGRia-Video-Studio
+script	new_scene.sh	Scaffold new scene folder with prompts/, img/, vid/ subdirs	AGRia-Video-Studio
+script	rename_files.sh	Bulk rename files to sequential numbers (e.g., clip_001.mp4, clip_002.mp4)	portable
+script	scaleVideos.sh	Resize all videos in folder to target resolution (e.g., 1280x720) using FFmpeg	portable
+script	set_sequence.sh	Rename image files to 0001.png, 0002.png... for FFmpeg video encoding	portable
+script	spin_rotate.sh	Rotate or flip video 90°/180°/mirror using FFmpeg (stream copy when possible)	portable
+script	strip_audio.sh	Remove audio track from all MP4 files in folder (fast, no re-encode)	portable
+script	sync_manifest.sh	Update MANIFEST.tsv with current project/scene metadata	AGRia-Video-Studio
+script	test_print.sh	Debug helper: print environment variables, paths, or test logic	portable
+script	xdg-open-img.sh	Open image or video in default viewer (Chromebook/Linux compatible)	portable
+snippet	ffmpeg-multi-audio-mix.sh	Mix 3 audio tracks with fade/volume, copy video	portable
