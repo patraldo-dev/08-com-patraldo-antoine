@@ -9,7 +9,7 @@ script	new_scene.sh	Scaffold new scene folder with prompts/, img/, vid/ subdirs	
 script	rename_files.sh	Bulk rename files to sequential numbers (e.g., clip_001.mp4, clip_002.mp4)	portable
 script	scaleVideos.sh	Resize all videos in folder to target resolution (e.g., 1280x720) using FFmpeg	portable
 script	set_sequence.sh	Rename image files to 0001.png, 0002.png... for FFmpeg video encoding	portable
-script	spin_rotate.sh	Rotate or flip video 90°/180°/mirror using FFmpeg (stream copy when possible)	portable
+script	spin_rotate_zoom.sh	Rotate or flip video 90°/180°/mirror using FFmpeg (stream copy when possible)	portable
 script	strip_audio.sh	Remove audio track from all MP4 files in folder (fast, no re-encode)	portable
 script	sync_manifest.sh	Update MANIFEST.tsv with current project/scene metadata	AGRia-Video-Studio
 script	test_print.sh	Debug helper: print environment variables, paths, or test logic	portable

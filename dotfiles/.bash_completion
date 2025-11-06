@@ -1,0 +1,55 @@
+# === LIBRARY COMPLETIONS ===
+
+# Helper: get all entry names from catalog.tsv (column 2)
+_get_catalog_entries() {
+    local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
+    local CATALOG="$LIB_BASE/catalog.tsv"
+    if [[ -f "$CATALOG" ]]; then
+        # Skip header, get 2nd column (name), sort uniquely
+        tail -n +2 "$CATALOG" | cut -f2 | sort -u
+    fi
+}
+
+# Helper: get all filenames from bin/ and snippets/
+_get_library_files() {
+    local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
+    local files=()
+    [[ -d "$LIB_BASE/bin" ]] && files+=($(ls "$LIB_BASE/bin" 2>/dev/null))
+    [[ -d "$LIB_BASE/snippets" ]] && files+=($(ls "$LIB_BASE/snippets" 2>/dev/null))
+    printf '%s\n' "${files[@]}" | sort -u
+}
+
+# Completion for mylib: completes catalog entry names
+_mylib_completion() {
+    local cur
+    if declare -F _init_completion >/dev/null 2>&1; then
+        _init_completion || return
+    else
+        cur="${COMP_WORDS[COMP_CWORD]}"
+    fi
+
+    local entries=($(_get_catalog_entries))
+    COMPREPLY=($(compgen -W "${entries[*]}" -- "$cur"))
+}
+complete -F _mylib_completion mylib
+
+# Completion for viewlib: completes actual filenames
+_viewlib_completion() {
+    local cur
+    if declare -F _init_completion >/dev/null 2>&1; then
+        _init_completion || return
+    else
+        cur="${COMP_WORDS[COMP_CWORD]}"
+    fi
+
+    local files=($(_get_library_files))
+    COMPREPLY=($(compgen -W "${files[*]}" -- "$cur"))
+}
+complete -F _viewlib_completion viewlib
+
+# addlib is interactive → no filename completion needed
+# But if you want to complete nothing (just avoid file completion):
+_addlib_completion() {
+    return 0
+}
+complete -F _addlib_completion addlib

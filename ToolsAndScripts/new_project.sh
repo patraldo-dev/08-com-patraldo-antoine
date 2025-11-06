@@ -4,7 +4,6 @@
 set -e
 
 PROJECT_NAME="$1"
-PROJECTS_DIR="../Projects"
 
 if [ -z "$PROJECT_NAME" ]; then
   echo "Usage: $0 \"ProjectName\""
@@ -12,6 +11,9 @@ if [ -z "$PROJECT_NAME" ]; then
   exit 1
 fi
 
+# ✅ FIXED: Dynamically find Projects dir relative to THIS script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECTS_DIR="$SCRIPT_DIR/../Projects"
 mkdir -p "$PROJECTS_DIR"
 
 # Find highest project number (000–999)
@@ -41,7 +43,7 @@ if [ -e "$PROJECT_DIR" ]; then
 fi
 
 mkdir -p "$PROJECT_DIR/scenes"
-mkdir -p "$PROJECT_DIR/assets/{characters,sound,fonts}" 2>/dev/null
+mkdir -p "$PROJECT_DIR/assets/characters" "$PROJECT_DIR/assets/sound" "$PROJECT_DIR/assets/fonts"
 
 echo "✅ Created project: $(basename "$PROJECT_DIR")"
 echo "   Add scenes with: ./new_scene.sh \"$(basename "$PROJECT_DIR")\" \"SceneName\""

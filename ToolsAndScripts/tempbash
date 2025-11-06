@@ -1,0 +1,26 @@
+# Completion for composite_two_step.sh (Wan video + background compositor)
+_composite_two_step_completion() {
+    local cur prev words cword
+    if declare -F _init_completion >/dev/null 2>&1; then
+        _init_completion || return
+    else
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        cword="$COMP_CWORD"
+    fi
+
+    # First arg: video (Wan output)
+    if (( cword == 1 )); then
+        COMPREPLY=($(compgen -f -X '!*.@(mp4|mov|avi|webm|m4v)' -- "$cur"))
+    # Second arg: background (image or video)
+    elif (( cword == 2 )); then
+        COMPREPLY=($(compgen -f -X '!*.@(mp4|mov|avi|webm|m4v|jpg|jpeg|png|gif)' -- "$cur"))
+    else
+        COMPREPLY=()
+    fi
+}
+
+# Register for common ways you might call it
+complete -F _composite_two_step_completion composite_two_step.sh
+complete -F _composite_two_step_completion ./composite_two_step.sh
+complete -F _composite_two_step_completion composite_two_step
