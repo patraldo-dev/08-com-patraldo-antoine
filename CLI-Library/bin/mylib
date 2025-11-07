@@ -3,55 +3,93 @@
 LIBDIR="$HOME/AGRia-Video-Studio/CLI-Library"
 CATALOG="$LIBDIR/catalog.tsv"
 
+show_usage() {
+  echo "Usage: mylib [<keyword>] | --show <name> | --edit <name>"
+  echo "Examples:"
+  echo "  mylib              # show full catalog"
+  echo "  mylib ffmpeg       # search by keyword"
+  echo "  mylib --show crop.sh"
+  echo "  mylib --edit test_print.sh"
+}
+
+# Resolve full path based on type (script vs snippet)
+resolve_script() {
+  local name="$1"
+  if [[ ! -f "$CATALOG" ]]; then
+    echo "❌ Catalog missing" >&2
+    return 1
+  fi
+
+  # Look up type and name in catalog
+  local entry=$(awk -F'\t' -v nm="$name" '$2 == nm {print $1 "\t" $2; exit}' "$CATALOG")
+  if [[ -z "$entry" ]]; then
+    echo "❌ Not found in catalog: $name" >&2
+    return 1
+  fi
+
+  local type=$(echo "$entry" | cut -f1)
+  case "$type" in
+    script)
+      echo "$LIBDIR/bin/$name"
+      ;;
+    snippet)
+      echo "$LIBDIR/snippets/$name"
+      ;;
+    *)
+      echo "❌ Unknown type: $type" >&2
+      return 1
+      ;;
+  esac
+}
+
+# Main logic
 if [[ $# -eq 0 ]]; then
-  echo "Usage: mylib <keyword>"
-  echo "Example: mylib ffmpeg"
+  # Show full catalog (existing behavior)
+  if [[ ! -f "$CATALOG" ]]; then
+    echo "❌ Catalog not found: $CATALOG"
+    exit 1
+  fi
+  echo "📚 CLI Command Library"
+  echo "Usage: mylib <keyword> | --show <name> | --edit <name>"
   echo
-  echo "Known commands:"
   column -t -s $'\t' "$CATALOG"
   exit 0
 fi
 
-grep -i "$*" "$CATALOG" | column -t -s $'\t'
-#!/bin/bash
+# Handle --show and --edit
+if [[ "$1" == "--show" || "$1" == "--edit" ]]; then
+  if [[ $# -ne 2 ]]; then
+    show_usage
+    exit 1
+  fi
+  name="$2"
+  path=$(resolve_script "$name")
+  if [[ ! -f "$path" ]]; then
+    echo "❌ Script not found: $name (expected in $SCRIPTS_DIR)"
+    exit 1
+  fi
 
-# Check if catalog exists
-if [[ ! -f "$CATALOG" ]]; then
-  echo "❌ Catalog not found: $CATALOG"
-  echo "Run: mkdir -p ~/lib/cli && touch ~/lib/cli/catalog.tsv"
-  exit 1
-fi
-
-# If no arguments, show full catalog with context
-if [[ $# -eq 0 ]]; then
-  echo "📚 CLI Command Library"
-  echo "Usage: mylib <keyword>"
-  echo
-  # Detect if catalog has 3 or 4 columns
-  COLS=$(head -n1 "$CATALOG" | awk -F$'\t' '{print NF}')
-  if [[ $COLS -ge 4 ]]; then
-    column -t -s $'\t' "$CATALOG"
-  else
-    # Fallback for 3-column format
-    column -t -s $'\t' "$CATALOG"
+  if [[ "$1" == "--show" ]]; then
+    echo "📄 Showing: $path"
+    echo "────────────────────────────────────────"
+    cat "$path"
+  elif [[ "$1" == "--edit" ]]; then
+    echo "✏️ Editing: $path"
+    vim "$path"
   fi
   exit 0
 fi
 
-# Search (case-insensitive)
-RESULTS=$(grep -i "$*" "$CATALOG")
+# Default: keyword search (existing behavior)
+if [[ ! -f "$CATALOG" ]]; then
+  echo "❌ Catalog not found: $CATALOG"
+  exit 1
+fi
 
+RESULTS=$(grep -i "$*" "$CATALOG")
 if [[ -z "$RESULTS" ]]; then
   echo "🔍 No matches for: $*"
   exit 1
 fi
 
-# Auto-detect column count from results
-COLS=$(echo "$RESULTS" | head -n1 | awk -F$'\t' '{print NF}')
-
-if [[ $COLS -ge 4 ]]; then
-  echo "$RESULTS" | column -t -s $'\t'
-else
-  # Pad with empty context for 3-column files
-  echo "$RESULTS" | awk -F$'\t' -v OFS=$'\t' '{print $1, $2, $3, ""}' | column -t -s $'\t'
-fi
+echo "$RESULTS" | column -t -s $'\t'

@@ -19,33 +19,44 @@ _get_library_files() {
     printf '%s\n' "${files[@]}" | sort -u
 }
 
-# Completion for mylib: completes catalog entry names
 _mylib_completion() {
-    local cur
+    local cur prev words cword
     if declare -F _init_completion >/dev/null 2>&1; then
         _init_completion || return
     else
+        # Fallback for systems without _init_completion (like older bash)
         cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        cword="$COMP_CWORD"
     fi
 
     local entries=($(_get_catalog_entries))
-    COMPREPLY=($(compgen -W "${entries[*]}" -- "$cur"))
+    local flags="--show --edit"
+
+    case "$cword" in
+        1)
+            # mylib <TAB> → complete flags or entry names
+            if [[ "$cur" == --* ]]; then
+                COMPREPLY=($(compgen -W "$flags" -- "$cur"))
+            else
+                COMPREPLY=($(compgen -W "${entries[*]}" -- "$cur"))
+            fi
+            ;;
+        2)
+            # mylib --show <TAB> or mylib --edit <TAB>
+            if [[ "$prev" == "--show" || "$prev" == "--edit" ]]; then
+                COMPREPLY=($(compgen -W "${entries[*]}" -- "$cur"))
+            else
+                # mylib somearg <TAB> → no completion (optional)
+                COMPREPLY=()
+            fi
+            ;;
+        *)
+            COMPREPLY=()
+            ;;
+    esac
 }
 complete -F _mylib_completion mylib
-
-# Completion for viewlib: completes actual filenames
-_viewlib_completion() {
-    local cur
-    if declare -F _init_completion >/dev/null 2>&1; then
-        _init_completion || return
-    else
-        cur="${COMP_WORDS[COMP_CWORD]}"
-    fi
-
-    local files=($(_get_library_files))
-    COMPREPLY=($(compgen -W "${files[*]}" -- "$cur"))
-}
-complete -F _viewlib_completion viewlib
 
 # addlib is interactive → no filename completion needed
 # But if you want to complete nothing (just avoid file completion):
@@ -53,3 +64,51 @@ _addlib_completion() {
     return 0
 }
 complete -F _addlib_completion addlib
+
+# Completion for composite_two_step.sh (Wan video + background compositor)
+_composite_two_step_completion() {
+    local cur prev words cword
+    if declare -F _init_completion >/dev/null 2>&1; then
+        _init_completion || return
+    else
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        cword="$COMP_CWORD"
+    fi
+
+    # First arg: video (Wan output)
+    if (( cword == 1 )); then
+        COMPREPLY=($(compgen -f -X '!*.@(mp4|mov|avi|webm|m4v)' -- "$cur"))
+    # Second arg: background (image or video)
+    elif (( cword == 2 )); then
+        COMPREPLY=($(compgen -f -X '!*.@(mp4|mov|avi|webm|m4v|jpg|jpeg|png|gif)' -- "$cur"))
+    else
+        COMPREPLY=()
+    fi
+}
+
+# Register for common ways you might call it
+complete -F _composite_two_step_completion composite_two_step.sh
+complete -F _composite_two_step_completion ./composite_two_step.sh
+complete -F _composite_two_step_completion composite_two_step
+
+_add_audio_completion() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    case $COMP_CWORD in
+        1)
+            # Video files: mp4, mov, avi, webm, m4v
+            COMPREPLY=($(compgen -f -- "$cur" | grep -E '\.(mp4|mov|avi|webm|m4v)$' | sort -u))
+            ;;
+        2)
+            # Audio files: m4a, mp3, wav, aac, flac, ogg
+            COMPREPLY=($(compgen -f -- "$cur" | grep -E '\.(m4a|mp3|wav|aac|flac|ogg)$' | sort -u))
+            ;;
+        3)
+            # Output: mp4 or mov
+            COMPREPLY=($(compgen -f -- "$cur" | grep -E '\.(mp4|mov)$' | sort -u))
+            ;;
+        *)
+            COMPREPLY=()
+            ;;
+    esac
+}

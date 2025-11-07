@@ -15,3 +15,4 @@ script	sync_manifest.sh	Update MANIFEST.tsv with current project/scene metadata	
 script	test_print.sh	Debug helper: print environment variables, paths, or test logic	portable
 script	xdg-open-img.sh	Open image or video in default viewer (Chromebook/Linux compatible)	portable
 snippet	ffmpeg-multi-audio-mix.sh	Mix 3 audio tracks with fade/volume, copy video	portable
+script	add_audio.sh	Add single audio to video (copy video stream)	portable
