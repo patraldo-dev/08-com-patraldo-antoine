@@ -1,0 +1,32 @@
+[
+  {
+    "text": "Es tan guapo.",
+    "voice_id": "jAAHNNqlbAX9iWjJPEtE",
+    "start_time": 10.0,
+    "duration": 3.2,
+    "stability": 0.7,
+    "similarity_boost": 0.8,
+    "style": 0.1,
+    "use_speaker_boost": true
+  },
+  {
+    "text": "Ojalá fuera mío. Ni siquiera me ve.",
+    "voice_id": "jAAHNNqlbAX9iWjJPEtE",
+    "start_time": 21.0,
+    "duration": 6.5,
+    "stability": 0.6,
+    "similarity_boost": 0.85,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  {
+    "text": "Espera, ¿quién es esa?",
+    "voice_id": "jAAHNNqlbAX9iWjJPEtE",
+    "start_time": 47.5,
+    "duration": 3.3,
+    "stability": 0.8,
+    "similarity_boost": 0.9,
+    "style": 0.1,
+    "use_speaker_boost": true
+  }
+]

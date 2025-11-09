@@ -1,7 +1,12 @@
 #!/bin/bash
 
-LIBDIR="$HOME/AGRia-Video-Studio/CLI-Library"
-CATALOG="$LIBDIR/catalog.tsv"
+# --- AUTO-RESOLVE LIB ROOT FROM SCRIPT LOCATION ---
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+LIB_ROOT="$SCRIPT_DIR"
+CATALOG="$LIB_ROOT/catalog.tsv"
+SCRIPTS_DIR="$LIB_ROOT/scripts"
+SNIPPETS_DIR="$LIB_ROOT/snippets"
+# --------------------------------------------------
 
 show_usage() {
   echo "Usage: mylib [<keyword>] | --show <name> | --edit <name>"
@@ -12,15 +17,15 @@ show_usage() {
   echo "  mylib --edit test_print.sh"
 }
 
-# Resolve full path based on type (script vs snippet)
+# Resolve full path based on type in catalog
 resolve_script() {
   local name="$1"
   if [[ ! -f "$CATALOG" ]]; then
-    echo "❌ Catalog missing" >&2
+    echo "❌ Catalog not found: $CATALOG" >&2
     return 1
   fi
 
-  # Look up type and name in catalog
+  # Look up type and name in catalog (exact match on column 2)
   local entry=$(awk -F'\t' -v nm="$name" '$2 == nm {print $1 "\t" $2; exit}' "$CATALOG")
   if [[ -z "$entry" ]]; then
     echo "❌ Not found in catalog: $name" >&2
@@ -30,10 +35,10 @@ resolve_script() {
   local type=$(echo "$entry" | cut -f1)
   case "$type" in
     script)
-      echo "$LIBDIR/bin/$name"
+      echo "$SCRIPTS_DIR/$name"
       ;;
     snippet)
-      echo "$LIBDIR/snippets/$name"
+      echo "$SNIPPETS_DIR/$name"
       ;;
     *)
       echo "❌ Unknown type: $type" >&2
@@ -44,7 +49,7 @@ resolve_script() {
 
 # Main logic
 if [[ $# -eq 0 ]]; then
-  # Show full catalog (existing behavior)
+  # Show full catalog
   if [[ ! -f "$CATALOG" ]]; then
     echo "❌ Catalog not found: $CATALOG"
     exit 1
@@ -64,8 +69,8 @@ if [[ "$1" == "--show" || "$1" == "--edit" ]]; then
   fi
   name="$2"
   path=$(resolve_script "$name")
-  if [[ ! -f "$path" ]]; then
-    echo "❌ Script not found: $name (expected in $SCRIPTS_DIR)"
+  if [[ $? -ne 0 ]] || [[ ! -f "$path" ]]; then
+    echo "❌ Could not resolve or find: $name" >&2
     exit 1
   fi
 
@@ -80,7 +85,7 @@ if [[ "$1" == "--show" || "$1" == "--edit" ]]; then
   exit 0
 fi
 
-# Default: keyword search (existing behavior)
+# Default: keyword search
 if [[ ! -f "$CATALOG" ]]; then
   echo "❌ Catalog not found: $CATALOG"
   exit 1

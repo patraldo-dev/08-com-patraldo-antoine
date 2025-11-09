@@ -16,8 +16,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=20000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -118,4 +118,7 @@ export NVM_DIR="$HOME/.config/nvm"
 
 export FLYCTL_INSTALL="/home/patrouch/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
+
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 

@@ -1,20 +1,19 @@
 # === LIBRARY COMPLETIONS ===
 
 # Helper: get all entry names from catalog.tsv (column 2)
-_get_catalog_entries() {
-    local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
-    local CATALOG="$LIB_BASE/catalog.tsv"
-    if [[ -f "$CATALOG" ]]; then
-        # Skip header, get 2nd column (name), sort uniquely
-        tail -n +2 "$CATALOG" | cut -f2 | sort -u
-    fi
-}
-
-# Helper: get all filenames from bin/ and snippets/
 _get_library_files() {
     local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
     local files=()
-    [[ -d "$LIB_BASE/bin" ]] && files+=($(ls "$LIB_BASE/bin" 2>/dev/null))
+    [[ -d "$LIB_BASE/scripts" ]] && files+=($(ls "$LIB_BASE/scripts" 2>/dev/null))
+    [[ -d "$LIB_BASE/snippets" ]] && files+=($(ls "$LIB_BASE/snippets" 2>/dev/null))
+    printf '%s\n' "${files[@]}" | sort -u
+}
+
+# Helper: get all filenames from scripts/ and snippets/
+_get_library_files() {
+    local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
+    local files=()
+    [[ -d "$LIB_BASE/scripts" ]] && files+=($(ls "$LIB_BASE/scripts" 2>/dev/null))
     [[ -d "$LIB_BASE/snippets" ]] && files+=($(ls "$LIB_BASE/snippets" 2>/dev/null))
     printf '%s\n' "${files[@]}" | sort -u
 }
@@ -112,3 +111,22 @@ _add_audio_completion() {
             ;;
     esac
 }
+
+_runlib_completion() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local cword="$COMP_CWORD"
+    
+    local LIB_BASE="$HOME/AGRia-Video-Studio/CLI-Library"
+    local CATALOG="$LIB_BASE/catalog.tsv"
+    local scripts=()
+    if [[ -f "$CATALOG" ]]; then
+        scripts=($(awk -F'\t' '$1 == "script" {print $2}' "$CATALOG" 2>/dev/null | sort -u))
+    fi
+
+    if (( cword == 1 )); then
+        COMPREPLY=($(compgen -W "${scripts[*]}" -- "$cur"))
+    else
+        COMPREPLY=()
+    fi
+}
+complete -F _runlib_completion runlib
