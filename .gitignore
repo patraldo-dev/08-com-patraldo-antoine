@@ -61,3 +61,7 @@ Audio/
 *.swp
 *.swo
 *~
+
+elevenlabs-scripts/
+11ElevenLabs/
+
