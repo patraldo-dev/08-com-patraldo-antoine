@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { locale, t } from 'svelte-i18n'; // from svelte-i18n, not sveltekit-i18n
+  import i18n, { t } from 'sveltekit-i18n';
   import ArtPiece from './ArtPiece.svelte';
 
   export let artworks = [];
@@ -31,11 +31,14 @@
     selectSound = new Audio('/sounds/select.mp3');
   });
 
+  // reactively get current locale from i18n's store
+  $: currentLocale = $i18n.locale;
+
   $: promptText = {
     'es-MX': 'Un dibujo cada día. Una historia cada semana.',
     'en-US': 'A drawing each day. A story each week.',
     'fr-CA': 'Un dessin chaque jour. Une histoire chaque semaine.'
-  }[$locale] || 'Un dibujo cada día. Una historia cada semana.';
+  }[currentLocale] || 'Un dibujo cada día. Una historia cada semana.';
 
   async function flipPage() {
     if (isFlipping || currentPage >= maxPages - 1) return;
