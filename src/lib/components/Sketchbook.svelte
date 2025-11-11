@@ -32,7 +32,7 @@
   });
 
   // reactively get current locale from i18n's store
-  $: currentLocale = $i18n.locale;
+  $: currentLocale = $locale;  // Correct: subscribe directly to locale store
 
   $: promptText = {
     'es-MX': 'Un dibujo cada día. Una historia cada semana.',
