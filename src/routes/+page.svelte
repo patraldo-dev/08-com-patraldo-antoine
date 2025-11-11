@@ -70,7 +70,7 @@
 {/if}
 
 <style>
-  /* Simple Hero - no video */
+  /* Simple Hero - no video - replace with Sketchbook.svelte*/
   .hero-simple {
     min-height: 60vh;
     display: flex;
