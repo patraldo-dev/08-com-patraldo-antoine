@@ -1,127 +1,97 @@
 <!-- src/lib/components/ui/InkReveal.svelte -->
 <script>
-  import { createEventDispatcher } from 'svelte';
-  
-  const dispatch = createEventDispatcher();
+  import { onMount } from 'svelte';
   
   /**
-   * InkReveal: Animated text that appears and disappears in sync with hero video
+   * Simple scroll-based reveal animation
+   * Use delay prop to stagger multiple elements
    */
-  let { 
-    text = '',
-    fadeInAt = 0,
-    fadeOutAt = 15,
-    isScroll = false,
-    ...restProps
-  } = $props();
+  export let delay = 0;
+  export let threshold = 0.1; // How much of element must be visible to trigger
   
-  // Convert seconds to CSS time values using $derived
-  let fadeInDelay = $derived(`${fadeInAt}s`);
-  let fadeOutDelay = $derived(`${fadeOutAt}s`);
+  let element;
+  let isVisible = false;
+  
+  onMount(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setTimeout(() => {
+              isVisible = true;
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: threshold,
+        rootMargin: '0px 0px -50px 0px' // Trigger slightly before element is fully visible
+      }
+    );
+    
+    if (element) {
+      observer.observe(element);
+    }
+    
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  });
 </script>
 
-{#if isScroll}
-  <div
-    class="ink-reveal scroll-indicator"
-    style:animation-delay={fadeInDelay}
-    role="button"
-    tabindex="0"
-    onclick={() => dispatch('click')}
-    onkeydown={(e) => e.key === 'Enter' && dispatch('click')}
-    {...restProps}
-  >
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M12 5v14M19 12l-7 7-7-7"/>
-    </svg>
-  </div>
-{:else}
-  <span
-    class="ink-reveal"
-    style="
-      --fade-in-delay: {fadeInDelay};
-      --fade-out-delay: {fadeOutDelay};
-    "
-  >{text}</span>
-{/if}
+<div 
+  class="ink-reveal" 
+  class:visible={isVisible}
+  bind:this={element}
+>
+  <slot />
+</div>
 
 <style>
   .ink-reveal {
     opacity: 0;
-    display: inline-block;
+    transform: translateY(30px);
+    transition: 
+      opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .ink-reveal:not(.scroll-indicator) {
-    animation: 
-      fadeInUp 1s ease-out var(--fade-in-delay) forwards,
-      fadeOutDown 1s ease-out var(--fade-out-delay) forwards;
+  .ink-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   
-  .scroll-indicator {
-    margin-top: 2rem;
-    cursor: pointer;
-    transition: transform 0.2s;
-    animation: 
-      fadeInUp 1s ease-out var(--fade-in-delay) forwards,
-      floatVisible 2s ease-in-out calc(var(--fade-in-delay) + 1s) infinite;
+  /* Optional: Add a subtle "ink bleeding" effect */
+  .ink-reveal.visible :global(h1),
+  .ink-reveal.visible :global(h2),
+  .ink-reveal.visible :global(h3) {
+    animation: inkBleed 0.6s ease-out;
   }
   
-  .scroll-indicator:hover {
-    transform: scale(1.1);
-  }
-  
-  .scroll-indicator:active {
-    transform: scale(0.95);
-  }
-  
-  .scroll-indicator svg {
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-  }
-  
-  /* Animations */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
+  @keyframes inkBleed {
+    0% {
+      filter: blur(2px);
+      letter-spacing: 0.05em;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    100% {
+      filter: blur(0);
+      letter-spacing: normal;
     }
   }
   
-  @keyframes fadeOutDown {
-    from {
-      opacity: 1;
-      transform: translateY(0);
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .ink-reveal {
+      transition: opacity 0.3s ease;
+      transform: none;
     }
-    to {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-  }
-  
-  @keyframes floatVisible {
-    0%, 100% { 
-      opacity: 1;
-      transform: translateY(0);
-    }
-    50% { 
-      opacity: 1;
-      transform: translateY(-8px);
-    }
-  }
-  
-  /* Tablet and up */
-  @media (min-width: 768px) {
-    @keyframes floatVisible {
-      0%, 100% { 
-        opacity: 1;
-        transform: translateY(0);
-      }
-      50% { 
-        opacity: 1;
-        transform: translateY(-10px);
-      }
+    
+    .ink-reveal.visible :global(h1),
+    .ink-reveal.visible :global(h2),
+    .ink-reveal.visible :global(h3) {
+      animation: none;
     }
   }
 </style>
