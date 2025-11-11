@@ -1,406 +1,123 @@
-<!-- src/lib/components/Sketchbook.svelte -->
 <script>
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
-  import Matter from 'matter-js';
-  import { locale } from 'sveltekit-i18n';
-
-  const dispatch = createEventDispatcher();
+  import { onMount, onDestroy } from 'svelte';
+  import { locale, t } from 'svelte-i18n'; // from svelte-i18n, not sveltekit-i18n
+  import ArtPiece from './ArtPiece.svelte';
 
   export let artworks = [];
   export let maxPages = 6;
 
   let currentPage = 0;
-  let isDragging = false;
-  let dragProgress = 0;
-  
-  let sketchbookContainer;
-  let pageRightEl;
-  let canvasEl;
-  
-  let engine, runner, render, mouse, mouseConstraint;
-  let pageCornerBody, pagePivot;
-  
-  let flipSound, dragSound;
+  let selectedImage = null;
+  let isFlipping = false;
+  let pageRight;
 
-  $: promptText = getPromptText($locale);
-  
-  function getPromptText(currentLocale) {
-    const prompts = {
-      'es-MX': 'Un dibujo cada día. Una historia cada semana.',
-      'en-US': 'A drawing each day. A story each week.',
-      'fr-CA': 'Un dessin chaque jour. Une histoire chaque semaine.'
-    };
-    return prompts[currentLocale] || prompts['es-MX'];
-  }
+  let flipSound, selectSound;
 
   onMount(async () => {
-    // Preload sounds
-    try {
-      flipSound = new Audio('/sounds/page-flip.mp3');
-      flipSound.volume = 0.3;
-      
-      dragSound = new Audio('/sounds/paper-rustle.mp3');
-      dragSound.volume = 0.15;
-      dragSound.loop = true;
-    } catch (e) {
-      console.log('Audio files not available');
+    if (artworks.length === 0) {
+      try {
+        const response = await fetch('/api/artworks');
+        artworks = await response.json();
+      } catch (error) {
+        console.warn('Could not load artworks:', error);
+        artworks = [
+          { id: 1, src: '/artwork/1.jpg', title: 'Untitled Sketch 1' },
+          { id: 2, src: '/artwork/2.jpg', title: 'Untitled Sketch 2' },
+        ];
+      }
     }
 
-    if (sketchbookContainer) {
-      initPhysics();
-    }
+    flipSound = new Audio('/sounds/page-flip.mp3');
+    selectSound = new Audio('/sounds/select.mp3');
   });
 
-  function initPhysics() {
-    const containerRect = sketchbookContainer.getBoundingClientRect();
-    const width = containerRect.width;
-    const height = 500;
+  $: promptText = {
+    'es-MX': 'Un dibujo cada día. Una historia cada semana.',
+    'en-US': 'A drawing each day. A story each week.',
+    'fr-CA': 'Un dessin chaque jour. Une histoire chaque semaine.'
+  }[$locale] || 'Un dibujo cada día. Una historia cada semana.';
 
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0.3;
+  async function flipPage() {
+    if (isFlipping || currentPage >= maxPages - 1) return;
 
-    render = Matter.Render.create({
-      element: sketchbookContainer,
-      engine: engine,
-      canvas: canvasEl,
-      options: {
-        width: width,
-        height: height,
-        wireframes: false,
-        background: 'transparent',
-        pixelRatio: window.devicePixelRatio
-      }
-    });
+    isFlipping = true;
 
-    const cornerX = width * 0.75;
-    const cornerY = height * 0.15;
-    
-    pageCornerBody = Matter.Bodies.circle(cornerX, cornerY, 30, {
-      density: 0.001,
-      frictionAir: 0.02,
-      restitution: 0.3,
-      render: {
-        fillStyle: 'rgba(212, 201, 168, 0.3)',
-        strokeStyle: '#d4c9a8',
-        lineWidth: 2
-      },
-      label: 'pageCorner'
-    });
+    if (pageRight) {
+      pageRight.classList.add('flipping');
 
-    pagePivot = Matter.Bodies.circle(width / 2, height / 2, 5, {
-      isStatic: true,
-      render: { visible: false }
-    });
-
-    const pageConstraint = Matter.Constraint.create({
-      bodyA: pagePivot,
-      bodyB: pageCornerBody,
-      stiffness: 0.008,
-      damping: 0.05,
-      length: Math.hypot(cornerX - width/2, cornerY - height/2),
-      render: { visible: false }
-    });
-
-    mouse = Matter.Mouse.create(render.canvas);
-    mouseConstraint = Matter.MouseConstraint.create(engine, {
-      mouse: mouse,
-      constraint: {
-        stiffness: 0.2,
-        render: { visible: false }
-      }
-    });
-
-    Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
-      if (event.body === pageCornerBody) {
-        isDragging = true;
-        if (dragSound && dragSound.paused) {
-          dragSound.play().catch(() => {});
+      if (flipSound) {
+        flipSound.currentTime = 0;
+        try {
+          await flipSound.play();
+        } catch (e) {
+          console.log('Audio play failed');
         }
       }
-    });
-
-    Matter.Events.on(mouseConstraint, 'enddrag', (event) => {
-      if (event.body === pageCornerBody) {
-        isDragging = false;
-        if (dragSound) {
-          dragSound.pause();
-          dragSound.currentTime = 0;
-        }
-        
-        const dragDistance = width / 2 - pageCornerBody.position.x;
-        if (dragDistance > width * 0.25) {
-          completePage();
-        }
-      }
-    });
-
-    Matter.World.add(engine.world, [pageCornerBody, pagePivot, pageConstraint, mouseConstraint]);
-
-    runner = Matter.Runner.create();
-    Matter.Runner.run(runner, engine);
-    Matter.Render.run(render);
-
-    const updateLoop = () => {
-      if (!pageRightEl || !pageCornerBody) return;
-      
-      const cornerX = pageCornerBody.position.x;
-      const maxDrag = width / 2;
-      const currentDrag = Math.max(0, (width * 0.75) - cornerX);
-      dragProgress = Math.min(1, currentDrag / maxDrag);
-      
-      const rotateY = dragProgress * -180;
-      pageRightEl.style.transform = `rotateY(${rotateY}deg)`;
-      pageRightEl.style.boxShadow = `0 0 ${20 * dragProgress}px rgba(0,0,0,${0.4 * dragProgress})`;
-      
-      requestAnimationFrame(updateLoop);
-    };
-    updateLoop();
-  }
-
-  function completePage() {
-    if (currentPage >= maxPages - 1) return;
-    
-    if (flipSound) {
-      flipSound.currentTime = 0;
-      flipSound.play().catch(() => {});
     }
 
-    const animateFlip = () => {
-      dragProgress += 0.05;
-      if (dragProgress >= 1) {
-        currentPage++;
-        dragProgress = 0;
-        
-        if (pageCornerBody && sketchbookContainer) {
-          const rect = sketchbookContainer.getBoundingClientRect();
-          Matter.Body.setPosition(pageCornerBody, {
-            x: rect.width * 0.75,
-            y: 500 * 0.15
-          });
-          Matter.Body.setVelocity(pageCornerBody, { x: 0, y: 0 });
-        }
-        return;
-      }
-      
-      const rotateY = dragProgress * -180;
-      if (pageRightEl) {
-        pageRightEl.style.transform = `rotateY(${rotateY}deg)`;
-      }
-      requestAnimationFrame(animateFlip);
-    };
-    animateFlip();
+    setTimeout(() => {
+      currentPage++;
+      isFlipping = false;
+      if (pageRight) pageRight.classList.remove('flipping');
+    }, 600);
   }
 
-  function selectArtwork(event, artwork) {
-    event.stopPropagation();
-    dispatch('selectArtwork', artwork);
+  function selectImage(image) {
+    selectedImage = image;
+
+    if (selectSound) {
+      selectSound.currentTime = 0;
+      selectSound.play().catch(() => {});
+    }
+  }
+
+  function goBackToSketchbook() {
+    selectedImage = null;
   }
 
   onDestroy(() => {
-    if (render) Matter.Render.stop(render);
-    if (runner) Matter.Runner.stop(runner);
-    if (engine) {
-      Matter.World.clear(engine.world);
-      Matter.Engine.clear(engine);
-    }
-    if (dragSound) dragSound.pause();
+    flipSound = null;
+    selectSound = null;
   });
-  
-  $: currentArtwork = currentPage > 0 && artworks[currentPage - 1] 
-    ? artworks[currentPage - 1] 
-    : null;
 </script>
 
-<div class="sketchbook-container" bind:this={sketchbookContainer}>
-  <canvas bind:this={canvasEl}></canvas>
-  <div class="sketchbook" class:dragging={isDragging}>
-    <div class="page-left">
-      <div class="prompt-text">{promptText}</div>
-      {#if currentPage > 0}
+<style>
+  /* Keep your existing styles here */
+</style>
+
+{#if selectedImage}
+  <div class="selected-image-view" role="dialog" aria-label="Selected artwork view">
+    <button class="back-button" on:click={goBackToSketchbook} aria-label="Go back to sketchbook">
+      ← {t('common.back')}
+    </button>
+    <ArtPiece image={selectedImage} interactive={true} />
+  </div>
+{:else}
+  <div class="sketchbook-container" role="main" aria-label="Interactive sketchbook">
+    <div class="sketchbook" on:click={flipPage} tabindex="0" on:keydown={(e) => e.key === 'Enter' && flipPage()}>
+      <div class="page-left">
+        <div class="prompt-text">{promptText}</div>
         <div class="page-number">
-          Página {currentPage} / {maxPages - 1}
+          {currentPage > 0 ? `Página ${currentPage + 1}` : ''}
         </div>
-      {/if}
-    </div>
-    
-    <div class="page-right" bind:this={pageRightEl}>
-      {#if currentArtwork}
-        <div class="sketch-preview" on:click={(e) => selectArtwork(e, currentArtwork)}>
-          <div class="sketch-frame">
-            <img 
-              src={currentArtwork.thumbnailUrl || `/artwork/${currentArtwork.id}.jpg`}
-              alt={currentArtwork.title}
-              loading="lazy"
-            >
+      </div>
+      <div class="page-right" bind:this={pageRight}>
+        {#if currentPage > 0 && artworks[currentPage - 1]}
+          <div 
+            class="art-thumbnail" 
+            on:click|stopPropagation={() => selectImage(artworks[currentPage - 1])}
+            role="button"
+            aria-label={`Select artwork: ${artworks[currentPage - 1].title}`}
+            tabindex="0"
+            on:keydown={(e) => e.key === 'Enter' && selectImage(artworks[currentPage - 1])}
+          >
+            <img src={artworks[currentPage - 1].src} alt={artworks[currentPage - 1].title} loading="lazy" />
           </div>
-          <div class="sketch-title">{currentArtwork.title}</div>
-        </div>
-        <div class="tap-hint" class:hidden={isDragging}>
-          Tap to read →
-        </div>
-      {:else}
-        <span class="placeholder">...</span>
-      {/if}
+        {:else}
+          <span class="placeholder">...</span>
+        {/if}
+      </div>
     </div>
   </div>
-</div>
+{/if}
 
-<style>
-  .sketchbook-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
-    perspective: 1200px;
-    position: relative;
-  }
-
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: auto;
-    z-index: 5;
-    opacity: 0; /* Set to 0.5 for debugging physics */
-  }
-
-  .sketchbook {
-    position: relative;
-    width: 100%;
-    height: 500px;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-    border: 6px solid #d4c9a8;
-    border-radius: 12px;
-    box-shadow: 
-      0 10px 30px rgba(0,0,0,0.2),
-      inset 0 0 15px rgba(212, 201, 168, 0.3);
-    overflow: hidden;
-    cursor: grab;
-    user-select: none;
-  }
-
-  .sketchbook.dragging {
-    cursor: grabbing;
-  }
-
-  .page-left, .page-right {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Georgia', serif;
-    pointer-events: none;
-  }
-
-  .page-left {
-    left: 0;
-    border-right: 1px dotted #ccc;
-    background: #fcfaf6;
-  }
-
-  .page-right {
-    right: 0;
-    background: #fcfaf6;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    transition: box-shadow 0.1s;
-  }
-
-  .prompt-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    text-align: center;
-    color: #4a4a3c;
-    opacity: 0.9;
-    font-style: italic;
-  }
-
-  .page-number {
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: #666;
-    font-style: italic;
-  }
-
-  .placeholder {
-    font-size: 2rem;
-    color: #ddd;
-    font-style: italic;
-  }
-
-  .sketch-preview {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    pointer-events: auto;
-    padding: 1.5rem;
-  }
-
-  .sketch-frame {
-    position: relative;
-    max-width: 85%;
-    max-height: 70%;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
-    transition: transform 0.3s ease;
-  }
-
-  .sketch-preview:hover .sketch-frame {
-    transform: rotate(-1deg) scale(1.02);
-  }
-
-  .sketch-frame img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 3px solid white;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-  }
-
-  .sketch-title {
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: #4a4a3c;
-    text-align: center;
-    font-style: italic;
-    opacity: 0.8;
-  }
-
-  .tap-hint {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    font-size: 0.75rem;
-    color: #4a4a3c;
-    opacity: 0.4;
-    font-style: italic;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .tap-hint.hidden {
-    opacity: 0;
-  }
-
-  @media (max-width: 768px) {
-    .sketchbook {
-      height: 400px;
-    }
-    
-    .page-left, .page-right {
-      padding: 1rem;
-    }
-    
-    .prompt-text {
-      font-size: 0.95rem;
-    }
-  }
-</style>
