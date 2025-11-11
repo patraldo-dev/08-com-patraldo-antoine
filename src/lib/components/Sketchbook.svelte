@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import i18n, { t } from 'sveltekit-i18n';
+  import { t, locale } from '$lib/translations';  
   import ArtPiece from './ArtPiece.svelte';
 
   export let artworks = [];
