@@ -47,19 +47,6 @@
     </div>
   </section>
 
-  <!-- DEBUG: Remove this after confirming data loads -->
-  <div style="background: #fff3cd; padding: 1rem; margin: 2rem auto; max-width: 800px; border-radius: 8px;">
-    <h3>🔍 Debug Info:</h3>
-    <p><strong>Data loaded:</strong> {data ? 'Yes' : 'No'}</p>
-    <p><strong>Artworks count:</strong> {data?.artworks?.length || 0}</p>
-    {#if data?.artworks?.length > 0}
-      <details>
-        <summary>View artwork data</summary>
-        <pre style="overflow: auto; max-height: 200px;">{JSON.stringify(data.artworks, null, 2)}</pre>
-      </details>
-    {/if}
-  </div>
-
   <!-- Sketchbook Section - Main Feature -->
   <section id="work" class="sketchbook-section">
     {#if displayArtworks.length > 0}
