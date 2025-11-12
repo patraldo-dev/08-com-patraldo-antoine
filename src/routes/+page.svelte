@@ -16,7 +16,21 @@
   function handleCloseStory() {
     selectedArtwork = null;
   }
+
+  // DEBUG: Log the data
+  $: console.log('Page data:', data);
+  $: console.log('Artworks:', data?.artworks);
 </script>
+
+<!-- Add this debug section temporarily -->
+{#if !selectedArtwork}
+  <div style="background: yellow; padding: 1rem; margin: 2rem;">
+    <h3>DEBUG INFO:</h3>
+    <p>Data loaded: {data ? 'Yes' : 'No'}</p>
+    <p>Artworks count: {data?.artworks?.length || 0}</p>
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+  </div>
+{/if}
 
 <svelte:head>
   <title>{$t('site.title')} - {$t('pages.home.meta.title')}</title>
