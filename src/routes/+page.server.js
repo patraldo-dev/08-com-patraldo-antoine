@@ -3,11 +3,11 @@ import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
 
 export async function load({ platform }) {
   try {
-    const db = platform?.env?.DB;
+    const db = platform?.env?.ARTWORKS_DB;
     
     if (!db) {
       console.error('❌ DB not available in platform.env');
-      return { artworks: [], debug: 'DB not available' };
+      return { artworks: [], debug: 'ARTWORKS_DB not available' };
     }
 
     console.log('✅ DB connection available');
