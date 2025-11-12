@@ -2,12 +2,13 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { t, locale } from '$lib/translations';
-
-  // Remove: import ArtPiece from './ArtPiece.svelte'; // We don't need it for the thumbnail
+  // Import ArtPiece for the detailed view when an artwork is selected
+  import ArtPiece from './ArtPiece.svelte';
 
   export let artworks = [];
   export let maxPages = 6;
 
+  // Debug log to verify data received
   $: console.log("🖼️ Sketchbook component received artworks:", artworks);
 
   let currentPage = 0;
@@ -76,7 +77,6 @@
 </script>
 
 <style>
-  /* Keep your existing styles here */
   .sketchbook-container {
     width: 100%;
     max-width: 800px;
@@ -223,7 +223,7 @@
     <button class="back-button" on:click={goBackToSketchbook} aria-label="Go back to sketchbook">
       ← {t('common.back')}
     </button>
-    <!-- Use ArtPiece here for the full detail view -->
+    <!-- Pass the selected artwork object to ArtPiece -->
     <ArtPiece artwork={selectedImage} />
   </div>
 {:else}
@@ -245,9 +245,9 @@
             tabindex="0"
             on:keydown={(e) => e.key === 'Enter' && selectImage(artworks[currentPage - 1])}
           >
-            <!-- Use direct Cloudflare Images URL for the thumbnail -->
+            <!-- Use the thumbnailId property from the artwork object to construct the Cloudflare Images URL -->
             <img
-              src={`https://antoine.patraldo.com/cdn-cgi/imagedelivery/4bRSwPonOXfEIBVZiDXg0w/${artworks[currentPage - 1].image_id}/thumbnail`}
+              src={`https://antoine.patraldo.com/cdn-cgi/imagedelivery/4bRSwPonOXfEIBVZiDXg0w/${artworks[currentPage - 1].thumbnailId}/thumbnail`}
               alt={artworks[currentPage - 1].title}
               loading="lazy"
             />
