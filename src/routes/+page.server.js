@@ -35,7 +35,7 @@ export async function load({ platform }) {
     const artworks = result.results.map(artwork => {
       // Build Cloudflare Images URL from image_id
       const thumbnailUrl = artwork.image_id 
-        ? `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
+        ? `https://imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
         : null;
       
       return {

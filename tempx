@@ -1,24 +1,28 @@
-<script>
-  import { t } from '$lib/translations';
-  // ... other imports
-</script>
 
-<!-- Desktop Menu -->
-<div class="nav-links desktop-menu">
-  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
-  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
-  <a href="/story">{$t('nav.stories')}</a>
-  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
-  <LanguageSwitcherDesktop />
-</div>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" class:open={isMenuOpen}>
-  <a href="#work" on:click={handleLinkClick}>{$t('nav.work')}</a>
-  <a href="#about" on:click={handleLinkClick}>{$t('nav.about')}</a>
-  <a href="/story">{$t('nav.stories')}</a>
-  <a href="#contact" on:click={handleLinkClick}>{$t('nav.contact')}</a>
-  <div class="mobile-lang-switcher">
-    <LanguageSwitcherMobile />
-  </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const thumbnailUrl = artwork.image_id
+  ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
+  : null;
+
