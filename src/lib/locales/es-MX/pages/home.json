@@ -1,20 +1,19 @@
 {
   "meta": {
-    "title": "Arte",
-    "description": "Disfrutando la vida un dibujo a la vez."
+    "title": "Antoine Patraldo - Historias Interactivas",
+    "description": "Explora historias interactivas a través de bocetos animados"
   },
   "hero": {
-    "videoTitle": "Monos Bailando",
-    "title": "Descubrimiento",
-    "subtitle": "ilustración, ilusión e improvisación"
+    "title": "Bienvenido al Cuaderno",
+    "subtitle": "Hojea páginas y descubre historias"
   },
   "about": {
-    "title": "Acerca",
-    "p1": "Dibujando lo que me da la gana, cuando me da la gana, para quienes me dan las ganas",
-    "p2": "Trabajo muy a gusto en mi estudio en Santa Teresita, Guadalajara, México."
+    "title": "Acerca de Este Proyecto",
+    "p1": "Cada boceto cuenta una historia.",
+    "p2": "Interactúa con el arte para explorar más a fondo."
   },
   "signup": {
-    "title": "Manténgase al día",
-    "description": "Recibe noticias - muy de vez en cuando - e invitaciones a exhibiciones en mi galería La Musa que Más Aplauda en Santa Tere."
+    "title": "Mantente Actualizado",
+    "description": "Recibe nuevas historias y bocetos"
   }
 }

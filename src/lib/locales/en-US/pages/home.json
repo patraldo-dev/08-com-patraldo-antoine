@@ -1,20 +1,19 @@
 {
   "meta": {
-    "title": "Art",
-    "description": "Enjoying life, one drawing at a time."
+    "title": "Antoine Patraldo - Interactive Stories",
+    "description": "Explore interactive stories through animated sketches"
   },
   "hero": {
-    "videoTitle": "Dancing Dolls",
-    "title": "Discovery",
-    "subtitle": "illustration, illusion, and improvisation"
+    "title": "Welcome to the Sketchbook",
+    "subtitle": "Flip through pages and discover stories"
   },
   "about": {
-    "title": "About",
-    "p1": "Drawing whatever I feel like, whenever I feel like it, for whoever I feel like.",
-    "p2": "I work happily from my studio in Santa Teresita, Guadalajara, Mexico."
+    "title": "About This Project",
+    "p1": "Each sketch tells a story.",
+    "p2": "Interact with the artwork to explore deeper."
   },
   "signup": {
     "title": "Stay Updated",
-    "description": "Receive occasional news and invitations to exhibitions at my gallery, La Musa que Más Aplauda, in Santa Tere."
+    "description": "Receive new stories and sketches"
   }
 }

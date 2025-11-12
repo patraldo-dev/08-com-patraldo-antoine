@@ -1,20 +1,19 @@
 {
   "meta": {
-    "title": "Art",
-    "description": "Profiter de la vie, un dessin à la fois."
+    "title": "Antoine Patraldo - Histoires Interactives",
+    "description": "Explorez des histoires interactives à travers des croquis animés"
   },
   "hero": {
-    "videoTitle": "poupées qui dansent",
-    "title": "Découverte",
-    "subtitle": "illustration, illusion et improvisation"
+    "title": "Bienvenue dans le Cahier",
+    "subtitle": "Feuilletez les pages et découvrez des histoires"
   },
   "about": {
-    "title": "À propos",
-    "p1": "Je dessine ce qui me plaît, quand ça me plaît, pour qui me plaît.",
-    "p2": "Je travaille avec plaisir depuis mon atelier à Santa Teresita, Guadalajara, Mexique."
+    "title": "À Propos de Ce Projet",
+    "p1": "Chaque croquis raconte une histoire.",
+    "p2": "Interagissez avec l'art pour explorer plus profondément."
   },
   "signup": {
-    "title": "Restez informé",
-    "description": "Recevez des nouvelles occasionnelles et des invitations à des expositions à ma galerie, La Musa que Más Aplauda, à Santa Tere."
+    "title": "Restez Informé",
+    "description": "Recevez de nouvelles histoires et croquis"
   }
 }
