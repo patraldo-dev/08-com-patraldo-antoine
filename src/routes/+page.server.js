@@ -1,5 +1,7 @@
 // src/routes/+page.server.js
-export async function load({ platform, locals }) {
+import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+
+export async function load({ platform }) {
   try {
     const db = platform?.env?.DB;
     
@@ -8,38 +10,51 @@ export async function load({ platform, locals }) {
       return { artworks: [] };
     }
 
-    // Load featured artworks for the sketchbook
+    // Query using YOUR actual schema
     const result = await db
       .prepare(`
         SELECT 
           id,
           title,
-          description,
+          slug,
           type,
-          thumbnailId,
-          thumbnailUrl,
-          imageUrl,
-          videoId,
-          date,
-          story,
-          tags
+          image_id,
+          video_id,
+          description,
+          year,
+          featured,
+          published
         FROM artworks
         WHERE published = 1
-        ORDER BY date DESC
+        ORDER BY order_index DESC, year DESC
         LIMIT 6
       `)
       .all();
 
-    // Parse tags if stored as JSON strings
-    const artworks = result.results.map(artwork => ({
-      ...artwork,
-      tags: artwork.tags ? JSON.parse(artwork.tags) : [],
-      date: artwork.date || new Date().toISOString().split('T')[0]
-    }));
+    // Transform to match what the Sketchbook component expects
+    const artworks = result.results.map(artwork => {
+      // Build Cloudflare Images URL from image_id
+      const thumbnailUrl = artwork.image_id 
+        ? `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
+        : null;
+      
+      return {
+        id: artwork.id,
+        title: artwork.title,
+        description: artwork.description,
+        type: artwork.type,
+        thumbnailId: artwork.image_id,
+        thumbnailUrl: thumbnailUrl,
+        videoId: artwork.video_id,
+        date: artwork.year ? `${artwork.year}-01-01` : null,
+        story: null, // You don't have this column yet
+        tags: [] // You don't have this column yet
+      };
+    });
 
-    return {
-      artworks
-    };
+    console.log(`Loaded ${artworks.length} artworks`);
+    return { artworks };
+    
   } catch (error) {
     console.error('Error loading artworks:', error);
     return { artworks: [] };

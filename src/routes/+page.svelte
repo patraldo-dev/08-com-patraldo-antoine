@@ -16,21 +16,14 @@
   function handleCloseStory() {
     selectedArtwork = null;
   }
-
-  // DEBUG: Log the data
-  $: console.log('Page data:', data);
-  $: console.log('Artworks:', data?.artworks);
+  
+  // Add placeholder images for artworks that don't have Cloudflare Images IDs yet
+  $: displayArtworks = data.artworks.map(artwork => ({
+    ...artwork,
+    // If thumbnailUrl is null/invalid, use a placeholder
+    thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
+  }));
 </script>
-
-<!-- Add this debug section temporarily -->
-{#if !selectedArtwork}
-  <div style="background: yellow; padding: 1rem; margin: 2rem;">
-    <h3>DEBUG INFO:</h3>
-    <p>Data loaded: {data ? 'Yes' : 'No'}</p>
-    <p>Artworks count: {data?.artworks?.length || 0}</p>
-    <pre>{JSON.stringify(data, null, 2)}</pre>
-  </div>
-{/if}
 
 <svelte:head>
   <title>{$t('site.title')} - {$t('pages.home.meta.title')}</title>
@@ -54,12 +47,32 @@
     </div>
   </section>
 
+  <!-- DEBUG: Remove this after confirming data loads -->
+  <div style="background: #fff3cd; padding: 1rem; margin: 2rem auto; max-width: 800px; border-radius: 8px;">
+    <h3>🔍 Debug Info:</h3>
+    <p><strong>Data loaded:</strong> {data ? 'Yes' : 'No'}</p>
+    <p><strong>Artworks count:</strong> {data?.artworks?.length || 0}</p>
+    {#if data?.artworks?.length > 0}
+      <details>
+        <summary>View artwork data</summary>
+        <pre style="overflow: auto; max-height: 200px;">{JSON.stringify(data.artworks, null, 2)}</pre>
+      </details>
+    {/if}
+  </div>
+
   <!-- Sketchbook Section - Main Feature -->
   <section id="work" class="sketchbook-section">
-    <Sketchbook 
-      artworks={data.artworks} 
-      on:selectArtwork={handleSelectArtwork}
-    />
+    {#if displayArtworks.length > 0}
+      <Sketchbook 
+        artworks={displayArtworks} 
+        on:selectArtwork={handleSelectArtwork}
+      />
+    {:else}
+      <div class="no-data-message">
+        <p>No artworks to display yet.</p>
+        <p>Add some artworks to your database to see the sketchbook!</p>
+      </div>
+    {/if}
   </section>
 
   <!-- About Section -->
@@ -84,7 +97,7 @@
 {/if}
 
 <style>
-  /* Simple Hero - no video - replace with Sketchbook.svelte*/
+  /* Simple Hero - no video */
   .hero-simple {
     min-height: 60vh;
     display: flex;
@@ -121,6 +134,17 @@
     padding: 4rem 0;
     background: linear-gradient(180deg, #edebe8 0%, #fafafa 100%);
     min-height: 70vh;
+  }
+  
+  .no-data-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+  }
+  
+  .no-data-message p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
   }
   
   .about-section {
