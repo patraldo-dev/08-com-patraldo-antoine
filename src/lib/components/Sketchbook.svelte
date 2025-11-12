@@ -14,19 +14,6 @@
   let flipSound, selectSound;
 
   onMount(async () => {
-    if (artworks.length === 0) {
-      try {
-        const response = await fetch('/api/artworks');
-        artworks = await response.json();
-      } catch (error) {
-        console.warn('Could not load artworks:', error);
-        artworks = [
-          { id: 1, src: '/artwork/1.jpg', title: 'Untitled Sketch 1' },
-          { id: 2, src: '/artwork/2.jpg', title: 'Untitled Sketch 2' },
-        ];
-      }
-    }
-
     flipSound = new Audio('/sounds/page-flip.mp3');
     selectSound = new Audio('/sounds/select.mp3');
   });
