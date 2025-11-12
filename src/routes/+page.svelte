@@ -6,6 +6,8 @@
   import { t } from '$lib/translations';
   
   export let data;
+
+  $: console.log("📦 Page component received data:", data);
   
   let selectedArtwork = null;
   
