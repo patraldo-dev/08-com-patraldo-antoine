@@ -6,8 +6,6 @@
   import { t } from '$lib/translations';
   
   export let data;
-
-  $: console.log("📦 Page component received data:", data);
   
   let selectedArtwork = null;
   
@@ -19,16 +17,21 @@
     selectedArtwork = null;
   }
   
-  // Add placeholder images for artworks that don't have Cloudflare Images IDs yet
-  $: displayArtworks = data.artworks.map(artwork => ({
+  // Add placeholder images for artworks
+  $: displayArtworks = data?.artworks?.map(artwork => ({
     ...artwork,
-    // If thumbnailUrl is null/invalid, use a placeholder
     thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
-  }));
+  })) || [];
+  
+  // Simple title handling - don't check if translations exist, just use them
+  // The layout ensures translations are loaded before rendering
+  $: siteTitle = $t('site.title');
+  $: pageTitle = $t('pages.home.meta.title');
+  $: fullTitle = pageTitle ? `${siteTitle} - ${pageTitle}` : siteTitle;
 </script>
 
 <svelte:head>
-  <title>{$t('site.title')} - {$t('pages.home.meta.title')}</title>
+  <title>{fullTitle}</title>
   <meta name="description" content={$t('pages.home.meta.description')} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +44,7 @@
     on:close={handleCloseStory} 
   />
 {:else}
-  <!-- Hero Section - Simple text intro -->
+  <!-- Hero Section -->
   <section class="hero-simple">
     <div class="hero-content">
       <h1>{$t('pages.home.hero.title')}</h1>
@@ -49,7 +52,7 @@
     </div>
   </section>
 
-  <!-- Sketchbook Section - Main Feature -->
+  <!-- Sketchbook Section -->
   <section id="work" class="sketchbook-section">
     {#if displayArtworks.length > 0}
       <Sketchbook 
@@ -58,7 +61,7 @@
       />
     {:else}
       <div class="no-data-message">
-        <p>No artworks to display yet.</p>
+        <h3>📭 No Artworks Yet</h3>
         <p>Add some artworks to your database to see the sketchbook!</p>
       </div>
     {/if}
@@ -86,7 +89,6 @@
 {/if}
 
 <style>
-  /* Simple Hero - no video */
   .hero-simple {
     min-height: 60vh;
     display: flex;
@@ -126,14 +128,18 @@
   }
   
   .no-data-message {
+    max-width: 600px;
+    margin: 0 auto;
     text-align: center;
-    padding: 4rem 2rem;
-    color: #666;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   
-  .no-data-message p {
-    margin: 0.5rem 0;
-    font-size: 1.1rem;
+  .no-data-message h3 {
+    color: #666;
+    margin-bottom: 1rem;
   }
   
   .about-section {
@@ -181,7 +187,6 @@
     font-size: 1rem;
   }
   
-  /* Tablet and up */
   @media (min-width: 768px) {
     .hero-content h1 {
       font-size: 4rem;
@@ -208,7 +213,6 @@
     }
   }
   
-  /* Mobile */
   @media (max-width: 768px) {
     .hero-simple {
       min-height: 50vh;
