@@ -24,11 +24,6 @@
     thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
   })) || [];
 
-  // Debug: Log the server-provided language and current URL
-  console.log('Page Load: Server-provided preferredLanguage:', data?.preferredLanguage);
-  $: console.log('Page Load: Current URL:', $page.url.href);
-  $: console.log('Page Load: Active i18n Locale:', $locale);
-
 // Title handling
   $: siteTitle = $t('site.title');
   $: pageMetaTitle = $t('pages.home.meta.title');
@@ -38,10 +33,6 @@
         : siteTitle)
     : 'Antoine Patraldo';
 
-  // Debug: Log the results of the translation lookups
-  console.log('Page Load: siteTitle lookup result:', siteTitle);
-  console.log('Page Load: pageTitle lookup result:', pageTitle);
-  console.log('Page Load: fullTitle computed:', fullTitle);
 
 </script>
 
