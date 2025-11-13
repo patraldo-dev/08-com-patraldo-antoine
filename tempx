@@ -1,28 +1,81 @@
+<!-- src/routes/+page.svelte -->
+<script>
+  import Sketchbook from '$lib/components/Sketchbook.svelte';
+  import StoryView from '$lib/components/StoryView.svelte';
+  import EmailSignup from '$lib/components/EmailSignup.svelte';
+  import { t, locale } from '$lib/translations'; // Import locale store
+  import { page } from '$app/stores'; // Import page store
 
+  export let data;
 
+  let selectedArtwork = null;
 
+  function handleSelectArtwork(event) {
+    selectedArtwork = event.detail;
+  }
 
+  function handleCloseStory() {
+    selectedArtwork = null;
+  }
 
+  // Add placeholder images for artworks
+  $: displayArtworks = data?.artworks?.map(artwork => ({
+    ...artwork,
+    thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
+  })) || [];
 
+  // Debug: Log the server-provided language and current URL
+  console.log('Page Load: Server-provided preferredLanguage:', data?.preferredLanguage);
+  $: console.log('Page Load: Current URL:', $page.url.href);
+  $: console.log('Page Load: Active i18n Locale:', $locale);
 
+  // Simple title handling - don't check if translations exist, just use them
+  // The layout ensures translations are loaded before rendering
+  $: siteTitle = $t('site.title');
+  $: pageTitle = $t('pages.home.meta.title');
+  $: fullTitle = pageTitle ? `${siteTitle} - ${pageTitle}` : siteTitle;
 
+  // Debug: Log the results of the translation lookups
+  console.log('Page Load: siteTitle lookup result:', siteTitle);
+  console.log('Page Load: pageTitle lookup result:', pageTitle);
+  console.log('Page Load: fullTitle computed:', fullTitle);
 
+</script>
 
+<svelte:head>
+  <title>{fullTitle}</title>
+  <meta name="description" content={$t('pages.home.meta.description')} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
+</svelte:head>
 
+{#if selectedArtwork}
+  <StoryView
+    artwork={selectedArtwork}
+    on:close={handleCloseStory}
+  />
+{:else}
+  <!-- Hero Section -->
+  <section class="hero-simple">
+    <div class="hero-content">
+      <h1>{$t('pages.home.hero.title')}</h1>
+      <p class="subtitle">{$t('pages.home.hero.subtitle')}</p>
+    </div>
+  </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-const thumbnailUrl = artwork.image_id
-  ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
-  : null;
-
+  <!-- Sketchbook Section -->
+  <section id="work" class="sketchbook-section">
+    {#if displayArtworks.length > 0}
+      <Sketchbook
+        artworks={displayArtworks}
+        on:selectArtwork={handleSelectArtwork}
+      />
+    {:else}
+      <div class="no-data-message">
+        <h3>📭 No Artworks Yet</h3>
+        <p>Add some artworks to your database to see the sketchbook!</p>
+      </div>
+    {/if}
+  </section>
+{/if}

@@ -3,31 +3,43 @@
   import Sketchbook from '$lib/components/Sketchbook.svelte';
   import StoryView from '$lib/components/StoryView.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
-  import { t } from '$lib/translations';
-  
+  import { t, locale } from '$lib/translations';
+  import { page } from '$app/stores'; // Import page store
+
   export let data;
-  
+
   let selectedArtwork = null;
-  
+
   function handleSelectArtwork(event) {
     selectedArtwork = event.detail;
   }
-  
+
   function handleCloseStory() {
     selectedArtwork = null;
   }
-  
+
   // Add placeholder images for artworks
   $: displayArtworks = data?.artworks?.map(artwork => ({
     ...artwork,
     thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
   })) || [];
-  
+
+  // Debug: Log the server-provided language and current URL
+  console.log('Page Load: Server-provided preferredLanguage:', data?.preferredLanguage);
+  $: console.log('Page Load: Current URL:', $page.url.href);
+  $: console.log('Page Load: Active i18n Locale:', $locale);
+
   // Simple title handling - don't check if translations exist, just use them
   // The layout ensures translations are loaded before rendering
   $: siteTitle = $t('site.title');
   $: pageTitle = $t('pages.home.meta.title');
   $: fullTitle = pageTitle ? `${siteTitle} - ${pageTitle}` : siteTitle;
+
+  // Debug: Log the results of the translation lookups
+  console.log('Page Load: siteTitle lookup result:', siteTitle);
+  console.log('Page Load: pageTitle lookup result:', pageTitle);
+  console.log('Page Load: fullTitle computed:', fullTitle);
+
 </script>
 
 <svelte:head>
@@ -39,9 +51,9 @@
 </svelte:head>
 
 {#if selectedArtwork}
-  <StoryView 
-    artwork={selectedArtwork} 
-    on:close={handleCloseStory} 
+  <StoryView
+    artwork={selectedArtwork}
+    on:close={handleCloseStory}
   />
 {:else}
   <!-- Hero Section -->
@@ -55,8 +67,8 @@
   <!-- Sketchbook Section -->
   <section id="work" class="sketchbook-section">
     {#if displayArtworks.length > 0}
-      <Sketchbook 
-        artworks={displayArtworks} 
+      <Sketchbook
+        artworks={displayArtworks}
         on:selectArtwork={handleSelectArtwork}
       />
     {:else}
