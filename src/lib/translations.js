@@ -11,19 +11,53 @@ const config = {
 
   loaders: [
     // ───────────────────────────────────────
-    // COMMON STRINGS (shared across all pages)
+    // COMMON STRINGS (shared across all pages) - Load for each route
     // ───────────────────────────────────────
-    //{ locale: 'es-MX', key: 'common', loader: () => import('./locales/es-MX/common.json') },
-    //{ locale: 'en-US', key: 'common', loader: () => import('./locales/en-US/common.json') },
-    //{ locale: 'fr-CA', key: 'common', loader: () => import('./locales/fr-CA/common.json') },
+    { locale: 'es-MX', key: 'common', routes: ['/'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/about'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/about'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/about'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/blog'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/blog'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/blog'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/books'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/books'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/books'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/reviews'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/reviews'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/reviews'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/book-review'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/book-review'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/book-review'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/privacy'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/privacy'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/privacy'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/admin'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/admin'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/admin'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/stories'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/stories'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/stories'], loader: () => import('./locales/fr-CA/common.json') },
+
+    { locale: 'es-MX', key: 'common', routes: ['/stories/chapter1'], loader: () => import('./locales/es-MX/common.json') },
+    { locale: 'en-US', key: 'common', routes: ['/stories/chapter1'], loader: () => import('./locales/en-US/common.json') },
+    { locale: 'fr-CA', key: 'common', routes: ['/stories/chapter1'], loader: () => import('./locales/fr-CA/common.json') },
+
+    // Add more story chapters as needed...
 
     // ───────────────────────────────────────
     // MAIN SITE PAGES (from your existing structure)
     // ───────────────────────────────────────
-{ locale: 'es-MX', key: 'common', routes: ['/*'], loader: () => import('./locales/es-MX/common.json') },
-{ locale: 'en-US', key: 'common', routes: ['/*'], loader: () => import('./locales/en-US/common.json') },
-{ locale: 'fr-CA', key: 'common', routes: ['/*'], loader: () => import('./locales/fr-CA/common.json') },
-
     { locale: 'es-MX', key: 'pages.home', routes: ['/'], loader: () => import('./locales/es-MX/pages/home.json') },
     { locale: 'en-US', key: 'pages.home', routes: ['/'], loader: () => import('./locales/en-US/pages/home.json') },
     { locale: 'fr-CA', key: 'pages.home', routes: ['/'], loader: () => import('./locales/fr-CA/pages/home.json') },
