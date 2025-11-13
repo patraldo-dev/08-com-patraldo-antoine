@@ -562,7 +562,7 @@ function getImageSource(artwork) {
       ← {$t('common.back')}
     </button>
     <ArtPiece
-      artwork={selectedImage} <!-- Pass the artwork object -->
+      artwork={selectedImage} 
       interactive={true}
     />
   </div>
@@ -570,11 +570,11 @@ function getImageSource(artwork) {
   <div class="sketchbook-container" bind:this={sketchbookContainer}>
     <canvas bind:this={canvasEl}></canvas>
     <div class="sketchbook" class:dragging={isDragging}>
-      <div class="page-left" bind:this={pageLeftEl}> <!-- Bind left page ref -->
-        {#if currentPage > 0 && previousArtwork} <!-- Show previous artwork if not on page 0 -->
+      <div class="page-left" bind:this={pageLeftEl}> 
+        {#if currentPage > 0 && previousArtwork} 
           <div class="art-thumbnail previous" on:click={(e) => selectImage(e, previousArtwork)}>
             <img
-              src={getImageSource(previousArtwork)} <!-- Use helper function -->
+              src={getImageSource(previousArtwork)} 
               alt={previousArtwork.title}
               title="Click to explore this story"
             >
@@ -582,9 +582,9 @@ function getImageSource(artwork) {
           </div>
         {:else}
           <div class="prompt-text">{promptText}</div>
-          {#if currentPage > 0} <!-- Show page number if not on page 0 -->
+          {#if currentPage > 0} 
             <div class="page-number">
-              Página {currentPage + 1} / {totalPages} <!-- Updated display -->
+              Página {currentPage + 1} / {totalPages} 
             </div>
           {/if}
         {/if}
@@ -594,7 +594,7 @@ function getImageSource(artwork) {
         {#if currentArtwork}
           <div class="art-thumbnail" on:click={(e) => selectImage(e, currentArtwork)}>
             <img
-              src={getImageSource(currentArtwork)} <!-- Use helper function -->
+              src={getImageSource(currentArtwork)} 
               alt={currentArtwork.title}
               title="Click to explore this story"
             >
@@ -605,13 +605,12 @@ function getImageSource(artwork) {
         {/if}
       </div>
 
-      <!-- Add Navigation Arrows -->
       {#if currentPage > 0}
         <button class="nav-arrow prev" on:click={() => completePage('backward')} aria-label="Previous page">
           ‹
         </button>
       {/if}
-      {#if currentPage < totalPages - 1} <!-- Check against actual length -->
+      {#if currentPage < totalPages - 1} 
         <button class="nav-arrow next" on:click={() => completePage('forward')} aria-label="Next page">
           ›
         </button>
