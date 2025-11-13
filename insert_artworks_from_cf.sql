@@ -1,0 +1,2 @@
+INSERT INTO artworks (title, type, image_id, description, year, published, order_index) VALUES ('PortfolioTemp', 'still', '92c712f4-aec1-4e68-1cec-fcd9682eae00', 'Uploaded on 2025-08-12. Filename: PortfolioTemp.webp', 2025, 1, 999);
+INSERT INTO artworks (title, type, image_id, description, year, published, order_index) VALUES ('MujerFaceAntoine', 'still', 'f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'Uploaded on 2025-08-11. Filename: MujerFaceAntoine.jpg', 2025, 1, 999);

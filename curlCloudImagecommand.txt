@@ -1,3 +1,11 @@
 accountid 477082f5c9678c608889bd8f03f7b807
 api token QHZAA9cZR54k4zXwP3NWRXrQJbwGxdkXxF4P8D6z  for Read and write to Cloudflare Stream and Images
 curl -F file=@./<file_name> -H "Authorization: Bearer <api_token>" https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/images/v1
+
+Get image info for d1 database # Replace with your actual values
+API_TOKEN="your_api_token_here"
+ACCOUNT_ID="your_account_id_here"
+
+curl -X GET "https://api.cloudflare.com/client/v4/accounts/477082f5c9678c608889bd8f03f7b807/images/v1" \
+     -H "Authorization: Bearer QHZAA9cZR54k4zXwP3NWRXrQJbwGxdkXxF4P8D6z" \
+     -H "Content-Type: application/json"
