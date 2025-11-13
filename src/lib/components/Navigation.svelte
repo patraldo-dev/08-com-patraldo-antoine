@@ -2,14 +2,18 @@
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { t } from '$lib/translations';
   import LanguageSwitcherDesktop from '$lib/components/ui/LanguageSwitcherDesktop.svelte';
   import LanguageSwitcherMobile from '$lib/components/ui/LanguageSwitcherMobile.svelte';
   
   let isMenuOpen = false;
   
+  // Get current route to determine navigation behavior
+  $: currentPath = $page.url.pathname;
+  $: isOnHomePage = currentPath === '/';
+  
   function toggleMenu(event) {
-    // Prevent any default behavior
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -17,7 +21,6 @@
     
     isMenuOpen = !isMenuOpen;
     
-    // Prevent body scroll when menu is open
     if (typeof document !== 'undefined') {
       document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     }
@@ -31,34 +34,41 @@
   }
   
   function handleLinkClick(event, href) {
-    // Always close menu first
     closeMenu();
     
-    // Check if it's a hash link (anchor on same page)
+    // Hash links (anchors) - only work on home page
     if (href.startsWith('#')) {
       event.preventDefault();
       
-      // Small delay to let menu close animation start
-      setTimeout(() => {
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Update URL without triggering navigation
-          history.pushState(null, '', href);
-        }
-      }, 100);
-    } else if (href.startsWith('/')) {
-      // Internal route - use SvelteKit navigation
+      if (isOnHomePage) {
+        // We're on home page - just scroll
+        setTimeout(() => {
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.pushState(null, '', href);
+          }
+        }, 100);
+      } else {
+        // We're on another page - navigate to home then scroll
+        goto('/' + href);
+      }
+      return;
+    }
+    
+    // Internal routes (like /stories)
+    if (href.startsWith('/')) {
       event.preventDefault();
       goto(href);
+      return;
     }
+    
     // External links work normally (no preventDefault)
   }
   
   function handleOutsideClick(event) {
     if (!isMenuOpen) return;
     
-    // Check if click is outside nav
     const nav = event.target.closest('nav');
     const menuButton = event.target.closest('.menu-button');
     
@@ -74,7 +84,6 @@
   }
   
   onMount(() => {
-    // Use passive listeners for better mobile performance
     document.addEventListener('click', handleOutsideClick, { passive: true });
     document.addEventListener('keydown', handleKeydown);
     
@@ -95,10 +104,10 @@
   
   <!-- Desktop Menu -->
   <div class="nav-links desktop-menu">
-    <a href="#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
-    <a href="#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
+    <a href="/#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
+    <a href="/#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
     <a href="/stories" on:click={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
-    <a href="#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
+    <a href="/#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <LanguageSwitcherDesktop />
   </div>
   
@@ -123,10 +132,10 @@
   
   <!-- Mobile Menu -->
   <div class="mobile-menu" class:open={isMenuOpen}>
-    <a href="#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
-    <a href="#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
+    <a href="/#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
+    <a href="/#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
     <a href="/stories" on:click={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
-    <a href="#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
+    <a href="/#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <div class="mobile-lang-switcher">
       <LanguageSwitcherMobile />
     </div>
@@ -200,7 +209,6 @@
     box-sizing: border-box;
     position: relative;
     z-index: calc(var(--z-nav) + 2);
-    /* Improve touch target */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
@@ -232,7 +240,6 @@
     bottom: 23px;
   }
   
-  /* Overlay to darken background when menu is open */
   .menu-overlay {
     position: fixed;
     top: 0;
@@ -266,7 +273,6 @@
     transition: transform 0.3s ease;
     overflow-y: auto;
     z-index: calc(var(--z-nav) + 2);
-    /* Improve scrolling on iOS */
     -webkit-overflow-scrolling: touch;
   }
   
@@ -282,12 +288,10 @@
     padding: 0.75rem 0;
     border-bottom: 1px solid #eee;
     transition: color 0.3s;
-    display: block;
-    cursor: pointer;
-    /* Improve touch targets */
-    min-height: 48px;
     display: flex;
     align-items: center;
+    min-height: 48px;
+    cursor: pointer;
   }
   
   .mobile-menu a:hover,
@@ -301,7 +305,6 @@
     right: 2rem;
   }
   
-  /* Responsive Styles */
   @media (max-width: 768px) {
     nav {
       padding: 1rem 1.5rem;
@@ -321,7 +324,6 @@
     }
   }
   
-  /* Tablet Styles */
   @media (min-width: 769px) and (max-width: 1024px) {
     .desktop-menu {
       display: none;
@@ -332,9 +334,7 @@
     }
   }
   
-  /* Improve click/touch responsiveness */
   @media (hover: none) and (pointer: coarse) {
-    /* Touch devices */
     .menu-button {
       padding: 1rem;
     }
