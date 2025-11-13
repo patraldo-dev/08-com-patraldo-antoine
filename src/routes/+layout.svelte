@@ -28,11 +28,14 @@
       // 4. Set locale first
       await locale.set(lang);
       
-      // 5. Load BOTH common and route-specific translations
-      await Promise.all([
-        loadTranslations(lang, 'common'),
-        loadTranslations(lang, location.pathname)
-      ]);
+      // 5. CRITICAL: Load common first, then route
+      // Common has no routes property, so we load it explicitly
+      await loadTranslations(lang, 'common');
+      
+      // Then load route-specific (if any exist for this route)
+      if (location.pathname !== '/common') {
+        await loadTranslations(lang, location.pathname);
+      }
       
       // 6. Wait for loading to complete
       const unsubscribeLoading = loading.subscribe(value => {
@@ -43,15 +46,16 @@
       
       // 7. Handle locale changes
       const unsubscribeLocale = locale.subscribe(async (newLang) => {
-        if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang)) {
+        if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang) && newLang !== lang) {
+          lang = newLang;
           localStorage.setItem('preferredLanguage', newLang);
           isReady = false;
           
-          // Reload translations
-          await Promise.all([
-            loadTranslations(newLang, 'common'),
-            loadTranslations(newLang, location.pathname)
-          ]);
+          // Reload BOTH common and route translations
+          await loadTranslations(newLang, 'common');
+          if (location.pathname !== '/common') {
+            await loadTranslations(newLang, location.pathname);
+          }
           
           isReady = true;
         }
