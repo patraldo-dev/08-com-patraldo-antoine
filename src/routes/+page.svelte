@@ -29,11 +29,14 @@
   $: console.log('Page Load: Current URL:', $page.url.href);
   $: console.log('Page Load: Active i18n Locale:', $locale);
 
-  // Simple title handling - don't check if translations exist, just use them
-  // The layout ensures translations are loaded before rendering
+// Title handling
   $: siteTitle = $t('site.title');
-  $: pageTitle = $t('pages.home.meta.title');
-  $: fullTitle = pageTitle ? `${siteTitle} - ${pageTitle}` : siteTitle;
+  $: pageMetaTitle = $t('pages.home.meta.title');
+  $: fullTitle = (siteTitle && siteTitle !== 'site.title')
+    ? (pageMetaTitle && pageMetaTitle !== 'pages.home.meta.title' 
+        ? `${siteTitle} - ${pageMetaTitle}` 
+        : siteTitle)
+    : 'Antoine Patraldo';
 
   // Debug: Log the results of the translation lookups
   console.log('Page Load: siteTitle lookup result:', siteTitle);
