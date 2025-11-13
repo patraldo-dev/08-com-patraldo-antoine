@@ -2,53 +2,91 @@
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
-  import { locale, loadTranslations } from '$lib/translations';
+  import { locale, loadTranslations, loading } from '$lib/translations';
   import Navigation from '$lib/components/Navigation.svelte';
   
+  let isReady = false;
+  
   // Initialize i18n on client
-  onMount(() => {
-    // 1. Check localStorage first
-    let lang = localStorage.getItem('preferredLanguage');
-    
-    // 2. If none, default to es-MX (NOT browser language)
-    if (!lang) {
-      lang = 'es-MX';
-      localStorage.setItem('preferredLanguage', lang);
-    }
-    
-    // 3. Only allow supported locales
-    if (!['es-MX', 'en-US', 'fr-CA'].includes(lang)) {
-      lang = 'es-MX';
-      localStorage.setItem('preferredLanguage', lang);
-    }
-    
-    // 4. Set locale and load translations
-    locale.set(lang);
-    loadTranslations(lang, location.pathname);
-    
-    // 5. Save locale changes when user switches language
-    const unsubscribe = locale.subscribe((newLang) => {
-      if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang)) {
-        localStorage.setItem('preferredLanguage', newLang);
+  onMount(async () => {
+    try {
+      // 1. Check localStorage first
+      let lang = localStorage.getItem('preferredLanguage');
+      
+      // 2. If none, default to es-MX
+      if (!lang) {
+        lang = 'es-MX';
+        localStorage.setItem('preferredLanguage', lang);
       }
-    });
-    
-    // 6. Cleanup subscription on component destroy
-    return () => unsubscribe();
+      
+      // 3. Only allow supported locales
+      if (!['es-MX', 'en-US', 'fr-CA'].includes(lang)) {
+        lang = 'es-MX';
+        localStorage.setItem('preferredLanguage', lang);
+      }
+      
+      // 4. Set locale first
+      await locale.set(lang);
+      
+      // 5. Load BOTH common and route-specific translations
+      await Promise.all([
+        loadTranslations(lang, 'common'),
+        loadTranslations(lang, location.pathname)
+      ]);
+      
+      // 6. Wait for loading to complete
+      const unsubscribeLoading = loading.subscribe(value => {
+        if (!value) {
+          isReady = true;
+        }
+      });
+      
+      // 7. Handle locale changes
+      const unsubscribeLocale = locale.subscribe(async (newLang) => {
+        if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang)) {
+          localStorage.setItem('preferredLanguage', newLang);
+          isReady = false;
+          
+          // Reload translations
+          await Promise.all([
+            loadTranslations(newLang, 'common'),
+            loadTranslations(newLang, location.pathname)
+          ]);
+          
+          isReady = true;
+        }
+      });
+      
+      // 8. Cleanup
+      return () => {
+        unsubscribeLoading();
+        unsubscribeLocale();
+      };
+    } catch (error) {
+      console.error('i18n initialization error:', error);
+      // Still show the page even if translations fail
+      isReady = true;
+    }
   });
 </script>
 
-<div class="app">
-  <Navigation />
-  
-  <main>
-    <slot />
-  </main>
-  
-  <footer>
-    <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
-  </footer>
-</div>
+{#if isReady}
+  <div class="app">
+    <Navigation />
+    
+    <main>
+      <slot />
+    </main>
+    
+    <footer>
+      <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
+    </footer>
+  </div>
+{:else}
+  <div class="loading-screen">
+    <div class="loader"></div>
+  </div>
+{/if}
 
 <style>
   .app {
@@ -68,6 +106,28 @@
     font-size: 0.9rem;
     color: #666;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+  }
+  
+  .loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2c5e3d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
   @media (max-width: 768px) {
