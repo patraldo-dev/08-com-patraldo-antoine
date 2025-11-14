@@ -302,26 +302,29 @@
 // --- Helper function to get image source ---
 // Adjust this function based on your D1 schema and how image URLs are stored
 function getImageSource(artwork) {
-    // Check if the artwork object exists and has an image_id
-    if (artwork && artwork.image_id) {
-        // Construct the Cloudflare Images URL using the image_id
+    // Check if the artwork object exists and has a thumbnailId (or image_id)
+    // Prioritize thumbnailId as it seems to be the field present in the data
+    if (artwork && artwork.thumbnailId) {
+        // Construct the Cloudflare Images URL using the thumbnailId
         // Replace 'YOUR_CF_ACCOUNT_HASH' with the actual hash from your image delivery URL
-        // Example: If your delivery URL is https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/...
-        // then '4bRSwPonOXfEIBVZiDXg0w' is the ACCOUNT_HASH
-        // Use the 'thumbnail' variant as specified in the README for Gallery.svelte
-        // The README example for Gallery.svelte uses '/thumbnail', so we'll use that.
-        // Adjust 'thumbnail' to 'gallery', 'desktop', etc., if needed for different sizes.
         const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w'; // Extracted from the README example URL
-        const VARIANT = 'thumbnail'; // Or 'gallery', 'desktop', etc., based on your Cloudflare Images setup
+        const VARIANT = 'thumbnail'; // Or 'gallery', 'desktop', etc., based on your setup
 
-        console.log("Constructing URL from image_id:", artwork.image_id); // Debug log
+        console.log("Constructing URL from thumbnailId:", artwork.thumbnailId); // Debug log
+        return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
+    }
+    // Fallback: Check if the old image_id field exists (in case data structure changes)
+    if (artwork && artwork.image_id) {
+        console.log("Constructing URL from (fallback) image_id:", artwork.image_id); // Debug log
+        const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
+        const VARIANT = 'thumbnail';
         return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
     }
-
-    // Fallback if no image_id is present
-    console.warn("Could not determine image source for artwork (missing image_id):", artwork);
+    // Fallback if neither field is present
+    console.warn("Could not determine image source for artwork (missing thumbnailId or image_id):", artwork);
     return '/path/to/default/image.jpg'; // Provide a default image path
 }
+
 </script>
 
 <style>
