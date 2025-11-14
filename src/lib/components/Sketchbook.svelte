@@ -19,26 +19,25 @@
   let sketchbookContainer;
   let pageRightEl;
   let pageLeftEl;
-  let canvasEl;
 
-  // Matter.js
+  // Matter.js (headless - no canvas rendering)
   let engine;
   let runner;
-  let render;
   let mouse;
   let mouseConstraint;
   let pageCornerBody;
   let pagePivot;
   let updateLoopId = null;
+  let mouseElement; // Invisible div for mouse interaction
 
   // Preload sounds
   let flipSound;
   let selectSound;
   let dragSound;
 
-  // Cache dimensions to avoid repeated calculations
+  // Cache dimensions
   let containerWidth = 0;
-  let containerHeight = 500;
+  let containerHeight = 600; // Increased from 500
 
   // i18n
   $: promptText = getPromptText($locale);
@@ -78,29 +77,17 @@
     
     const containerRect = sketchbookContainer.getBoundingClientRect();
     containerWidth = containerRect.width;
-    containerHeight = 500;
+    
+    // Responsive height
+    containerHeight = window.innerWidth < 768 ? 500 : 600;
 
-    // Create engine with optimized settings
+    // Create engine with optimized settings (headless - no rendering)
     engine = Matter.Engine.create({
-      enableSleeping: true, // Allow bodies to sleep when inactive
-      positionIterations: 6, // Reduce from default for better performance
+      enableSleeping: true,
+      positionIterations: 6,
       velocityIterations: 4
     });
     engine.gravity.y = 0.3;
-
-    // Create renderer
-    render = Matter.Render.create({
-      element: sketchbookContainer,
-      engine: engine,
-      canvas: canvasEl,
-      options: {
-        width: containerWidth,
-        height: containerHeight,
-        wireframes: false,
-        background: 'transparent',
-        pixelRatio: window.devicePixelRatio
-      }
-    });
 
     // Page corner that user can drag
     const cornerX = containerWidth * 0.75;
@@ -110,19 +97,13 @@
       density: 0.001,
       frictionAir: 0.02,
       restitution: 0.3,
-      sleepThreshold: 60, // Allow body to sleep when still
-      render: {
-        fillStyle: 'rgba(212, 201, 168, 0.3)',
-        strokeStyle: '#d4c9a8',
-        lineWidth: 2
-      },
+      sleepThreshold: 60,
       label: 'pageCorner'
     });
 
     // Pivot point
     pagePivot = Matter.Bodies.circle(containerWidth / 2, containerHeight / 2, 5, {
-      isStatic: true,
-      render: { visible: false }
+      isStatic: true
     });
 
     // Constraint connecting corner to pivot
@@ -131,17 +112,25 @@
       bodyB: pageCornerBody,
       stiffness: 0.008,
       damping: 0.05,
-      length: Math.hypot(cornerX - containerWidth/2, cornerY - containerHeight/2),
-      render: { visible: false }
+      length: Math.hypot(cornerX - containerWidth/2, cornerY - containerHeight/2)
     });
 
-    // Add mouse control
-    mouse = Matter.Mouse.create(render.canvas);
+    // Create invisible mouse element for interaction
+    mouseElement = document.createElement('div');
+    mouseElement.style.position = 'absolute';
+    mouseElement.style.top = '0';
+    mouseElement.style.left = '0';
+    mouseElement.style.width = containerWidth + 'px';
+    mouseElement.style.height = containerHeight + 'px';
+    mouseElement.style.pointerEvents = 'auto';
+    sketchbookContainer.appendChild(mouseElement);
+
+    // Add mouse control (no canvas needed)
+    mouse = Matter.Mouse.create(mouseElement);
     mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
-        stiffness: 0.2,
-        render: { visible: false }
+        stiffness: 0.2
       }
     });
 
@@ -149,14 +138,12 @@
     Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
       if (event.body === pageCornerBody) {
         isDragging = true;
-        // Wake up the body
         Matter.Sleeping.set(pageCornerBody, false);
         
         if (dragSound && dragSound.paused) {
           dragSound.play().catch(() => {});
         }
         
-        // Start update loop only when dragging
         if (!updateLoopId) {
           startUpdateLoop();
         }
@@ -171,12 +158,10 @@
           dragSound.currentTime = 0;
         }
 
-        // Check if dragged far enough to flip
         const dragDistance = containerWidth / 2 - pageCornerBody.position.x;
         if (dragDistance > containerWidth * 0.25) {
           completePage('forward');
         } else {
-          // Reset position
           resetPageCorner();
         }
       }
@@ -185,10 +170,9 @@
     // Add to world
     Matter.World.add(engine.world, [pageCornerBody, pagePivot, pageConstraint, mouseConstraint]);
 
-    // Run engine
+    // Run engine (headless - no renderer)
     runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
-    Matter.Render.run(render);
   }
 
   function startUpdateLoop() {
@@ -198,7 +182,6 @@
         return;
       }
 
-      // Stop loop if not dragging and not animating
       if (!isDragging && !isAnimating) {
         stopUpdateLoop();
         return;
@@ -209,7 +192,6 @@
       const currentDrag = Math.max(0, (containerWidth * 0.75) - cornerX);
       dragProgress = Math.min(1, currentDrag / maxDrag);
 
-      // Apply transform with will-change hint for better performance
       const rotateY = dragProgress * -180;
       pageRightEl.style.transform = `rotateY(${rotateY}deg)`;
       pageRightEl.style.boxShadow = `0 0 ${20 * dragProgress}px rgba(0,0,0,${0.4 * dragProgress})`;
@@ -234,7 +216,6 @@
       });
       Matter.Body.setVelocity(pageCornerBody, { x: 0, y: 0 });
       
-      // Allow body to sleep after reset
       setTimeout(() => {
         Matter.Sleeping.set(pageCornerBody, true);
       }, 100);
@@ -262,7 +243,6 @@
       return;
     }
 
-    // Play flip sound
     if (flipSound) {
       flipSound.currentTime = 0;
       flipSound.play().catch(() => {});
@@ -272,9 +252,8 @@
     if (!pageElementToFlip) return;
 
     isAnimating = true;
-    startUpdateLoop(); // Ensure loop is running during animation
+    startUpdateLoop();
 
-    // Animate to full flip
     let animProgress = dragProgress;
     const animateFlip = () => {
       animProgress += 0.05;
@@ -312,22 +291,21 @@
   }
 
   onDestroy(() => {
-    // Stop update loop
     stopUpdateLoop();
     
-    // Clean up Matter.js
     if (mouseConstraint) {
       Matter.Events.off(mouseConstraint, 'startdrag');
       Matter.Events.off(mouseConstraint, 'enddrag');
     }
-    if (render) Matter.Render.stop(render);
     if (runner) Matter.Runner.stop(runner);
     if (engine) {
       Matter.World.clear(engine.world);
       Matter.Engine.clear(engine);
     }
+    if (mouseElement && mouseElement.parentNode) {
+      mouseElement.parentNode.removeChild(mouseElement);
+    }
     
-    // Stop audio
     if (dragSound) {
       dragSound.pause();
       dragSound.remove();
@@ -346,15 +324,16 @@
     ? artworks[currentPage - 1]
     : null;
 
+  // Use 'gallery' variant for better quality (larger than thumbnail)
   function getImageSource(artwork) {
     if (artwork && artwork.thumbnailId) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-      const VARIANT = 'thumbnail';
+      const VARIANT = 'gallery'; // Changed from 'thumbnail' to 'gallery'
       return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
     }
     if (artwork && artwork.image_id) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-      const VARIANT = 'thumbnail';
+      const VARIANT = 'gallery';
       return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
     }
     console.warn("Could not determine image source for artwork:", artwork);
@@ -366,26 +345,17 @@
 <style>
   .sketchbook-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px; /* Increased from 800px */
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0.5rem; /* Reduced padding for more space */
     perspective: 1200px;
     position: relative;
-  }
-
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: auto;
-    z-index: 5;
-    opacity: 0;
   }
 
   .sketchbook {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 600px; /* Increased from 500px */
     background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
     border: 6px solid #d4c9a8;
     border-radius: 12px;
@@ -406,7 +376,7 @@
     top: 0;
     width: 50%;
     height: 100%;
-    padding: 2rem;
+    padding: 2.5rem; /* Increased from 2rem */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -429,11 +399,11 @@
     transform-origin: left center;
     transform-style: preserve-3d;
     transition: box-shadow 0.1s;
-    will-change: transform; /* Performance hint for browser */
+    will-change: transform;
   }
 
   .prompt-text {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Slightly increased */
     line-height: 1.6;
     text-align: center;
     color: #4a4a3c;
@@ -463,11 +433,12 @@
     align-items: center;
     cursor: pointer;
     pointer-events: auto;
+    gap: 0.75rem;
   }
 
   .art-thumbnail img {
-    max-width: 90%;
-    max-height: 80%;
+    max-width: 95%; /* Increased from 90% */
+    max-height: 85%; /* Increased from 80% */
     object-fit: contain;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -481,11 +452,11 @@
   }
 
   .sketch-title {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1rem; /* Slightly increased */
     color: #4a4a3c;
     text-align: center;
     font-style: italic;
+    max-width: 90%;
   }
 
   .selected-image-view {
@@ -542,8 +513,8 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
+    width: 50px; /* Slightly larger */
+    height: 50px;
     border: 2px solid #d4c9a8;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
@@ -573,21 +544,52 @@
   }
 
   @media (max-width: 768px) {
+    .sketchbook-container {
+      max-width: 100%;
+      padding: 0.25rem;
+    }
+
     .sketchbook {
-      height: 400px;
+      height: 500px; /* Keep reasonable height on mobile */
+    }
+
+    .page-left, .page-right {
+      padding: 1.5rem;
+    }
+
+    .prompt-text {
+      font-size: 1rem;
+    }
+
+    .sketch-title {
+      font-size: 0.9rem;
+    }
+
+    .nav-arrow {
+      width: 42px;
+      height: 42px;
+      font-size: 1.75rem;
+    }
+
+    .art-thumbnail img {
+      max-width: 92%;
+      max-height: 82%;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 480px) {
+    .sketchbook {
+      height: 450px;
     }
 
     .page-left, .page-right {
       padding: 1rem;
     }
 
-    .prompt-text {
-      font-size: 0.95rem;
-    }
-
     .nav-arrow {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       font-size: 1.5rem;
     }
   }
@@ -605,7 +607,6 @@
   </div>
 {:else}
   <div class="sketchbook-container" bind:this={sketchbookContainer}>
-    <canvas bind:this={canvasEl}></canvas>
     <div class="sketchbook" class:dragging={isDragging}>
       <div class="page-left" bind:this={pageLeftEl}> 
         {#if currentPage > 0 && previousArtwork} 
