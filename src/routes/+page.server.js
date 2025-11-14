@@ -27,7 +27,6 @@ export async function load({ platform }) {
         FROM artworks
         WHERE published = 1
         ORDER BY order_index DESC, year DESC
-        LIMIT 6
       `)
       .all();
 
