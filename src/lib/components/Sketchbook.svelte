@@ -134,6 +134,22 @@
       }
     });
 
+// Create a visible draggable corner indicator
+const cornerIndicator = document.createElement('div');
+cornerIndicator.style.position = 'absolute';
+cornerIndicator.style.top = (containerHeight * 0.15) + 'px';
+cornerIndicator.style.left = (containerWidth * 0.75) + 'px';
+cornerIndicator.style.width = '60px';
+cornerIndicator.style.height = '60px';
+cornerIndicator.style.pointerEvents = 'auto'; // Only THIS area is draggable
+cornerIndicator.style.cursor = 'grab';
+cornerIndicator.style.borderRadius = '50%';
+cornerIndicator.style.opacity = '0.3';
+cornerIndicator.style.transition = 'opacity 0.3s';
+cornerIndicator.addEventListener('mouseenter', () => cornerIndicator.style.opacity = '0.6');
+cornerIndicator.addEventListener('mouseleave', () => cornerIndicator.style.opacity = '0.3');
+sketchbookContainer.appendChild(cornerIndicator);
+
     // Detect drag events
     Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
       if (event.body === pageCornerBody) {
