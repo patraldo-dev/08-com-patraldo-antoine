@@ -181,3 +181,55 @@ body main {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ───────────────────────────────────────
+   HOME PAGE: Hero & Sketchbook Adjustments
+   ─────────────────────────────────────── */
+
+/* Reduce hero height on home page (not the About video hero) */
+.hero-simple {
+  min-height: 60vh; /* was likely 70–100vh elsewhere */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background: #fafafa;
+}
+
+.hero-simple .hero-content {
+  max-width: 90%;
+  text-align: center;
+}
+
+.hero-simple .hero-content h1 {
+  font-size: clamp(1.8rem, 6vw, 2.8rem); /* scales down on mobile */
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.hero-simple .hero-content .subtitle {
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: 200;
+  opacity: 0.85;
+}
+
+/* Pull sketchbook section up slightly */
+.sketchbook-section {
+  margin-top: -1.5rem; /* negative margin lifts it closer to hero */
+  padding-bottom: var(--space-xl);
+}
+
+/* Ensure sketchbook doesn’t get squeezed on mobile */
+@media (max-width: 768px) {
+  .hero-simple {
+    min-height: 55vh;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .sketchbook-section {
+    margin-top: -1rem;
+  }
+}

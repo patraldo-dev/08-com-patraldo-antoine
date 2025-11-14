@@ -1,22 +1,32 @@
-// --- Helper function to get image source ---
-// Adjust this function based on your D1 schema and how image URLs are stored
-function getImageSource(artwork) {
-    // Check if the artwork object exists and has an image_id
-    if (artwork && artwork.image_id) {
-        // Construct the Cloudflare Images URL using the image_id
-        // Replace 'YOUR_CF_ACCOUNT_HASH' with the actual hash from your image delivery URL
-        // Example: If your delivery URL is https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/...
-        // then '4bRSwPonOXfEIBVZiDXg0w' is the ACCOUNT_HASH
-        // Use the 'thumbnail' variant as specified in the README for Gallery.svelte
-        // The README example for Gallery.svelte uses '/thumbnail', so we'll use that.
-        // Adjust 'thumbnail' to 'gallery', 'desktop', etc., if needed for different sizes.
-        const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w'; // Extracted from the README example URL
-        const VARIANT = 'thumbnail'; // Or 'gallery', 'desktop', etc., based on your Cloudflare Images setup
+/* Adjust Hero Section */
+.hero-simple {
+  /* Reduce the overall height of the hero section */
+  min-height: 60vh; /* Changed from 70vh */
+  padding-top: 4rem; /* Add some top padding so it's not flush with the nav */
+}
 
-        console.log("Constructing URL from image_id:", artwork.image_id); // Debug log
-        return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
-    }
-    // Fallback if no image_id is present
-    console.warn("Could not determine image source for artwork (missing image_id):", artwork);
-    return '/path/to/default/image.jpg'; // Provide a default image path
+.hero-content {
+  /* Reduce the max-width to prevent text from being too wide */
+  max-width: 80%;
+  /* Ensure text scales down on smaller screens */
+  font-size: clamp(1.5rem, 5vw, 3rem); 
+}
+
+.hero-content h1 {
+  /* Reduce the font size slightly for better fit */
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+.hero-content .subtitle {
+  /* Reduce subtitle font size */
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+/* Adjust Sketchbook Section */
+.sketchbook-section {
+  /* Move the sketchbook up by reducing its top margin/padding */
+  margin-top: -2rem; /* Negative margin pulls it up */
+  padding: 2rem 1rem; /* Or adjust padding as needed */
 }
