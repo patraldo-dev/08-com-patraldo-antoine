@@ -16,6 +16,7 @@ export async function load({ platform }) {
         SELECT 
           id,
           title,
+          display_name,
           slug,
           type,
           image_id,
@@ -42,6 +43,7 @@ export async function load({ platform }) {
       return {
         id: artwork.id,
         title: artwork.title,
+        display_name: artwork.display_name,
         description: artwork.description,
         type: artwork.type,
         thumbnailId: artwork.image_id,
