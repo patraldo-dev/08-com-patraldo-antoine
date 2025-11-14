@@ -627,3 +627,15 @@
     </div>
   </div>
 {/if}
+
+
+{#if selectedImage}
+  <StoryView 
+    artwork={selectedImage}
+    on:close={goBackToSketchbook}
+  />
+{:else}
+  <div class="sketchbook-container" bind:this={sketchbookContainer}>
+    <!-- all the sketchbook content -->
+  </div>
+{/if}
