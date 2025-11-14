@@ -616,7 +616,7 @@ sketchbookContainer.appendChild(cornerIndicator);
           <div class="art-thumbnail" on:click={(e) => selectImage(e, currentArtwork)}>
             <img
               src={getImageSource(currentArtwork)} 
-              alt={currentArtwork.title}
+              alt={currentArtwork.displayName || currentArtwork.title}
               title="Click to explore this story"
             >
             <div class="sketch-title">{currentArtwork.title}</div>
