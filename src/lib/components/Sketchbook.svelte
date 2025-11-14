@@ -473,7 +473,7 @@ sketchbookContainer.appendChild(cornerIndicator);
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
 
-  .sketch-title {
+  .sketch.display_name {
     font-size: 1rem; /* Slightly increased */
     color: #4a4a3c;
     text-align: center;
@@ -549,7 +549,7 @@ sketchbookContainer.appendChild(cornerIndicator);
       font-size: 1rem;
     }
 
-    .sketch-title {
+    .sketch.display_name {
       font-size: 0.9rem;
     }
 
@@ -596,10 +596,10 @@ sketchbookContainer.appendChild(cornerIndicator);
           <div class="art-thumbnail previous" on:click={(e) => selectImage(e, previousArtwork)}>
             <img
               src={getImageSource(previousArtwork)} 
-              alt={previousArtwork.title}
+              alt={previousArtwork.display_name || previousArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch-title">{previousArtwork.title}</div>
+            <div class="sketch.display_name">{previousArtwork.display_name}</div>
           </div>
         {:else}
           <div class="prompt-text">{promptText}</div>
@@ -616,10 +616,10 @@ sketchbookContainer.appendChild(cornerIndicator);
           <div class="art-thumbnail" on:click={(e) => selectImage(e, currentArtwork)}>
             <img
               src={getImageSource(currentArtwork)} 
-              alt={currentArtwork.displayName || currentArtwork.title}
+              alt={currentArtwork.display_name || currentArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch-title">{currentArtwork.title}</div>
+            <div class="sketch.display_name">{currentArtwork.display_name}</div>
           </div>
         {:else}
           <span class="placeholder">...</span>

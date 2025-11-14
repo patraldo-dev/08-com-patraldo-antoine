@@ -86,7 +86,7 @@
       {#if artwork.type === 'animation' && artwork.video_id}
         <div class="video-container">
           <iframe
-            title="Video: {artwork.displayName}"
+            title="Video: {artwork.display_name}"
             src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
             allowfullscreen
@@ -108,7 +108,7 @@
         {:else}
           <img
             src={heroImageUrl}
-            alt={artwork.displayName || artwork.title}
+            alt={artwork.display_name || artwork.title}
             class:loading={isLoading}
             on:load={() => isLoading = false}
             on:error={() => {
@@ -123,7 +123,7 @@
     <!-- Story Title & Meta -->
     <div class="story-text">
       <InkReveal>
-        <h1>{artwork.displayName}</h1>
+        <h1>{artwork.display_name}</h1>
       </InkReveal>
       
       <InkReveal delay={200}>
