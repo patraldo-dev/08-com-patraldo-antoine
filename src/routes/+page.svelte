@@ -18,7 +18,6 @@
     selectedArtwork = null;
   }
 
-
 // Title handling
   $: siteTitle = $t('site.title');
   $: pageMetaTitle = $t('pages.home.meta.title');
@@ -55,7 +54,7 @@
 
   <!-- Sketchbook Section -->
   <section id="work" class="sketchbook-section">
-    {#if displayArtworks.length > 0}
+    {#if data?.artworks?.length > 0}
       <Sketchbook
         artworks={data.artworks}
         on:selectArtwork={handleSelectArtwork}
