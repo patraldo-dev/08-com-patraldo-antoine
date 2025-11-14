@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Matter from 'matter-js';
   import { locale, t } from '$lib/translations';
-  import ArtPiece from './ArtPiece.svelte';
+  import StoryView from './StoryView.svelte';
 
   // Props
   export let artworks = [];
@@ -288,6 +288,10 @@
 
   function goBackToSketchbook() {
     selectedImage = null;
+    // Restart physics if needed
+    if (engine && pageCornerBody) {
+      Matter.Sleeping.set(pageCornerBody, false);
+    }
   }
 
   onDestroy(() => {
@@ -459,40 +463,6 @@
     max-width: 90%;
   }
 
-  .selected-image-view {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #000;
-    z-index: 100;
-  }
-
-  .back-button {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(255,255,255,0.95);
-    color: #333;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    z-index: 10;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-
-  .back-button:hover {
-    background: #f8f7f4;
-    color: #2c5e3d;
-  }
-
   .drag-hint {
     position: absolute;
     top: 1rem;
@@ -596,15 +566,10 @@
 </style>
 
 {#if selectedImage}
-  <div class="selected-image-view">
-    <button class="back-button" on:click={goBackToSketchbook}>
-      ← {$t('common.back')}
-    </button>
-    <ArtPiece
-      artwork={selectedImage} 
-      interactive={true}
-    />
-  </div>
+  <StoryView 
+    artwork={selectedImage}
+    on:close={goBackToSketchbook}
+  />
 {:else}
   <div class="sketchbook-container" bind:this={sketchbookContainer}>
     <div class="sketchbook" class:dragging={isDragging}>
