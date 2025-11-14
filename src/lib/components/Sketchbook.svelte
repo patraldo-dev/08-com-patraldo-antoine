@@ -2,25 +2,23 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Matter from 'matter-js';
-  // ❌ Import locale correctly from your translations file
-  import { locale, t } from '$lib/translations'; // Assumes your translations file is at src/lib/translations.js
+  import { locale, t } from '$lib/translations';
   import ArtPiece from './ArtPiece.svelte';
 
   // Props
   export let artworks = [];
-  // Remove hardcoded maxPages
-  // export let maxPages = 6;
 
   // State
   let currentPage = 0;
   let selectedImage = null;
   let isDragging = false;
-  let dragProgress = 0; // 0 to 1, how far the page has been dragged
+  let dragProgress = 0;
+  let isAnimating = false;
 
   // DOM refs
   let sketchbookContainer;
-  let pageRightEl; // Reference for the right page being flipped
-  let pageLeftEl;  // Reference for the left page (for potential backward flip)
+  let pageRightEl;
+  let pageLeftEl;
   let canvasEl;
 
   // Matter.js
@@ -31,11 +29,16 @@
   let mouseConstraint;
   let pageCornerBody;
   let pagePivot;
+  let updateLoopId = null;
 
   // Preload sounds
   let flipSound;
   let selectSound;
   let dragSound;
+
+  // Cache dimensions to avoid repeated calculations
+  let containerWidth = 0;
+  let containerHeight = 500;
 
   // i18n
   $: promptText = getPromptText($locale);
@@ -71,59 +74,64 @@
   });
 
   function initPhysics() {
-    if (!sketchbookContainer) return; // Guard clause
+    if (!sketchbookContainer) return;
+    
     const containerRect = sketchbookContainer.getBoundingClientRect();
-    const width = containerRect.width;
-    const height = 500; // Match .sketchbook height
+    containerWidth = containerRect.width;
+    containerHeight = 500;
 
-    // Create engine
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0.3; // Subtle gravity for natural droop
+    // Create engine with optimized settings
+    engine = Matter.Engine.create({
+      enableSleeping: true, // Allow bodies to sleep when inactive
+      positionIterations: 6, // Reduce from default for better performance
+      velocityIterations: 4
+    });
+    engine.gravity.y = 0.3;
 
-    // Create renderer (invisible, just for physics debugging if needed)
-    // You can set `visible: false` in production
+    // Create renderer
     render = Matter.Render.create({
       element: sketchbookContainer,
       engine: engine,
       canvas: canvasEl,
       options: {
-        width: width,
-        height: height,
+        width: containerWidth,
+        height: containerHeight,
         wireframes: false,
         background: 'transparent',
         pixelRatio: window.devicePixelRatio
       }
     });
 
-    // Page corner that user can drag (top-right of right page for forward flip)
-    const cornerX = width * 0.75; // Right side of right page
-    const cornerY = height * 0.15; // Near top
+    // Page corner that user can drag
+    const cornerX = containerWidth * 0.75;
+    const cornerY = containerHeight * 0.15;
 
     pageCornerBody = Matter.Bodies.circle(cornerX, cornerY, 30, {
       density: 0.001,
       frictionAir: 0.02,
       restitution: 0.3,
+      sleepThreshold: 60, // Allow body to sleep when still
       render: {
-        fillStyle: 'rgba(212, 201, 168, 0.3)', // Semi-transparent for visibility
+        fillStyle: 'rgba(212, 201, 168, 0.3)',
         strokeStyle: '#d4c9a8',
         lineWidth: 2
       },
       label: 'pageCorner'
     });
 
-    // Pivot point (spine of the book - left edge of right page)
-    pagePivot = Matter.Bodies.circle(width / 2, height / 2, 5, {
+    // Pivot point
+    pagePivot = Matter.Bodies.circle(containerWidth / 2, containerHeight / 2, 5, {
       isStatic: true,
       render: { visible: false }
     });
 
-    // Constraint connecting corner to pivot (like a hinge)
+    // Constraint connecting corner to pivot
     const pageConstraint = Matter.Constraint.create({
       bodyA: pagePivot,
       bodyB: pageCornerBody,
       stiffness: 0.008,
       damping: 0.05,
-      length: Math.hypot(cornerX - width/2, cornerY - height/2),
+      length: Math.hypot(cornerX - containerWidth/2, cornerY - containerHeight/2),
       render: { visible: false }
     });
 
@@ -137,12 +145,20 @@
       }
     });
 
-    // Detect drag events for forward flip
+    // Detect drag events
     Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
       if (event.body === pageCornerBody) {
         isDragging = true;
+        // Wake up the body
+        Matter.Sleeping.set(pageCornerBody, false);
+        
         if (dragSound && dragSound.paused) {
           dragSound.play().catch(() => {});
+        }
+        
+        // Start update loop only when dragging
+        if (!updateLoopId) {
+          startUpdateLoop();
         }
       }
     });
@@ -155,13 +171,13 @@
           dragSound.currentTime = 0;
         }
 
-        // Check if dragged far enough to flip forward
-        const dragDistance = width / 2 - pageCornerBody.position.x;
-        if (dragDistance > width * 0.25) { // Dragged past 25% threshold
+        // Check if dragged far enough to flip
+        const dragDistance = containerWidth / 2 - pageCornerBody.position.x;
+        if (dragDistance > containerWidth * 0.25) {
           completePage('forward');
         } else {
-          // Reset if not dragged far enough (optional)
-          // Matter.Body.setPosition(pageCornerBody, { x: cornerX, y: cornerY });
+          // Reset position
+          resetPageCorner();
         }
       }
     });
@@ -173,50 +189,77 @@
     runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
+  }
 
-    // Update loop to sync DOM with physics for the RIGHT page (forward flip)
+  function startUpdateLoop() {
     const updateLoop = () => {
-      if (!pageRightEl || !pageCornerBody || !sketchbookContainer) return;
+      if (!pageRightEl || !pageCornerBody || !sketchbookContainer) {
+        stopUpdateLoop();
+        return;
+      }
 
-      const rect = sketchbookContainer.getBoundingClientRect();
-      const currentWidth = rect.width;
-      const currentHeight = 500; // Assuming height is fixed
+      // Stop loop if not dragging and not animating
+      if (!isDragging && !isAnimating) {
+        stopUpdateLoop();
+        return;
+      }
 
-      // Calculate drag progress based on corner position relative to current width
       const cornerX = pageCornerBody.position.x;
-      const maxDrag = currentWidth / 2; // Full flip distance
-      const currentDrag = Math.max(0, (currentWidth * 0.75) - cornerX);
+      const maxDrag = containerWidth / 2;
+      const currentDrag = Math.max(0, (containerWidth * 0.75) - cornerX);
       dragProgress = Math.min(1, currentDrag / maxDrag);
 
-      // Apply transform to RIGHT page element
+      // Apply transform with will-change hint for better performance
       const rotateY = dragProgress * -180;
       pageRightEl.style.transform = `rotateY(${rotateY}deg)`;
       pageRightEl.style.boxShadow = `0 0 ${20 * dragProgress}px rgba(0,0,0,${0.4 * dragProgress})`;
 
-      requestAnimationFrame(updateLoop);
+      updateLoopId = requestAnimationFrame(updateLoop);
     };
     updateLoop();
   }
 
-  function completePage(direction) { // Accept direction parameter
+  function stopUpdateLoop() {
+    if (updateLoopId) {
+      cancelAnimationFrame(updateLoopId);
+      updateLoopId = null;
+    }
+  }
+
+  function resetPageCorner() {
+    if (pageCornerBody && sketchbookContainer) {
+      Matter.Body.setPosition(pageCornerBody, {
+        x: containerWidth * 0.75,
+        y: containerHeight * 0.15
+      });
+      Matter.Body.setVelocity(pageCornerBody, { x: 0, y: 0 });
+      
+      // Allow body to sleep after reset
+      setTimeout(() => {
+        Matter.Sleeping.set(pageCornerBody, true);
+      }, 100);
+    }
+  }
+
+  function completePage(direction) {
     let targetPage = currentPage;
-    // Calculate total pages based on artworks length
     const totalPages = artworks.length;
 
     if (direction === 'forward') {
-      if (currentPage < totalPages - 1) { // Check against actual length
+      if (currentPage < totalPages - 1) {
         targetPage = currentPage + 1;
       } else {
-        return; // Already on the last page, do nothing
+        resetPageCorner();
+        return;
       }
     } else if (direction === 'backward') {
       if (currentPage > 0) {
         targetPage = currentPage - 1;
       } else {
-        return; // Already on the first page, do nothing
+        return;
       }
     } else {
-      return; // Invalid direction
+      return;
     }
 
     // Play flip sound
@@ -225,39 +268,29 @@
       flipSound.play().catch(() => {});
     }
 
-    // Determine which page is being flipped based on direction
-    // For simplicity, assume right page flips for both directions here,
-    // but the visual effect might need adjustment for backward.
-    // A more complex setup would involve two separate physics bodies/pages.
-    const pageElementToFlip = pageRightEl; // Simplified for now
-
+    const pageElementToFlip = pageRightEl;
     if (!pageElementToFlip) return;
 
-    // Animate to full flip (simplified, assumes right page always flips visually)
-    const animateFlip = () => {
-      dragProgress += 0.05;
-      if (dragProgress >= 1) {
-        currentPage = targetPage; // Update state after animation completes
-        dragProgress = 0;
+    isAnimating = true;
+    startUpdateLoop(); // Ensure loop is running during animation
 
-        // Reset physics body position for forward flip starting point
-        if (pageCornerBody && sketchbookContainer) {
-          const rect = sketchbookContainer.getBoundingClientRect();
-          Matter.Body.setPosition(pageCornerBody, {
-            x: rect.width * 0.75,
-            y: 500 * 0.15
-          });
-          Matter.Body.setVelocity(pageCornerBody, { x: 0, y: 0 });
-        }
+    // Animate to full flip
+    let animProgress = dragProgress;
+    const animateFlip = () => {
+      animProgress += 0.05;
+      if (animProgress >= 1) {
+        currentPage = targetPage;
+        dragProgress = 0;
+        isAnimating = false;
+
+        resetPageCorner();
         return;
       }
 
-      // Apply rotation based on direction (simplified)
-      // This is where backward flip visual logic would need refinement
-      const rotateY = (direction === 'forward' ? -1 : 1) * dragProgress * 180;
+      dragProgress = animProgress;
+      const rotateY = (direction === 'forward' ? -1 : 1) * animProgress * 180;
       pageElementToFlip.style.transform = `rotateY(${rotateY}deg)`;
-      // Optional: Adjust shadow based on direction too
-      pageElementToFlip.style.boxShadow = `0 0 ${20 * dragProgress}px rgba(0,0,0,${0.4 * dragProgress})`;
+      pageElementToFlip.style.boxShadow = `0 0 ${20 * animProgress}px rgba(0,0,0,${0.4 * animProgress})`;
 
       requestAnimationFrame(animateFlip);
     };
@@ -279,51 +312,54 @@
   }
 
   onDestroy(() => {
+    // Stop update loop
+    stopUpdateLoop();
+    
+    // Clean up Matter.js
+    if (mouseConstraint) {
+      Matter.Events.off(mouseConstraint, 'startdrag');
+      Matter.Events.off(mouseConstraint, 'enddrag');
+    }
     if (render) Matter.Render.stop(render);
     if (runner) Matter.Runner.stop(runner);
     if (engine) {
       Matter.World.clear(engine.world);
       Matter.Engine.clear(engine);
     }
-    if (dragSound) dragSound.pause();
+    
+    // Stop audio
+    if (dragSound) {
+      dragSound.pause();
+      dragSound.remove();
+    }
+    if (flipSound) flipSound.remove();
+    if (selectSound) selectSound.remove();
   });
 
-  // Calculate total pages based on artworks length
   $: totalPages = artworks.length;
 
   $: currentArtwork = currentPage >= 0 && currentPage < totalPages
-    ? artworks[currentPage] // Use currentPage directly as index
+    ? artworks[currentPage]
     : null;
 
   $: previousArtwork = currentPage > 0 && currentPage - 1 < totalPages
-    ? artworks[currentPage - 1] // Use currentPage - 1 as index for previous
+    ? artworks[currentPage - 1]
     : null;
 
-// --- Helper function to get image source ---
-// Adjust this function based on your D1 schema and how image URLs are stored
-function getImageSource(artwork) {
-    // Check if the artwork object exists and has a thumbnailId (or image_id)
-    // Prioritize thumbnailId as it seems to be the field present in the data
+  function getImageSource(artwork) {
     if (artwork && artwork.thumbnailId) {
-        // Construct the Cloudflare Images URL using the thumbnailId
-        // Replace 'YOUR_CF_ACCOUNT_HASH' with the actual hash from your image delivery URL
-        const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w'; // Extracted from the README example URL
-        const VARIANT = 'thumbnail'; // Or 'gallery', 'desktop', etc., based on your setup
-
-        console.log("Constructing URL from thumbnailId:", artwork.thumbnailId); // Debug log
-        return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
+      const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
+      const VARIANT = 'thumbnail';
+      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
     }
-    // Fallback: Check if the old image_id field exists (in case data structure changes)
     if (artwork && artwork.image_id) {
-        console.log("Constructing URL from (fallback) image_id:", artwork.image_id); // Debug log
-        const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-        const VARIANT = 'thumbnail';
-        return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
+      const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
+      const VARIANT = 'thumbnail';
+      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
     }
-    // Fallback if neither field is present
-    console.warn("Could not determine image source for artwork (missing thumbnailId or image_id):", artwork);
-    return '/path/to/default/image.jpg'; // Provide a default image path
-}
+    console.warn("Could not determine image source for artwork:", artwork);
+    return '/path/to/default/image.jpg';
+  }
 
 </script>
 
@@ -343,7 +379,7 @@ function getImageSource(artwork) {
     left: 0;
     pointer-events: auto;
     z-index: 5;
-    opacity: 0; /* Set to 0 in production to hide debug view */
+    opacity: 0;
   }
 
   .sketchbook {
@@ -383,16 +419,17 @@ function getImageSource(artwork) {
     left: 0;
     border-right: 1px dotted #ccc;
     background: #fcfaf6;
-    transform-origin: right center; /* Important for 3D transform */
+    transform-origin: right center;
     transform-style: preserve-3d;
   }
 
   .page-right {
     right: 0;
     background: #fcfaf6;
-    transform-origin: left center; /* Important for 3D transform */
+    transform-origin: left center;
     transform-style: preserve-3d;
     transition: box-shadow 0.1s;
+    will-change: transform; /* Performance hint for browser */
   }
 
   .prompt-text {
@@ -421,6 +458,7 @@ function getImageSource(artwork) {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -433,13 +471,21 @@ function getImageSource(artwork) {
     object-fit: contain;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #e0d8c4;
   }
 
   .art-thumbnail img:hover {
     transform: scale(1.03);
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+
+  .sketch-title {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #4a4a3c;
+    text-align: center;
+    font-style: italic;
   }
 
   .selected-image-view {
@@ -492,7 +538,6 @@ function getImageSource(artwork) {
     opacity: 0;
   }
 
-  /* Navigation Arrows */
   .nav-arrow {
     position: absolute;
     top: 50%;
@@ -545,17 +590,6 @@ function getImageSource(artwork) {
       height: 40px;
       font-size: 1.5rem;
     }
-  }
-
-  .sketchbook::before {
-    content: "";
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 40px;
-    height: 40px;
-    opacity: 0.08;
-    pointer-events: none;
   }
 </style>
 
