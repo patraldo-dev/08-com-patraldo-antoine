@@ -18,12 +18,6 @@
     selectedArtwork = null;
   }
 
-  // Add placeholder images for artworks
-  $: displayArtworks = data?.artworks?.map(artwork => ({
-    ...artwork,
-    thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
-  })) || [];
-
 
 // Title handling
   $: siteTitle = $t('site.title');
@@ -63,7 +57,7 @@
   <section id="work" class="sketchbook-section">
     {#if displayArtworks.length > 0}
       <Sketchbook
-        artworks={displayArtworks}
+        artworks={data.artworks}
         on:selectArtwork={handleSelectArtwork}
       />
     {:else}
