@@ -595,11 +595,11 @@ sketchbookContainer.appendChild(cornerIndicator);
         {#if currentPage > 0 && previousArtwork} 
           <div class="art-thumbnail previous" on:click={(e) => selectImage(e, previousArtwork)}>
             <img
-              src={getImageSource(previousArtwork)} 
+              src={getImageSource(previousArtwork)}
               alt={previousArtwork.display_name || previousArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch.display_name">{previousArtwork.display_name}</div>
+            <div class="sketch.display_name">{previousArtwork.display_name || previousArtwork.title}</div>
           </div>
         {:else}
           <div class="prompt-text">{promptText}</div>
@@ -615,11 +615,11 @@ sketchbookContainer.appendChild(cornerIndicator);
         {#if currentArtwork}
           <div class="art-thumbnail" on:click={(e) => selectImage(e, currentArtwork)}>
             <img
-              src={getImageSource(currentArtwork)} 
+              src={getImageSource(currentArtwork)}
               alt={currentArtwork.display_name || currentArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch.display_name">{currentArtwork.display_name}</div>
+            <div class="sketch.display_name">{currentArtwork.display_name || currentArtwork.title}</div>
           </div>
         {:else}
           <span class="placeholder">...</span>
