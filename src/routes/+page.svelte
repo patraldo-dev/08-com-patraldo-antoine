@@ -18,11 +18,6 @@
     selectedArtwork = null;
   }
 
-  // Add placeholder images for artworks
-  $: displayArtworks = data?.artworks?.map(artwork => ({
-    ...artwork,
-    thumbnailUrl: artwork.thumbnailUrl || `https://picsum.photos/400/300?random=${artwork.id}`
-  })) || [];
 
 // Title handling
   $: siteTitle = $t('site.title');
