@@ -330,18 +330,20 @@
 
   // Use 'gallery' variant for better quality (larger than thumbnail)
   function getImageSource(artwork) {
+    // Try thumbnailId first (from your page.server.js transform)
     if (artwork && artwork.thumbnailId) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
       const VARIANT = 'gallery'; // Changed from 'thumbnail' to 'gallery'
       return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
     }
+    // Fallback to image_id (direct from database)
     if (artwork && artwork.image_id) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
       const VARIANT = 'gallery';
       return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
     }
     console.warn("Could not determine image source for artwork:", artwork);
-    return '/path/to/default/image.jpg';
+    return null;
   }
 
 </script>

@@ -10,7 +10,7 @@ export async function load({ platform }) {
       return { artworks: [] };
     }
 
-    // Query using YOUR actual schema
+    // Query including new story fields
     const result = await db
       .prepare(`
         SELECT 
@@ -23,7 +23,9 @@ export async function load({ platform }) {
           description,
           year,
           featured,
-          published
+          published,
+          story_enabled,
+          story_intro
         FROM artworks
         WHERE published = 1
         ORDER BY order_index DESC, year DESC
@@ -34,7 +36,7 @@ export async function load({ platform }) {
     const artworks = result.results.map(artwork => {
       // Build Cloudflare Images URL from image_id
       const thumbnailUrl = artwork.image_id 
-        ? `https://imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
+        ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/thumbnail`
         : null;
       
       return {
@@ -45,13 +47,17 @@ export async function load({ platform }) {
         thumbnailId: artwork.image_id,
         thumbnailUrl: thumbnailUrl,
         videoId: artwork.video_id,
+        video_id: artwork.video_id, // Keep both for compatibility
+        image_id: artwork.image_id,  // Keep both for compatibility
         date: artwork.year ? `${artwork.year}-01-01` : null,
-        story: null, // You don't have this column yet
-        tags: [] // You don't have this column yet
+        year: artwork.year,
+        story_enabled: artwork.story_enabled || false,
+        story_intro: artwork.story_intro || null,
+        tags: [] // Will be populated from story view if needed
       };
     });
 
-    console.log(`Loaded ${artworks.length} artworks`);
+    console.log(`Loaded ${artworks.length} artworks (${artworks.filter(a => a.story_enabled).length} with stories)`);
     return { artworks };
     
   } catch (error) {

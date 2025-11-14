@@ -12,6 +12,7 @@
   let imageError = false;
   let scrollY = 0;
   let contentEl;
+  let storyContent = [];
   
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
@@ -28,10 +29,16 @@
     }
   }
   
-  onMount(() => {
+  onMount(async () => {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = 'hidden';
     }
+    
+    // Fetch story content if story is enabled
+    if (artwork.story_enabled) {
+      await fetchStoryContent();
+    }
+    
     return () => {
       if (typeof document !== 'undefined') {
         document.body.style.overflow = '';
@@ -39,11 +46,26 @@
     };
   });
   
-  $: imageUrl = artwork.type === 'still' && artwork.thumbnailId
-    ? createImageUrl(artwork.thumbnailId, 'desktop')
-    : artwork.imageUrl;
+  async function fetchStoryContent() {
+    try {
+      // Fetch from your API endpoint
+      const response = await fetch(`/api/story/${artwork.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        storyContent = data.content || [];
+      }
+    } catch (error) {
+      console.error('Failed to load story content:', error);
+    }
+  }
+  
+  $: heroImageUrl = artwork.type === 'still' && artwork.image_id
+    ? createImageUrl(artwork.image_id, 'desktop')
+    : null;
     
   $: parallaxOffset = scrollY * 0.3;
+  
+  $: hasStoryContent = storyContent.length > 0;
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -53,20 +75,24 @@
     <span class="close-icon">←</span>
     <span class="close-text">Back to sketchbook</span>
   </button>
-
-  <div class="story-content" bind:this={contentEl} on:scroll={(e) => scrollY = e.target.scrollTop}>
-    <!-- Hero Image with Parallax -->
+  
+  <div 
+    class="story-content" 
+    bind:this={contentEl} 
+    on:scroll={(e) => scrollY = e.target.scrollTop}
+  >
+    <!-- Hero Section -->
     <div class="hero-section" style="transform: translateY({parallaxOffset}px)">
-      {#if artwork.type === 'animation' && artwork.videoId}
+      {#if artwork.type === 'animation' && artwork.video_id}
         <div class="video-container">
           <iframe
             title="Video: {artwork.title}"
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.videoId}/iframe?poster={encodeURIComponent(artwork.thumbnailUrl || '')}"
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
             allowfullscreen
           ></iframe>
         </div>
-      {:else}
+      {:else if heroImageUrl}
         {#if isLoading}
           <div class="loading-state">
             <div class="sketch-loader"></div>
@@ -81,7 +107,7 @@
           </div>
         {:else}
           <img
-            src={imageUrl}
+            src={heroImageUrl}
             alt={artwork.title}
             class:loading={isLoading}
             on:load={() => isLoading = false}
@@ -93,8 +119,8 @@
         {/if}
       {/if}
     </div>
-
-    <!-- Story Content with Ink Reveal -->
+    
+    <!-- Story Title & Meta -->
     <div class="story-text">
       <InkReveal>
         <h1>{artwork.title}</h1>
@@ -102,32 +128,72 @@
       
       <InkReveal delay={200}>
         <div class="meta">
-          <span class="date">{artwork.date || 'Recently'}</span>
+          <span class="date">{artwork.year || 'Recently'}</span>
           <span class="type-badge {artwork.type}">
-            {#if artwork.type === 'still'}📷
-            {:else if artwork.type === 'animation'}🎬
-            {:else if artwork.type === 'gif'}🎭
+            {#if artwork.type === 'still'}📷 Still
+            {:else if artwork.type === 'animation'}🎬 Animation
+            {:else if artwork.type === 'gif'}🎭 GIF
             {/if}
           </span>
         </div>
       </InkReveal>
       
+      <!-- Main Description -->
       <InkReveal delay={400}>
         <div class="description">
           {artwork.description}
         </div>
       </InkReveal>
       
-      {#if artwork.story}
+      <!-- Story Intro (if exists) -->
+      {#if artwork.story_intro}
         <InkReveal delay={600}>
-          <div class="full-story">
-            {artwork.story}
+          <div class="story-intro">
+            {artwork.story_intro}
           </div>
         </InkReveal>
       {/if}
       
+      <!-- Multi-media Story Content -->
+      {#if hasStoryContent}
+        {#each storyContent as item, index}
+          <InkReveal delay={800 + (index * 200)}>
+            <div class="story-block {item.content_type}">
+              {#if item.content_type === 'heading'}
+                <h2 class="story-heading">{item.content_text}</h2>
+                
+              {:else if item.content_type === 'text'}
+                <div class="story-paragraph">
+                  {item.content_text}
+                </div>
+                
+              {:else if item.content_type === 'image' && item.media_id}
+                <div class="story-image">
+                  <img 
+                    src={createImageUrl(item.media_id, 'desktop')} 
+                    alt="Story illustration"
+                    loading="lazy"
+                  />
+                </div>
+                
+              {:else if item.content_type === 'video' && item.video_id}
+                <div class="story-video">
+                  <iframe
+                    title="Story video clip"
+                    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{item.video_id}/iframe"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              {/if}
+            </div>
+          </InkReveal>
+        {/each}
+      {/if}
+      
+      <!-- Tags (if you implement them) -->
       {#if artwork.tags && artwork.tags.length > 0}
-        <InkReveal delay={800}>
+        <InkReveal delay={1000 + (storyContent.length * 200)}>
           <div class="tags">
             {#each artwork.tags as tag}
               <span class="tag">#{tag}</span>
@@ -150,7 +216,7 @@
     z-index: 100;
     overflow: hidden;
   }
-
+  
   .close-btn {
     position: fixed;
     top: 2rem;
@@ -168,30 +234,30 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
   }
-
+  
   .close-btn:hover {
     background: white;
     transform: translateX(-5px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
-
+  
   .close-icon {
     font-size: 1.5rem;
     color: #2c5e3d;
   }
-
+  
   .close-text {
     font-size: 0.9rem;
     color: #4a4a3c;
   }
-
+  
   .story-content {
     width: 100%;
     height: 100vh;
     overflow-y: auto;
     scroll-behavior: smooth;
   }
-
+  
   .hero-section {
     width: 100%;
     height: 70vh;
@@ -202,7 +268,7 @@
     overflow: hidden;
     background: linear-gradient(180deg, rgba(212, 201, 168, 0.1) 0%, transparent 100%);
   }
-
+  
   .hero-section img {
     max-width: 90%;
     max-height: 90%;
@@ -213,11 +279,11 @@
     opacity: 1;
     transition: opacity 0.6s ease;
   }
-
+  
   .hero-section img.loading {
     opacity: 0;
   }
-
+  
   .video-container {
     width: 90%;
     max-width: 1200px;
@@ -227,20 +293,20 @@
     border-radius: 4px;
     overflow: hidden;
   }
-
+  
   .video-container iframe {
     width: 100%;
     height: 100%;
     border: none;
   }
-
+  
   .loading-state {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
+  
   .sketch-loader {
     width: 60px;
     height: 60px;
@@ -249,11 +315,11 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
+  
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
+  
   .error-message {
     position: absolute;
     top: 50%;
@@ -265,12 +331,12 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
-
+  
   .error-message p {
     margin: 0 0 1rem;
     color: #4a4a3c;
   }
-
+  
   .retry-btn {
     padding: 0.5rem 1rem;
     background: #2c5e3d;
@@ -280,17 +346,17 @@
     cursor: pointer;
     font-family: inherit;
   }
-
+  
   .retry-btn:hover {
     background: #234a31;
   }
-
+  
   .story-text {
     max-width: 700px;
     margin: 0 auto;
     padding: 3rem 2rem 5rem;
   }
-
+  
   .story-text h1 {
     font-family: 'Georgia', serif;
     font-size: 2.5rem;
@@ -298,7 +364,7 @@
     margin-bottom: 1rem;
     line-height: 1.2;
   }
-
+  
   .meta {
     display: flex;
     align-items: center;
@@ -307,42 +373,94 @@
     padding-bottom: 1rem;
     border-bottom: 1px dotted #d4c9a8;
   }
-
+  
   .date {
     font-style: italic;
     color: #666;
     font-size: 0.9rem;
   }
-
+  
   .type-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.85rem;
   }
-
-  .type-badge.still { background: #e3f2fd; }
-  .type-badge.animation { background: #e8f5e9; }
-  .type-badge.gif { background: #fff3e0; }
-
-  .description, .full-story {
+  
+  .type-badge.still { background: #e3f2fd; color: #1976d2; }
+  .type-badge.animation { background: #e8f5e9; color: #388e3c; }
+  .type-badge.gif { background: #fff3e0; color: #f57c00; }
+  
+  .description, .story-intro {
     font-family: 'Georgia', serif;
     font-size: 1.1rem;
     line-height: 1.8;
     color: #4a4a3c;
     margin-bottom: 2rem;
   }
-
-  .full-story {
+  
+  .story-intro {
+    font-style: italic;
+    padding-left: 1rem;
+    border-left: 3px solid #d4c9a8;
+  }
+  
+  /* Story Content Blocks */
+  .story-block {
+    margin-bottom: 2rem;
+  }
+  
+  .story-heading {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    color: #2c5e3d;
+    margin: 2.5rem 0 1rem;
+    font-weight: 600;
+  }
+  
+  .story-paragraph {
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4a4a3c;
     white-space: pre-wrap;
   }
-
+  
+  .story-image {
+    margin: 2rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .story-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .story-video {
+    margin: 2rem 0;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .story-video iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  
   .tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dotted #d4c9a8;
   }
-
+  
   .tag {
     background: rgba(212, 201, 168, 0.3);
     padding: 0.25rem 0.75rem;
@@ -350,7 +468,7 @@
     font-size: 0.85rem;
     color: #4a4a3c;
   }
-
+  
   @media (max-width: 768px) {
     .close-btn {
       top: 1rem;
@@ -362,12 +480,24 @@
       display: none;
     }
     
+    .hero-section {
+      height: 50vh;
+    }
+    
     .story-text h1 {
       font-size: 1.8rem;
     }
     
     .story-text {
       padding: 2rem 1.5rem 3rem;
+    }
+    
+    .story-heading {
+      font-size: 1.4rem;
+    }
+    
+    .story-paragraph {
+      font-size: 1rem;
     }
   }
 </style>
