@@ -217,7 +217,7 @@ body main {
 
 /* Pull sketchbook section up slightly */
 .sketchbook-section {
-  margin-top: -1.5rem; /* negative margin lifts it closer to hero */
+  margin-top: -3.5rem; /* negative margin lifts it closer to hero */
   padding-bottom: var(--space-xl);
 }
 
