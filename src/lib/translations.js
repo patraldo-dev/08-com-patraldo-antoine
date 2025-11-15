@@ -37,9 +37,10 @@ const config = {
     { locale: 'fr-CA', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/fr-CA/pages/admin.json') },
 
     // STORYBOOK PAGES
-{ locale: 'es-MX', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/es-MX/pages/stories.json') },
-{ locale: 'en-US', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/en-US/pages/stories.json') },
-{ locale: 'fr-CA', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/fr-CA/pages/stories.json') },
+{ locale: 'es-MX', key: 'pages.stories', routes: ['/stories', '/stories/*'], loader: () => import('./locales/es-MX/pages/stories.json') },
+{ locale: 'en-US', key: 'pages.stories', routes: ['/stories'  '/stories/*'], loader: () => import('./locales/en-US/pages/stories.json') },
+{ locale: 'fr-CA', key: 'pages.stories', routes: ['/stories', '/stories/*'], loader: () => import('./locales/fr-CA/pages/stories.json') },
+
 
   ],
 };
