@@ -1,14 +1,19 @@
 {
   "meta": {
-    "title": "About",
-    "description": "Learn more about Antoine and his creative journey"
+    "title": "Home",
+    "description": "Welcome to my digital sketchbook"
   },
   "hero": {
-    "title": "The Artist's Journey",
-    "subtitle": "Every sketch tells a story"
+    "title": "Welcome to my sketchbook",
+    "subtitle": "A drawing each day. A story each week."
   },
-  "content": {
+  "about": {
+    "title": "The Artist's Journey",
     "p1": "As an artist, I believe in the power of daily practice and continuous exploration. Each sketch in my collection represents a moment of discovery, a question asked through pencil and paper.",
-    "p2": "My work blends traditional illustration techniques with modern AI-assisted tools, creating a unique dialogue between human creativity and technological possibility. Through this digital sketchbook, I invite you to experience the stories behind each piece."
+    "p2": "My work blends traditional illustration techniques with modern AI-assisted tools, creating a unique dialogue between human creativity and technological possibility. Click on any artwork to explore the story behind it."
+  },
+  "signup": {
+    "title": "Stay Updated",
+    "description": "Receive new stories and sketches"
   }
 }

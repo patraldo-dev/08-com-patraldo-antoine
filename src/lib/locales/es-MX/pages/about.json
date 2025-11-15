@@ -1,14 +1,19 @@
 {
   "meta": {
-    "title": "Acerca de",
-    "description": "Conoce más sobre Antoine y su viaje creativo"
+    "title": "Inicio",
+    "description": "Bienvenido a mi cuaderno digital"
   },
   "hero": {
-    "title": "El Viaje del Artista",
-    "subtitle": "Cada boceto cuenta una historia"
+    "title": "Bienvenido a mi cuaderno",
+    "subtitle": "Un dibujo cada día. Una historia cada semana."
   },
-  "content": {
+  "about": {
+    "title": "El Viaje del Artista",
     "p1": "Como artista, creo en el poder de la práctica diaria y la exploración continua. Cada boceto en mi colección representa un momento de descubrimiento, una pregunta formulada a través del lápiz y el papel.",
-    "p2": "Mi trabajo combina técnicas tradicionales de ilustración con herramientas modernas asistidas por IA, creando un diálogo único entre la creatividad humana y la posibilidad tecnológica. A través de este cuaderno digital, te invito a experimentar las historias detrás de cada pieza."
+    "p2": "Mi trabajo combina técnicas tradicionales de ilustración con herramientas modernas asistidas por IA, creando un diálogo único entre la creatividad humana y la posibilidad tecnológica. Haz clic en cualquier obra para explorar la historia detrás de ella."
+  },
+  "signup": {
+    "title": "Mantente Actualizado",
+    "description": "Recibe nuevas historias y bocetos"
   }
 }
