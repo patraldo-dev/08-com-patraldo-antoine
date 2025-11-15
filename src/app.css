@@ -186,57 +186,52 @@ body main {
    HOME PAGE: Hero & Sketchbook Adjustments
    ─────────────────────────────────────── */
 
-/* Reduce hero height on home page (not the About video hero) */
-
 .hero-simple {
-  min-height: 12vh; /* Reduce from 30vh */
+  min-height: 12vh; /* Drastically reduced */
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.1rem 1rem 0.3rem; /* Reduce bottom padding */
+  padding: 0.1rem 1rem 0.3rem; /* Minimal padding */
   text-align: center;
-border: 2px solid red;
-
+  border: 2px solid red; /* Keep for debugging */
 }
 
 .hero-simple .hero-content {
   max-width: 90%;
   text-align: center;
-  margin-top: -1rem; /* Add negative margin to pull content up */
+  margin-top: -0.5rem; /* Small pull-up */
 }
 
 .hero-simple .hero-content h1 {
   font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 300;
   line-height: 1.2;
-  margin-bottom: 0.5rem; /* Use positive smaller margin */
+  margin-bottom: 0.25rem; /* Tight spacing */
 }
 
 .hero-simple .hero-content .subtitle {
   font-size: clamp(1rem, 4vw, 1.3rem);
   font-weight: 200;
   opacity: 0.85;
-  margin-top: 0; /* Reset to 0 */
-  margin-bottom: 0.5rem; /* Use positive smaller margin */
+  margin: 0; /* Remove all margins */
 }
 
-/* Pull sketchbook section up slightly */
+/* Pull sketchbook section up significantly */
 .sketchbook-section {
-  margin-top: -10.5rem; /* negative margin lifts it closer to hero */
+  margin-top: -8rem; /* Adjust based on new hero size */
   padding-bottom: var(--space-xl);
+  border: 2px solid blue; /* Keep for debugging */
 }
 
-/* Ensure sketchbook doesn’t get squeezed on mobile */
+/* Mobile adjustments */
 @media (max-width: 768px) {
   .hero-simple {
-    min-height: 30vh;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    min-height: 15vh; /* Much smaller on mobile too */
+    padding: 0.1rem 1rem 0.2rem;
   }
 
   .sketchbook-section {
-    margin-top: -2rem; /* Adjust accordingly */
-border: 2px solid blue;
+    margin-top: -4rem; /* Adjust for mobile */
   }
 }
