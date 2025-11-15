@@ -181,57 +181,53 @@ body main {
     transition-duration: 0.01ms !important;
   }
 }
-
-/* ───────────────────────────────────────
-   HOME PAGE: Hero & Sketchbook Adjustments
-   ─────────────────────────────────────── */
-
 .hero-simple {
-  min-height: 12vh; /* Drastically reduced */
+  min-height: 0 !important; /* Remove min-height completely */
+  height: auto !important;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.1rem 1rem 0.3rem; /* Minimal padding */
+  padding: 0.5rem 1rem 0.5rem !important; /* Equal tiny padding */
   text-align: center;
-  border: 2px solid red; /* Keep for debugging */
+  border: 2px solid red;
 }
 
 .hero-simple .hero-content {
   max-width: 90%;
   text-align: center;
-  margin-top: -0.5rem; /* Small pull-up */
+  padding: 0.5rem 0 !important; /* Internal padding only */
+  margin: 0 !important; /* Remove all margins */
 }
 
 .hero-simple .hero-content h1 {
   font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 300;
-  line-height: 1.2;
-  margin-bottom: 0.25rem; /* Tight spacing */
+  line-height: 1.1 !important; /* Tighter */
+  margin: 0 0 0.25rem 0 !important;
 }
 
 .hero-simple .hero-content .subtitle {
   font-size: clamp(1rem, 4vw, 1.3rem);
   font-weight: 200;
   opacity: 0.85;
-  margin: 0; /* Remove all margins */
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* Pull sketchbook section up significantly */
 .sketchbook-section {
-  margin-top: -8rem; /* Adjust based on new hero size */
-  padding-bottom: var(--space-xl);
-  border: 2px solid blue; /* Keep for debugging */
+  margin-top: -2rem !important; /* Start small and adjust */
+  border: 2px solid blue;
 }
 
-/* Mobile adjustments */
 @media (max-width: 768px) {
   .hero-simple {
-    min-height: 15vh; /* Much smaller on mobile too */
-    padding: 0.1rem 1rem 0.2rem;
+    min-height: 0 !important;
+    padding: 0.25rem 1rem 0.25rem !important;
   }
-
+  
   .sketchbook-section {
-    margin-top: -4rem; /* Adjust for mobile */
+    margin-top: -1rem !important;
   }
 }
