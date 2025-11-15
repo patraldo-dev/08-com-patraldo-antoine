@@ -189,13 +189,15 @@ body main {
 /* Reduce hero height on home page (not the About video hero) */
 
 .hero-simple {
-  min-height: 20vh; /* Reduce from 30vh */
+  min-height: 12vh; /* Reduce from 30vh */
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.5rem 1rem 1rem; /* Reduce bottom padding */
+  padding: 0.1rem 1rem 0.3rem; /* Reduce bottom padding */
   text-align: center;
+border: 2px solid red;
+
 }
 
 .hero-simple .hero-content {
@@ -235,5 +237,6 @@ body main {
 
   .sketchbook-section {
     margin-top: -2rem; /* Adjust accordingly */
+border: 2px solid blue;
   }
 }
