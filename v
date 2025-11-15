@@ -28,13 +28,8 @@ const config = {
     { locale: 'en-US', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/en-US/pages/contact.json') },
     { locale: 'fr-CA', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/fr-CA/pages/contact.json') },
 
-    { locale: 'es-MX', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/es-MX/pages/privacy.json') },
-    { locale: 'en-US', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/en-US/pages/privacy.json') },
-    { locale: 'fr-CA', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/fr-CA/pages/privacy.json') },
 
-    { locale: 'es-MX', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/es-MX/pages/admin.json') },
-    { locale: 'en-US', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/en-US/pages/admin.json') },
-    { locale: 'fr-CA', key: 'pages.admin', routes: ['/admin'], loader: () => import('./locales/fr-CA/pages/admin.json') },
+
 
     // STORYBOOK PAGES
 { locale: 'es-MX', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/es-MX/pages/stories.json') },
@@ -45,3 +40,4 @@ const config = {
 };
 
 export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
+
