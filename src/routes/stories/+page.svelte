@@ -10,6 +10,8 @@
   let selectedStory = null;
   
   function openStory(story) {
+  console.log('Opening story:', story); // Add this
+
     selectedStory = story;
   }
   
