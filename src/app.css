@@ -199,7 +199,7 @@ body main {
 }
 
 .hero-simple .hero-content {
-  max-width: 90%;
+    max-width: 90%;
   text-align: center;
 }
 
@@ -207,13 +207,17 @@ body main {
   font-size: clamp(1.8rem, 6vw, 2.8rem); /* scales down on mobile */
   font-weight: 300;
   line-height: 1.2;
-  margin-bottom: 0.75rem;
+  margin-top: -1rem;
+  margin-bottom: -0.75rem;
 }
 
 .hero-simple .hero-content .subtitle {
   font-size: clamp(1rem, 4vw, 1.3rem);
   font-weight: 200;
   opacity: 0.85;
+  margin-top: -1rem;
+  margin-bottom: -0.75rem;
+
 }
 
 /* Pull sketchbook section up slightly */
