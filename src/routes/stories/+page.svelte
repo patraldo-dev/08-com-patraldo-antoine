@@ -51,7 +51,13 @@
         </div>
       {:else}
         {#each stories as story}
-          <article class="story-card" on:click={() => openStory(story)}>
+<article
+    class="story-card"
+    on:click={() => openStory(story)}
+    on:keydown={(e) => e.key === 'Enter' && openStory(story)}
+    role="button"
+    tabindex="0"
+  >
             <div class="story-image">
               <img 
                 src={getImageUrl(story)} 
