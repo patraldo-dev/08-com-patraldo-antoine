@@ -1,5 +1,7 @@
 {
   "title": "Histoires",
   "subtitle": "Chaque œuvre a une histoire. Plongez dans le processus créatif derrière chaque pièce.",
-  "noStories": "Aucune histoire disponible pour le moment. Revenez bientôt!"
+  "noStories": "Aucune histoire disponible pour le moment. Revenez bientôt!",
+  "readStory": "Lire l'Histoire"
+
 }

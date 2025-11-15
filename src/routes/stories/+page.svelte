@@ -57,7 +57,7 @@
                 loading="lazy"
               />
               <div class="story-overlay">
-                <span class="read-story">Read Story →</span>
+                <span class="read-story">{$t('pages.stories.readStory')}→</span>
               </div>
             </div>
             
