@@ -2,21 +2,14 @@
 <script>
   import { t } from '$lib/translations';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
-  import StoryView from '$lib/components/StoryView.svelte';
+  import { goto } from '$app/navigation';
   
   let { data } = $props();
   const { stories } = data;
   
-  let selectedStory = null;
-  
   function openStory(story) {
-  console.log('Opening story:', story); // Add this
-
-    selectedStory = story;
-  }
-  
-  function closeStory() {
-    selectedStory = null;
+    console.log('Opening story:', story);
+    goto(`/story/${story.id}`);
   }
   
   function getImageUrl(story) {
@@ -32,60 +25,53 @@
   <meta name="description" content="Explore the stories behind each artwork" />
 </svelte:head>
 
-{#if selectedStory}
-  <StoryView 
-    artwork={selectedStory}
-    on:close={closeStory}
-  />
-{:else}
-  <div class="stories-page">
-    <div class="hero">
-      <h1>{$t('pages.stories.title')}</h1>
-      <p class="subtitle">{$t('pages.stories.subtitle')}</p>
-    </div>
-    
-    <div class="stories-grid layout">
-      {#if stories.length === 0}
-        <div class="no-stories">
-          <p>{$t('pages.stories.noStories')}</p>
-        </div>
-      {:else}
-        {#each stories as story}
-<article
-    class="story-card"
-    on:click={() => openStory(story)}
-    on:keydown={(e) => e.key === 'Enter' && openStory(story)}
-    role="button"
-    tabindex="0"
-  >
-            <div class="story-image">
-              <img 
-                src={getImageUrl(story)} 
-                alt={story.display_name || story.title}
-                loading="lazy"
-              />
-              <div class="story-overlay">
-                <span class="read-story">{$t('pages.stories.readStory')}→</span>
-              </div>
-            </div>
-            
-            <div class="story-info">
-              <h2>{story.display_name || story.title}</h2>
-              {#if story.story_intro}
-                <p class="intro">{story.story_intro}</p>
-              {:else}
-                <p class="description">{story.description}</p>
-              {/if}
-              {#if story.year}
-                <span class="year">{story.year}</span>
-              {/if}
-            </div>
-          </article>
-        {/each}
-      {/if}
-    </div>
+<div class="stories-page">
+  <div class="hero">
+    <h1>{$t('pages.stories.title')}</h1>
+    <p class="subtitle">{$t('pages.stories.subtitle')}</p>
   </div>
-{/if}
+  
+  <div class="stories-grid layout">
+    {#if stories.length === 0}
+      <div class="no-stories">
+        <p>{$t('pages.stories.noStories')}</p>
+      </div>
+    {:else}
+      {#each stories as story}
+        <article
+          class="story-card"
+          on:click={() => openStory(story)}
+          on:keydown={(e) => e.key === 'Enter' && openStory(story)}
+          role="button"
+          tabindex="0"
+        >
+          <div class="story-image">
+            <img 
+              src={getImageUrl(story)} 
+              alt={story.display_name || story.title}
+              loading="lazy"
+            />
+            <div class="story-overlay">
+              <span class="read-story">{$t('pages.stories.readStory')}→</span>
+            </div>
+          </div>
+          
+          <div class="story-info">
+            <h2>{story.display_name || story.title}</h2>
+            {#if story.story_intro}
+              <p class="intro">{story.story_intro}</p>
+            {:else}
+              <p class="description">{story.description}</p>
+            {/if}
+            {#if story.year}
+              <span class="year">{story.year}</span>
+            {/if}
+          </div>
+        </article>
+      {/each}
+    {/if}
+  </div>
+</div>
 
 <style>
   .stories-page {
