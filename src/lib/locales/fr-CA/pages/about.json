@@ -1,1 +1,14 @@
-{}
+{
+  "meta": {
+    "title": "À propos",
+    "description": "Découvrez Antoine et son parcours créatif"
+  },
+  "hero": {
+    "title": "Le Voyage de l'Artiste",
+    "subtitle": "Chaque esquisse raconte une histoire"
+  },
+  "content": {
+    "p1": "En tant qu'artiste, je crois au pouvoir de la pratique quotidienne et de l'exploration continue. Chaque esquisse de ma collection représente un moment de découverte, une question posée à travers le crayon et le papier.",
+    "p2": "Mon travail mélange des techniques d'illustration traditionnelles avec des outils modernes assistés par l'IA, créant un dialogue unique entre la créativité humaine et les possibilités technologiques. À travers ce carnet de croquis numérique, je vous invite à découvrir les histoires derrière chaque pièce."
+  }
+}
