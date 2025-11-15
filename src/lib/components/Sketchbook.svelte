@@ -491,7 +491,7 @@ sketchbookContainer.appendChild(cornerIndicator);
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
 
-  .sketch.display_name {
+  .sketch.title{
     font-size: 1rem; /* Slightly increased */
     color: #4a4a3c;
     text-align: center;
@@ -567,7 +567,7 @@ sketchbookContainer.appendChild(cornerIndicator);
       font-size: 1rem;
     }
 
-    .sketch.display_name {
+    .sketch.title{
       font-size: 0.9rem;
     }
 
@@ -617,7 +617,7 @@ sketchbookContainer.appendChild(cornerIndicator);
               alt={previousArtwork.display_name || previousArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch.display_name">{previousArtwork.display_name || previousArtwork.title}</div>
+            <div class="sketch.title">{previousArtwork.display_name || previousArtwork.title}</div>
           </div>
         {:else}
           <div class="prompt-text">{promptText}</div>
@@ -637,7 +637,7 @@ sketchbookContainer.appendChild(cornerIndicator);
               alt={currentArtwork.display_name || currentArtwork.title}
               title="Click to explore this story"
             >
-            <div class="sketch.display_name">{currentArtwork.display_name || currentArtwork.title}</div>
+            <div class="sketch.title">{currentArtwork.display_name || currentArtwork.title}</div>
           </div>
         {:else}
           <span class="placeholder">...</span>
