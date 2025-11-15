@@ -141,6 +141,7 @@
     aspect-ratio: 4/3;
     overflow: hidden;
     background: #f5f5f5;
+    pointer-events: none;
   }
   
   .story-image img {
@@ -148,6 +149,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    pointer-events: none;
   }
   
   .story-card:hover .story-image img {
