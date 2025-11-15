@@ -1,8 +1,10 @@
-{ 
-"stories":
 {
-  "title": "Historias",
-  "subtitle": "Cada obra tiene una historia. Sumérgete en el proceso creativo detrás de cada pieza.",
-  "noStories": "Aún no hay historias disponibles. ¡Vuelve pronto!"
+  "pages": {
+    "stories": {
+      "title": "Historias",
+      "subtitle": "Cada obra tiene una historia. Sumérgete en el proceso creativo detrás de cada pieza.",
+      "noStories": "Aún no hay historias disponibles. ¡Vuelve pronto!"
+    }
+  }
 }
-}
+
