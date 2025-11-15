@@ -277,4 +277,9 @@
       padding: 0 1rem;
     }
   }
+
+/* Negate the main margin for full-height hero */
+  :global(main) {
+    margin-top: 0 !important;
+  }
 </style>
