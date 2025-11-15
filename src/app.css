@@ -181,23 +181,22 @@ body main {
     transition-duration: 0.01ms !important;
   }
 }
-
-hero-simple {
-  min-height: 0 !important;
+.hero-simple {
+  min-height: 0 !important; /* Remove min-height completely */
   height: auto !important;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.5rem 1rem 1.5rem !important; /* Increased bottom padding */
+  padding: 0.5rem 1rem 0.5rem !important; /* Equal tiny padding */
   text-align: center;
 }
 
 .hero-simple .hero-content {
   max-width: 90%;
   text-align: center;
-  padding: 0.5rem 0 !important;
-  margin: 0 !important;
+  padding: 0.5rem 0 !important; /* Internal padding only */
+  margin: 0 !important; /* Remove all margins */
 }
 
 .hero-simple .hero-content h1 {
@@ -213,19 +212,20 @@ hero-simple {
   opacity: 0.85;
   line-height: 1.1 !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 0 1 0 !important;
 }
 
 .sketchbook-section {
-  margin-top: -6rem !important; /* Reduce the negative margin since we added hero padding */
+  margin-top: -2rem !important; /* Start small and adjust */
 }
 
 @media (max-width: 768px) {
   .hero-simple {
-    padding: 0.25rem 1rem 1rem !important; /* Less bottom padding on mobile */
+    min-height: 0 !important;
+    padding: 0.25rem 1rem 0.25rem !important;
   }
   
   .sketchbook-section {
-    margin-top: -3rem !important; /* Adjust for mobile */
+    margin-top: -1rem !important;
   }
 }
