@@ -187,6 +187,7 @@ body main {
    ─────────────────────────────────────── */
 
 /* Reduce hero height on home page (not the About video hero) */
+
 .hero-simple {
   min-height: 30vh;
   display: flex;
