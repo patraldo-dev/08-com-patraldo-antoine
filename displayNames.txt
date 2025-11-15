@@ -3,56 +3,80 @@
 ─────────────────────────────────────────────
 🌀 Executing on remote database antoine-artworks (3598ab99-fd4f-410d-a6bc-55e4958dc158):
 🌀 To execute on your local development database, remove the --remote flag from your wrangler command.
-🚣 Executed 1 command in 0.3375ms
+🚣 Executed 1 command in 0.2425ms
 [
   {
     "results": [
       {
         "id": 8,
+        "video_id":  31183205f42a6a08f734d9372265970f,
+        "display_name": "Gremelda",
         "title": "MujerFaceAntoine"
       },
       {
         "id": 9,
+        "video_id":  4079cdc48177fdc23a8fbc6794cac721,
+        "display_name": "El Rey Azul",
         "title": "BlueAlienKing"
       },
       {
         "id": 10,
+        "video_id":  67ecabff13021edd267ee495691aa81e,
+        "display_name": "El Rey Verde",
         "title": "GreenAlienKing"
       },
       {
         "id": 11,
+        "video_id":  5a16fa61d136782f54197822dd73a73e,
+        "display_name": "El Rey Amarillo",
         "title": "YellowAlienKing"
       },
       {
         "id": 12,
+        "video_id":  afde66c213db4dd1d64171d872450533,
+        "display_name": "El Rey Castaño",
         "title": "BrownAlienKing"
       },
       {
         "id": 13,
+        "video_id":  2e079939e584e2c2881c7c62784a45d2,
+        "display_name": "El Rey Naranja",
         "title": "OrangeAlienKing"
       },
       {
         "id": 14,
+        "video_id":  fced89c6b3d9feff90b30a0685389a4e,
+        "display_name": "Guiona",
         "title": "MujerGuias"
       },
       {
         "id": 15,
+        "video_id":  db335cee43bfa63f4c845063dfdea858,
+        "display_name": "Fashion",
         "title": "Dresses3"
       },
       {
         "id": 16,
+        "video_id":  523f2d3f4a73137aae56eb621ffa3feb,
+        "display_name": "Blue Leafed Plant",
         "title": "BlueLeafedPlant"
       },
       {
         "id": 17,
+        "video_id": 6ffa1842133713869ada64a5ec381258,
+        "display_name": "Pinki",
         "title": "AGR-PinkSuitLady"
       },
       {
         "id": 18,
+        "video_id": 1245a8b8e49c43657112d5925cddf230,
+        "display_name": "Rebeka",
         "title": "AGR-BigFeaturedQueenRandom3"
       },
       {
         "id": 19,
+        "video_id": 4b11d4a9a696c67ec50571cab5f88283,
+        "display_name": "Hans",
         "title": "First_frame_ParisSeineScene"
       }
     ],
@@ -62,9 +86,9 @@
       "served_by_region": "WNAM",
       "served_by_primary": true,
       "timings": {
-        "sql_duration_ms": 0.3375
+        "sql_duration_ms": 0.2425
       },
-      "duration": 0.3375,
+      "duration": 0.2425,
       "changes": 0,
       "last_row_id": 0,
       "changed_db": false,

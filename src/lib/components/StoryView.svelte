@@ -3,6 +3,7 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import InkReveal from './ui/InkReveal.svelte';
+  import VideoDetailView from './VideoDetailView.svelte';
   
   const dispatch = createEventDispatcher();
   
@@ -13,6 +14,7 @@
   let scrollY = 0;
   let contentEl;
   let storyContent = [];
+  let showVideoDetail = false;
   
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
@@ -23,9 +25,21 @@
     dispatch('close');
   }
   
+  function openVideoDetail() {
+    showVideoDetail = true;
+  }
+  
+  function closeVideoDetail() {
+    showVideoDetail = false;
+  }
+  
   function handleKeydown(event) {
     if (event.key === 'Escape') {
-      handleClose();
+      if (showVideoDetail) {
+        closeVideoDetail();
+      } else {
+        handleClose();
+      }
     }
   }
   
@@ -66,144 +80,172 @@
   $: parallaxOffset = scrollY * 0.3;
   
   $: hasStoryContent = storyContent.length > 0;
+  
+  $: hasVideo = !!(artwork.video_id || artwork.videoId);
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="story-view">
-  <button class="close-btn" on:click={handleClose} aria-label="Close story">
-    <span class="close-icon">←</span>
-    <span class="close-text">Back to sketchbook</span>
-  </button>
-  
-  <div 
-    class="story-content" 
-    bind:this={contentEl} 
-    on:scroll={(e) => scrollY = e.target.scrollTop}
-  >
-    <!-- Hero Section -->
-    <div class="hero-section" style="transform: translateY({parallaxOffset}px)">
-      {#if artwork.type === 'animation' && artwork.video_id}
-        <div class="video-container">
-          <iframe
-            title="Video: {artwork.display_name || artwork.title}"
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
-      {:else if heroImageUrl}
-        {#if isLoading}
-          <div class="loading-state">
-            <div class="sketch-loader"></div>
-          </div>
-        {/if}
-        {#if imageError}
-          <div class="error-message">
-            <p>Failed to load image</p>
-            <button class="retry-btn" on:click={() => { isLoading = true; imageError = false; }}>
-              Try Again
-            </button>
-          </div>
-        {:else}
-          <img
-            src={heroImageUrl}
-            alt={artwork.display_name || artwork.title}
-            class:loading={isLoading}
-            on:load={() => isLoading = false}
-            on:error={() => {
-              isLoading = false;
-              imageError = true;
-            }}
-          />
-        {/if}
-      {/if}
-    </div>
+{#if showVideoDetail}
+  <VideoDetailView 
+    artwork={artwork}
+    on:close={closeVideoDetail}
+  />
+{:else}
+  <div class="story-view">
+    <button class="close-btn" on:click={handleClose} aria-label="Close story">
+      <span class="close-icon">←</span>
+      <span class="close-text">Back to sketchbook</span>
+    </button>
     
-    <!-- Story Title & Meta -->
-    <div class="story-text">
-      <InkReveal>
-        <h1>{artwork.display_name || artwork.title}</h1>
-      </InkReveal>
-      
-      <InkReveal delay={200}>
-        <div class="meta">
-          <span class="date">{artwork.year || 'Recently'}</span>
-          <span class="type-badge {artwork.type}">
-            {#if artwork.type === 'still'}📷 Still
-            {:else if artwork.type === 'animation'}🎬 Animation
-            {:else if artwork.type === 'gif'}🎭 GIF
+    <div 
+      class="story-content" 
+      bind:this={contentEl} 
+      on:scroll={(e) => scrollY = e.target.scrollTop}
+    >
+      <!-- Hero Section -->
+      <div 
+        class="hero-section" 
+        class:clickable={hasVideo && artwork.type === 'still'}
+        style="transform: translateY({parallaxOffset}px)"
+        on:click={hasVideo && artwork.type === 'still' ? openVideoDetail : null}
+        role={hasVideo && artwork.type === 'still' ? "button" : undefined}
+        tabindex={hasVideo && artwork.type === 'still' ? "0" : undefined}
+        on:keydown={hasVideo && artwork.type === 'still' ? (e) => e.key === 'Enter' && openVideoDetail() : null}
+      >
+        {#if artwork.type === 'animation' && artwork.video_id}
+          <div class="video-container">
+            <iframe
+              title="Video: {artwork.display_name || artwork.title}"
+              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        {:else if heroImageUrl}
+          {#if isLoading}
+            <div class="loading-state">
+              <div class="sketch-loader"></div>
+            </div>
+          {/if}
+          {#if imageError}
+            <div class="error-message">
+              <p>Failed to load image</p>
+              <button class="retry-btn" on:click={() => { isLoading = true; imageError = false; }}>
+                Try Again
+              </button>
+            </div>
+          {:else}
+            <img
+              src={heroImageUrl}
+              alt={artwork.display_name || artwork.title}
+              class:loading={isLoading}
+              on:load={() => isLoading = false}
+              on:error={() => {
+                isLoading = false;
+                imageError = true;
+              }}
+            />
+            {#if hasVideo && artwork.type === 'still'}
+              <div class="play-overlay">
+                <div class="play-button">
+                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                    <circle cx="30" cy="30" r="28" fill="rgba(255,255,255,0.9)" stroke="#2c5e3d" stroke-width="2"/>
+                    <path d="M24 18 L24 42 L42 30 Z" fill="#2c5e3d"/>
+                  </svg>
+                </div>
+                <p class="play-hint">Click to watch video</p>
+              </div>
             {/if}
-          </span>
-        </div>
-      </InkReveal>
+          {/if}
+        {/if}
+      </div>
       
-      <!-- Main Description -->
-      <InkReveal delay={400}>
-        <div class="description">
-          {artwork.description}
-        </div>
-      </InkReveal>
-      
-      <!-- Story Intro (if exists) -->
-      {#if artwork.story_intro}
-        <InkReveal delay={600}>
-          <div class="story-intro">
-            {artwork.story_intro}
+      <!-- Story Title & Meta -->
+      <div class="story-text">
+        <InkReveal>
+          <h1>{artwork.display_name || artwork.title}</h1>
+        </InkReveal>
+        
+        <InkReveal delay={200}>
+          <div class="meta">
+            <span class="date">{artwork.year || 'Recently'}</span>
+            <span class="type-badge {artwork.type}">
+              {#if artwork.type === 'still'}📷 Still
+              {:else if artwork.type === 'animation'}🎬 Animation
+              {:else if artwork.type === 'gif'}🎭 GIF
+              {/if}
+            </span>
           </div>
         </InkReveal>
-      {/if}
-      
-      <!-- Multi-media Story Content -->
-      {#if hasStoryContent}
-        {#each storyContent as item, index}
-          <InkReveal delay={800 + (index * 200)}>
-            <div class="story-block {item.content_type}">
-              {#if item.content_type === 'heading'}
-                <h2 class="story-heading">{item.content_text}</h2>
-                
-              {:else if item.content_type === 'text'}
-                <div class="story-paragraph">
-                  {item.content_text}
-                </div>
-                
-              {:else if item.content_type === 'image' && item.media_id}
-                <div class="story-image">
-                  <img 
-                    src={createImageUrl(item.media_id, 'desktop')} 
-                    alt="Story illustration"
-                    loading="lazy"
-                  />
-                </div>
-                
-              {:else if item.content_type === 'video' && item.video_id}
-                <div class="story-video">
-                  <iframe
-                    title="Story video clip"
-                    src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{item.video_id}/iframe"
-                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-                    allowfullscreen
-                  ></iframe>
-                </div>
-              {/if}
+        
+        <!-- Main Description -->
+        <InkReveal delay={400}>
+          <div class="description">
+            {artwork.description}
+          </div>
+        </InkReveal>
+        
+        <!-- Story Intro (if exists) -->
+        {#if artwork.story_intro}
+          <InkReveal delay={600}>
+            <div class="story-intro">
+              {artwork.story_intro}
             </div>
           </InkReveal>
-        {/each}
-      {/if}
-      
-      <!-- Tags (if you implement them) -->
-      {#if artwork.tags && artwork.tags.length > 0}
-        <InkReveal delay={1000 + (storyContent.length * 200)}>
-          <div class="tags">
-            {#each artwork.tags as tag}
-              <span class="tag">#{tag}</span>
-            {/each}
-          </div>
-        </InkReveal>
-      {/if}
+        {/if}
+        
+        <!-- Multi-media Story Content -->
+        {#if hasStoryContent}
+          {#each storyContent as item, index}
+            <InkReveal delay={800 + (index * 200)}>
+              <div class="story-block {item.content_type}">
+                {#if item.content_type === 'heading'}
+                  <h2 class="story-heading">{item.content_text}</h2>
+                  
+                {:else if item.content_type === 'text'}
+                  <div class="story-paragraph">
+                    {item.content_text}
+                  </div>
+                  
+                {:else if item.content_type === 'image' && item.media_id}
+                  <div class="story-image">
+                    <img 
+                      src={createImageUrl(item.media_id, 'desktop')} 
+                      alt="Story illustration"
+                      loading="lazy"
+                    />
+                  </div>
+                  
+                {:else if item.content_type === 'video' && item.video_id}
+                  <div class="story-video">
+                    <iframe
+                      title="Story video clip"
+                      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{item.video_id}/iframe"
+                      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                {/if}
+              </div>
+            </InkReveal>
+          {/each}
+        {/if}
+        
+        <!-- Tags (if you implement them) -->
+        {#if artwork.tags && artwork.tags.length > 0}
+          <InkReveal delay={1000 + (storyContent.length * 200)}>
+            <div class="tags">
+              {#each artwork.tags as tag}
+                <span class="tag">#{tag}</span>
+              {/each}
+            </div>
+          </InkReveal>
+        {/if}
+      </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style>
   .story-view {
@@ -269,6 +311,14 @@
     background: linear-gradient(180deg, rgba(212, 201, 168, 0.1) 0%, transparent 100%);
   }
   
+  .hero-section.clickable {
+    cursor: pointer;
+  }
+  
+  .hero-section.clickable:hover img {
+    transform: scale(1.02);
+  }
+  
   .hero-section img {
     max-width: 90%;
     max-height: 90%;
@@ -277,11 +327,54 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     border-radius: 4px;
     opacity: 1;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.6s ease, transform 0.3s ease;
   }
   
   .hero-section img.loading {
     opacity: 0;
+  }
+  
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  
+  .hero-section.clickable:hover .play-overlay {
+    opacity: 1;
+  }
+  
+  .play-button {
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+  
+  .play-hint {
+    color: white;
+    font-size: 1rem;
+    font-family: 'Georgia', serif;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.6);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
   }
   
   .video-container {

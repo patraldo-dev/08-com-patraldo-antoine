@@ -6,7 +6,7 @@ export async function load({ platform }) {
     const db = platform?.env?.ARTWORKS_DB;
     
     if (!db) {
-      console.warn('DB not available');
+      console.warn('ARTWORKS_DB binding not available');
       return { artworks: [] };
     }
 
