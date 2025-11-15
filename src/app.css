@@ -188,7 +188,7 @@ body main {
 
 /* Reduce hero height on home page (not the About video hero) */
 .hero-simple {
-  min-height: 40vh; /* was likely 70–100vh elsewhere */
+  min-height: 30vh; /* was likely 70–100vh elsewhere */
   display: flex;
   align-items: center;
   justify-content: center;

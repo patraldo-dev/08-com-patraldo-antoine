@@ -135,7 +135,7 @@ console.log('Corner indicator at:', {
     mouseElement.style.left = '0';
     mouseElement.style.width = containerWidth + 'px';
     mouseElement.style.height = containerHeight + 'px';
-    mouseElement.style.pointerEvents = 'auto';
+    mouseElement.style.pointerEvents = 'none';
     sketchbookContainer.appendChild(mouseElement);
 
     // Add mouse control (no canvas needed)

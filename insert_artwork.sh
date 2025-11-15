@@ -22,9 +22,9 @@ check_dependencies() {
         return 1
     fi
     
-    if ! command -v wrangler &> /dev/null; then
-        echo "Warning: wrangler CLI not found. You'll need it to execute the database command."
-        echo "Install it with: npm install -g @cloudflare/wrangler"
+    if ! command -v npx &> /dev/null; then
+        echo "Error: npx is required but not found. Make sure Node.js is installed."
+        return 1
     fi
     return 0
 }
@@ -233,7 +233,7 @@ echo ""
 read -p "Execute this command now? (y/N): " confirm
 if [[ $confirm =~ ^[Yy]$ ]]; then
     echo ""
-    echo "Executing command..."
+    echo "Executing command with npx wrangler..."
     echo "----------------------------------------"
     
     # Execute the command and capture output
@@ -250,13 +250,16 @@ if [[ $confirm =~ ^[Yy]$ ]]; then
         echo ""
         echo "Verifying insertion..."
         verify_query="SELECT id, title, display_name, image_id FROM artworks WHERE image_id = '$image_id' ORDER BY id DESC LIMIT 1;"
-        verify_result=$(npx wrangler d1 execute antoine-artworks --remote --command "$verify_query")
+        verify_result=$(npx wrangler d1 execute antoine-artworks --remote --command "$verify_query" 2>&1)
         echo "$verify_result"
         echo ""
-        echo "Record successfully verified!"
+        echo "✅ Record successfully verified!"
     else
         echo "❌ Error: Failed to insert record into database."
         echo "Please check the error message above."
+        echo ""
+        echo "You can try running the command manually:"
+        echo "npx wrangler d1 execute antoine-artworks --remote --command \"$sql_command\""
     fi
 else
     echo ""
