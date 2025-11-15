@@ -33,8 +33,10 @@
       await locale.set(lang);
       
       // 5. CRITICAL: Load common first, then route
-      await loadTranslations(lang, 'common');
-      await loadTranslations(lang, location.pathname);
+await loadTranslations(lang, 'common');
+console.log('✅ Common loaded');
+await loadTranslations(lang, location.pathname);
+console.log('✅ Route loaded:', location.pathname);
       
       // 6. Wait for loading to complete
       const unsubscribeLoading = loading.subscribe(value => {
