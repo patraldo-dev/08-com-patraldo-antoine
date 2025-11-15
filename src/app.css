@@ -216,7 +216,7 @@ body main {
 }
 
 .sketchbook-section {
-  margin-top: -2rem !important; /* Start small and adjust */
+  margin-top: 0rem !important; /* Start small and adjust */
 }
 
 @media (max-width: 768px) {
