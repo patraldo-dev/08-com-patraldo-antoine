@@ -190,7 +190,6 @@ body main {
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
   padding: 0.5rem 1rem 0.5rem !important; /* Equal tiny padding */
   text-align: center;
-  border: 2px solid red;
 }
 
 .hero-simple .hero-content {
@@ -218,7 +217,6 @@ body main {
 
 .sketchbook-section {
   margin-top: -2rem !important; /* Start small and adjust */
-  border: 2px solid blue;
 }
 
 @media (max-width: 768px) {
