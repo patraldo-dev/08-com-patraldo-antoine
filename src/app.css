@@ -189,35 +189,34 @@ body main {
 /* Reduce hero height on home page (not the About video hero) */
 
 .hero-simple {
-  min-height: 30vh;
+  min-height: 20vh; /* Reduce from 30vh */
   display: flex;
-  align-items: flex-start; /* Change from center to flex-start */
+  align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.5rem 1rem 2rem; /* Adjust top padding to control spacing */
+  padding: 0.5rem 1rem 1rem; /* Reduce bottom padding */
   text-align: center;
 }
 
 .hero-simple .hero-content {
-    max-width: 90%;
+  max-width: 90%;
   text-align: center;
+  margin-top: -1rem; /* Add negative margin to pull content up */
 }
 
 .hero-simple .hero-content h1 {
-  font-size: clamp(1.8rem, 6vw, 2.8rem); /* scales down on mobile */
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 300;
   line-height: 1.2;
-  margin-top: -1rem;
-  margin-bottom: -0.75rem;
+  margin-bottom: 0.5rem; /* Use positive smaller margin */
 }
 
 .hero-simple .hero-content .subtitle {
   font-size: clamp(1rem, 4vw, 1.3rem);
   font-weight: 200;
   opacity: 0.85;
-  margin-top: -1rem;
-  margin-bottom: -0.75rem;
-
+  margin-top: 0; /* Reset to 0 */
+  margin-bottom: 0.5rem; /* Use positive smaller margin */
 }
 
 /* Pull sketchbook section up slightly */
@@ -229,12 +228,12 @@ body main {
 /* Ensure sketchbook doesn’t get squeezed on mobile */
 @media (max-width: 768px) {
   .hero-simple {
-    min-height: 55vh;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    min-height: 30vh;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .sketchbook-section {
-    margin-top: -1rem;
+    margin-top: -2rem; /* Adjust accordingly */
   }
 }
