@@ -31,48 +31,49 @@
       
       // 4. Set locale first
       await locale.set(lang);
+
+onMount(async () => {
+  try {
+    // 1-4. Your existing code...
+    
+    // 5. Load translations in parallel
+    await Promise.all([
+      loadTranslations(lang, 'common'),
+      loadTranslations(lang, location.pathname)
+    ]);
+    console.log('✅ All translations loaded');
+    
+    // 6. NOW set ready (don't wait for subscription)
+    isReady = true;
+    
+    // 7. Handle locale changes
+    const unsubscribeLocale = locale.subscribe(async (newLang) => {
+      if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang) && newLang !== lang) {
+        lang = newLang;
+        localStorage.setItem('preferredLanguage', newLang);
+        isReady = false;
+        
+        // Reload both translations
+        await Promise.all([
+          loadTranslations(newLang, 'common'),
+          loadTranslations(newLang, location.pathname)
+        ]);
+        
+        isReady = true;
+      }
+    });
+    
+    // 8. Cleanup
+    return () => {
+      unsubscribeLocale();
+    };
+    
+  } catch (error) {
+    console.error('i18n error:', error);
+    isReady = true;
+  }
+});
       
-      // 5. CRITICAL: Load common first, then route
-await loadTranslations(lang, 'common');
-console.log('✅ Common loaded');
-await loadTranslations(lang, location.pathname);
-console.log('✅ Route loaded:', location.pathname);
-      
-      // 6. Wait for loading to complete
-      const unsubscribeLoading = loading.subscribe(value => {
-        if (!value) {
-          isReady = true;
-        }
-      });
-      
-      // 7. Handle locale changes
-      const unsubscribeLocale = locale.subscribe(async (newLang) => {
-        if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang) && newLang !== lang) {
-          lang = newLang;
-          localStorage.setItem('preferredLanguage', newLang);
-          isReady = false;
-          
-          // Reload BOTH common and route translations
-          await loadTranslations(newLang, 'common');
-          if (location.pathname !== '/common') {
-            await loadTranslations(newLang, location.pathname);
-          }
-          
-          isReady = true;
-        }
-      });
-      
-      // 8. Cleanup
-      return () => {
-        unsubscribeLoading();
-        unsubscribeLocale();
-      };
-    } catch (error) {
-      console.error('i18n initialization error:', error);
-      // Still show the page even if translations fail
-      isReady = true;
-    }
-  });
 </script>
 
 {#if isReady}
