@@ -2,10 +2,14 @@
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { locale, loadTranslations, loading } from '$lib/translations';
   import Navigation from '$lib/components/Navigation.svelte';
   
   let isReady = false;
+  
+  // Check if current page needs full-height layout (no top margin)
+  $: isFullHeightPage = $page.url.pathname === '/about';
   
   // Initialize i18n on client
   onMount(async () => {
@@ -30,8 +34,7 @@
       
       // 5. CRITICAL: Load common first, then route
       // Common has no routes property, so we load it explicitly
-            await loadTranslations(lang, location.pathname);
-
+      await loadTranslations(lang, location.pathname);
       // Then load route-specific (if any exist for this route)
       if (location.pathname !== '/common') {
         await loadTranslations(lang, location.pathname);
@@ -78,7 +81,7 @@
   <div class="app">
     <Navigation />
     
-    <main>
+    <main class:full-height={isFullHeightPage}>
       <slot />
     </main>
     
@@ -102,6 +105,10 @@
   main {
     flex: 1;
     margin-top: 80px;
+  }
+  
+  main.full-height {
+    margin-top: 0;
   }
   
   footer {
@@ -137,6 +144,10 @@
   @media (max-width: 768px) {
     main {
       margin-top: 70px;
+    }
+    
+    main.full-height {
+      margin-top: 0;
     }
     
     footer {
