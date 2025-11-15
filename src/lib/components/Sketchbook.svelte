@@ -101,6 +101,19 @@
       label: 'pageCorner'
     });
 
+// Add this right after creating pageCornerBody in initPhysics()
+console.log('Physics body at:', {
+  x: pageCornerBody.position.x,
+  y: pageCornerBody.position.y,
+  containerWidth,
+  containerHeight
+});
+
+console.log('Corner indicator at:', {
+  left: containerWidth * 0.75 - 30,
+  top: containerHeight * 0.15 - 30
+});
+
     // Pivot point
     pagePivot = Matter.Bodies.circle(containerWidth / 2, containerHeight / 2, 5, {
       isStatic: true
@@ -134,21 +147,26 @@
       }
     });
 
-// Create a visible draggable corner indicator
 const cornerIndicator = document.createElement('div');
 cornerIndicator.style.position = 'absolute';
-cornerIndicator.style.top = (containerHeight * 0.15) + 'px';
-cornerIndicator.style.left = (containerWidth * 0.75) + 'px';
+// These should match the pageCornerBody position exactly
+cornerIndicator.style.left = (cornerX - 30) + 'px'; // Use cornerX variable, offset by radius
+cornerIndicator.style.top = (cornerY - 30) + 'px';  // Use cornerY variable, offset by radius
 cornerIndicator.style.width = '60px';
 cornerIndicator.style.height = '60px';
-cornerIndicator.style.pointerEvents = 'auto'; // Only THIS area is draggable
-cornerIndicator.style.cursor = 'grab';
+cornerIndicator.style.pointerEvents = 'none'; // Make it visual only, not clickable
 cornerIndicator.style.borderRadius = '50%';
-cornerIndicator.style.opacity = '0.3';
-cornerIndicator.style.transition = 'opacity 0.3s';
-cornerIndicator.addEventListener('mouseenter', () => cornerIndicator.style.opacity = '0.6');
-cornerIndicator.addEventListener('mouseleave', () => cornerIndicator.style.opacity = '0.3');
+cornerIndicator.style.background = 'rgba(212, 201, 168, 0.3)';
+cornerIndicator.style.border = '2px dashed #d4c9a8';
+cornerIndicator.style.display = 'flex';
+cornerIndicator.style.alignItems = 'center';
+cornerIndicator.style.justifyContent = 'center';
+cornerIndicator.style.fontSize = '1.8rem';
+cornerIndicator.style.color = '#4a4a3c';
+cornerIndicator.innerHTML = '⤵';
+cornerIndicator.style.zIndex = '6';
 sketchbookContainer.appendChild(cornerIndicator);
+
 
     // Detect drag events
     Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
