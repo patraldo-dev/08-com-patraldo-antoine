@@ -129,13 +129,15 @@ console.log('Corner indicator at:', {
     });
 
     // Create invisible mouse element for interaction
-    mouseElement = document.createElement('div');
-    mouseElement.style.position = 'absolute';
-    mouseElement.style.top = '0';
-    mouseElement.style.left = '0';
-    mouseElement.style.width = containerWidth + 'px';
-    mouseElement.style.height = containerHeight + 'px';
-    mouseElement.style.pointerEvents = 'none';
+mouseElement = document.createElement('div');
+mouseElement.style.position = 'absolute';
+mouseElement.style.top = (containerHeight * 0.15 - 40) + 'px'; // Position at corner
+mouseElement.style.left = (containerWidth * 0.75 - 40) + 'px';  // Position at corner
+mouseElement.style.width = '80px';  // Small area
+mouseElement.style.height = '80px'; // Small area
+mouseElement.style.pointerEvents = 'auto'; // NOW it won't block scrolling
+mouseElement.style.cursor = 'grab';
+mouseElement.style.zIndex = '10';
     sketchbookContainer.appendChild(mouseElement);
 
     // Add mouse control (no canvas needed)
