@@ -55,13 +55,13 @@ const config = {
     // ───────────────────────────────────────
     // STORYBOOK PAGES (new interactive content)
     // ───────────────────────────────────────
-    { locale: 'es-MX', key: 'stories.home', routes: ['/stories'], loader: () => import('./locales/es-MX/stories/home.json') },
-    { locale: 'en-US', key: 'stories.home', routes: ['/stories'], loader: () => import('./locales/en-US/stories/home.json') },
-    { locale: 'fr-CA', key: 'stories.home', routes: ['/stories'], loader: () => import('./locales/fr-CA/stories/home.json') },
+    { locale: 'es-MX', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/es-MX/stories/home.json') },
+    { locale: 'en-US', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/en-US/stories/home.json') },
+    { locale: 'fr-CA', key: 'pages.stories', routes: ['/stories'], loader: () => import('./locales/fr-CA/stories/home.json') },
 
-    { locale: 'es-MX', key: 'stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/es-MX/stories/chapter1.json') },
-    { locale: 'en-US', key: 'stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/en-US/stories/chapter1.json') },
-    { locale: 'fr-CA', key: 'stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/fr-CA/stories/chapter1.json') },
+    { locale: 'es-MX', key: 'pages.stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/es-MX/stories/chapter1.json') },
+    { locale: 'en-US', key: 'pages.stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/en-US/stories/chapter1.json') },
+    { locale: 'fr-CA', key: 'pages.stories.chapter1', routes: ['/stories/chapter1'], loader: () => import('./locales/fr-CA/stories/chapter1.json') },
 
     // Add more story chapters as needed...
   ],
