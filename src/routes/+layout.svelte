@@ -31,10 +31,6 @@
       
       // 4. Set locale first
       await locale.set(lang);
-
-onMount(async () => {
-  try {
-    // 1-4. Your existing code...
     
     // 5. Load translations in parallel
     await Promise.all([
