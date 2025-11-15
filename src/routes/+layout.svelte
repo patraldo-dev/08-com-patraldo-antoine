@@ -38,7 +38,6 @@
       loadTranslations(lang, location.pathname)
     ]);
     console.log('✅ All translations loaded');
-console.log('✅ Translations loaded:', { common: $t('site.title'), home: $t('pages.home.hero.title') });
 
     
     // 6. NOW set ready (don't wait for subscription)
