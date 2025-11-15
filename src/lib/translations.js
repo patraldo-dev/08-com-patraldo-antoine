@@ -24,9 +24,9 @@ const config = {
     { locale: 'en-US', key: 'pages.about', routes: ['/about'], loader: () => import('./locales/en-US/pages/about.json') },
     { locale: 'fr-CA', key: 'pages.about', routes: ['/about'], loader: () => import('./locales/fr-CA/pages/about.json') },
 
-    { locale: 'es-MX', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/es-MX/pages/contact.json') },
-    { locale: 'en-US', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/en-US/pages/contact.json') },
-    { locale: 'fr-CA', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/fr-CA/pages/contact.json') },
+//    { locale: 'es-MX', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/es-MX/pages/contact.json') },
+//    { locale: 'en-US', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/en-US/pages/contact.json') },
+//    { locale: 'fr-CA', key: 'pages.contact', routes: ['/contact'], loader: () => import('./locales/fr-CA/pages/contact.json') },
 
     { locale: 'es-MX', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/es-MX/pages/privacy.json') },
     { locale: 'en-US', key: 'pages.privacy', routes: ['/privacy'], loader: () => import('./locales/en-US/pages/privacy.json') },
