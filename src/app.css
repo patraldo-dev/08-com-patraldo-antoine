@@ -194,7 +194,7 @@ body main {
   align-items: flex-start; /* Change from center to flex-start */
   justify-content: center;
   background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 2rem 1rem; /* Adjust top padding to control spacing */
+  padding: 0.5rem 1rem 2rem; /* Adjust top padding to control spacing */
   text-align: center;
 }
 
