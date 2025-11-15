@@ -167,6 +167,7 @@
     padding: 2rem;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none; /* ADD THIS - allows clicks to pass through */
   }
   
   .story-card:hover .story-overlay {
