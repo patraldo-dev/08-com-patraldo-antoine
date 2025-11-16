@@ -1,4 +1,4 @@
-<!-- src/lib/components/Navigation.svelte -->
+<!-- src/lib/components/UI/Navigation.svelte -->
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -7,11 +7,11 @@
   import LanguageSwitcherDesktop from '$lib/components/ui/LanguageSwitcherDesktop.svelte';
   import LanguageSwitcherMobile from '$lib/components/ui/LanguageSwitcherMobile.svelte';
   
-  let isMenuOpen = false;
+  let isMenuOpen = $state(false);
   
   // Get current route to determine navigation behavior
-  $: currentPath = $page.url.pathname;
-  $: isOnHomePage = currentPath === '/';
+  let currentPath = $derived($page.url.pathname);
+  let isOnHomePage = $derived(currentPath === '/');
   
   function toggleMenu(event) {
     if (event) {
@@ -56,7 +56,7 @@
       return;
     }
     
-    // Internal routes (like /stories)
+    // Internal routes (like /stories, /collection)
     if (href.startsWith('/')) {
       event.preventDefault();
       goto(href);
@@ -98,16 +98,17 @@
 </script>
 
 <nav>
-  <a href="/" class="logo-link" on:click={(e) => handleLinkClick(e, '/')}>
+  <a href="/" class="logo-link" onclick={(e) => handleLinkClick(e, '/')}>
     <h1>ANTOINE PATRALDO</h1>
   </a>
   
   <!-- Desktop Menu -->
   <div class="nav-links desktop-menu">
-    <a href="/#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
-    <a href="/#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
-    <a href="/stories" on:click={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
-    <a href="/#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
+    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
+    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
+    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
+    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
+    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <LanguageSwitcherDesktop />
   </div>
   
@@ -117,8 +118,8 @@
     class:open={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
     aria-expanded={isMenuOpen}
-    on:click={toggleMenu}
-    on:touchend|preventDefault={toggleMenu}
+    onclick={toggleMenu}
+    ontouchend={(e) => { e.preventDefault(); toggleMenu(e); }}
     type="button"
   >
     <span class="menu-line"></span>
@@ -127,15 +128,16 @@
   
   <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
-    <div class="menu-overlay" on:click={closeMenu}></div>
+    <div class="menu-overlay" onclick={closeMenu}></div>
   {/if}
   
   <!-- Mobile Menu -->
   <div class="mobile-menu" class:open={isMenuOpen}>
-    <a href="/#work" on:click={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
-    <a href="/#about" on:click={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
-    <a href="/stories" on:click={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
-    <a href="/#contact" on:click={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
+    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
+    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
+    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
+    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
+    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <div class="mobile-lang-switcher">
       <LanguageSwitcherMobile />
     </div>
