@@ -1,32 +1,37 @@
 <!-- src/routes/collection/+page.svelte -->
 <script>
   import { onMount } from 'svelte';
-  import { getVisitedArtworks } from '$lib/utils/visitTracker.js';
   import { t } from '$lib/translations';
+  import { getAllVisits, getAllFavorites } from '$lib/utils/visitTracker.js';
   
   const { data } = $props();
-  let visitedArtworks = $state([]);
+  let visits = $state({});
+  let favorites = $state(new Set());
   let isLoading = $state(true);
   let showMenu = $state(false);
   
   onMount(() => {
-    const visitedIds = getVisitedArtworks();
-    
-    // Filter artworks to only show visited ones
-    visitedArtworks = data.allArtworks.filter(artwork => 
-      visitedIds.includes(artwork.id)
-    );
-    
+    loadCollectionData();
     isLoading = false;
   });
+  
+  function loadCollectionData() {
+    visits = getAllVisits();
+    favorites = getAllFavorites();
+  }
   
   function toggleMenu() {
     showMenu = !showMenu;
   }
+  
+  // Filter to only show visited artworks
+  let visitedArtworks = $derived(
+    data.allArtworks.filter(artwork => !!visits[artwork.id])
+  );
 </script>
 
 <svelte:head>
-  <title>{$t('common.nav.collection')} - Antoine Patraldo</title>
+  <title>{$t('common.nav.collection')} - {$t('common.site.title')}</title>
   <meta name="description" content={$t('collection.meta.description')} />
 </svelte:head>
 
@@ -38,9 +43,9 @@
         {#if isLoading}
           {$t('collection.loading')}
         {:else if visitedArtworks.length === 0}
-          {$t('collection.empty.subtitle')}
+          {$t('collection.subtitle.empty')}
         {:else}
-          {visitedArtworks.length} {visitedArtworks.length === 1 ? $t('collection.artwork.singular') : $t('collection.artwork.plural')}
+          {visitedArtworks.length} {visitedArtworks.length === 1 ? $t('collection.count.singular') : $t('collection.count.plural')}
         {/if}
       </p>
     </div>
