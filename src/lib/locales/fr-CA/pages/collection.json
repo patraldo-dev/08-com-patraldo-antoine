@@ -26,7 +26,19 @@
   },
   "card": {
     "view": "Voir",
-    "lastViewed": "Dernière consultation:"
+    "lastViewed": "Dernière consultation:",
+    "addFavorite": "Ajouter aux favoris",
+    "removeFavorite": "Retirer des favoris",
+    "shareWhatsApp": "Partager sur WhatsApp",
+    "copyLink": "Copier le lien pour Instagram"
+  },
+  "share": {
+    "checkOut": "Découvrez"
+  },
+  "toast": {
+    "added": "❤️  Ajouté aux favoris!",
+    "removed": "Retiré des favoris",
+    "linkCopied": "Lien copié! Collez dans Instagram"
   },
   "empty": {
     "title": "Aucune œuvre trouvée",

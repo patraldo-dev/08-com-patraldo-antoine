@@ -26,7 +26,19 @@
   },
   "card": {
     "view": "Ver",
-    "lastViewed": "Vista por última vez:"
+    "lastViewed": "Vista por última vez:",
+    "addFavorite": "Agregar a favoritos",
+    "removeFavorite": "Quitar de favoritos",
+    "shareWhatsApp": "Compartir en WhatsApp",
+    "copyLink": "Copiar enlace para Instagram"
+  },
+  "share": {
+    "checkOut": "Mira"
+  },
+  "toast": {
+    "added": "❤️  ¡Agregado a favoritos!",
+    "removed": "Quitado de favoritos",
+    "linkCopied": "¡Enlace copiado! Pégalo en Instagram"
   },
   "empty": {
     "title": "No se encontraron obras",

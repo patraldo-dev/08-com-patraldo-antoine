@@ -26,7 +26,19 @@
   },
   "card": {
     "view": "View",
-    "lastViewed": "Last viewed:"
+    "lastViewed": "Last viewed:",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
+    "shareWhatsApp": "Share on WhatsApp",
+    "copyLink": "Copy link for Instagram"
+  },
+  "share": {
+    "checkOut": "Check out"
+  },
+  "toast": {
+    "added": "❤️  Added to favorites!",
+    "removed": "Removed from favorites",
+    "linkCopied": "Link copied! Paste in Instagram"
   },
   "empty": {
     "title": "No artworks found",
