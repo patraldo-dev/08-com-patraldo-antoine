@@ -53,7 +53,7 @@
   }
   
   function handleClearAll() {
-    if (confirm('Are you sure you want to clear all visit history?')) {
+    if (confirm($t('pages.collection.actions.confirmClear'))) {
       clearAllVisits();
       loadCollectionData();
     }
@@ -113,14 +113,14 @@
 </script>
 
 <svelte:head>
-  <title>My Collection - Antoine Patraldo</title>
+  <title>{$t('pages.collection.title')} - Antoine Patraldo</title>
 </svelte:head>
 
 <div class="collection-page">
   <header class="collection-header">
     <div class="header-content">
-      <h1>My Collection</h1>
-      <p class="subtitle">Track your journey through the artworks</p>
+      <h1>{$t('pages.collection.title')}</h1>
+      <p class="subtitle">{$t('pages.collection.subtitle')}</p>
     </div>
     
     {#if sortedArtworks.length > 0}
@@ -143,19 +143,19 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-number">{visitedCount}</div>
-        <div class="stat-label">Artworks Viewed</div>
+        <div class="stat-label">{$t('pages.collection.stats.viewed')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{stats.totalViews || 0}</div>
-        <div class="stat-label">Total Views</div>
+        <div class="stat-label">{$t('pages.collection.stats.totalViews')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{favoritesCount}</div>
-        <div class="stat-label">Favorites</div>
+        <div class="stat-label">{$t('pages.collection.stats.favorites')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{allArtworks.length - visitedCount}</div>
-        <div class="stat-label">To Discover</div>
+        <div class="stat-label">{$t('pages.collection.stats.toDiscover')}</div>
       </div>
     </div>
     
@@ -167,46 +167,46 @@
           class:active={filter === 'all'}
           onclick={() => filter = 'all'}
         >
-          All ({allArtworks.length})
+          {$t('pages.collection.filters.all')} ({allArtworks.length})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'visited'}
           onclick={() => filter = 'visited'}
         >
-          Visited ({visitedCount})
+          {$t('pages.collection.filters.visited')} ({visitedCount})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'favorites'}
           onclick={() => filter = 'favorites'}
         >
-          ❤️ Favorites ({favoritesCount})
+          ❤️ {$t('pages.collection.filters.favorites')} ({favoritesCount})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'unvisited'}
           onclick={() => filter = 'unvisited'}
         >
-          Unvisited ({allArtworks.length - visitedCount})
+          {$t('pages.collection.filters.unvisited')} ({allArtworks.length - visitedCount})
         </button>
       </div>
       
       <div class="sort-controls">
-        <label for="sort">Sort by:</label>
+        <label for="sort">{$t('pages.collection.sort.label')}</label>
         <select id="sort" bind:value={sortBy}>
-          <option value="recent">Recently Viewed</option>
-          <option value="frequent">Most Viewed</option>
-          <option value="alphabetical">Alphabetical</option>
+          <option value="recent">{$t('pages.collection.sort.recent')}</option>
+          <option value="frequent">{$t('pages.collection.sort.frequent')}</option>
+          <option value="alphabetical">{$t('pages.collection.sort.alphabetical')}</option>
         </select>
       </div>
       
       <div class="actions">
         <button class="action-btn" onclick={handleExport}>
-          Export Data
+          {$t('pages.collection.actions.export')}
         </button>
         <button class="action-btn danger" onclick={handleClearAll}>
-          Clear History
+          {$t('pages.collection.actions.clear')}
         </button>
       </div>
     </div>
@@ -215,9 +215,9 @@
     {#if sortedArtworks.length === 0}
       <div class="empty-state">
         <div class="empty-icon">🎨</div>
-        <h2>No artworks found</h2>
-        <p>Start exploring the gallery!</p>
-        <a href="/" class="cta-button">Go to Gallery</a>
+        <h2>{$t('pages.collection.empty.title')}</h2>
+        <p>{$t('pages.collection.empty.message')}</p>
+        <a href="/" class="cta-button">{$t('pages.collection.empty.cta')}</a>
       </div>
     {:else}
       <div class="collection-grid">
@@ -247,7 +247,7 @@
               {/if}
               
               <div class="card-overlay">
-                <span class="view-label">View</span>
+                <span class="view-label">{$t('pages.collection.card.view')}</span>
               </div>
             </div>
             
@@ -258,7 +258,7 @@
               {/if}
               {#if visits[artwork.id]}
                 <p class="last-viewed">
-                  Last viewed: {new Date(visits[artwork.id].lastVisited).toLocaleDateString()}
+                  {$t('pages.collection.card.lastViewed')} {new Date(visits[artwork.id].lastVisited).toLocaleDateString()}
                 </p>
               {/if}
             </div>
@@ -274,7 +274,7 @@
   <div class="menu-overlay" onclick={toggleMenu}></div>
   <nav class="slide-menu">
     <div class="menu-header">
-      <h2>Collection</h2>
+      <h2>{$t('pages.collection.title')}</h2>
       <button class="close-button" onclick={toggleMenu}>×</button>
     </div>
     <ul class="menu-list">
