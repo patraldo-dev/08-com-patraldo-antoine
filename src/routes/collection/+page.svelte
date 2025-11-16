@@ -280,12 +280,12 @@
     <ul class="menu-list">
       {#each sortedArtworks as artwork (artwork.id)}
         <li>
-          <a href="/artwork/{artwork.id}" class="menu-item">
+          <button class="menu-item" onclick={() => openArtwork(artwork.id)}>
             {#if artwork.thumbnailUrl}
               <img src={artwork.thumbnailUrl} alt="" class="menu-thumb" />
             {/if}
             <span class="menu-text">{artwork.display_name || artwork.title}</span>
-          </a>
+          </button>
         </li>
       {/each}
     </ul>
@@ -716,8 +716,12 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    text-decoration: none;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
     color: #1a1a1a;
+    cursor: pointer;
     transition: background 0.2s ease;
     border-bottom: 1px solid #f5f5f5;
   }
