@@ -9,7 +9,8 @@
   
   function openStory(story) {
     console.log('Opening story:', story);
-    goto(`/story/${story.id}`);
+    goto(`/artwork/${story.id}`);
+
   }
   
   function getImageUrl(story) {
