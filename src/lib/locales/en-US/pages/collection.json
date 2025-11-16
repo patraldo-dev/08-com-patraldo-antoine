@@ -1,0 +1,36 @@
+{
+  "title": "My Collection",
+  "subtitle": "Track your journey through the artworks",
+  "stats": {
+    "viewed": "Artworks Viewed",
+    "totalViews": "Total Views",
+    "favorites": "Favorites",
+    "toDiscover": "To Discover"
+  },
+  "filters": {
+    "all": "All",
+    "visited": "Visited",
+    "favorites": "Favorites",
+    "unvisited": "Unvisited"
+  },
+  "sort": {
+    "label": "Sort by:",
+    "recent": "Recently Viewed",
+    "frequent": "Most Viewed",
+    "alphabetical": "Alphabetical"
+  },
+  "actions": {
+    "export": "Export Data",
+    "clear": "Clear History",
+    "confirmClear": "Are you sure you want to clear all visit history?"
+  },
+  "card": {
+    "view": "View",
+    "lastViewed": "Last viewed:"
+  },
+  "empty": {
+    "title": "No artworks found",
+    "message": "Start exploring the gallery!",
+    "cta": "Go to Gallery"
+  }
+}

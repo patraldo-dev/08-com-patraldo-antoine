@@ -42,6 +42,10 @@ const config = {
 { locale: 'en-US', key: 'pages.stories', routes: ['/stories', '/stories/*'], loader: () => import('./locales/en-US/pages/stories.json') },
 { locale: 'fr-CA', key: 'pages.stories', routes: ['/stories', '/stories/*'], loader: () => import('./locales/fr-CA/pages/stories.json') },
 
+// COLLECTION PAGE
+{ locale: 'es-MX', key: 'collection', routes: ['/collection'], loader: () => import('./locales/es-MX/pages/collection.json') },
+{ locale: 'en-US', key: 'collection', routes: ['/collection'], loader: () => import('./locales/en-US/pages/collection.json') },
+{ locale: 'fr-CA', key: 'collection', routes: ['/collection'], loader: () => import('./locales/fr-CA/pages/collection.json') },
 
   ],
 };
