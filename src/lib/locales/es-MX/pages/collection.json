@@ -38,7 +38,8 @@
   "toast": {
     "added": "❤️  ¡Agregado a favoritos!",
     "removed": "Quitado de favoritos",
-    "linkCopied": "¡Enlace copiado! Pégalo en Instagram"
+    "linkCopied": "¡Enlace copiado! Pégalo en Instagram",
+    "cleared": "✓ Historial borrado exitosamente"
   },
   "empty": {
     "title": "No se encontraron obras",

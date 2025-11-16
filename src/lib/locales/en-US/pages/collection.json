@@ -38,7 +38,9 @@
   "toast": {
     "added": "❤️  Added to favorites!",
     "removed": "Removed from favorites",
-    "linkCopied": "Link copied! Paste in Instagram"
+    "linkCopied": "Link copied! Paste in Instagram",
+    "cleared": "✓ History cleared successfully"
+
   },
   "empty": {
     "title": "No artworks found",

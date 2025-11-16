@@ -29,10 +29,12 @@
     
     window.addEventListener('artworkVisited', loadCollectionData);
     window.addEventListener('favoriteToggled', loadCollectionData);
+    window.addEventListener('visitsCleared', loadCollectionData);
     
     return () => {
       window.removeEventListener('artworkVisited', loadCollectionData);
       window.removeEventListener('favoriteToggled', loadCollectionData);
+      window.removeEventListener('visitsCleared', loadCollectionData);
     };
   });
   
@@ -128,8 +130,17 @@
   
   function handleClearAll() {
     if (confirm($t('collection.actions.confirmClear'))) {
+      console.log('Clearing all visits...');
       clearAllVisits();
       loadCollectionData();
+      
+      // Show success toast
+      toastMessage = $t('collection.toast.cleared');
+      showToast = true;
+      setTimeout(() => showToast = false, 3000);
+      
+      // Reset filter to 'all' to show results
+      filter = 'all';
     }
   }
   

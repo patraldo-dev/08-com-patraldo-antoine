@@ -38,7 +38,8 @@
   "toast": {
     "added": "❤️  Ajouté aux favoris!",
     "removed": "Retiré des favoris",
-    "linkCopied": "Lien copié! Collez dans Instagram"
+    "linkCopied": "Lien copié! Collez dans Instagram",
+    "cleared": "✓ Historique effacé avec succès"
   },
   "empty": {
     "title": "Aucune œuvre trouvée",
