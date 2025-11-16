@@ -7,8 +7,32 @@
     "work": "Work",
     "about": "About",
     "stories": "Stories",
+    "collection": "My Collection",
     "contact": "Contact",
     "subscribe": "Subscribe"
+  },
+  "collection": {
+    "meta": {
+      "description": "Artworks you've explored"
+    },
+    "loading": "Loading...",
+    "subtitle": {
+      "empty": "Start exploring to build your collection"
+    },
+    "count": {
+      "singular": "artwork discovered",
+      "plural": "artworks discovered"
+    },
+    "empty": {
+      "title": "Your collection is empty",
+      "message": "Visit artworks to add them to your personal collection",
+      "cta": "Start Exploring"
+    },
+    "noImage": "No Image",
+    "view": "View",
+    "menu": {
+      "toggle": "Toggle menu"
+    }
   },
   "lang": {
     "es": "Spanish (Mexico)",

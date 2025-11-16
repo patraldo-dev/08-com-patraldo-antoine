@@ -2,6 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   import { getVisitedArtworks } from '$lib/utils/visitTracker.js';
+  import { t } from '$lib/translations';
   
   const { data } = $props();
   let visitedArtworks = $state([]);
@@ -25,21 +26,21 @@
 </script>
 
 <svelte:head>
-  <title>Your Collection</title>
-  <meta name="description" content="Artworks you've explored" />
+  <title>{$t('common.nav.collection')} - Antoine Patraldo</title>
+  <meta name="description" content={$t('collection.meta.description')} />
 </svelte:head>
 
 <div class="collection-container">
   <header class="collection-header">
     <div class="header-content">
-      <h1>Your Collection</h1>
+      <h1>{$t('common.nav.collection')}</h1>
       <p class="subtitle">
         {#if isLoading}
-          Loading...
+          {$t('collection.loading')}
         {:else if visitedArtworks.length === 0}
-          Start exploring to build your collection
+          {$t('collection.empty.subtitle')}
         {:else}
-          {visitedArtworks.length} {visitedArtworks.length === 1 ? 'artwork' : 'artworks'} discovered
+          {visitedArtworks.length} {visitedArtworks.length === 1 ? $t('collection.artwork.singular') : $t('collection.artwork.plural')}
         {/if}
       </p>
     </div>
@@ -48,7 +49,7 @@
       <button 
         class="menu-toggle" 
         onclick={toggleMenu}
-        aria-label="Toggle menu"
+        aria-label={$t('collection.menu.toggle')}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
@@ -62,9 +63,9 @@
   {#if !isLoading && visitedArtworks.length === 0}
     <div class="empty-state">
       <div class="empty-icon">🎨</div>
-      <h2>Your collection is empty</h2>
-      <p>Visit artworks to add them to your personal collection</p>
-      <a href="/" class="cta-button">Start Exploring</a>
+      <h2>{$t('collection.empty.title')}</h2>
+      <p>{$t('collection.empty.message')}</p>
+      <a href="/" class="cta-button">{$t('collection.empty.cta')}</a>
     </div>
   {:else if !isLoading}
     <div class="artworks-grid">
@@ -79,11 +80,11 @@
               />
             {:else}
               <div class="placeholder">
-                <span>No Image</span>
+                <span>{$t('collection.noImage')}</span>
               </div>
             {/if}
             <div class="card-overlay">
-              <span class="view-label">View</span>
+              <span class="view-label">{$t('collection.view')}</span>
             </div>
           </div>
           
@@ -102,11 +103,12 @@
   {/if}
 </div>
 
+<!-- Slide-out menu -->
 {#if showMenu}
   <div class="menu-overlay" onclick={toggleMenu}></div>
   <nav class="slide-menu">
     <div class="menu-header">
-      <h2>Collection</h2>
+      <h2>{$t('common.nav.collection')}</h2>
       <button class="close-button" onclick={toggleMenu}>×</button>
     </div>
     <ul class="menu-list">
