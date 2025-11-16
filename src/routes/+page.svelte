@@ -4,7 +4,9 @@
   import StoryView from '$lib/components/StoryView.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
   import { t, locale } from '$lib/translations';
-  import { page } from '$app/stores'; // Import page store
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
 
   export let data;
 
@@ -16,9 +18,35 @@
 
   function handleCloseStory() {
     selectedArtwork = null;
+    // Clear the hash when closing so back button works correctly
+    history.replaceState(null, '', window.location.pathname);
   }
 
-// Title handling
+  // Watch for hash changes to open specific artworks
+  $: {
+    const hash = $page.url.hash;
+    if (hash && hash.startsWith('#artwork-')) {
+      const artworkId = hash.replace('#artwork-', '');
+      const artwork = data.artworks.find(a => a.id == artworkId);
+      if (artwork) {
+        selectedArtwork = artwork;
+      }
+    }
+  }
+
+  // Also handle initial page load with hash
+  onMount(() => {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#artwork-')) {
+      const artworkId = hash.replace('#artwork-', '');
+      const artwork = data.artworks.find(a => a.id == artworkId);
+      if (artwork) {
+        selectedArtwork = artwork;
+      }
+    }
+  });
+
+  // Title handling
   $: siteTitle = $t('site.title');
   $: pageMetaTitle = $t('pages.home.meta.title');
   $: fullTitle = (siteTitle && siteTitle !== 'site.title')
@@ -26,8 +54,6 @@
         ? `${siteTitle} - ${pageMetaTitle}` 
         : siteTitle)
     : 'Antoine Patraldo';
-
-
 </script>
 
 <svelte:head>
@@ -68,29 +94,29 @@
   </section>
 
   <!-- About Section -->
-<section id="about" class="about-section">
-  <div class="about-container">
-    <div class="about-content">
-      <h3>{$t('pages.home.about.title')}</h3>
-      <div class="about-text">
-        <p>{$t('pages.home.about.p1')}</p>
-        <p>{$t('pages.home.about.p2')}</p>
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-content">
+        <h3>{$t('pages.home.about.title')}</h3>
+        <div class="about-text">
+          <p>{$t('pages.home.about.p1')}</p>
+          <p>{$t('pages.home.about.p2')}</p>
+        </div>
+      </div>
+      
+      <div class="about-video">
+        <div class="video-wrapper">
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title="About Antoine - Creative Journey"
+          ></iframe>
+        </div>
       </div>
     </div>
-    
-    <div class="about-video">
-      <div class="video-wrapper">
-        <iframe
-          src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen
-          loading="lazy"
-          title="About Antoine - Creative Journey"
-        ></iframe>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
