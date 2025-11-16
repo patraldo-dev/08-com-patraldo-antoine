@@ -1,5 +1,3 @@
-# Create the file
-cat > src/lib/utils/visitTracker.js << 'EOF'
 // src/lib/utils/visitTracker.js
 /**
  * Track artwork visits in localStorage
@@ -211,4 +209,3 @@ export function importVisitData(jsonData) {
     return false;
   }
 }
-EOF
