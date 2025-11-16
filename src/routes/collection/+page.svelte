@@ -49,7 +49,7 @@
   }
   
   function openArtwork(artworkId) {
-    goto(`/?artwork=${artworkId}`);
+    goto(`/#artwork-${artworkId}`);
   }
   
   function handleClearAll() {
