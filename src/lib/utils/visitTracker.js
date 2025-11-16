@@ -1,14 +1,7 @@
 // src/lib/utils/visitTracker.js
-/**
- * Track artwork visits in localStorage
- */
 const STORAGE_KEY = 'artwork_visits';
 const FAVORITES_KEY = 'artwork_favorites';
 
-/**
- * Get all visit data
- * @returns {Object} Visit data keyed by artwork ID
- */
 export function getAllVisits() {
   if (typeof window === 'undefined') return {};
   
@@ -21,11 +14,11 @@ export function getAllVisits() {
   }
 }
 
-/**
- * Track a visit to an artwork
- * @param {number|string} artworkId - The artwork ID
- * @param {Object} metadata - Optional metadata (title, image, etc.)
- */
+// Alias getVisitedArtworks to getAllVisits to fulfill import contract
+export function getVisitedArtworks() {
+  return getAllVisits();
+}
+
 export function trackVisit(artworkId, metadata = {}) {
   if (typeof window === 'undefined') return null;
   
@@ -59,30 +52,16 @@ export function trackVisit(artworkId, metadata = {}) {
   }
 }
 
-/**
- * Check if an artwork has been visited
- * @param {number|string} artworkId 
- * @returns {boolean}
- */
 export function hasVisited(artworkId) {
   const visits = getAllVisits();
   return !!visits[artworkId];
 }
 
-/**
- * Get visit data for specific artwork
- * @param {number|string} artworkId 
- * @returns {Object|null}
- */
 export function getVisit(artworkId) {
   const visits = getAllVisits();
   return visits[artworkId] || null;
 }
 
-/**
- * Get all favorites
- * @returns {Set} Set of favorited artwork IDs
- */
 export function getAllFavorites() {
   if (typeof window === 'undefined') return new Set();
   
@@ -95,11 +74,6 @@ export function getAllFavorites() {
   }
 }
 
-/**
- * Toggle favorite status
- * @param {number|string} artworkId 
- * @returns {boolean} New favorite status
- */
 export function toggleFavorite(artworkId) {
   if (typeof window === 'undefined') return false;
   
@@ -125,20 +99,11 @@ export function toggleFavorite(artworkId) {
   }
 }
 
-/**
- * Check if artwork is favorited
- * @param {number|string} artworkId 
- * @returns {boolean}
- */
 export function isFavorite(artworkId) {
   const favorites = getAllFavorites();
   return favorites.has(artworkId.toString());
 }
 
-/**
- * Get visit statistics
- * @returns {Object} Statistics about visits
- */
 export function getVisitStats() {
   const visits = getAllVisits();
   const artworkIds = Object.keys(visits);
@@ -158,9 +123,6 @@ export function getVisitStats() {
   };
 }
 
-/**
- * Clear all visit data
- */
 export function clearAllVisits() {
   if (typeof window === 'undefined') return;
   
@@ -168,10 +130,6 @@ export function clearAllVisits() {
   window.dispatchEvent(new CustomEvent('visitsCleared'));
 }
 
-/**
- * Export visit data as JSON
- * @returns {string} JSON string of all data
- */
 export function exportVisitData() {
   const visits = getAllVisits();
   const favorites = [...getAllFavorites()];
@@ -183,11 +141,6 @@ export function exportVisitData() {
   }, null, 2);
 }
 
-/**
- * Import visit data from JSON
- * @param {string} jsonData - JSON string to import
- * @returns {boolean} Success status
- */
 export function importVisitData(jsonData) {
   if (typeof window === 'undefined') return false;
   
@@ -209,3 +162,4 @@ export function importVisitData(jsonData) {
     return false;
   }
 }
+
