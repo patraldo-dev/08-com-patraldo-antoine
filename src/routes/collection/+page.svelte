@@ -102,7 +102,6 @@
   {/if}
 </div>
 
-<!-- Slide-out menu -->
 {#if showMenu}
   <div class="menu-overlay" onclick={toggleMenu}></div>
   <nav class="slide-menu">
