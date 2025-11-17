@@ -1,5 +1,5 @@
+<!-- src/lib/components/AboutDetailModal.svelte -->
 <script>
-  import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   
   let { open = false, onClose } = $props();
@@ -10,16 +10,19 @@
     }
   }
   
-  onMount(() => {
-    if (browser) {
-      document.addEventListener('keydown', handleKeydown);
+  // Use $effect to manage body scroll and keyboard events
+  $effect(() => {
+    if (!browser) return;
+    
+    if (open) {
       document.body.style.overflow = 'hidden';
-    }
-  });
-  
-  onDestroy(() => {
-    if (browser) {
-      document.removeEventListener('keydown', handleKeydown);
+      document.addEventListener('keydown', handleKeydown);
+      
+      return () => {
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', handleKeydown);
+      };
+    } else {
       document.body.style.overflow = '';
     }
   });
@@ -64,9 +67,6 @@
             <ul>
               <li>Award details</li>
             </ul>
-            
-            <h3>Collections</h3>
-            <p>Works in private and public collections...</p>
           </div>
         </section>
         
@@ -75,8 +75,7 @@
           <h3>Get in Touch</h3>
           <div class="social-links">
             <a href="mailto:your@email.com">Email</a>
-            <a href="https://instagram.com/yourhandle" target="_blank">Instagram</a>
-            <!-- Add more social links -->
+            <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
         </section>
       </div>

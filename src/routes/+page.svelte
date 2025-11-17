@@ -116,7 +116,7 @@ let fullTitle = $derived(
     {/if}
   </section>
 
-  <!-- About Section -->
+<!-- About Section -->
   <section id="about" class="about-section">
     <div class="about-container">
       <div class="about-content">
@@ -128,7 +128,7 @@ let fullTitle = $derived(
       </div>
       
       <div class="about-video">
-        <div class="video-wrapper">
+        <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
           <iframe
             src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
@@ -136,6 +136,9 @@ let fullTitle = $derived(
             loading="lazy"
             title="About Antoine - Creative Journey"
           ></iframe>
+          <div class="video-overlay">
+            <span>Click to learn more</span>
+          </div>
         </div>
       </div>
     </div>
@@ -149,12 +152,14 @@ let fullTitle = $derived(
       <EmailSignup />
     </div>
   </section>
-{/if}
 
 <AboutDetailModal 
   open={showAboutDetail} 
   onClose={closeAboutDetail}
 />
+{/if}
+
+
 
 <style>
   .hero-simple {
@@ -374,4 +379,55 @@ let fullTitle = $derived(
       padding: 3rem 1rem;
     }
   }
+
+.video-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.video-wrapper:hover .video-overlay {
+  opacity: 1;
+}
+
+.video-overlay span {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Mobile: Always show the overlay hint since there's no hover */
+@media (max-width: 768px) {
+  .video-overlay {
+    opacity: 0.8;
+    padding: 1rem;
+  }
+  
+  .video-overlay span {
+    font-size: 0.95rem;
+  }
+}
+
+/* Touch devices: Show overlay by default */
+@media (hover: none) and (pointer: coarse) {
+  .video-overlay {
+    opacity: 0.8;
+  }
+}
+
 </style>
