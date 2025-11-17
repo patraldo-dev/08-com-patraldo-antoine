@@ -37,23 +37,22 @@
   }
 
   // Watch for hash changes to open specific artworks
-  $: {
-    const hash = $page.url.hash;
-    if (hash && hash.startsWith('#artwork-')) {
-      const artworkId = hash.replace('#artwork-', '');
-      const artwork = data.artworks.find(a => a.id == artworkId);
-      if (artwork) {
-        selectedArtwork = artwork;
-
-trackVisit(artwork.id, {
+// Watch for hash changes to open specific artworks
+$effect(() => {
+  const hash = $page.url.hash;
+  if (hash && hash.startsWith('#artwork-')) {
+    const artworkId = hash.replace('#artwork-', '');
+    const artwork = data.artworks.find(a => a.id == artworkId);
+    if (artwork) {
+      selectedArtwork = artwork;
+      
+      trackVisit(artwork.id, {
         display_name: artwork.display_name || artwork.title,
-        title: artwork.title,
-        type: artwork.type,
-        year: artwork.year
+        title: artwork.title
       });
-      }
     }
   }
+});
 
   // Also handle initial page load with hash
   onMount(() => {
