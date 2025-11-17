@@ -1,4 +1,3 @@
-<!-- src/routes/+page.svelte -->
 <script>
   import Sketchbook from '$lib/components/Sketchbook.svelte';
   import StoryView from '$lib/components/StoryView.svelte';
@@ -10,21 +9,19 @@
   import { trackVisit } from '$lib/utils/visitTracker.js';
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
 
-  export let data;
-
-  let selectedArtwork = null;
-
+  const { data } = $props();
+  let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
- 
+
   $effect(() => {
     const hash = $page.url.hash;
     showAboutDetail = hash === '#about-detail';
   });
-  
+
   function openAboutDetail() {
     window.location.hash = '#about-detail';
   }
-  
+
   function closeAboutDetail() {
     window.location.hash = '#about';
   }
