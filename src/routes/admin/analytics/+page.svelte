@@ -26,6 +26,51 @@
     days = parseInt(event.target.value);
     loadAnalytics();
   }
+  
+  function getCountryFlag(countryCode) {
+    if (countryCode === 'unknown') return '🌍';
+    // Convert country code to flag emoji
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+  }
+  
+  function getCountryName(countryCode) {
+    const names = {
+      'US': 'United States',
+      'MX': 'Mexico',
+      'CA': 'Canada',
+      'GB': 'United Kingdom',
+      'FR': 'France',
+      'DE': 'Germany',
+      'ES': 'Spain',
+      'IT': 'Italy',
+      'BR': 'Brazil',
+      'AR': 'Argentina',
+      'JP': 'Japan',
+      'CN': 'China',
+      'IN': 'India',
+      'AU': 'Australia',
+      'NL': 'Netherlands',
+      'BE': 'Belgium',
+      'CH': 'Switzerland',
+      'SE': 'Sweden',
+      'NO': 'Norway',
+      'DK': 'Denmark',
+      'FI': 'Finland',
+      'PT': 'Portugal',
+      'PL': 'Poland',
+      'RU': 'Russia',
+      'KR': 'South Korea',
+      'SG': 'Singapore',
+      'HK': 'Hong Kong',
+      'TW': 'Taiwan',
+      'unknown': 'Unknown'
+    };
+    return names[countryCode] || countryCode;
+  }
 </script>
 
 <svelte:head>
@@ -56,6 +101,10 @@
         <p class="big-number">{analytics.visits?.length || 0}</p>
       </div>
       <div class="stat-card">
+        <h3>Total Visits</h3>
+        <p class="big-number">{analytics.visits?.reduce((sum, v) => sum + (v.visit_count || 0), 0) || 0}</p>
+      </div>
+      <div class="stat-card">
         <h3>Total Favorites</h3>
         <p class="big-number">{analytics.favorites?.reduce((sum, f) => sum + (f.net_favorites || 0), 0) || 0}</p>
       </div>
@@ -71,7 +120,7 @@
         <table>
           <thead>
             <tr>
-              <th>Artwork ID</th>
+              <th>Artwork</th>
               <th>Total Visits</th>
               <th>Unique Visitors</th>
             </tr>
@@ -79,7 +128,11 @@
           <tbody>
             {#each analytics.visits as visit}
               <tr>
-                <td><a href="/#artwork-{visit.artwork_id}">{visit.artwork_id}</a></td>
+                <td>
+                  <a href="/#artwork-{visit.artwork_id}">
+                    {visit.display_name || `Artwork ${visit.artwork_id}`}
+                  </a>
+                </td>
                 <td>{visit.visit_count}</td>
                 <td>{visit.unique_visitors}</td>
               </tr>
@@ -97,14 +150,18 @@
         <table>
           <thead>
             <tr>
-              <th>Artwork ID</th>
+              <th>Artwork</th>
               <th>Net Favorites</th>
             </tr>
           </thead>
           <tbody>
-            {#each analytics.favorites.filter(f => f.net_favorites > 0).sort((a, b) => b.net_favorites - a.net_favorites) as fav}
+            {#each analytics.favorites as fav}
               <tr>
-                <td><a href="/#artwork-{fav.artwork_id}">{fav.artwork_id}</a></td>
+                <td>
+                  <a href="/#artwork-{fav.artwork_id}">
+                    {fav.display_name || `Artwork ${fav.artwork_id}`}
+                  </a>
+                </td>
                 <td>{fav.net_favorites}</td>
               </tr>
             {/each}
@@ -118,22 +175,17 @@
     <section class="data-section">
       <h2>Geographic Distribution</h2>
       {#if analytics.countries && analytics.countries.length > 0}
-        <table>
-          <thead>
-            <tr>
-              <th>Country</th>
-              <th>Visits</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each analytics.countries as country}
-              <tr>
-                <td>{country.country}</td>
-                <td>{country.count}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+        <div class="geo-grid">
+          {#each analytics.countries as country}
+            <div class="geo-card">
+              <div class="country-flag">{getCountryFlag(country.country)}</div>
+              <div class="country-info">
+                <div class="country-name">{getCountryName(country.country)}</div>
+                <div class="country-count">{country.count} visits</div>
+              </div>
+            </div>
+          {/each}
+        </div>
       {:else}
         <p class="empty">No geographic data available</p>
       {/if}
@@ -284,6 +336,50 @@
     font-style: italic;
   }
   
+  .geo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  
+  .geo-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f8f8;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+  }
+  
+  .geo-card:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .country-flag {
+    font-size: 2rem;
+    line-height: 1;
+  }
+  
+  .country-info {
+    flex: 1;
+  }
+  
+  .country-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .country-count {
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
   @media (max-width: 768px) {
     .analytics-dashboard {
       padding: 4rem 1rem 2rem;
@@ -308,6 +404,10 @@
     
     th, td {
       padding: 0.75rem 0.5rem;
+    }
+    
+    .geo-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
