@@ -7,6 +7,7 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { trackVisit } from '$lib/utils/visitTracker.js';
 
   export let data;
 
@@ -30,6 +31,13 @@
       const artwork = data.artworks.find(a => a.id == artworkId);
       if (artwork) {
         selectedArtwork = artwork;
+
+trackVisit(artwork.id, {
+        display_name: artwork.display_name || artwork.title,
+        title: artwork.title,
+        type: artwork.type,
+        year: artwork.year
+      });
       }
     }
   }
