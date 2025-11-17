@@ -79,8 +79,8 @@
         <section class="contact-section">
           <h3>Get in Touch</h3>
           <div class="social-links">
-            <a href="mailto:your@email.com">Email</a>
-            <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="mailto:antoine@patraldo.com">Email</a>
+            <a href="https://instagram.com/antoine.patraldo" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
         </section>
       </div>
