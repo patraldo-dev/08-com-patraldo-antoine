@@ -8,10 +8,26 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { trackVisit } from '$lib/utils/visitTracker.js';
+  import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
 
   export let data;
 
   let selectedArtwork = null;
+
+  let showAboutDetail = $state(false);
+ 
+  $effect(() => {
+    const hash = $page.url.hash;
+    showAboutDetail = hash === '#about-detail';
+  });
+  
+  function openAboutDetail() {
+    window.location.hash = '#about-detail';
+  }
+  
+  function closeAboutDetail() {
+    window.location.hash = '#about';
+  }
 
   function handleSelectArtwork(event) {
     selectedArtwork = event.detail;
@@ -135,6 +151,11 @@ trackVisit(artwork.id, {
     </div>
   </section>
 {/if}
+
+<AboutDetailModal 
+  open={showAboutDetail} 
+  onClose={closeAboutDetail}
+/>
 
 <style>
   .hero-simple {
