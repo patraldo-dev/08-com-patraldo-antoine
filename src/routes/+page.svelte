@@ -136,6 +136,7 @@ let fullTitle = $derived(
             loading="lazy"
             title="About Antoine - Creative Journey"
           ></iframe>
+<div class="click-overlay"></div>
           <div class="video-overlay">
             <span>Click to learn more</span>
           </div>
@@ -428,6 +429,32 @@ let fullTitle = $derived(
   .video-overlay {
     opacity: 0.8;
   }
+}
+
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 3; /* Above click overlay */
 }
 
 </style>
