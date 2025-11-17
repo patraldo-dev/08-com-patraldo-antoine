@@ -66,14 +66,17 @@ $effect(() => {
     }
   });
 
-  // Title handling
-  $: siteTitle = $t('site.title');
-  $: pageMetaTitle = $t('pages.home.meta.title');
-  $: fullTitle = (siteTitle && siteTitle !== 'site.title')
-    ? (pageMetaTitle && pageMetaTitle !== 'pages.home.meta.title' 
-        ? `${siteTitle} - ${pageMetaTitle}` 
+// Title handling
+let siteTitle = $derived($t('site.title'));
+let pageMetaTitle = $derived($t('pages.home.meta.title'));
+let fullTitle = $derived(
+  (siteTitle && siteTitle !== 'site.title')
+    ? (pageMetaTitle && pageMetaTitle !== 'pages.home.meta.title'
+        ? `${siteTitle} - ${pageMetaTitle}`
         : siteTitle)
-    : 'Antoine Patraldo';
+    : 'Antoine Patraldo'
+);
+
 </script>
 
 <svelte:head>
