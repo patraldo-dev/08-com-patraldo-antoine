@@ -36,10 +36,15 @@
       <div class="content-wrapper">
         <!-- Video Section -->
         <section class="video-section">
-          <video controls autoplay>
-            <source src="YOUR_VIDEO_URL" type="video/mp4">
-            <track kind="captions" />
-          </video>
+          <div class="modal-video-wrapper">
+            <iframe
+              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+              title="About Antoine - Creative Journey"
+            ></iframe>
+          </div>
         </section>
         
         <!-- Extended Bio -->
@@ -142,10 +147,22 @@
     margin-bottom: 3rem;
   }
   
-  .video-section video {
+  .modal-video-wrapper {
+    position: relative;
     width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
     border-radius: 8px;
+    overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .modal-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
   }
   
   .bio-section {
