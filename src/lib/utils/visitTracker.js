@@ -45,6 +45,11 @@ export function trackVisit(artworkId, metadata = {}) {
       detail: { artworkId, visit: visits[artworkId] }
     }));
     
+    // Send to analytics API (don't await - fire and forget)
+    sendAnalytics('visit', artworkId, metadata).catch(err => 
+      console.error('Analytics tracking failed:', err)
+    );
+    
     return visits[artworkId];
   } catch (error) {
     console.error('Error tracking visit:', error);
@@ -79,8 +84,9 @@ export function toggleFavorite(artworkId) {
   
   try {
     const favorites = getAllFavorites();
+    const wasFavorite = favorites.has(artworkId.toString());
     
-    if (favorites.has(artworkId.toString())) {
+    if (wasFavorite) {
       favorites.delete(artworkId.toString());
     } else {
       favorites.add(artworkId.toString());
@@ -88,11 +94,18 @@ export function toggleFavorite(artworkId) {
     
     localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites]));
     
+    const isFavorite = favorites.has(artworkId.toString());
+    
     window.dispatchEvent(new CustomEvent('favoriteToggled', { 
-      detail: { artworkId, isFavorite: favorites.has(artworkId.toString()) }
+      detail: { artworkId, isFavorite }
     }));
     
-    return favorites.has(artworkId.toString());
+    // Send to analytics API (don't await - fire and forget)
+    sendAnalytics(isFavorite ? 'favorite' : 'unfavorite', artworkId).catch(err => 
+      console.error('Analytics tracking failed:', err)
+    );
+    
+    return isFavorite;
   } catch (error) {
     console.error('Error toggling favorite:', error);
     return false;
@@ -163,3 +176,22 @@ export function importVisitData(jsonData) {
   }
 }
 
+// ANALYTICS HELPER FUNCTION
+async function sendAnalytics(eventType, artworkId, metadata = {}) {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    await fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType,
+        artworkId,
+        metadata
+      })
+    });
+  } catch (error) {
+    // Fail silently - analytics shouldn't break user experience
+    console.debug('Analytics send failed (non-critical):', error);
+  }
+}
