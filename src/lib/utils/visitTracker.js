@@ -176,6 +176,14 @@ export function importVisitData(jsonData) {
   }
 }
 
+export function clearAllData() {
+  if (typeof window === 'undefined') return;
+  
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(FAVORITES_KEY);
+  window.dispatchEvent(new CustomEvent('visitsCleared'));
+}
+
 // ANALYTICS HELPER FUNCTION
 async function sendAnalytics(eventType, artworkId, metadata = {}) {
   if (typeof window === 'undefined') return;
@@ -187,6 +195,7 @@ async function sendAnalytics(eventType, artworkId, metadata = {}) {
       body: JSON.stringify({
         eventType,
         artworkId,
+        display_name: metadata.display_name || metadata.title || null,
         metadata
       })
     });

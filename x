@@ -1,44 +1,34 @@
-// Add after the localStorage operations in trackVisit():
-export async function trackVisit(artworkId, metadata = {}) {
-  // ... existing code ...
-  
-  // Send to analytics API
+export async function POST({ request, platform, getClientAddress }) {
   try {
-    await fetch('/api/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        eventType: 'visit',
-        artworkId,
-        metadata
-      })
-    });
-  } catch (error) {
-    console.error('Analytics tracking failed:', error);
-  }
-  
-  return visits[artworkId];
-}
+    const db = platform?.env?.ARTWORKS_DB;
+    if (!db) {
+      return json({ error: 'Database unavailable' }, { status: 503 });
+    }
 
-// Add similar tracking to toggleFavorite():
-export function toggleFavorite(artworkId) {
-  // ... existing code ...
-  
-  const isFav = favorites.has(artworkId.toString());
-  
-  // Send to analytics API
-  try {
-    fetch('/api/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        eventType: isFav ? 'favorite' : 'unfavorite',
-        artworkId
-      })
-    });
+    const { eventType, artworkId, metadata, displayName } = await request.json();
+    
+    const ipAddress = getClientAddress();
+    const ipHash = await hashString(ipAddress);
+    const country = request.headers.get('cf-ipcountry') || 'unknown';
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+
+    await db.prepare(`
+      INSERT INTO analytics (event_type, artwork_id, display_name, session_id, user_agent, ip_hash, country, metadata)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      eventType,
+      artworkId,
+      displayName || null,
+      ipHash,
+      userAgent,
+      ipHash,
+      country,
+      JSON.stringify(metadata || {})
+    ).run();
+
+    return json({ success: true });
   } catch (error) {
-    console.error('Analytics tracking failed:', error);
+    console.error('Analytics error:', error);
+    return json({ error: 'Failed to record analytics' }, { status: 500 });
   }
-  
-  return isFav;
 }

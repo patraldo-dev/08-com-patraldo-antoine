@@ -8,7 +8,7 @@ export async function POST({ request, platform, getClientAddress }) {
       return json({ error: 'Database unavailable' }, { status: 503 });
     }
 
-    const { eventType, artworkId, metadata } = await request.json();
+    const { eventType, artworkId, metadata, display_name } = await request.json();
     
     // Generate session ID from IP (hashed for privacy)
     const ipAddress = getClientAddress();
@@ -19,11 +19,12 @@ export async function POST({ request, platform, getClientAddress }) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     await db.prepare(`
-      INSERT INTO analytics (event_type, artwork_id, session_id, user_agent, ip_hash, country, metadata)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO analytics (event_type, artwork_id, display_name, session_id, user_agent, ip_hash, country, metadata)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       eventType,
       artworkId,
+      display_name || null,
       ipHash,
       userAgent,
       ipHash,
