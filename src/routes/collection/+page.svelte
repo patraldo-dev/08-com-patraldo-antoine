@@ -196,7 +196,8 @@
 </script>
 
 <svelte:head>
-  <title>{$t('pages.collection.title')} - Antoine Patraldo</title>
+  <title>{$t('pages.home.meta.title')} - {$t('common.nav.collection')}</title>
+
 </svelte:head>
 
 <div class="collection-page">

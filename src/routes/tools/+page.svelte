@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-  <title>{$t('pages.tools.meta.title')} - Antoine Patraldo</title>
+  <title>{$t('pages.home.meta.title')} - {$t('common.nav.tools')}</title>
   <meta name="description" content={$t('pages.tools.meta.description')} />
 </svelte:head>
 
