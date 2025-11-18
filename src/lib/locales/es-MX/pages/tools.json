@@ -49,25 +49,4 @@
       "description": "¡Cuéntame qué herramientas creativas te gustaría ver! Siempre busco apoyar a artistas y diseñadores.",
       "button": "Ponte en contacto"
     }
-    "meta": {
-      "description": "Obras que has explorado"
-    },
-    "loading": "Cargando...",
-    "subtitle": {
-      "empty": "Comienza a explorar para construir tu colección"
-    },
-    "count": {
-      "singular": "obra descubierta",
-      "plural": "obras descubiertas"
-    },
-    "empty": {
-      "title": "Tu colección está vacía",
-      "message": "Visita las obras para agregarlas a tu colección personal",
-      "cta": "Comenzar a explorar"
-    },
-    "noImage": "Sin Imagen",
-    "view": "Ver",
-    "menu": {
-      "toggle": "Alternar menú"
-    }
 }
