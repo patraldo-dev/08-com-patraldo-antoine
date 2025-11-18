@@ -73,6 +73,15 @@ $effect(() => {
     }
   });
 
+ // TEMPORARY DEBUG
+  $effect(() => {
+    console.log('Translation debug:', {
+      rawTranslation: $t('pages.home.meta.title'),
+      fullTitle: fullTitle,
+      safeTranslateResult: safeTranslate('pages.home.meta.title', 'Antoine Patraldo')
+    });
+  });
+
 </script>
 
 <svelte:head>
