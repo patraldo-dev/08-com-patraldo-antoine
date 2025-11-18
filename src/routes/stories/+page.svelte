@@ -31,6 +31,8 @@
     <h1>{$t('pages.stories.title')}</h1>
     <p class="subtitle">{$t('pages.stories.subtitle')}</p>
   </div>
+
+<div>Test: {$t('pages.home.meta.title')}</div>
   
   <div class="stories-grid layout">
     {#if stories.length === 0}
