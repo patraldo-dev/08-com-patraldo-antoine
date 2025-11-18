@@ -4,7 +4,8 @@
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
-  
+  import ColorPalette from '$lib/components/ColorPalette.svelte';  
+
   const dispatch = createEventDispatcher();
   
   export let artwork;
@@ -196,7 +197,7 @@
 
         <!-- Story Intro (if exists) -->
         {#if artwork.story_intro}
-          <InkReveal delay={600}>
+          <InkReveal delay={800}>
             <div class="story-intro">
               {artwork.story_intro}
             </div>
