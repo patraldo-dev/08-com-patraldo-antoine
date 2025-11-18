@@ -26,9 +26,6 @@
     }
   });
   
-  async function extractColors() {
-    if (!ColorThief) return;
-    
     loading = true;
     
   async function extractColors() {
