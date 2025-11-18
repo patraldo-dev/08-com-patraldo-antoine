@@ -1,0 +1,52 @@
+{
+  "tools": {
+    "meta": {
+      "title": "Creative Tools",
+      "description": "Free tools for designers and artists inspired by Antoine Patraldo's artwork"
+    },
+    "title": "Creative Tools",
+    "subtitle": "Free resources for designers, artists, and creators. Extract color palettes, download wallpapers, and more.",
+    "backToTools": "Back to Tools",
+    "status": {
+      "available": "Available Now",
+      "comingSoon": "Coming Soon",
+      "future": "Future"
+    },
+    "palettes": {
+      "title": "Color Palettes",
+      "description": "Extract beautiful color palettes from artworks. Export for Photoshop, GIMP, CSS, and more.",
+      "pageTitle": "Color Palette Extractor",
+      "pageDescription": "Extract dominant colors from any artwork and export them in your favorite format.",
+      "howToTitle": "How It Works",
+      "step1": "Browse the artworks and click one to view details",
+      "step2": "Scroll down to see the extracted color palette",
+      "step3": "Click any color to copy it, or download in your preferred format",
+      "explorePrompt": "Ready to explore?",
+      "browseArtworks": "Browse Artworks"
+    },
+    "wallpapers": {
+      "title": "Wallpapers",
+      "description": "Download high-resolution artworks as wallpapers for your devices."
+    },
+    "avatarCreator": {
+      "title": "Avatar Creator",
+      "description": "Create unique avatars by mixing features from different artworks."
+    },
+    "stickers": {
+      "title": "Printable Stickers",
+      "description": "Download sticker sheets ready for printing at home or professionally."
+    },
+    "arTryOn": {
+      "title": "AR Try-On",
+      "description": "See how artworks look on your wall using augmented reality."
+    },
+    "nfts": {
+      "title": "NFT Gallery",
+      "description": "Exclusive digital collectibles and blockchain art."
+    },
+    "cta": {
+      "title": "Have an idea?",
+      "description": "Tell me what creative tools you'd like to see! I'm always looking for ways to support artists and designers.",
+      "button": "Get in Touch"
+    }
+  }

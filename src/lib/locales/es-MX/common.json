@@ -12,84 +12,9 @@
     "subscribe": "Suscribirse",
     "tools": "Herramientas Creativas"
   },
-  "tools": {
-    "meta": {
-      "title": "Herramientas Creativas",
-      "description": "Herramientas gratuitas para diseñadores y artistas inspiradas en la obra de Antoine Patraldo"
-    },
-    "title": "Herramientas Creativas",
-    "subtitle": "Recursos gratuitos para diseñadores, artistas y creadores. Extrae paletas de colores, descarga fondos de pantalla, y más.",
-    "backToTools": "Regresar a Herramientas",
-    "status": {
-      "available": "Disponible ahora",
-      "comingSoon": "Próximamente",
-      "future": "Futuro"
-    },
-    "palettes": {
-      "title": "Paletas de Colores",
-      "description": "Extrae hermosas paletas de colores de obras de arte. Exporta para Photoshop, GIMP, CSS y más.",
-      "pageTitle": "Extractor de Paletas de Colores",
-      "pageDescription": "Extrae los colores dominantes de cualquier obra y expórtalos en tu formato favorito.",
-      "howToTitle": "Cómo Funciona",
-      "step1": "Navega por las obras y haz clic en una para ver detalles",
-      "step2": "Desplázate para ver la paleta de colores extraída",
-      "step3": "Haz clic en cualquier color para copiarlo o descárgalo en el formato que prefieras",
-      "explorePrompt": "¿Listo para explorar?",
-      "browseArtworks": "Navegar Obras"
-    },
-    "wallpapers": {
-      "title": "Fondos de Pantalla",
-      "description": "Descarga obras en alta resolución como fondos para tus dispositivos."
-    },
-    "avatarCreator": {
-      "title": "Creador de Avatares",
-      "description": "Crea avatares únicos combinando rasgos de diferentes obras."
-    },
-    "stickers": {
-      "title": "Pegatinas Imprimibles",
-      "description": "Descarga hojas de pegatinas listas para imprimir en casa o profesionalmente."
-    },
-    "arTryOn": {
-      "title": "Prueba de RA",
-      "description": "Mira cómo se ven las obras en tu pared usando realidad aumentada."
-    },
-    "nfts": {
-      "title": "Galería NFT",
-      "description": "Coleccionables digitales exclusivos y arte en blockchain."
-    },
-    "cta": {
-      "title": "¿Tienes una idea?",
-      "description": "¡Cuéntame qué herramientas creativas te gustaría ver! Siempre busco apoyar a artistas y diseñadores.",
-      "button": "Ponte en contacto"
-    }
-  },
-  "collection": {
-    "meta": {
-      "description": "Obras que has explorado"
-    },
-    "loading": "Cargando...",
-    "subtitle": {
-      "empty": "Comienza a explorar para construir tu colección"
-    },
-    "count": {
-      "singular": "obra descubierta",
-      "plural": "obras descubiertas"
-    },
-    "empty": {
-      "title": "Tu colección está vacía",
-      "message": "Visita las obras para agregarlas a tu colección personal",
-      "cta": "Comenzar a explorar"
-    },
-    "noImage": "Sin Imagen",
-    "view": "Ver",
-    "menu": {
-      "toggle": "Alternar menú"
-    }
-  },
   "lang": {
     "es": "Español (México)",
     "en": "Inglés (Estados Unidos)",
     "fr": "Francés (Canadá)"
   }
 }
-

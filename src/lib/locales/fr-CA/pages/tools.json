@@ -1,0 +1,52 @@
+{
+  "tools": {
+    "meta": {
+      "title": "Outils Créatifs",
+      "description": "Outils gratuits pour designers et artistes inspirés par les œuvres d'Antoine Patraldo"
+    },
+    "title": "Outils Créatifs",
+    "subtitle": "Ressources gratuites pour designers, artistes et créateurs. Extraire des palettes de couleurs, télécharger des fonds d'écran, et plus.",
+    "backToTools": "Retour aux Outils",
+    "status": {
+      "available": "Disponible maintenant",
+      "comingSoon": "Bientôt disponible",
+      "future": "À venir"
+    },
+    "palettes": {
+      "title": "Palettes de Couleurs",
+      "description": "Extraire de magnifiques palettes de couleurs à partir d'œuvres. Exporter pour Photoshop, GIMP, CSS, et plus.",
+      "pageTitle": "Extracteur de Palette de Couleurs",
+      "pageDescription": "Extraire les couleurs dominantes de toute œuvre et les exporter dans votre format préféré.",
+      "howToTitle": "Comment ça marche",
+      "step1": "Parcourez les œuvres et cliquez sur une pour voir les détails",
+      "step2": "Faites défiler pour voir la palette extraite",
+      "step3": "Cliquez sur une couleur pour la copier, ou téléchargez-la dans le format souhaité",
+      "explorePrompt": "Prêt à explorer ?",
+      "browseArtworks": "Parcourir les Œuvres"
+    },
+    "wallpapers": {
+      "title": "Fonds d'Écran",
+      "description": "Téléchargez des œuvres en haute résolution comme fonds d'écran pour vos appareils."
+    },
+    "avatarCreator": {
+      "title": "Créateur d'Avatar",
+      "description": "Créez des avatars uniques en combinant des traits de différentes œuvres."
+    },
+    "stickers": {
+      "title": "Autocollants Imprimables",
+      "description": "Téléchargez des planches d'autocollants prêtes à être imprimées chez vous ou professionnellement."
+    },
+    "arTryOn": {
+      "title": "Essayage AR",
+      "description": "Voyez comment les œuvres apparaissent sur votre mur avec la réalité augmentée."
+    },
+    "nfts": {
+      "title": "Galerie NFT",
+      "description": "Objets numériques exclusifs et art blockchain."
+    },
+    "cta": {
+      "title": "Une idée ?",
+      "description": "Dites-moi quels outils créatifs vous aimeriez voir ! Je cherche toujours à soutenir les artistes et designers.",
+      "button": "Contactez-moi"
+    }
+}
