@@ -32,7 +32,15 @@
     <p class="subtitle">{$t('pages.stories.subtitle')}</p>
   </div>
 
-<div>Test: {$t('pages.home.meta.title')}</div>
+
+  <!-- TEMPORARY TEST -->
+  <div style="background: yellow; padding: 10px; margin: 20px; border: 2px solid red;">
+    <h3>Translation Test:</h3>
+    <p><strong>pages.home.meta.title:</strong> "{$t('pages.home.meta.title')}"</p>
+    <p><strong>pages.stories.title:</strong> "{$t('pages.stories.title')}"</p>
+    <p><strong>common.nav.stories:</strong> "{$t('common.nav.stories')}"</p>
+  </div>
+  <!-- END TEMPORARY TEST -->
   
   <div class="stories-grid layout">
     {#if stories.length === 0}
