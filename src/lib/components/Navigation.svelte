@@ -107,6 +107,7 @@
     <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
     <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
+    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.nav.tools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <LanguageSwitcherDesktop />
@@ -136,6 +137,7 @@
     <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.nav.work')}</a>
     <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.nav.about')}</a>
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.nav.stories')}</a>
+    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.nav.tools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.nav.contact')}</a>
     <div class="mobile-lang-switcher">
