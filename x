@@ -1,34 +1,66 @@
-<script>
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  
-  let { imageUrl, artworkTitle = 'Artwork' } = $props();
-  
-  let colors = $state([]);
-  let loading = $state(true);
-  let error = $state(null);
-  let copiedIndex = $state(-1);
-  let ColorThief;
-  
-  onMount(async () => {
-    // Import ColorThief only in browser
-    if (browser) {
-      const ColorThiefModule = await import('colorthief');
-      ColorThief = ColorThiefModule.default;
-      
-      try {
-        await extractColors();
-      } catch (err) {
-        console.error('Failed to extract colors:', err);
-        error = 'Could not extract colors';
-        loading = false;
-      }
+{
+  "site": {
+    "title": "Antoine Patraldo"
+  },
+  "nav": {
+    "home": "Home",
+    "work": "Work",
+    "about": "About",
+    "stories": "Stories",
+    "collection": "My Collection",
+    "contact": "Contact",
+    "subscribe": "Subscribe",
+    "tools": "Creative Tools"
+  },
+  "tools": {
+    "meta": {
+      "title": "Creative Tools",
+      "description": "Free tools for designers and artists inspired by Antoine Patraldo's artwork"
+    },
+    "title": "Creative Tools",
+    "subtitle": "Free resources for designers, artists, and creators. Extract color palettes, download wallpapers, and more.",
+    "backToTools": "Back to Tools",
+    "status": {
+      "available": "Available Now",
+      "comingSoon": "Coming Soon",
+      "future": "Future"
+    },
+    "palettes": {
+      "title": "Color Palettes",
+      "description": "Extract beautiful color palettes from artworks. Export for Photoshop, GIMP, CSS, and more.",
+      "pageTitle": "Color Palette Extractor",
+      "pageDescription": "Extract dominant colors from any artwork and export them in your favorite format.",
+      "howToTitle": "How It Works",
+      "step1": "Browse the artworks and click one to view details",
+      "step2": "Scroll down to see the extracted color palette",
+      "step3": "Click any color to copy it, or download in your preferred format",
+      "explorePrompt": "Ready to explore?",
+      "browseArtworks": "Browse Artworks"
+    },
+    "wallpapers": {
+      "title": "Wallpapers",
+      "description": "Download high-resolution artworks as wallpapers for your devices."
+    },
+    "avatarCreator": {
+      "title": "Avatar Creator",
+      "description": "Create unique avatars by mixing features from different artworks."
+    },
+    "stickers": {
+      "title": "Printable Stickers",
+      "description": "Download sticker sheets ready for printing at home or professionally."
+    },
+    "arTryOn": {
+      "title": "AR Try-On",
+      "description": "See how artworks look on your wall using augmented reality."
+    },
+    "nfts": {
+      "title": "NFT Gallery",
+      "description": "Exclusive digital collectibles and blockchain art."
+    },
+    "cta": {
+      "title": "Have an idea?",
+      "description": "Tell me what creative tools you'd like to see! I'm always looking for ways to support artists and designers.",
+      "button": "Get in Touch"
     }
-  });
-  
-  async function extractColors() {
-    if (!ColorThief) return;
-    
-    loading = true;
-    
-    // ... rest of your extractColors function stays the same
+  }
+
