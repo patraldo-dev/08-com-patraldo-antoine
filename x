@@ -1,34 +1,34 @@
-export async function POST({ request, platform, getClientAddress }) {
-  try {
-    const db = platform?.env?.ARTWORKS_DB;
-    if (!db) {
-      return json({ error: 'Database unavailable' }, { status: 503 });
+<script>
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  
+  let { imageUrl, artworkTitle = 'Artwork' } = $props();
+  
+  let colors = $state([]);
+  let loading = $state(true);
+  let error = $state(null);
+  let copiedIndex = $state(-1);
+  let ColorThief;
+  
+  onMount(async () => {
+    // Import ColorThief only in browser
+    if (browser) {
+      const ColorThiefModule = await import('colorthief');
+      ColorThief = ColorThiefModule.default;
+      
+      try {
+        await extractColors();
+      } catch (err) {
+        console.error('Failed to extract colors:', err);
+        error = 'Could not extract colors';
+        loading = false;
+      }
     }
-
-    const { eventType, artworkId, metadata, displayName } = await request.json();
+  });
+  
+  async function extractColors() {
+    if (!ColorThief) return;
     
-    const ipAddress = getClientAddress();
-    const ipHash = await hashString(ipAddress);
-    const country = request.headers.get('cf-ipcountry') || 'unknown';
-    const userAgent = request.headers.get('user-agent') || 'unknown';
-
-    await db.prepare(`
-      INSERT INTO analytics (event_type, artwork_id, display_name, session_id, user_agent, ip_hash, country, metadata)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      eventType,
-      artworkId,
-      displayName || null,
-      ipHash,
-      userAgent,
-      ipHash,
-      country,
-      JSON.stringify(metadata || {})
-    ).run();
-
-    return json({ success: true });
-  } catch (error) {
-    console.error('Analytics error:', error);
-    return json({ error: 'Failed to record analytics' }, { status: 500 });
-  }
-}
+    loading = true;
+    
+    // ... rest of your extractColors function stays the same

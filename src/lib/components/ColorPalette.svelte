@@ -1,7 +1,6 @@
-<!-- src/lib/components/ColorPalette.svelte -->
-<script>
+ <script>
   import { onMount } from 'svelte';
-  import ColorThief from 'colorthief';
+  import { browser } from '$app/environment';
   
   let { imageUrl, artworkTitle = 'Artwork' } = $props();
   
@@ -9,17 +8,29 @@
   let loading = $state(true);
   let error = $state(null);
   let copiedIndex = $state(-1);
+  let ColorThief = $state(null);
   
   onMount(async () => {
-    try {
-      await extractColors();
-    } catch (err) {
-      console.error('Failed to extract colors:', err);
-      error = 'Could not extract colors';
-      loading = false;
+    // Import ColorThief only in browser
+    if (browser) {
+      const ColorThiefModule = await import('colorthief');
+      ColorThief = ColorThiefModule.default;
+      
+      try {
+        await extractColors();
+      } catch (err) {
+        console.error('Failed to extract colors:', err);
+        error = 'Could not extract colors';
+        loading = false;
+      }
     }
   });
   
+  async function extractColors() {
+    if (!ColorThief) return;
+    
+    loading = true;
+    
   async function extractColors() {
     loading = true;
     
