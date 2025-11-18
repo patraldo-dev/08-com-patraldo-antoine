@@ -18,13 +18,6 @@
     showAboutDetail = hash === '#about-detail';
   });
 
-  function safeTranslate(key, fallback = '') {
-    const translation = $t(key);
-    return translation && translation !== key ? translation : fallback;
-  }
-
-  let fullTitle = $derived(safeTranslate('pages.home.meta.title', 'Antoine Patraldo'));
-
   function openAboutDetail() {
     window.location.hash = '#about-detail';
   }
@@ -73,19 +66,10 @@ $effect(() => {
     }
   });
 
- // TEMPORARY DEBUG
-  $effect(() => {
-    console.log('Translation debug:', {
-      rawTranslation: $t('pages.home.meta.title'),
-      fullTitle: fullTitle,
-      safeTranslateResult: safeTranslate('pages.home.meta.title', 'Antoine Patraldo')
-    });
-  });
-
 </script>
 
 <svelte:head>
-  <title>{fullTitle}</title>
+  <title>{$t('pages.home.meta.title')}</title>
   <meta name="description" content={$t('pages.home.meta.description')} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
