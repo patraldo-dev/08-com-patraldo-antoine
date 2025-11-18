@@ -26,6 +26,12 @@
   
   onMount(() => {
     loadCollectionData();
+
+// Add translation debug
+  console.log('Collection translations on mount:', {
+    collectionTitle: $t('pages.collection.title'),
+    commonNav: $t('common.nav.collection')
+  });
     
     window.addEventListener('artworkVisited', loadCollectionData);
     window.addEventListener('favoriteToggled', loadCollectionData);
