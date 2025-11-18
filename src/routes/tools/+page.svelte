@@ -4,71 +4,71 @@
 </script>
 
 <svelte:head>
-  <title>{$t('tools.meta.title')} - Antoine Patraldo</title>
-  <meta name="description" content={$t('tools.meta.description')} />
+  <title>{$t('pages.tools.meta.title')} - Antoine Patraldo</title>
+  <meta name="description" content={$t('pages.tools.meta.description')} />
 </svelte:head>
 
 <div class="tools-page">
   <header class="tools-header">
-    <h1>{$t('tools.title')}</h1>
-    <p class="subtitle">{$t('tools.subtitle')}</p>
+    <h1>{$t('pages.tools.title')}</h1>
+    <p class="subtitle">{$t('pages.tools.subtitle')}</p>
   </header>
 
   <div class="tools-grid">
     <!-- Color Palettes - LIVE -->
     <a href="/tools/palettes" class="tool-card available">
       <div class="tool-icon">🎨</div>
-      <h3>{$t('tools.palettes.title')}</h3>
-      <p>{$t('tools.palettes.description')}</p>
-      <span class="status-badge live">{$t('tools.status.available')}</span>
+      <h3>{$t('pages.tools.palettes.title')}</h3>
+      <p>{$t('pages.tools.palettes.description')}</p>
+      <span class="status-badge live">{$t('pages.tools.status.available')}</span>
     </a>
 
     <!-- Wallpapers - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">🖼️</div>
-      <h3>{$t('tools.wallpapers.title')}</h3>
-      <p>{$t('tools.wallpapers.description')}</p>
-      <span class="status-badge">{$t('tools.status.comingSoon')}</span>
+      <h3>{$t('pages.tools.wallpapers.title')}</h3>
+      <p>{$t('pages.tools.wallpapers.description')}</p>
+      <span class="status-badge">{$t('pages.tools.status.comingSoon')}</span>
     </div>
 
     <!-- Avatar Creator - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">👤</div>
-      <h3>{$t('tools.avatarCreator.title')}</h3>
-      <p>{$t('tools.avatarCreator.description')}</p>
-      <span class="status-badge">{$t('tools.status.comingSoon')}</span>
+      <h3>{$t('pages.tools.avatarCreator.title')}</h3>
+      <p>{$t('pages.tools.avatarCreator.description')}</p>
+      <span class="status-badge">{$t('pages.tools.status.comingSoon')}</span>
     </div>
 
     <!-- Stickers - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">✨</div>
-      <h3>{$t('tools.stickers.title')}</h3>
-      <p>{$t('tools.stickers.description')}</p>
-      <span class="status-badge">{$t('tools.status.comingSoon')}</span>
+      <h3>{$t('pages.tools.stickers.title')}</h3>
+      <p>{$t('pages.tools.stickers.description')}</p>
+      <span class="status-badge">{$t('pages.tools.status.comingSoon')}</span>
     </div>
 
     <!-- AR Try-On - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">📱</div>
-      <h3>{$t('tools.arTryOn.title')}</h3>
-      <p>{$t('tools.arTryOn.description')}</p>
-      <span class="status-badge">{$t('tools.status.comingSoon')}</span>
+      <h3>{$t('pages.tools.arTryOn.title')}</h3>
+      <p>{$t('pages.tools.arTryOn.description')}</p>
+      <span class="status-badge">{$t('pages.tools.status.comingSoon')}</span>
     </div>
 
     <!-- NFTs - Future -->
     <div class="tool-card future">
       <div class="tool-icon">🔗</div>
-      <h3>{$t('tools.nfts.title')}</h3>
-      <p>{$t('tools.nfts.description')}</p>
-      <span class="status-badge">{$t('tools.status.future')}</span>
+      <h3>{$t('pages.tools.nfts.title')}</h3>
+      <p>{$t('pages.tools.nfts.description')}</p>
+      <span class="status-badge">{$t('pages.tools.status.future')}</span>
     </div>
   </div>
 
   <!-- Call to Action -->
   <section class="tools-cta">
-    <h2>{$t('tools.cta.title')}</h2>
-    <p>{$t('tools.cta.description')}</p>
-    <a href="/#contact" class="cta-button">{$t('tools.cta.button')}</a>
+    <h2>{$t('pages.tools.cta.title')}</h2>
+    <p>{$t('pages.tools.cta.description')}</p>
+    <a href="/#contact" class="cta-button">{$t('pages.tools.cta.button')}</a>
   </section>
 </div>
 

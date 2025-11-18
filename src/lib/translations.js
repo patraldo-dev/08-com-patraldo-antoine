@@ -43,9 +43,15 @@ const config = {
 { locale: 'fr-CA', key: 'pages.stories', routes: ['/stories', '/stories/*'], loader: () => import('./locales/fr-CA/pages/stories.json') },
 
 // COLLECTION PAGE
-{ locale: 'es-MX', key: 'collection', routes: ['/collection'], loader: () => import('./locales/es-MX/pages/collection.json') },
-{ locale: 'en-US', key: 'collection', routes: ['/collection'], loader: () => import('./locales/en-US/pages/collection.json') },
-{ locale: 'fr-CA', key: 'collection', routes: ['/collection'], loader: () => import('./locales/fr-CA/pages/collection.json') },
+{ locale: 'es-MX', key: 'pages.collection', routes: ['/collection'], loader: () => import('./locales/es-MX/pages/collection.json') },
+{ locale: 'en-US', key: 'pages.collection', routes: ['/collection'], loader: () => import('./locales/en-US/pages/collection.json') },
+{ locale: 'fr-CA', key: 'pages.collection', routes: ['/collection'], loader: () => import('./locales/fr-CA/pages/collection.json') },
+
+// TOOLS PAGE
+{ locale: 'es-MX', key: 'pages.tools', routes: ['/tools'], loader: () => import('./locales/es-MX/pages/tools.json') },
+{ locale: 'en-US', key: 'pages.tools', routes: ['/tools'], loader: () => import('./locales/en-US/pages/tools.json') },
+{ locale: 'fr-CA', key: 'pages.tools', routes: ['/tools'], loader: () => import('./locales/fr-CA/pages/tools.json') },
+
 
   ],
 };

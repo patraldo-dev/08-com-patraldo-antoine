@@ -54,12 +54,12 @@
     
     // Show toast with confetti
     if (!wasFavorite) {
-      toastMessage = $t('collection.toast.added');
+      toastMessage = $t('pages.collection.toast.added');
       showToast = true;
       createConfetti();
       setTimeout(() => showToast = false, 3000);
     } else {
-      toastMessage = $t('collection.toast.removed');
+      toastMessage = $t('pages.collection.toast.removed');
       showToast = true;
       setTimeout(() => showToast = false, 3000);
     }
@@ -108,7 +108,7 @@
     event.preventDefault();
     event.stopPropagation();
     const url = `${window.location.origin}/#artwork-${artwork.id}`;
-    const text = `${$t('collection.share.checkOut')} "${artwork.display_name || artwork.title}" by Antoine Patraldo`;
+    const text = `${$t('pages.collection.share.checkOut')} "${artwork.display_name || artwork.title}" by Antoine Patraldo`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
     window.open(whatsappUrl, '_blank');
   }
@@ -118,7 +118,7 @@
     event.stopPropagation();
     const url = `${window.location.origin}/#artwork-${artwork.id}`;
     navigator.clipboard.writeText(url).then(() => {
-      toastMessage = $t('collection.toast.linkCopied');
+      toastMessage = $t('pages.collection.toast.linkCopied');
       showToast = true;
       setTimeout(() => showToast = false, 3000);
     });
@@ -129,13 +129,13 @@
   }
   
   function handleClearAll() {
-    if (confirm($t('collection.actions.confirmClear'))) {
+    if (confirm($t('pages.collection.actions.confirmClear'))) {
       console.log('Clearing all visits...');
       clearAllVisits();
       loadCollectionData();
       
       // Show success toast
-      toastMessage = $t('collection.toast.cleared');
+      toastMessage = $t('pages.collection.toast.cleared');
       showToast = true;
       setTimeout(() => showToast = false, 3000);
       
@@ -196,14 +196,14 @@
 </script>
 
 <svelte:head>
-  <title>{$t('collection.title')} - Antoine Patraldo</title>
+  <title>{$t('pages.collection.title')} - Antoine Patraldo</title>
 </svelte:head>
 
 <div class="collection-page">
   <header class="collection-header">
     <div class="header-content">
-      <h1>{$t('collection.title')}</h1>
-      <p class="subtitle">{$t('collection.subtitle')}</p>
+      <h1>{$t('pages.collection.title')}</h1>
+      <p class="subtitle">{$t('pages.collection.subtitle')}</p>
     </div>
     
     {#if sortedArtworks.length > 0}
@@ -226,19 +226,19 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-number">{visitedCount}</div>
-        <div class="stat-label">{$t('collection.stats.viewed')}</div>
+        <div class="stat-label">{$t('pages.collection.stats.viewed')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{stats.totalViews || 0}</div>
-        <div class="stat-label">{$t('collection.stats.totalViews')}</div>
+        <div class="stat-label">{$t('pages.collection.stats.totalViews')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{favoritesCount}</div>
-        <div class="stat-label">{$t('collection.stats.favorites')}</div>
+        <div class="stat-label">{$t('pages.collection.stats.favorites')}</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{allArtworks.length - visitedCount}</div>
-        <div class="stat-label">{$t('collection.stats.toDiscover')}</div>
+        <div class="stat-label">{$t('pages.collection.stats.toDiscover')}</div>
       </div>
     </div>
     
@@ -250,46 +250,46 @@
           class:active={filter === 'all'}
           onclick={() => filter = 'all'}
         >
-          {$t('collection.filters.all')} ({allArtworks.length})
+          {$t('pages.collection.filters.all')} ({allArtworks.length})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'visited'}
           onclick={() => filter = 'visited'}
         >
-          {$t('collection.filters.visited')} ({visitedCount})
+          {$t('pages.collection.filters.visited')} ({visitedCount})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'favorites'}
           onclick={() => filter = 'favorites'}
         >
-          ❤️ {$t('collection.filters.favorites')} ({favoritesCount})
+          ❤️ {$t('pages.collection.filters.favorites')} ({favoritesCount})
         </button>
         <button 
           class="filter-btn" 
           class:active={filter === 'unvisited'}
           onclick={() => filter = 'unvisited'}
         >
-          {$t('collection.filters.unvisited')} ({allArtworks.length - visitedCount})
+          {$t('pages.collection.filters.unvisited')} ({allArtworks.length - visitedCount})
         </button>
       </div>
       
       <div class="sort-controls">
-        <label for="sort">{$t('collection.sort.label')}</label>
+        <label for="sort">{$t('pages.collection.sort.label')}</label>
         <select id="sort" bind:value={sortBy}>
-          <option value="recent">{$t('collection.sort.recent')}</option>
-          <option value="frequent">{$t('collection.sort.frequent')}</option>
-          <option value="alphabetical">{$t('collection.sort.alphabetical')}</option>
+          <option value="recent">{$t('pages.collection.sort.recent')}</option>
+          <option value="frequent">{$t('pages.collection.sort.frequent')}</option>
+          <option value="alphabetical">{$t('pages.collection.sort.alphabetical')}</option>
         </select>
       </div>
       
       <div class="actions">
         <button class="action-btn" onclick={handleExport}>
-          {$t('collection.actions.export')}
+          {$t('pages.collection.actions.export')}
         </button>
         <button class="action-btn danger" onclick={handleClearAll}>
-          {$t('collection.actions.clear')}
+          {$t('pages.collection.actions.clear')}
         </button>
       </div>
     </div>
@@ -298,9 +298,9 @@
     {#if sortedArtworks.length === 0}
       <div class="empty-state">
         <div class="empty-icon">🎨</div>
-        <h2>{$t('collection.empty.title')}</h2>
-        <p>{$t('collection.empty.message')}</p>
-        <a href="/" class="cta-button">{$t('collection.empty.cta')}</a>
+        <h2>{$t('pages.collection.empty.title')}</h2>
+        <p>{$t('pages.collection.empty.message')}</p>
+        <a href="/" class="cta-button">{$t('pages.collection.empty.cta')}</a>
       </div>
     {:else}
       <div class="collection-grid">
@@ -318,7 +318,7 @@
                 <button 
                   class="share-btn whatsapp"
                   onclick={(e) => shareToWhatsApp(artwork, e)}
-                  title={$t('collection.card.shareWhatsApp')}
+                  title={$t('pages.collection.card.shareWhatsApp')}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
@@ -327,7 +327,7 @@
                 <button 
                   class="share-btn instagram"
                   onclick={(e) => shareToInstagram(artwork, e)}
-                  title={$t('collection.card.copyLink')}
+                  title={$t('pages.collection.card.copyLink')}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -340,7 +340,7 @@
                 class="favorite-btn" 
                 class:active={favorites.has(artwork.id.toString())}
                 onclick={(e) => handleToggleFavorite(artwork.id, e)}
-                title={favorites.has(artwork.id.toString()) ? $t('collection.card.removeFavorite') : $t('collection.card.addFavorite')}
+                title={favorites.has(artwork.id.toString()) ? $t('pages.collection.card.removeFavorite') : $t('pages.collection.card.addFavorite')}
               >
                 {favorites.has(artwork.id.toString()) ? '❤️' : '🤍'}
               </button>
@@ -353,7 +353,7 @@
               {/if}
               
               <div class="card-overlay">
-                <span class="view-label">{$t('collection.card.view')}</span>
+                <span class="view-label">{$t('pages.collection.card.view')}</span>
               </div>
             </div>
             
@@ -364,7 +364,7 @@
               {/if}
               {#if visits[artwork.id]}
                 <p class="last-viewed">
-                  {$t('collection.card.lastViewed')} {new Date(visits[artwork.id].lastVisited).toLocaleDateString()}
+                  {$t('pages.collection.card.lastViewed')} {new Date(visits[artwork.id].lastVisited).toLocaleDateString()}
                 </p>
               {/if}
             </div>
@@ -380,7 +380,7 @@
   <div class="menu-overlay" onclick={toggleMenu}></div>
   <nav class="slide-menu">
     <div class="menu-header">
-      <h2>{$t('collection.title')}</h2>
+      <h2>{$t('pages.collection.title')}</h2>
       <button class="close-button" onclick={toggleMenu}>×</button>
     </div>
     <ul class="menu-list">
