@@ -186,6 +186,14 @@
           </div>
         </InkReveal>
         
+
+<InkReveal delay={600}>
+    <ColorPalette 
+      imageUrl={heroImageUrl || artwork.imageUrl} 
+      artworkTitle={artwork.display_name || artwork.title}
+    />
+  </InkReveal>
+
         <!-- Story Intro (if exists) -->
         {#if artwork.story_intro}
           <InkReveal delay={600}>
