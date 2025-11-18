@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-  <title>{$t('site.title')} - {$t('common.nav.stories')}</title>
+  <title>{$t('pages.home.meta.title')} - {$t('common.nav.stories')}</title>
   <meta name="description" content="Explore the stories behind each artwork" />
 </svelte:head>
 
@@ -31,17 +31,6 @@
     <h1>{$t('pages.stories.title')}</h1>
     <p class="subtitle">{$t('pages.stories.subtitle')}</p>
   </div>
-
-
-  <!-- TEMPORARY TEST -->
-  <div style="background: yellow; padding: 10px; margin: 20px; border: 2px solid red;">
-    <h3>Translation Test:</h3>
-    <p><strong>{$t('pages.home.meta.title')}</strong></p>
-    <p><strong>pages.home.meta.title:</strong> "{$t('pages.home.meta.title')}"</p>
-    <p><strong>pages.stories.title:</strong> "{$t('pages.stories.title')}"</p>
-    <p><strong>common.nav.stories:</strong> "{$t('common.nav.stories')}"</p>
-  </div>
-  <!-- END TEMPORARY TEST -->
   
   <div class="stories-grid layout">
     {#if stories.length === 0}

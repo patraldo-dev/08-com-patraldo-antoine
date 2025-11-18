@@ -18,6 +18,13 @@
     showAboutDetail = hash === '#about-detail';
   });
 
+  function safeTranslate(key, fallback = '') {
+    const translation = $t(key);
+    return translation && translation !== key ? translation : fallback;
+  }
+
+  let fullTitle = $derived(safeTranslate('pages.home.meta.title', 'Antoine Patraldo'));
+
   function openAboutDetail() {
     window.location.hash = '#about-detail';
   }
@@ -65,17 +72,6 @@ $effect(() => {
       }
     }
   });
-
-// Title handling
-let siteTitle = $derived($t('site.title'));
-let pageMetaTitle = $derived($t('pages.home.meta.title'));
-let fullTitle = $derived(
-  (siteTitle && siteTitle !== 'site.title')
-    ? (pageMetaTitle && pageMetaTitle !== 'pages.home.meta.title'
-        ? `${siteTitle} - ${pageMetaTitle}`
-        : siteTitle)
-    : 'Antoine Patraldo'
-);
 
 </script>
 
