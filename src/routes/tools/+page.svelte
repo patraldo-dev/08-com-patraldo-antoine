@@ -16,7 +16,7 @@
 
   <div class="tools-grid">
     <!-- Color Palettes - LIVE -->
-    <a href="/tools/palettes" class="tool-card available">
+    <a href="/{locale}/tools/palettes" class="tool-card available">
       <div class="tool-icon">🎨</div>
       <h3>{$t('pages.tools.palettesTitle')}</h3>
       <p>{$t('pages.tools.palettesDescription')}</p>
@@ -24,7 +24,7 @@
     </a>
 
     <!-- Wallpapers - LIVE -->
-     <a href="/tools/wallpapers" class="tool-card available">
+     <a href="/{locale}/tools/wallpapers" class="tool-card available">
       <div class="tool-icon">🖼️</div>
       <h3>{$t('pages.tools.wallpapersTitle')}</h3>
       <p>{$t('pages.tools.wallpapersDescription')}</p>
