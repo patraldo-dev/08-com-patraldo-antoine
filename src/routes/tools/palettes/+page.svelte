@@ -4,30 +4,30 @@
 </script>
 
 <svelte:head>
-  <title>{$t('metaTitle')} - {$t('common.navTools')}</title>
+  <title>{$t('pages.home.tools.metaTitle')} - {$t('common.navTools')}</title>
   <meta name="description" content={$t('metaDescription')} />
 </svelte:head>
 
 <div class="palettes-page">
   <header class="page-header">
     <a href="/tools" class="back-link">← {$t('backToTools')}</a>
-    <h1>{$t('palettesPageTitle')}</h1>
-    <p class="subtitle">{$t('palettesPageDescription')}</p>
+    <h1>{$t('palettes.palettesPageTitle')}</h1>
+    <p class="subtitle">{$t('palettes.palettesPageDescription')}</p>
   </header>
 
   <div class="content">
     <div class="info-box">
-      <h2>{$t('palettesHowToTitle')}</h2>
+      <h2>{$t('palettes.palettesHowToTitle')}</h2>
       <ol>
-        <li>{$t('palettesStep1')}</li>
-        <li>{$t('palettesStep2')}</li>
-        <li>{$t('palettesStep3')}</li>
+        <li>{$t('palettes.palettesStep1')}</li>
+        <li>{$t('palettes.palettesStep2')}</li>
+        <li>{$t('palettes.palettesStep3')}</li>
       </ol>
     </div>
 
     <div class="cta">
-      <p>{$t('palettesExplorePrompt')}</p>
-      <a href="/" class="button">{$t('palettesBrowseArtworks')}</a>
+      <p>{$t('palettes.palettesExplorePrompt')}</p>
+      <a href="/" class="button">{$t('palettes.palettesBrowseArtworks')}</a>
     </div>
   </div>
 </div>
