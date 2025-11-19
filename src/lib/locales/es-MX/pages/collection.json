@@ -1,49 +1,33 @@
 {
   "title": "Mi Colección",
   "subtitle": "Sigue tu recorrido por las obras de arte",
-  "stats": {
-    "viewed": "Obras Vistas",
-    "totalViews": "Vistas Totales",
-    "favorites": "Favoritos",
-    "toDiscover": "Por Descubrir"
-  },
-  "filters": {
-    "all": "Todas",
-    "visited": "Visitadas",
-    "favorites": "Favoritos",
-    "unvisited": "Sin Visitar"
-  },
-  "sort": {
-    "label": "Ordenar por:",
-    "recent": "Vistas Recientemente",
-    "frequent": "Más Vistas",
-    "alphabetical": "Alfabético"
-  },
-  "actions": {
-    "export": "Exportar Datos",
-    "clear": "Borrar Historial",
-    "confirmClear": "¿Estás seguro de que quieres borrar todo el historial de visitas?"
-  },
-  "card": {
-    "view": "Ver",
-    "lastViewed": "Vista por última vez:",
-    "addFavorite": "Agregar a favoritos",
-    "removeFavorite": "Quitar de favoritos",
-    "shareWhatsApp": "Compartir en WhatsApp",
-    "copyLink": "Copiar enlace para Instagram"
-  },
-  "share": {
-    "checkOut": "Mira"
-  },
-  "toast": {
-    "added": "❤️  ¡Agregado a favoritos!",
-    "removed": "Quitado de favoritos",
-    "linkCopied": "¡Enlace copiado! Pégalo en Instagram",
-    "cleared": "✓ Historial borrado exitosamente"
-  },
-  "empty": {
-    "title": "No se encontraron obras",
-    "message": "¡Comienza a explorar la galería!",
-    "cta": "Ir a la Galería"
-  }
+  "statsViewed": "Obras Vistas",
+  "statsTotalViews": "Vistas Totales",
+  "statsFavorites": "Favoritos",
+  "statsToDiscover": "Por Descubrir",
+  "filtersAll": "Todas",
+  "filtersVisited": "Visitadas",
+  "filtersFavorites": "Favoritos",
+  "filtersUnvisited": "Sin Visitar",
+  "sortLabel": "Ordenar por:",
+  "sortRecent": "Vistas Recientemente",
+  "sortFrequent": "Más Vistas",
+  "sortAlphabetical": "Alfabético",
+  "actionsExport": "Exportar Datos",
+  "actionsClear": "Borrar Historial",
+  "actionsConfirmClear": "¿Estás seguro de que quieres borrar todo el historial de visitas?",
+  "cardView": "Ver",
+  "cardLastViewed": "Vista por última vez:",
+  "cardAddFavorite": "Agregar a favoritos",
+  "cardRemoveFavorite": "Quitar de favoritos",
+  "cardShareWhatsApp": "Compartir en WhatsApp",
+  "cardCopyLink": "Copiar enlace para Instagram",
+  "shareCheckOut": "Mira",
+  "toastAdded": "❤️  ¡Agregado a favoritos!",
+  "toastRemoved": "Quitado de favoritos",
+  "toastLinkCopied": "¡Enlace copiado! Pégalo en Instagram",
+  "toastCleared": "✓ Historial borrado exitosamente",
+  "emptyTitle": "No se encontraron obras",
+  "emptyMessage": "¡Comienza a explorar la galería!",
+  "emptyCta": "Ir a la Galería"
 }

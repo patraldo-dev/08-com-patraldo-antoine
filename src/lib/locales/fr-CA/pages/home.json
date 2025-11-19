@@ -1,19 +1,11 @@
 {
-  "meta": {
-    "title": "Antoine Patraldo - Histoires Interactives",
-    "description": "Explorez des histoires interactives à travers des croquis animés"
-  },
-  "hero": {
-    "title": "Bienvenue dans le Cahier",
-    "subtitle": "Feuilletez les pages et découvrez des histoires"
-  },
-  "about": {
-    "title": "À Propos de Ce Projet",
-    "p1": "Chaque croquis raconte une histoire.",
-    "p2": "Interagissez avec l'art pour explorer plus profondément."
-  },
-  "signup": {
-    "title": "Restez Informé",
-    "description": "Recevez de nouvelles histoires et croquis"
-  }
+  "metaTitle": "Antoine Patraldo - Histoires Interactives",
+  "metaDescription": "Explorez des histoires interactives à travers des croquis animés",
+  "heroTitle": "Bienvenue dans le Sketchbook",
+  "heroSubtitle": "Feuilletez les pages et découvrez des histoires", 
+  "aboutTitle": "À propos de ce projet",
+  "aboutP1": "Chaque croquis raconte une histoire.",
+  "aboutP2": "Interagissez avec l'œuvre pour explorer plus profondément.",
+  "signupTitle": "Restez informé",
+  "signupDescription": "Recevez de nouvelles histoires et croquis"
 }

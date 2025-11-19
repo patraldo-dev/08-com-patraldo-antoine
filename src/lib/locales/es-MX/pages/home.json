@@ -1,19 +1,11 @@
 {
-  "meta": {
-    "title": "Antoine Patraldo - Historias Interactivas",
-    "description": "Explora historias interactivas a través de bocetos animados"
-  },
-  "hero": {
-    "title": "Bienvenido al Cuaderno",
-    "subtitle": "Hojea páginas y descubre historias"
-  },
-  "about": {
-    "title": "Acerca de Este Proyecto",
-    "p1": "Cada boceto cuenta una historia.",
-    "p2": "Interactúa con el arte para explorar más a fondo."
-  },
-  "signup": {
-    "title": "Mantente Actualizado",
-    "description": "Recibe nuevas historias y bocetos"
-  }
+  "metaTitle": "Antoine Patraldo - Historias Interactivas",
+  "metaDescription": "Explora historias interactivas a través de bocetos animados",
+  "heroTitle": "Bienvenido al Sketchbook", 
+  "heroSubtitle": "Hojea páginas y descubre historias",
+  "aboutTitle": "Acerca de Este Proyecto",
+  "aboutP1": "Cada boceto cuenta una historia.",
+  "aboutP2": "Interactúa con la obra para explorar más profundamente.",
+  "signupTitle": "Mantente Actualizado",
+  "signupDescription": "Recibe nuevas historias y bocetos"
 }

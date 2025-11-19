@@ -1,49 +1,33 @@
 {
   "title": "Ma Collection",
   "subtitle": "Suivez votre parcours à travers les œuvres d'art",
-  "stats": {
-    "viewed": "Œuvres Consultées",
-    "totalViews": "Vues Totales",
-    "favorites": "Favoris",
-    "toDiscover": "À Découvrir"
-  },
-  "filters": {
-    "all": "Toutes",
-    "visited": "Visitées",
-    "favorites": "Favoris",
-    "unvisited": "Non Visitées"
-  },
-  "sort": {
-    "label": "Trier par:",
-    "recent": "Récemment Consultées",
-    "frequent": "Plus Consultées",
-    "alphabetical": "Alphabétique"
-  },
-  "actions": {
-    "export": "Exporter les Données",
-    "clear": "Effacer l'Historique",
-    "confirmClear": "Êtes-vous sûr de vouloir effacer tout l'historique des visites?"
-  },
-  "card": {
-    "view": "Voir",
-    "lastViewed": "Dernière consultation:",
-    "addFavorite": "Ajouter aux favoris",
-    "removeFavorite": "Retirer des favoris",
-    "shareWhatsApp": "Partager sur WhatsApp",
-    "copyLink": "Copier le lien pour Instagram"
-  },
-  "share": {
-    "checkOut": "Découvrez"
-  },
-  "toast": {
-    "added": "❤️  Ajouté aux favoris!",
-    "removed": "Retiré des favoris",
-    "linkCopied": "Lien copié! Collez dans Instagram",
-    "cleared": "✓ Historique effacé avec succès"
-  },
-  "empty": {
-    "title": "Aucune œuvre trouvée",
-    "message": "Commencez à explorer la galerie!",
-    "cta": "Aller à la Galerie"
-  }
+  "statsViewed": "Œuvres Visitée",
+  "statsTotalViews": "Vues Totales",
+  "statsFavorites": "Favoris",
+  "statsToDiscover": "À Découvrir",
+  "filtersAll": "Toutes",
+  "filtersVisited": "Visitée",
+  "filtersFavorites": "Favoris",
+  "filtersUnvisited": "Non Visitée",
+  "sortLabel": "Trier par:",
+  "sortRecent": "Récemment Consultée",
+  "sortFrequent": "Plus Consultée",
+  "sortAlphabetical": "Alphabétique",
+  "actionsExport": "Exporter les Données",
+  "actionsClear": "Effacer l'Historique",
+  "actionsConfirmClear": "Êtes-vous sûr de vouloir effacer tout l'historique des visites?",
+  "cardView": "Voir",
+  "cardLastViewed": "Dernière consultation:",
+  "cardAddFavorite": "Ajouter aux favoris",
+  "cardRemoveFavorite": "Retirer des favoris",
+  "cardShareWhatsApp": "Partager sur WhatsApp",
+  "cardCopyLink": "Copier le lien pour Instagram",
+  "shareCheckOut": "Découvrez",
+  "toastAdded": "❤️  Ajouté aux favoris!",
+  "toastRemoved": "Retiré des favoris",
+  "toastLinkCopied": "Lien copié! Collez-le sur Instagram",
+  "toastCleared": "✓ Historique effacé avec succès",
+  "emptyTitle": "Aucune œuvre trouvée",
+  "emptyMessage": "Commencez à explorer la galerie!",
+  "emptyCta": "Aller à la Galerie"
 }

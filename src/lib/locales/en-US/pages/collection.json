@@ -1,50 +1,33 @@
 {
   "title": "My Collection",
   "subtitle": "Track your journey through the artworks",
-  "stats": {
-    "viewed": "Artworks Viewed",
-    "totalViews": "Total Views",
-    "favorites": "Favorites",
-    "toDiscover": "To Discover"
-  },
-  "filters": {
-    "all": "All",
-    "visited": "Visited",
-    "favorites": "Favorites",
-    "unvisited": "Unvisited"
-  },
-  "sort": {
-    "label": "Sort by:",
-    "recent": "Recently Viewed",
-    "frequent": "Most Viewed",
-    "alphabetical": "Alphabetical"
-  },
-  "actions": {
-    "export": "Export Data",
-    "clear": "Clear History",
-    "confirmClear": "Are you sure you want to clear all visit history?"
-  },
-  "card": {
-    "view": "View",
-    "lastViewed": "Last viewed:",
-    "addFavorite": "Add to favorites",
-    "removeFavorite": "Remove from favorites",
-    "shareWhatsApp": "Share on WhatsApp",
-    "copyLink": "Copy link for Instagram"
-  },
-  "share": {
-    "checkOut": "Check out"
-  },
-  "toast": {
-    "added": "❤️  Added to favorites!",
-    "removed": "Removed from favorites",
-    "linkCopied": "Link copied! Paste in Instagram",
-    "cleared": "✓ History cleared successfully"
-
-  },
-  "empty": {
-    "title": "No artworks found",
-    "message": "Start exploring the gallery!",
-    "cta": "Go to Gallery"
-  }
+  "statsViewed": "Artworks Viewed",
+  "statsTotalViews": "Total Views",
+  "statsFavorites": "Favorites",
+  "statsToDiscover": "To Discover",
+  "filtersAll": "All",
+  "filtersVisited": "Visited",
+  "filtersFavorites": "Favorites",
+  "filtersUnvisited": "Unvisited",
+  "sortLabel": "Sort by:",
+  "sortRecent": "Recently Viewed",
+  "sortFrequent": "Most Viewed",
+  "sortAlphabetical": "Alphabetical",
+  "actionsExport": "Export Data",
+  "actionsClear": "Clear History",
+  "actionsConfirmClear": "Are you sure you want to clear all visit history?",
+  "cardView": "View",
+  "cardLastViewed": "Last viewed:",
+  "cardAddFavorite": "Add to favorites",
+  "cardRemoveFavorite": "Remove from favorites",
+  "cardShareWhatsApp": "Share on WhatsApp",
+  "cardCopyLink": "Copy link for Instagram",
+  "shareCheckOut": "Check out",
+  "toastAdded": "❤️  Added to favorites!",
+  "toastRemoved": "Removed from favorites",
+  "toastLinkCopied": "Link copied! Paste it on Instagram",
+  "toastCleared": "✓ History cleared successfully",
+  "emptyTitle": "No artworks found",
+  "emptyMessage": "Start exploring the gallery!",
+  "emptyCta": "Go to Gallery"
 }

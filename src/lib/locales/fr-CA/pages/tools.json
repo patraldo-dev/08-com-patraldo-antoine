@@ -1,51 +1,25 @@
 {
-  "meta": {
-    "title": "Outils Créatifs",
-    "description": "Outils gratuits pour les designers et artistes inspirés par l'œuvre d'Antoine Patraldo"
-  },
+  "metaTitle": "Outils Créatifs",
+  "metaDescription": "Outils gratuits pour designers et artistes inspirés par l'œuvre d'Antoine Patraldo",
   "title": "Outils Créatifs",
-  "subtitle": "Ressources gratuites pour les designers, artistes et créateurs. Extrayez des palettes de couleurs, téléchargez des fonds d'écran et plus encore.",
+  "subtitle": "Ressources gratuites pour designers, artistes et créateurs. Extrayez des palettes de couleurs, téléchargez des fonds d'écran, et plus.",
   "backToTools": "Retour aux Outils",
-  "status": {
-    "available": "Disponible Maintenant",
-    "comingSoon": "Bientôt Disponible",
-    "future": "Futur"
-  },
-  "palettes": {
-    "title": "Palettes de Couleurs",
-    "description": "Extrayez de belles palettes de couleurs des œuvres d'art. Exportez pour Photoshop, GIMP, CSS et plus.",
-    "pageTitle": "Extracteur de Palette de Couleurs",
-    "pageDescription": "Extrayez les couleurs dominantes de n'importe quelle œuvre d'art et exportez-les dans votre format préféré.",
-    "howToTitle": "Comment Ça Marche",
-    "step1": "Parcourez les œuvres d'art et cliquez sur une pour voir les détails",
-    "step2": "Faites défiler pour voir la palette de couleurs extraite",
-    "step3": "Cliquez sur n'importe quelle couleur pour la copier, ou téléchargez dans votre format préféré",
-    "explorePrompt": "Prêt à explorer?",
-    "browseArtworks": "Parcourir les Œuvres"
-  },
-  "wallpapers": {
-    "title": "Fonds d'Écran",
-    "description": "Téléchargez des œuvres d'art en haute résolution comme fonds d'écran pour vos appareils."
-  },
-  "avatarCreator": {
-    "title": "Créateur d'Avatar",
-    "description": "Créez des avatars uniques en mélangeant des caractéristiques de différentes œuvres d'art."
-  },
-  "stickers": {
-    "title": "Autocollants Imprimables",
-    "description": "Téléchargez des feuilles d'autocollants prêtes à imprimer à la maison ou professionnellement."
-  },
-  "arTryOn": {
-    "title": "Essai RA",
-    "description": "Voyez comment les œuvres d'art s'affichent sur votre mur en utilisant la réalité augmentée."
-  },
-  "nfts": {
-    "title": "Galerie NFT",
-    "description": "Objets de collection numériques exclusifs et art blockchain."
-  },
-  "cta": {
-    "title": "Vous avez une idée?",
-    "description": "Dites-moi quels outils créatifs vous aimeriez voir! Je cherche toujours des moyens de soutenir les artistes et les designers.",
-    "button": "Contactez-Moi"
-  }
+  "statusAvailable": "Disponible maintenant",
+  "statusComingSoon": "Bientôt disponible",
+  "statusFuture": "Futur",
+  "palettesTitle": "Palettes de Couleurs",
+  "palettesDescription": "Extrayez de belles palettes de couleurs des œuvres d'art. Exportez pour Photoshop, GIMP, CSS, et plus.",
+  "wallpapersTitle": "Fonds d'écran",
+  "wallpapersDescription": "Téléchargez des œuvres en haute résolution comme fonds d'écran pour vos appareils.",
+  "avatarCreatorTitle": "Créateur d'Avatars",
+  "avatarCreatorDescription": "Créez des avatars uniques en combinant des traits de différentes œuvres.",
+  "stickersTitle": "Autocollants Imprimables",
+  "stickersDescription": "Téléchargez des feuilles d'autocollants prêtes à imprimer à domicile ou professionnellement.",
+  "arTryOnTitle": "Essai en RA",
+  "arTryOnDescription": "Voyez comment les œuvres paraissent sur votre mur en utilisant la réalité augmentée.",
+  "nftsTitle": "Galerie NFT",
+  "nftsDescription": "Collectionnables numériques exclusifs et art blockchain.",
+  "ctaTitle": "Vous avez une idée?",
+  "ctaDescription": "Dites-moi quels outils créatifs vous aimeriez voir! Je cherche toujours à soutenir les artistes et designers.",
+  "ctaButton": "Contactez-moi"
 }

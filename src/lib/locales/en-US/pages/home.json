@@ -1,19 +1,11 @@
 {
-  "meta": {
-    "title": "Antoine Patraldo - Interactive Stories",
-    "description": "Explore interactive stories through animated sketches"
-  },
-  "hero": {
-    "title": "Welcome to the Sketchbook",
-    "subtitle": "Flip through pages and discover stories"
-  },
-  "about": {
-    "title": "About This Project",
-    "p1": "Each sketch tells a story.",
-    "p2": "Interact with the artwork to explore deeper."
-  },
-  "signup": {
-    "title": "Stay Updated",
-    "description": "Receive new stories and sketches"
-  }
+  "metaTitle": "Antoine Patraldo - Interactive Stories", 
+  "metaDescription": "Explore interactive stories through animated sketches",
+  "heroTitle": "Welcome to the Sketchbook",
+  "heroSubtitle": "Flip through pages and discover stories",
+  "aboutTitle": "About This Project",
+  "aboutP1": "Each sketch tells a story.",
+  "aboutP2": "Interact with the artwork to explore deeper.",
+  "signupTitle": "Stay Updated",
+  "signupDescription": "Receive new stories and sketches"
 }

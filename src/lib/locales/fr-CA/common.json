@@ -1,18 +1,13 @@
 {
-  "nav": {
-    "home": "Accueil",
-    "work": "Travail",
-    "about": "À propos",
-    "stories": "Histoires",
-    "collection": "Ma Collection",
-    "contact": "Contact",
-    "subscribe": "S'abonner",
-    "tools": "Outils Créatifs"
-  },
-  "lang": {
-    "es": "Espagnol (Mexique)",
-    "en": "Anglais (États-Unis)",
-    "fr": "Français (Canada)"
-  }
+  "navHome": "Accueil",
+  "navWork": "Travail",
+  "navAbout": "À propos",
+  "navStories": "Histoires",
+  "navCollection": "Ma Collection",
+  "navContact": "Contact",
+  "navSubscribe": "S'abonner", 
+  "navTools": "Outils Créatifs",
+  "langEs": "Espagnol (Mexique)",
+  "langEn": "Anglais (États-Unis)",
+  "langFr": "Français (Canada)"
 }
-
