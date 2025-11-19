@@ -24,10 +24,10 @@
   "ctaButton": "Contactez-moi",
   "palettesPageTitle": "Générateur de Palette de Couleurs",
   "palettesPageDescription": "Extrayez de magnifiques palettes de couleurs de vos images et explorez des combinaisons de couleurs inspirées d'œuvres d'art célèbres.",
-  "palettes.HowToTitle": "Comment utiliser le Générateur de Palette",
-  "palettes.Step1": "Téléchargez une image ou choisissez parmi notre galerie d'œuvres d'art célèbres",
-  "palettes.Step2": "L'outil extraira automatiquement les couleurs dominantes et créera des palettes harmonieuses",
-  "palettes.Step3": "Copiez les codes hexadécimaux ou exportez les palettes pour vos projets de design",
-  "palettes.ExplorePrompt": "Vous ne savez pas par où commencer ?",
-  "palettes.BrowseArtworks": "Parcourir la Galerie d'Œuvres"
+  "tools.palettes.HowToTitle": "Comment utiliser le Générateur de Palette",
+  "tools.palettes.Step1": "Téléchargez une image ou choisissez parmi notre galerie d'œuvres d'art célèbres",
+  "tools.palettes.Step2": "L'outil extraira automatiquement les couleurs dominantes et créera des palettes harmonieuses",
+  "tools.palettes.Step3": "Copiez les codes hexadécimaux ou exportez les palettes pour vos projets de design",
+  "tools.palettes.ExplorePrompt": "Vous ne savez pas par où commencer ?",
+  "tools.palettes.BrowseArtworks": "Parcourir la Galerie d'Œuvres"
 }
