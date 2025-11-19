@@ -23,13 +23,13 @@
       <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
     </a>
 
-    <!-- Wallpapers - Coming Soon -->
-    <div class="tool-card coming-soon">
+    <!-- Wallpapers - LIVE -->
+     <a href="/tools/wallpapers" class="tool-card available">
       <div class="tool-icon">🖼️</div>
       <h3>{$t('pages.tools.wallpapersTitle')}</h3>
       <p>{$t('pages.tools.wallpapersDescription')}</p>
-      <span class="status-badge">{$t('pages.tools.statusComingSoon')}</span>
-    </div>
+      <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
+    </a>
 
     <!-- Avatar Creator - Coming Soon -->
     <div class="tool-card coming-soon">
