@@ -21,5 +21,14 @@
   "nftsDescription": "Collectionnables numériques exclusifs et art blockchain.",
   "ctaTitle": "Vous avez une idée?",
   "ctaDescription": "Dites-moi quels outils créatifs vous aimeriez voir! Je cherche toujours à soutenir les artistes et designers.",
-  "ctaButton": "Contactez-moi"
+  "ctaButton": "Contactez-moi",
+  "palettesPageTitle": "Générateur de Palette de Couleurs",
+  "palettesPageDescription": "Extrayez de magnifiques palettes de couleurs de vos images et explorez des combinaisons de couleurs inspirées d'œuvres d'art célèbres.",
+  "palettesHowToTitle": "Comment utiliser le Générateur de Palette",
+  "palettesStep1": "Téléchargez une image ou choisissez parmi notre galerie d'œuvres d'art célèbres",
+  "palettesStep2": "L'outil extraira automatiquement les couleurs dominantes et créera des palettes harmonieuses",
+  "palettesStep3": "Copiez les codes hexadécimaux ou exportez les palettes pour vos projets de design",
+  "palettesExplorePrompt": "Vous ne savez pas par où commencer ?",
+  "palettesBrowseArtworks": "Parcourir la Galerie d'Œuvres"
+}
 }

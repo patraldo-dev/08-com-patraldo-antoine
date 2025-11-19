@@ -21,5 +21,13 @@
   "nftsDescription": "Coleccionables digitales exclusivos y arte en blockchain.",
   "ctaTitle": "¿Tienes una idea?",
   "ctaDescription": "¡Cuéntame qué herramientas creativas te gustaría ver! Siempre busco apoyar a artistas y diseñadores.",
-  "ctaButton": "Ponte en contacto"
+  "ctaButton": "Ponte en contacto",
+  "palettesPageTitle": "Generador de Paletas de Colores",
+  "palettesPageDescription": "Extrae hermosas paletas de colores de tus imágenes y explora combinaciones de colores inspiradas en obras de arte famosas.",
+  "palettesHowToTitle": "Cómo usar el Generador de Paletas",
+  "palettesStep1": "Sube una imagen o elige de nuestra galería de obras de arte famosas",
+  "palettesStep2": "La herramienta extraerá automáticamente colores dominantes y creará paletas armónicas",
+  "palettesStep3": "Copia códigos hex o exporta paletas para tus proyectos de diseño",
+  "palettesExplorePrompt": "¿No sabes por dónde empezar?",
+  "palettesBrowseArtworks": "Explorar Galería de Obras"
 }

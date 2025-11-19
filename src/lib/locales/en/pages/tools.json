@@ -21,5 +21,13 @@
   "nftsDescription": "Exclusive digital collectibles and blockchain art.",
   "ctaTitle": "Have an idea?",
   "ctaDescription": "Tell me what creative tools you'd like to see! I'm always looking to support artists and designers.",
-  "ctaButton": "Get in touch"
+  "ctaButton": "Get in touch",
+  "palettesPageTitle": "Color Palette Generator",
+  "palettesPageDescription": "Extract beautiful color palettes from your images and explore color combinations inspired by famous artworks.",
+  "palettesHowToTitle": "How to Use the Palette Generator",
+  "palettesStep1": "Upload an image or choose from our gallery of famous artworks",
+  "palettesStep2": "The tool will automatically extract dominant colors and create harmonious palettes",
+  "palettesStep3": "Copy hex codes or export palettes for your design projects",
+  "palettesExplorePrompt": "Not sure where to start?",
+  "palettesBrowseArtworks": "Browse Artworks Gallery
 }
