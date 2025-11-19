@@ -26,12 +26,7 @@
   
   onMount(() => {
     loadCollectionData();
- console.log('Loading state:', $loading);
-    console.log('Collection translations:', $t('pages.collection'));
-    console.log('Available keys:', Object.keys($t('pages.collection') || {}));
-    
-    // Test specific keys
-    console.log('cardShareWhatsApp:', $t('pages.collection.cardShareWhatsApp'));
+)
 
 // Add translation debug
   console.log('Collection translations on mount:', {
