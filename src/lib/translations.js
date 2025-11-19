@@ -8,7 +8,7 @@ import i18n from 'sveltekit-i18n';
  */
 const config = {
   fallbackLocale: 'es',
-  initLocale: 'es',
+
   loaders: [
 
 // COMMON STRINGS (shared across all pages; but in each page, pages.home.meta.title for browser tab)
