@@ -26,7 +26,6 @@
   
   onMount(() => {
     loadCollectionData();
-)
 
 // Add translation debug
   console.log('Collection translations on mount:', {
