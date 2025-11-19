@@ -12,6 +12,8 @@
   ];
 
   async function switchLanguage(newLocale) {
+  console.log('switchLanguage called with:', newLocale, 'event type?');
+
     if (!browser) return;
     
     // Set the new locale
