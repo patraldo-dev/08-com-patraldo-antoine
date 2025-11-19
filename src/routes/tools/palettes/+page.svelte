@@ -11,23 +11,23 @@
 <div class="palettes-page">
   <header class="page-header">
     <a href="/tools" class="back-link">← {$t('backToTools')}</a>
-    <h1>{$t('tools.palettes.PageTitle')}</h1>
-    <p class="subtitle">{$t('tools.palettes.PageDescription')}</p>
+    <h1>{$t('tools.palettesPageTitle')}</h1>
+    <p class="subtitle">{$t('tools.palettesPageDescription')}</p>
   </header>
 
   <div class="content">
     <div class="info-box">
-      <h2>{$t('tools.palettes.HowToTitle')}</h2>
+      <h2>{$t('tools.palettesHowToTitle')}</h2>
       <ol>
-        <li>{$t('tools.palettes.Step1')}</li>
-        <li>{$t('tools.palettes.Step2')}</li>
-        <li>{$t('tools.palettes.Step3')}</li>
+        <li>{$t('tools.palettesStep1')}</li>
+        <li>{$t('tools.palettesStep2')}</li>
+        <li>{$t('tools.palettesStep3')}</li>
       </ol>
     </div>
 
     <div class="cta">
-      <p>{$t('tools.palettes.ExplorePrompt')}</p>
-      <a href="/" class="button">{$t('tools.palettes.BrowseArtworks')}</a>
+      <p>{$t('tools.palettesExplorePrompt')}</p>
+      <a href="/" class="button">{$t('tools.palettesBrowseArtworks')}</a>
     </div>
   </div>
 </div>
