@@ -1,16 +1,6 @@
 <!-- src/routes/tools/+page.svelte -->
 <script>
   import { t } from '$lib/translations';
-
-<script>
-  onMount(() => {
-    console.log('Tools translation structure:', {
-      directTitle: $t('pages.tools.title'),
-      metaTitle: $t('pages.tools.metaTitle'), 
-      subtitle: $t('pages.tools.subtitle')
-    });
-  });
-
 </script>
 
 <svelte:head>
