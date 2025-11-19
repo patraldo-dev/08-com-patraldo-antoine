@@ -29,5 +29,6 @@
   "palettesStep2": "La herramienta extraerá automáticamente colores dominantes y creará paletas armónicas",
   "palettesStep3": "Copia códigos hex o exporta paletas para tus proyectos de diseño",
   "palettesExplorePrompt": "¿No sabes por dónde empezar?",
+  "palettesBackToTools": "Regresar a Herramientas",
   "palettesBrowseArtworks": "Explorar Galería de Obras"
 }

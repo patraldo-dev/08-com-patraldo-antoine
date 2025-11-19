@@ -10,7 +10,7 @@
 
 <div class="palettes-page">
   <header class="page-header">
-    <a href="/tools" class="back-link">← {$t('backToTools')}</a>
+    <a href="/tools" class="back-link">← {$t('pages.tools.palettesBackToTools')}</a>
     <h1>{$t('pages.tools.palettesPageTitle')}</h1>
     <p class="subtitle">{$t('pages.tools.palettesPageDescription')}</p>
   </header>

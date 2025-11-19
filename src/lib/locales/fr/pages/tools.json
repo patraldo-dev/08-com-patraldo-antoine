@@ -29,5 +29,6 @@
   "palettesStep2": "L'outil extraira automatiquement les couleurs dominantes et créera des palettes harmonieuses",
   "palettesStep3": "Copiez les codes hexadécimaux ou exportez les palettes pour vos projets de design",
   "palettesExplorePrompt": "Vous ne savez pas par où commencer ?",
+  "palettesBackToTools": "Retourner aux Outils",
   "palettesBrowseArtworks": "Parcourir la Galerie d'Œuvres"
 }
