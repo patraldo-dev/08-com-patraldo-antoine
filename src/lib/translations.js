@@ -8,7 +8,7 @@ import i18n from 'sveltekit-i18n';
  */
 const config = {
   fallbackLocale: 'es',
-
+  initLocale: 'es',
   loaders: [
 
 // COMMON STRINGS (shared across all pages; but in each page, pages.home.meta.title for browser tab)
@@ -32,7 +32,6 @@ const config = {
 { locale: 'fr', key: 'pages.collection', loader: () => import('./locales/fr/pages/collection.json') },
 
 // TOOLS PAGE - includes WILDCARD and pages.home.meta.title for browser tab 
-{ locale: 'es', key: 'pages.tools', loader: () => import('./locales/es/pages/tools.json') },
 { locale: 'es', key: 'pages.tools', loader: () => import('./locales/es/pages/tools.json') },
 { locale: 'en', key: 'pages.tools', loader: () => import('./locales/en/pages/tools.json') },
 { locale: 'fr', key: 'pages.tools', loader: () => import('./locales/fr/pages/tools.json') },
