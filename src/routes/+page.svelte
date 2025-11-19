@@ -69,8 +69,8 @@ $effect(() => {
 </script>
 
 <svelte:head>
-  <title>{$t('pages.home.meta.title')}</title>
-  <meta name="description" content={$t('pages.home.meta.description')} />
+  <title>{$t('pages.home.metaTitle')}</title>
+  <meta name="description" content={$t('pages.home.metaDescription')} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
@@ -85,8 +85,8 @@ $effect(() => {
   <!-- Hero Section -->
   <section class="hero-simple">
     <div class="hero-content">
-      <h1>{$t('pages.home.hero.title')}</h1>
-      <p class="subtitle">{$t('pages.home.hero.subtitle')}</p>
+      <h1>{$t('pages.home.heroTitle')}</h1>
+      <p class="subtitle">{$t('pages.home.heroSubtitle')}</p>
     </div>
   </section>
 
@@ -109,10 +109,10 @@ $effect(() => {
   <section id="about" class="about-section">
     <div class="about-container">
       <div class="about-content">
-        <h3>{$t('pages.home.about.title')}</h3>
+        <h3>{$t('pages.home.aboutTitle')}</h3>
         <div class="about-text">
-          <p>{$t('pages.home.about.p1')}</p>
-          <p>{$t('pages.home.about.p2')}</p>
+          <p>{$t('pages.home.aboutP1')}</p>
+          <p>{$t('pages.home.aboutP2')}</p>
         </div>
       </div>
       
@@ -137,8 +137,8 @@ $effect(() => {
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
     <div class="container">
-      <h3>{$t('pages.home.signup.title')}</h3>
-      <p>{$t('pages.home.signup.description')}</p>
+      <h3>{$t('pages.home.signupTitle')}</h3>
+      <p>{$t('pages.home.signupDescription')}</p>
       <EmailSignup />
     </div>
   </section>

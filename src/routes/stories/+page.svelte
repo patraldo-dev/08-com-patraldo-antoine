@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-  <title>{$t('pages.home.meta.title')} - {$t('common.nav.stories')}</title>
+  <title>{$t('pages.home.metaTitle')} - {$t('common.navStories')}</title>
   <meta name="description" content="Explore the stories behind each artwork" />
 </svelte:head>
 
