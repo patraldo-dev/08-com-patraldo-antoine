@@ -8,6 +8,15 @@ import i18n from 'sveltekit-i18n';
  */
 const config = {
   fallbackLocale: 'es',
+  initLocale: 'es', // Keep this for initialization
+  
+  detectLocale: {
+    paths: [], // Empty array = don't look for locales in URLs
+    cookies: ['preferredLanguage'],
+    localStorage: ['preferredLanguage'], 
+    query: ['lang'],
+    fallback: 'es'
+  },
 
   loaders: [
 
