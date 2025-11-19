@@ -4,9 +4,8 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { t } from '$lib/translations';
-  import LanguageSwitcherDesktop from '$lib/components/ui/LanguageSwitcherDesktop.svelte';
-  import LanguageSwitcherMobile from '$lib/components/ui/LanguageSwitcherMobile.svelte';
-  
+  import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
+
   let isMenuOpen = $state(false);
   
   // Get current route to determine navigation behavior
@@ -110,7 +109,7 @@
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
-    <LanguageSwitcherDesktop />
+    <LanguageSwitcherUniversal/>
   </div>
   
   <!-- Mobile/Tablet Menu Button -->
@@ -141,7 +140,7 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>Collection</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     <div class="mobile-lang-switcher">
-      <LanguageSwitcherMobile />
+      <LanguageSwitcherUniversal/>
     </div>
   </div>
 </nav>
