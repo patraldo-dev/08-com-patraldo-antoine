@@ -30,5 +30,13 @@
   "palettesStep3": "Copiez les codes hexadécimaux ou exportez les palettes pour vos projets de design",
   "palettesExplorePrompt": "Vous ne savez pas par où commencer ?",
   "palettesBackToTools": "Retourner aux Outils",
-  "palettesBrowseArtworks": "Parcourir la Galerie d'Œuvres"
+  "palettesBrowseArtworks": "Parcourir la Galerie d'Œuvres",
+  "wallpapersPageTitle": "Fonds d'Écran",
+  "wallpapersPageDescription": "Téléchargez des œuvres d'art en haute résolution comme fonds d'écran pour vos appareils de bureau, mobiles et tablettes.",
+  "wallpapersDesktop": "Bureau",
+  "wallpapersMobile": "Mobile", 
+  "wallpapersTablet": "Tablette",
+  "wallpapersUltrawide": "Ultralarge",
+  "wallpapersDownload": "Télécharger",
+  "wallpapersSelectSize": "Sélectionner la Taille"
 }

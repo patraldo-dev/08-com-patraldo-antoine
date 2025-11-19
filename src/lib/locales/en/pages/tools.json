@@ -30,5 +30,13 @@
   "palettesStep3": "Copy hex codes or export palettes for your design projects",
   "palettesExplorePrompt": "Not sure where to start?",
   "palettesBackToTools": "Back to Tools",
-  "palettesBrowseArtworks": "Browse Artworks Gallery"
+  "palettesBrowseArtworks": "Browse Artworks Gallery",
+  "wallpapersPageTitle": "Wallpapers",
+  "wallpapersPageDescription": "Download high-resolution artworks as wallpapers for your desktop, mobile, and tablet devices.",
+  "wallpapersDesktop": "Desktop",
+  "wallpapersMobile": "Mobile",
+  "wallpapersTablet": "Tablet", 
+  "wallpapersUltrawide": "Ultrawide",
+  "wallpapersDownload": "Download",
+  "wallpapersSelectSize": "Select Wallpaper Size"
 }

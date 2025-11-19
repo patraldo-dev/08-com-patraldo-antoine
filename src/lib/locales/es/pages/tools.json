@@ -30,5 +30,13 @@
   "palettesStep3": "Copia códigos hex o exporta paletas para tus proyectos de diseño",
   "palettesExplorePrompt": "¿No sabes por dónde empezar?",
   "palettesBackToTools": "Regresar a Herramientas",
-  "palettesBrowseArtworks": "Explorar Galería de Obras"
+  "palettesBrowseArtworks": "Explorar Galería de Obras",
+  "wallpapersPageTitle": "Fondos de Pantalla",
+  "wallpapersPageDescription": "Descarga obras de arte en alta resolución como fondos de pantalla para tu escritorio, móvil y tablet.",
+  "wallpapersDesktop": "Escritorio",
+  "wallpapersMobile": "Móvil",
+  "wallpapersTablet": "Tableta",
+  "wallpapersUltrawide": "Ultraancho",
+  "wallpapersDownload": "Descargar",
+  "wallpapersSelectSize": "Seleccionar Tamaño"
 }
