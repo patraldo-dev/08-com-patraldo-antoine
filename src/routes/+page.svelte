@@ -8,6 +8,8 @@
   import { onMount } from 'svelte';
   import { trackVisit } from '$lib/utils/visitTracker.js';
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
+  import { browser } from '$app/environment';
+
 
   const { data } = $props();
   let selectedArtwork = $state(null);
