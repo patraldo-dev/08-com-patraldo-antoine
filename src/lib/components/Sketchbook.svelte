@@ -44,11 +44,11 @@
 
   function getPromptText(currentLocale) {
     const prompts = {
-      'es-MX': 'Un dibujo cada día. Una historia cada semana.',
-      'en-US': 'A drawing each day. A story each week.',
-      'fr-CA': 'Un dessin chaque jour. Une histoire chaque semaine.'
+      'es': 'Un dibujo cada día. Una historia cada semana.',
+      'en': 'A drawing each day. A story each week.',
+      'fr': 'Un dessin chaque jour. Une histoire chaque semaine.'
     };
-    return prompts[currentLocale] || prompts['es-MX'];
+    return prompts[currentLocale] || prompts['es'];
   }
 
   onMount(async () => {

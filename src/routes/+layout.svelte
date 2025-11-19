@@ -17,15 +17,15 @@
       // 1. Check localStorage first
       let lang = localStorage.getItem('preferredLanguage');
       
-      // 2. If none, default to es-MX
+      // 2. If none, default to es
       if (!lang) {
-        lang = 'es-MX';
+        lang = 'es';
         localStorage.setItem('preferredLanguage', lang);
       }
       
       // 3. Only allow supported locales
-      if (!['es-MX', 'en-US', 'fr-CA'].includes(lang)) {
-        lang = 'es-MX';
+      if (!['es', 'en', 'fr'].includes(lang)) {
+        lang = 'es';
         localStorage.setItem('preferredLanguage', lang);
       }
       
@@ -45,7 +45,7 @@
     
     // 7. Handle locale changes
     const unsubscribeLocale = locale.subscribe(async (newLang) => {
-      if (newLang && ['es-MX', 'en-US', 'fr-CA'].includes(newLang) && newLang !== lang) {
+      if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
         lang = newLang;
         localStorage.setItem('preferredLanguage', newLang);
         isReady = false;

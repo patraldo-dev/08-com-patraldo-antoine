@@ -4,7 +4,7 @@ import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform, cookies }) {
   try {
-    const preferredLanguage = cookies.get('preferredLanguage') || 'es-MX';
+    const preferredLanguage = cookies.get('preferredLanguage') || 'es';
     
     // Fetch all artworks with stories enabled from ARTWORKS_DB
     const result = await platform.env.ARTWORKS_DB.prepare(`
@@ -58,7 +58,7 @@ export async function load({ platform, cookies }) {
     console.error('Error loading stories:', error);
     return { 
       stories: [],
-      preferredLanguage: 'es-MX',
+      preferredLanguage: 'es',
       error: 'Failed to load stories'
     };
   }

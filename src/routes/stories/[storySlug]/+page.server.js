@@ -5,8 +5,8 @@ export async function load({ platform, params, locals, cookies }) {
   try {
     const { storySlug } = params;
     
-    // Get language from cookie or default to es-MX
-    const preferredLanguage = cookies.get('preferredLanguage') || locals.locale || 'es-MX';
+    // Get language from cookie or default to es
+    const preferredLanguage = cookies.get('preferredLanguage') || locals.locale || 'es';
     
     // Extract language code (es, en, fr)
     const langCode = preferredLanguage.split('-')[0];

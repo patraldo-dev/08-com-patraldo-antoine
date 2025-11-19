@@ -5,13 +5,13 @@
 
   // Map locale to 2-letter code
   const localeToCode = {
-    'es-MX': 'ES',
-    'en-US': 'EN',
-    'fr-CA': 'FR'
+    'es': 'ES',
+    'en': 'EN',
+    'fr': 'FR'
   };
 
   // Cycle order
-  const cycle = ['es-MX', 'en-US', 'fr-CA'];
+  const cycle = ['es', 'en', 'fr'];
 
   function cycleLanguage() {
     if (!browser) return;
