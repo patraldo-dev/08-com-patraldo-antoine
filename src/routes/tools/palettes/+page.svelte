@@ -11,23 +11,23 @@
 <div class="palettes-page">
   <header class="page-header">
     <a href="/tools" class="back-link">← {$t('backToTools')}</a>
-    <h1>{$t('pages.tools.PageTitle')}</h1>
-    <p class="subtitle">{$t('pages.tools.PageDescription')}</p>
+    <h1>{$t('pages.tools.palettesPageTitle')}</h1>
+    <p class="subtitle">{$t('pages.tools.palettesPageDescription')}</p>
   </header>
 
   <div class="content">
     <div class="info-box">
-      <h2>{$t('pages.tools.HowToTitle')}</h2>
+      <h2>{$t('pages.tools.palettesHowToTitle')}</h2>
       <ol>
-        <li>{$t('pages.tools.Step1')}</li>
-        <li>{$t('pages.tools.Step2')}</li>
-        <li>{$t('pages.tools.Step3')}</li>
+        <li>{$t('pages.tools.palettesStep1')}</li>
+        <li>{$t('pages.tools.palettesStep2')}</li>
+        <li>{$t('pages.tools.palettesStep3')}</li>
       </ol>
     </div>
 
     <div class="cta">
-      <p>{$t('pages.tools.ExplorePrompt')}</p>
-      <a href="/" class="button">{$t('pages.tools.BrowseArtworks')}</a>
+      <p>{$t('pages.tools.palettesExplorePrompt')}</p>
+      <a href="/" class="button">{$t('pages.tools.palettesBrowseArtworks')}</a>
     </div>
   </div>
 </div>
