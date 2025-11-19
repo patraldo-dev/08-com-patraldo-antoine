@@ -254,4 +254,9 @@
       font-size: 2rem;
     }
   }
+
+.stories-page .hero-content h1 {
+  color: #2c5e3d;
+}
+
 </style>
