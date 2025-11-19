@@ -27,10 +27,12 @@
 </svelte:head>
 
 <div class="stories-page">
-  <div class="hero">
-    <h1>{$t('pages.stories.title')}</h1>
-    <p class="subtitle">{$t('pages.stories.subtitle')}</p>
-  </div>
+  <section class="hero-simple">
+    <div class="hero-content">
+      <h1>{$t('pages.stories.title')}</h1>
+      <p class="subtitle">{$t('pages.stories.subtitle')}</p>
+    </div>
+  </section>
   
   <div class="stories-grid layout">
     {#if stories.length === 0}
