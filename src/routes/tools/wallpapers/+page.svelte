@@ -86,14 +86,14 @@
 </script>
 
 <svelte:head>
-  <title>{$t('pages.tools.wallpapers.pageTitle')} - Antoine Patraldo</title>
+  <title>{$t('pages.tools.wallpapersPageTitle')} - Antoine Patraldo</title>
 </svelte:head>
 
 <div class="wallpapers-page">
   <header class="page-header">
     <a href="/tools" class="back-link">← {$t('pages.tools.backToTools')}</a>
-    <h1>{$t('pages.tools.wallpapers.pageTitle')}</h1>
-    <p class="subtitle">{$t('pages.tools.wallpapers.pageDescription')}</p>
+    <h1>{$t('pages.tools.wallpapersPageTitle')}</h1>
+    <p class="subtitle">{$t('pages.tools.wallpapersPageDescription')}</p>
   </header>
 
   <!-- Device Type Selector -->
@@ -103,28 +103,28 @@
       class:active={selectedDevice === 'desktop'}
       onclick={() => selectedDevice = 'desktop'}
     >
-      🖥️ {$t('pages.tools.wallpapers.devices.desktop')}
+      🖥️ {$t('pages.tools.wallpapersDesktop')}
     </button>
     <button 
       class="device-btn" 
       class:active={selectedDevice === 'mobile'}
       onclick={() => selectedDevice = 'mobile'}
     >
-      📱 {$t('pages.tools.wallpapers.devices.mobile')}
+      📱 {$t('pages.tools.wallpapersMobile')}
     </button>
     <button 
       class="device-btn" 
       class:active={selectedDevice === 'tablet'}
       onclick={() => selectedDevice = 'tablet'}
     >
-      📲 {$t('pages.tools.wallpapers.devices.tablet')}
+      📲 {$t('pages.tools.wallpapersTablet')}
     </button>
     <button 
       class="device-btn" 
       class:active={selectedDevice === 'ultrawide'}
       onclick={() => selectedDevice = 'ultrawide'}
     >
-      🖥️ {$t('pages.tools.wallpapers.devices.ultrawide')}
+      🖥️ {$t('pages.tools.wallpapersUltrawide')}
     </button>
   </div>
 
@@ -140,7 +140,7 @@
           />
           <div class="card-overlay">
             <span class="download-icon">⬇️</span>
-            <span class="download-text">{$t('pages.tools.wallpapers.download')}</span>
+            <span class="download-text">{$t('pages.tools.wallpapersDownload')}</span>
           </div>
         </div>
         <div class="card-info">
@@ -160,7 +160,7 @@
     <div class="modal-content" onclick={(e) => e.stopPropagation()}>
       <button class="close-btn" onclick={closeSizeModal}>×</button>
       
-      <h2>{$t('pages.tools.wallpapers.selectSize')}</h2>
+      <h2>{$t('pages.tools.wallpapersSelectSize')}</h2>
       <p class="modal-subtitle">
         {selectedArtwork.display_name || selectedArtwork.title}
       </p>
