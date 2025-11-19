@@ -1,7 +1,8 @@
 <!-- src/lib/components/ui/LanguageSwitcherUniversal.svelte -->
 <script>
   import { locale } from '$lib/translations';
-  import { browser, page } from '$app/environment';
+  import { browser } from '$app/environment';
+  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
 
   const languages = [
