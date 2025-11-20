@@ -182,6 +182,7 @@
         <button class="action-btn" onclick={shareToPinterest}>Pinterest</button>
       </div>
     </div>
+</if>
   </div>
 {/if}
 
