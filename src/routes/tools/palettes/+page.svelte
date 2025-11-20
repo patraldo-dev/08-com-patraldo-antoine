@@ -30,7 +30,7 @@
     <!-- Featured Palettes -->
     <section class="featured-palettes">
       <h2>{$t('pages.tools.palettesFeatured')}</h2>
-      <p class="section-description">{$$t('pages.tools.palettesFeaturedDescription')}</p>
+      <p class="section-description">{$t('pages.tools.palettesFeaturedDescription')}</p>
       
       <div class="palettes-grid">
         {#each data.artworks.slice(0, 10) as artwork}
