@@ -10,6 +10,23 @@
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
   import { browser } from '$app/environment';
 
+onMount(() => {
+  if (browser) {
+    console.log('🔍 LOCALE DEBUG START:', new Date().toISOString());
+    console.log('  - Initial $locale:', $locale);
+    console.log('  - localStorage preferredLanguage:', localStorage.getItem('preferredLanguage'));
+    
+    // Track all locale changes
+    const unsubscribe = locale.subscribe((newLocale) => {
+      console.log('🔄 LOCALE CHANGED:', new Date().toISOString());
+      console.log('  - New locale:', newLocale);
+      console.log('  - Call stack:', new Error().stack);
+    });
+    
+    return unsubscribe;
+  }
+});
+
 
   const { data } = $props();
   let selectedArtwork = $state(null);
