@@ -1,6 +1,9 @@
 <!-- src/routes/tools/palettes/+page.svelte -->
 <script>
   import { t } from '$lib/translations';
+  import ColorPalette from '$lib/components/ColorPalette.svelte';
+
+  let { data } = $props();
 </script>
 
 <svelte:head>
@@ -59,16 +62,6 @@
       </div>
     </section>
 
-    <!-- CTA to explore more -->
-    <div class="cta">
-      <p>{$t('pages.tools.palettesExplorePrompt')}</p>
-      <a href="/" class="button">{$t('pages.tools.palettesBrowseArtworks')}</a>
-    </div>
-  </div>
-</div>
-
-<style>
- 
     <div class="cta">
       <p>{$t('pages.tools.palettesExplorePrompt')}</p>
       <a href="/" class="button">{$t('pages.tools.palettesBrowseArtworks')}</a>
