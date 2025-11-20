@@ -8,17 +8,28 @@
   import { onMount } from 'svelte';
   import { trackVisit } from '$lib/utils/visitTracker.js';
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
-  import { browser } from '$app/environment';
 
   const { data } = $props();
 
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
 
-  $effect(() => {
-    const hash = $page.url.hash;
-    showAboutDetail = hash === '#about-detail';
-  });
+// Initialize on mount
+$effect(() => {
+  if (browser) {
+    // Set initial state
+    showAboutDetail = window.location.hash === '#about-detail';
+    
+    // Optional: listen for hash changes if needed
+    const handleHashChange = () => {
+      showAboutDetail = window.location.hash === '#about-detail';
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }
+});
+
 
   // Get today's featured video (first from shuffled list)
   const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
