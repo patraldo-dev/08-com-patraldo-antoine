@@ -37,3 +37,5 @@ const config = {
     { locale: 'fr', key: 'pages.tools', loader: () => import('./locales/fr/pages/tools.json') },
   ],
 };
+
+export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
