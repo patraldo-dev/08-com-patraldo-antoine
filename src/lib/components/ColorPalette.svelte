@@ -175,8 +175,6 @@
         <button class="action-btn" onclick={downloadJSON}>JSON</button>
         <button class="action-btn" onclick={downloadGPL}>GIMP/Inkscape</button>
       </div>
-{/if}
-
       
       <div class="share-group">
         <span class="action-label">Share:</span>
@@ -185,6 +183,7 @@
       </div>
     </div>
   </div>
+{/if}
 {/if}
 
 <style>
