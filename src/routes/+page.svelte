@@ -132,7 +132,14 @@ $effect(() => {
         </div>
       </div>
     </div>
+<<<<<<< HEAD
   </section>
+=======
+  </div>
+</div>
+</div>
+</section>
+>>>>>>> 612128a (randomize About hero video on main page)
 
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
