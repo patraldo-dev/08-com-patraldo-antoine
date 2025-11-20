@@ -9,11 +9,13 @@
       onClose();
     }
   }
-  
-  // Use today's video or fallback to hard-coded one
-  $: videoSrc = dailyVideo 
+
+// Use today's video or fallback to hard-coded one
+const videoSrc = $derived(
+  dailyVideo 
     ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
-    : 'https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false';
+    : 'https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false'
+);
   
   $: videoTitle = dailyVideo 
     ? `About Antoine - ${dailyVideo.title}`

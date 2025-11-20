@@ -10,11 +10,8 @@
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
   import { browser } from '$app/environment';
 
-  // Get today's featured video (first from shuffled list)
-  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
-
-
   const { data } = $props();
+
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
 
@@ -22,6 +19,9 @@
     const hash = $page.url.hash;
     showAboutDetail = hash === '#about-detail';
   });
+
+  // Get today's featured video (first from shuffled list)
+  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
 
   function openAboutDetail() {
     window.location.hash = '#about-detail';
