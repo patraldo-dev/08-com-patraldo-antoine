@@ -10,7 +10,8 @@
     }
   }
 
-// Use today's video or fallback to hard-coded one
+
+// Use today's video or fallback to hard-coded one Svelte5
 const videoSrc = $derived(
   dailyVideo 
     ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
