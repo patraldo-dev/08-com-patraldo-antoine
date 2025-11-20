@@ -10,6 +10,9 @@
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
   import { browser } from '$app/environment';
 
+  // Get today's featured video (first from shuffled list)
+  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
+
 
   const { data } = $props();
   let selectedArtwork = $state(null);
@@ -68,9 +71,6 @@ $effect(() => {
       }
     }
   });
-
-  // Get today's featured video (first from shuffled list)
-  $: dailyVideo = data.videos.length > 0 ? data.videos[0] : null;
 
 </script>
 
