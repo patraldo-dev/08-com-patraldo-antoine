@@ -128,7 +128,7 @@ $effect(() => {
   <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
     {#if dailyVideo}
       <iframe
-        src=`https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false`
+      src={"https://customer-9kroafxwku5qm6fx.cloudflarestream.com/" + dailyVideo.video_id + "/iframe?muted=true&loop=true&autoplay=true&controls=false"}
         allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
         allowfullscreen
         loading="lazy"
