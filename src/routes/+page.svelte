@@ -150,6 +150,7 @@ $effect(() => {
   </div>
 </div>
 </div>
+</section>
 
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
