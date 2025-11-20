@@ -110,6 +110,8 @@ $effect(() => {
       </div>
     {/if}
   </section>
+{/if}
+
 
 <!-- About Section -->
   <section id="about" class="about-section">
