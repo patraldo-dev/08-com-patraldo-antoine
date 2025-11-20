@@ -45,23 +45,37 @@
 
       // 7. Suppress Cloudflare Stream beacon errors (browser only)
       if (browser) {
+        // Method 1: Override console.error for any logged errors
         const originalError = console.error;
         console.error = function(...args) {
           if (args[0] && typeof args[0] === 'string' &&
               args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
-            return; // Suppress Cloudflare beacon errors
+            return;
           }
           originalError.apply(console, args);
         };
 
-        // Also handle uncaught errors from Stream iframes
+        // Method 2: Catch uncaught errors from iframes
         window.addEventListener('error', (event) => {
           if (event.target && event.target.src && 
               event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
             event.preventDefault();
+            event.stopPropagation();
+            return false;
           }
-        });
+        }, true);
+
+        // Method 3: Use a Service Worker to intercept requests (if you have one)
+        // Method 4: Override fetch/sendBeacon if needed
+        const originalSendBeacon = navigator.sendBeacon;
+        navigator.sendBeacon = function(url, data) {
+          if (url && url.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+            return true; // Pretend it succeeded
+          }
+          return originalSendBeacon.call(this, url, data);
+        };
       }
+
     
       // 8. Handle locale changes with proper cleanup
       const unsubscribeLocale = locale.subscribe(async (newLang) => {
