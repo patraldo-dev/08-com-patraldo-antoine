@@ -124,23 +124,31 @@ $effect(() => {
         </div>
       </div>
       
-      <div class="about-video">
-        <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
-          <iframe
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            title="About Antoine - Creative Journey"
-          ></iframe>
-<div class="click-overlay"></div>
-          <div class="video-overlay">
-            <span>Click to learn more</span>
-          </div>
-        </div>
-      </div>
+<div class="about-video">
+  <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
+    {#if dailyVideo}
+      <iframe
+        src=`https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false`
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        loading="lazy"
+        title="About Antoine - Creative Journey"
+      ></iframe>
+    {:else}
+      <iframe
+        src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        loading="lazy"
+        title="About Antoine - Creative Journey"
+      ></iframe>
+    {/if}
+    <div class="click-overlay"></div>
+    <div class="video-overlay">
+      <span>Click to learn more</span>
     </div>
-  </section>
+  </div>
+</div>
 
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
