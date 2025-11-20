@@ -184,7 +184,6 @@
     </div>
   </div>
 {/if}
-{/if}
 
 <style>
   .palette-loading,
