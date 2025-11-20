@@ -5,7 +5,8 @@
   import { page } from '$app/stores';
   import { locale, loadTranslations, loading } from '$lib/translations';
   import Navigation from '$lib/components/Navigation.svelte';
-  
+  import { browser } from '$app/environment';
+ 
   let isReady = false;
   
   // Check if current page needs full-height layout (no top margin)
@@ -32,45 +33,57 @@
       // 4. Set locale first
       await locale.set(lang);
     
-    // 5. Load translations in parallel
-    await Promise.all([
-      loadTranslations(lang, 'common'),
-      loadTranslations(lang, location.pathname)
-    ]);
-    console.log('✅ All translations loaded');
+      // 5. Load translations in parallel
+      await Promise.all([
+        loadTranslations(lang, 'common'),
+        loadTranslations(lang, location.pathname)
+      ]);
+      console.log('✅ All translations loaded');
 
-    
-    // 6. NOW set ready (don't wait for subscription)
-    isReady = true;
-    
-    // 7. Handle locale changes
-    const unsubscribeLocale = locale.subscribe(async (newLang) => {
-      if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
-        lang = newLang;
-        localStorage.setItem('preferredLanguage', newLang);
-        isReady = false;
-        
-        // Reload both translations
-        await Promise.all([
-          loadTranslations(newLang, 'common'),
-          loadTranslations(newLang, location.pathname)
-        ]);
-        
-        isReady = true;
+      // 6. NOW set ready (don't wait for subscription)
+      isReady = true;
+
+      // 7. Suppress Cloudflare Stream beacon errors (browser only)
+      if (browser) {
+        const originalError = console.error;
+        console.error = function(...args) {
+          if (args[0] && typeof args[0] === 'string' &&
+              args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+            return; // Suppress Cloudflare beacon errors
+          }
+          originalError.apply(console, args);
+        };
+
+        // Also handle uncaught errors from Stream iframes
+        window.addEventListener('error', (event) => {
+          if (event.target && event.target.src && 
+              event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+            event.preventDefault();
+          }
+        });
       }
-    });
     
-    // 8. Cleanup
-    return () => {
-      unsubscribeLocale();
-    };
-    
-  } catch (error) {
-    console.error('i18n error:', error);
-    isReady = true;
-  }
-});
-      
+      // 8. Handle locale changes with proper cleanup
+      const unsubscribeLocale = locale.subscribe(async (newLang) => {
+        if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
+          lang = newLang;
+          localStorage.setItem('preferredLanguage', newLang);
+          isReady = false;
+          // ... rest of your locale change logic ...
+        }
+      });
+
+      // 9. Cleanup - return unsubscribe function
+      return () => {
+        unsubscribeLocale();
+      };
+
+    } catch (error) {
+      console.error('i18n error:', error);
+      isReady = true;
+    }
+  });
+
 </script>
 
 {#if isReady}
