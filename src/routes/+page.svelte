@@ -15,18 +15,29 @@ onMount(() => {
     console.log('🔍 LOCALE DEBUG START:', new Date().toISOString());
     console.log('  - Initial $locale:', $locale);
     console.log('  - localStorage preferredLanguage:', localStorage.getItem('preferredLanguage'));
-    
+
     // Track all locale changes
     const unsubscribe = locale.subscribe((newLocale) => {
       console.log('🔄 LOCALE CHANGED:', new Date().toISOString());
       console.log('  - New locale:', newLocale);
       console.log('  - Call stack:', new Error().stack);
     });
+
+    // Track mouse events
+    const handleMouseOver = (e) => {
+      console.log('🐭 MOUSEOVER:', e.target.tagName, e.target.className);
+      console.log('  - Current $locale:', $locale);
+    };
     
-    return unsubscribe;
+    document.addEventListener('mouseover', handleMouseOver, { passive: true });
+
+    // Cleanup both listeners
+    return () => {
+      unsubscribe();
+      document.removeEventListener('mouseover', handleMouseOver);
+    };
   }
 });
-
 
   const { data } = $props();
   let selectedArtwork = $state(null);
