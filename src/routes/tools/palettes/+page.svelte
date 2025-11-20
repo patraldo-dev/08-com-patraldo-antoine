@@ -8,7 +8,7 @@
 
 <svelte:head>
   <title>{$t('pages.home.metaTitle')} - {$t('common.navTools')}</title>
-  <meta name="description" content={$t('metaDescription')} />
+  <meta name="description" content={$t('pages.tools.metaDescription')} />
 </svelte:head>
 
 <div class="palettes-page">
