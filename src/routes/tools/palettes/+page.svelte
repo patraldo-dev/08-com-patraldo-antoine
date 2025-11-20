@@ -27,35 +27,27 @@
         <li>{$t('pages.tools.palettesStep3')}</li>
       </ol>
     </div>
-    <!-- Featured Palettes -->
+
+    <!-- Featured Palettes - REVAMPED -->
     <section class="featured-palettes">
       <h2>{$t('pages.tools.palettesFeatured')}</h2>
       <p class="section-description">{$t('pages.tools.palettesFeaturedDescription')}</p>
       
       <div class="palettes-grid">
         {#each data.artworks.slice(0, 10) as artwork}
-          <a href="/#artwork-{artwork.id}" class="palette-card">
-            <div class="artwork-preview">
-              <img 
-                src={artwork.thumbnailUrl} 
-                alt={artwork.display_name || artwork.title}
-                loading="lazy"
-              />
-            </div>
-            
-            <div class="palette-info">
-              <h3>{artwork.display_name || artwork.title}</h3>
-              {#if artwork.year}
-                <span class="year">{artwork.year}</span>
-              {/if}
-            </div>
-            
-            <div class="palette-preview">
+          <a href="/artworks/{artwork.id}" class="palette-card" title="Click to discover the source artwork">
+            <!-- Color Palette Only - No Artwork Info -->
+            <div class="palette-visual">
               <ColorPalette 
                 imageUrl={artwork.thumbnailUrl}
                 artworkTitle={artwork.display_name || artwork.title}
-                compact={true}
+                preview={true}
               />
+            </div>
+            
+            <!-- Minimal Info - Keep it Mysterious -->
+            <div class="palette-info">
+              <span class="discovery-hint">Click to reveal artwork</span>
             </div>
           </a>
         {/each}
@@ -79,6 +71,7 @@
   .page-header {
     max-width: 800px;
     margin: 0 auto 3rem;
+    text-align: center;
   }
 
   .back-link {
@@ -104,10 +97,12 @@
     font-size: 1.125rem;
     color: #666;
     line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .content {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
   }
 
@@ -116,7 +111,7 @@
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     padding: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
   }
 
   .info-box h2 {
@@ -135,6 +130,73 @@
 
   .info-box li {
     margin-bottom: 0.75rem;
+  }
+
+  .featured-palettes {
+    margin-bottom: 4rem;
+  }
+
+  .featured-palettes h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 1rem 0;
+    text-align: center;
+  }
+
+  .section-description {
+    text-align: center;
+    color: #666;
+    font-size: 1.125rem;
+    margin: 0 0 3rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .palettes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .palette-card {
+    display: block;
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .palette-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: #1a1a1a;
+  }
+
+  .palette-visual {
+    margin-bottom: 1.5rem;
+  }
+
+  .palette-info {
+    text-align: center;
+  }
+
+  .discovery-hint {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .palette-card:hover .discovery-hint {
+    opacity: 1;
   }
 
   .cta {
@@ -174,6 +236,15 @@
 
     .page-header h1 {
       font-size: 2rem;
+    }
+
+    .palettes-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .palette-card {
+      padding: 1.5rem;
     }
   }
 </style>
