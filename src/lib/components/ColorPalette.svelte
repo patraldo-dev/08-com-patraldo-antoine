@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   
-  let { imageUrl, artworkTitle = 'Artwork' } = $props();
+  let { imageUrl, artworkTitle = 'Artwork', compact = false } = $props();
   
   let colors = $state([]);
   let loading = $state(true);
@@ -166,6 +166,7 @@
       {/each}
     </div>
     
+{#if !compact}
     <!-- Download & Share buttons -->
     <div class="palette-actions">
       <div class="download-group">
@@ -174,6 +175,8 @@
         <button class="action-btn" onclick={downloadJSON}>JSON</button>
         <button class="action-btn" onclick={downloadGPL}>GIMP/Inkscape</button>
       </div>
+{/if}
+
       
       <div class="share-group">
         <span class="action-label">Share:</span>
