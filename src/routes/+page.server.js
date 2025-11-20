@@ -34,7 +34,7 @@ export async function load({ platform }) {
     
     if (!db) {
       console.warn('DB not available');
-      return { artworks: [] };
+      return { artworks: [], videos: [] };
     }
 
     // Query artworks with story fields
@@ -90,12 +90,22 @@ export async function load({ platform }) {
     // Shuffle artworks with daily seed
     const shuffledArtworks = shuffleArray(artworks);
 
-    console.log(`Loaded ${shuffledArtworks.length} artworks (${shuffledArtworks.filter(a => a.story_enabled).length} with stories) - shuffled for today`);
+    // Filter artworks that have videos
+    const videos = shuffledArtworks.filter(artwork => artwork.video_id);
     
-    return { artworks: shuffledArtworks };
+    // Shuffle videos with daily seed (using same seed for consistency)
+    const shuffledVideos = shuffleArray(videos);
+    
+    console.log(`Loaded ${shuffledArtworks.length} artworks (${shuffledArtworks.filter(a => a.story_enabled).length} with stories) - shuffled for today`);
+    console.log(`Loaded ${shuffledVideos.length} videos for daily rotation`);
+    
+    return { 
+      artworks: shuffledArtworks,
+      videos: shuffledVideos
+    };
     
   } catch (error) {
     console.error('Error loading artworks:', error);
-    return { artworks: [] };
+    return { artworks: [], videos: [] };
   }
 }

@@ -25,6 +25,7 @@
   }
 
   function closeAboutDetail() {
+    showAboutDetail = false;  // Add this to actually close the modal
     window.location.hash = '#about';
   }
 
@@ -67,6 +68,10 @@ $effect(() => {
       }
     }
   });
+
+  // Get today's featured video (first from shuffled list)
+  $: dailyVideo = data.videos.length > 0 ? data.videos[0] : null;
+
 </script>
 
 <svelte:head>
@@ -144,13 +149,13 @@ $effect(() => {
     </div>
   </section>
 
-<AboutDetailModal 
-  open={showAboutDetail} 
-  onClose={closeAboutDetail}
-/>
+{#if showAboutDetail}
+  <AboutDetailModal 
+    open={showAboutDetail} 
+    onClose={() => showAboutDetail = false}
+    dailyVideo={dailyVideo}
+  />
 {/if}
-
-
 
 <style>
   .hero-simple {
