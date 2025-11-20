@@ -65,6 +65,7 @@ $effect(() => {
       if (artwork) {
         selectedArtwork = artwork;
       }
+}
     });
 
 </script>
