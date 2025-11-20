@@ -145,7 +145,7 @@ $effect(() => {
     {/if}
     <div class="click-overlay"></div>
     <div class="video-overlay">
-      <span>Click to learn more</span>
+      <span>{$t('pages.home.clickToLearnMore')}</span>
     </div>
   </div>
 </div>
