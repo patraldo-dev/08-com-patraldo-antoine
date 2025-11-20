@@ -1,8 +1,13 @@
- <script>
+<script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   
-  let { imageUrl, artworkTitle = 'Artwork', compact = false } = $props();
+  let { 
+    imageUrl, 
+    artworkTitle = 'Artwork', 
+    compact = false,
+    preview = false  // New prop for preview mode
+  } = $props();
   
   let colors = $state([]);
   let loading = $state(true);
@@ -11,7 +16,6 @@
   let ColorThief = $state(null);
   
   onMount(async () => {
-    // Import ColorThief only in browser
     if (browser) {
       const ColorThiefModule = await import('colorthief');
       ColorThief = ColorThiefModule.default;
@@ -25,13 +29,10 @@
       }
     }
   });
-  
-    loading = true;
     
   async function extractColors() {
     loading = true;
     
-    // Create a temporary image element
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     
@@ -40,7 +41,6 @@
         const colorThief = new ColorThief();
         const palette = colorThief.getPalette(img, 6);
         
-        // Convert RGB arrays to hex
         colors = palette.map(rgb => ({
           rgb,
           hex: rgbToHex(rgb[0], rgb[1], rgb[2])
@@ -102,7 +102,6 @@
   }
   
   function downloadGPL() {
-    // GIMP/Inkscape palette format
     let gpl = `GIMP Palette\nName: ${artworkTitle}\nColumns: 6\n#\n`;
     colors.forEach((color, i) => {
       gpl += `${color.rgb[0].toString().padStart(3)} ${color.rgb[1].toString().padStart(3)} ${color.rgb[2].toString().padStart(3)} Color ${i + 1}\n`;
@@ -146,185 +145,197 @@
     <span>{error}</span>
   </div>
 {:else if colors.length > 0}
-  <div class="color-palette">
-    <div class="palette-title">Color Palette</div>
+  <div class="color-palette {preview ? 'preview-mode' : ''}">
+    {#if !preview}
+      <div class="palette-title">Color Palette</div>
+    {/if}
     
-    <!-- pywal-style horizontal bar -->
-    <div class="color-bar">
+    <div class="color-bar {preview ? 'preview-bar' : ''}">
       {#each colors as color, i}
-        <button
-          class="color-swatch"
-          style="background-color: {color.hex}"
-          onclick={() => copyToClipboard(color.hex, i)}
-          title="Click to copy {color.hex}"
-        >
-          <span class="hex-code">{color.hex}</span>
-          {#if copiedIndex === i}
-            <span class="copied-indicator">✓</span>
-          {/if}
-        </button>
+        {#if preview}
+          <div
+            class="color-swatch preview-swatch"
+            style="background-color: {color.hex}"
+            title="{color.hex}"
+          ></div>
+        {:else}
+          <button
+            class="color-swatch"
+            style="background-color: {color.hex}"
+            onclick={() => copyToClipboard(color.hex, i)}
+            title="Click to copy {color.hex}"
+          >
+            <span class="hex-code">{color.hex}</span>
+            {#if copiedIndex === i}
+              <span class="copied-indicator">✓</span>
+            {/if}
+          </button>
+        {/if}
       {/each}
     </div>
     
-{#if !compact}
-    <!-- Download & Share buttons -->
-    <div class="palette-actions">
-      <div class="download-group">
-        <span class="action-label">Download:</span>
-        <button class="action-btn" onclick={downloadCSS}>CSS</button>
-        <button class="action-btn" onclick={downloadJSON}>JSON</button>
-        <button class="action-btn" onclick={downloadGPL}>GIMP/Inkscape</button>
+    {#if !preview && !compact}
+      <div class="palette-actions">
+        <div class="download-group">
+          <span class="action-label">Download:</span>
+          <button class="action-btn" onclick={downloadCSS}>CSS</button>
+          <button class="action-btn" onclick={downloadJSON}>JSON</button>
+          <button class="action-btn" onclick={downloadGPL}>GIMP/Inkscape</button>
+        </div>
+        
+        <div class="share-group">
+          <span class="action-label">Share:</span>
+          <button class="action-btn" onclick={shareToMastodon}>Mastodon</button>
+          <button class="action-btn" onclick={shareToPinterest}>Pinterest</button>
+        </div>
       </div>
-      
-      <div class="share-group">
-        <span class="action-label">Share:</span>
-        <button class="action-btn" onclick={shareToMastodon}>Mastodon</button>
-        <button class="action-btn" onclick={shareToPinterest}>Pinterest</button>
-      </div>
-    </div>
-{/if}
+    {/if}
   </div>
 {/if}
 
 <style>
-  .palette-loading,
-  .palette-error {
-    padding: 1rem;
-    text-align: center;
-    color: #666;
-    font-size: 0.9rem;
-  }
-  
-  .palette-error {
-    color: #dc3545;
-  }
-  
   .color-palette {
-    margin-top: 2rem;
+    background: var(--color-surface);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
   }
-  
+
+  .color-palette.preview-mode {
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
   .palette-title {
-    font-size: 0.9rem;
+    font-size: 1.25rem;
     font-weight: 600;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     margin-bottom: 1rem;
+    color: var(--color-text-primary);
   }
-  
-  /* pywal-style horizontal color bar */
+
   .color-bar {
     display: flex;
     width: 100%;
-    height: 80px;
+    height: 60px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
+  .preview-bar {
+    height: 80px;
+    border-radius: 8px;
+  }
+
   .color-swatch {
     flex: 1;
     border: none;
     cursor: pointer;
     position: relative;
-    transition: all 0.2s ease;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    padding: 0.5rem;
-  }
-  
-  .color-swatch:hover {
-    transform: translateY(-4px);
-    z-index: 1;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-  
-  .hex-code {
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: monospace;
+    transition: transform 0.2s ease;
     color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .preview-swatch {
+    cursor: default;
+  }
+
+  .preview-swatch:hover {
+    transform: scale(1.05);
+    z-index: 1;
+  }
+
+  .color-swatch:hover:not(.preview-swatch) {
+    transform: scale(1.05);
+    z-index: 1;
+  }
+
+  .hex-code {
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-  
+
   .color-swatch:hover .hex-code {
     opacity: 1;
   }
-  
+
   .copied-indicator {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    animation: fadeInOut 2s ease;
+    font-size: 1rem;
+    font-weight: bold;
   }
-  
-  @keyframes fadeInOut {
-    0%, 100% { opacity: 0; }
-    10%, 90% { opacity: 1; }
-  }
-  
+
   .palette-actions {
     display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
   }
-  
+
   .download-group,
   .share-group {
     display: flex;
-    gap: 0.5rem;
     align-items: center;
+    gap: 0.5rem;
     flex-wrap: wrap;
   }
-  
+
   .action-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #666;
-  }
-  
-  .action-btn {
-    padding: 0.5rem 1rem;
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     font-weight: 500;
+    color: var(--color-text-secondary);
+    min-width: 60px;
+  }
+
+  .action-btn {
+    padding: 0.375rem 0.75rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
   }
-  
+
   .action-btn:hover {
-    background: #f5f5f5;
-    border-color: #ccc;
-    transform: translateY(-1px);
+    background: var(--color-primary-dark);
   }
-  
+
+  .palette-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--color-text-secondary);
+  }
+
+  .palette-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--color-error);
+  }
+
   @media (max-width: 768px) {
-    .color-bar {
-      height: 60px;
-    }
-    
-    .hex-code {
-      font-size: 0.65rem;
-    }
-    
-    .palette-actions {
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
     .download-group,
     .share-group {
-      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .action-label {
+      min-width: auto;
     }
   }
 </style>
