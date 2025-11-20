@@ -10,33 +10,6 @@
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
   import { browser } from '$app/environment';
 
-onMount(() => {
-  if (browser) {
-    console.log('🔍 LOCALE DEBUG START:', new Date().toISOString());
-    console.log('  - Initial $locale:', $locale);
-    console.log('  - localStorage preferredLanguage:', localStorage.getItem('preferredLanguage'));
-    
-    // Track all locale changes
-    const unsubscribe = locale.subscribe((newLocale) => {
-      console.log('🔄 LOCALE CHANGED:', new Date().toISOString());
-      console.log('  - New locale:', newLocale);
-      console.log('  - localStorage preferredLanguage:', localStorage.getItem('preferredLanguage'));
-    });
-    
-    return unsubscribe;
-  }
-});
-
-    document.addEventListener('mouseover', handleMouseOver, { passive: true });
-
-    // Cleanup both listeners
-    return () => {
-      unsubscribe();
-      document.removeEventListener('mouseover', handleMouseOver);
-    };
-  }
-});
-
   const { data } = $props();
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
@@ -64,7 +37,6 @@ onMount(() => {
     history.replaceState(null, '', window.location.pathname);
   }
 
-  // Watch for hash changes to open specific artworks
 // Watch for hash changes to open specific artworks
 $effect(() => {
   const hash = $page.url.hash;
