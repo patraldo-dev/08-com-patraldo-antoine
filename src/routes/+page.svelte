@@ -34,7 +34,7 @@
 
 
   // Get today's featured video (first from shuffled list)
-  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
+//  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
 
   function openAboutDetail() {
     window.location.hash = '#about-detail';
@@ -125,44 +125,34 @@ $effect(() => {
   </section>
 {/if}
 
-
 <!-- About Section -->
-  <section id="about" class="about-section">
-    <div class="about-container">
-      <div class="about-content">
-        <h3>{$t('pages.home.aboutTitle')}</h3>
-        <div class="about-text">
-          <p>{$t('pages.home.aboutP1')}</p>
-          <p>{$t('pages.home.aboutP2')}</p>
+<section id="about" class="about-section">
+  <div class="about-container">
+    <div class="about-content"> 
+      <h3>{$t('pages.home.aboutTitle')}</h3> 
+      <div class="about-text">
+        <p>{$t('pages.home.aboutP1')}</p>
+        <p>{$t('pages.home.aboutP2')}</p> 
+      </div>
+    </div>
+    
+    <div class="about-video">
+      <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
+        <!-- JUST THE FALLBACK IFRAME - NO CONDITIONALS -->
+        <iframe
+          src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+          title="About Antoine - Creative Journey"
+        ></iframe>
+        <div class="click-overlay"></div>
+        <div class="video-overlay">
+          <span>{$t('pages.home.clickToLearnMore')}</span>
         </div>
       </div>
-      
-<div class="about-video">
-  <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
-    {#if dailyVideo}
-      <iframe
-      src={"https://customer-9kroafxwku5qm6fx.cloudflarestream.com/" + dailyVideo.video_id + "/iframe?muted=true&loop=true&autoplay=true&controls=false"}
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-        allowfullscreen
-        loading="lazy"
-        title="About Antoine - Creative Journey"
-      ></iframe>
-    {:else}
-      <iframe
-        src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-        allowfullscreen
-        loading="lazy"
-        title="About Antoine - Creative Journey"
-      ></iframe>
-    {/if}
-    <div class="click-overlay"></div>
-    <div class="video-overlay">
-      <span>{$t('pages.home.clickToLearnMore')}</span>
     </div>
   </div>
-</div>
-</div>
 </section>
 
   <!-- Email Signup Section -->
@@ -174,13 +164,13 @@ $effect(() => {
     </div>
   </section>
 
-{#if showAboutDetail}
+<-- {#if showAboutDetail}
   <AboutDetailModal 
     open={showAboutDetail} 
     onClose={() => showAboutDetail = false}
     dailyVideo={dailyVideo}
   />
-{/if}
+{/if} -->
 
 <style>
   .hero-simple {
