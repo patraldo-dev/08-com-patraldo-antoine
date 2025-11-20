@@ -24,7 +24,51 @@
         <li>{$t('pages.tools.palettesStep3')}</li>
       </ol>
     </div>
+    <!-- Featured Palettes -->
+    <section class="featured-palettes">
+      <h2>{$t('pages.tools.palettesFeatured')}</h2>
+      <p class="section-description">{$$t('pages.tools.palettesFeaturedDescription')}</p>
+      
+      <div class="palettes-grid">
+        {#each data.artworks.slice(0, 10) as artwork}
+          <a href="/#artwork-{artwork.id}" class="palette-card">
+            <div class="artwork-preview">
+              <img 
+                src={artwork.thumbnailUrl} 
+                alt={artwork.display_name || artwork.title}
+                loading="lazy"
+              />
+            </div>
+            
+            <div class="palette-info">
+              <h3>{artwork.display_name || artwork.title}</h3>
+              {#if artwork.year}
+                <span class="year">{artwork.year}</span>
+              {/if}
+            </div>
+            
+            <div class="palette-preview">
+              <ColorPalette 
+                imageUrl={artwork.thumbnailUrl}
+                artworkTitle={artwork.display_name || artwork.title}
+                compact={true}
+              />
+            </div>
+          </a>
+        {/each}
+      </div>
+    </section>
 
+    <!-- CTA to explore more -->
+    <div class="cta">
+      <p>{$t('pages.tools.palettesExplorePrompt')}</p>
+      <a href="/" class="button">{$t('pages.tools.palettesBrowseArtworks')}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+ 
     <div class="cta">
       <p>{$t('pages.tools.palettesExplorePrompt')}</p>
       <a href="/" class="button">{$t('pages.tools.palettesBrowseArtworks')}</a>
