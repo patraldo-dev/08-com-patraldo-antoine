@@ -67,17 +67,6 @@ $effect(() => {
       }
     }
 
-    
-    // Add i18n debug (with renamed variable)
-    if (browser) {
-      console.log('=== I18N DEBUG ===');
-      console.log('Browser language:', navigator.language);
-      console.log('Browser languages:', navigator.languages);
-      console.log('Current $locale:', $locale);
-      console.log('Available locales:', i18nLocales); // Use renamed variable
-      console.log('=== END DEBUG ===');
-    }
-  });
 </script>
 
 <svelte:head>

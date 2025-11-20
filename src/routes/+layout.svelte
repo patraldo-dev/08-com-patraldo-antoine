@@ -42,23 +42,17 @@
     
     // 6. NOW set ready (don't wait for subscription)
     isReady = true;
-    
-    // 7. Handle locale changes
-    const unsubscribeLocale = locale.subscribe(async (newLang) => {
-      if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
-        lang = newLang;
-        localStorage.setItem('preferredLanguage', newLang);
-        isReady = false;
-        
-        // Reload both translations
-        await Promise.all([
-          loadTranslations(newLang, 'common'),
-          loadTranslations(newLang, location.pathname)
-        ]);
-        
-        isReady = true;
-      }
-    });
+
+    if (browser) {
+  const originalError = console.error;
+  console.error = function(...args) {
+    if (args[0] && typeof args[0] === 'string' &&
+        args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+      return;
+    }
+    originalError.apply(console, args);
+  };
+}
     
     // 8. Cleanup
     return () => {
