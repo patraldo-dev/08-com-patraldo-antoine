@@ -164,14 +164,6 @@ $effect(() => {
     </div>
   </section>
 
-<-- {#if showAboutDetail}
-  <AboutDetailModal 
-    open={showAboutDetail} 
-    onClose={() => showAboutDetail = false}
-    dailyVideo={dailyVideo}
-  />
-{/if} -->
-
 <style>
   .hero-simple {
     min-height: 60vh;
