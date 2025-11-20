@@ -35,7 +35,7 @@
       
       <div class="palettes-grid">
         {#each data.artworks.slice(0, 10) as artwork}
-          <a href="/artworks/{artwork.id}" class="palette-card" title="Click to discover the source artwork">
+          <a href="/#artwork-{artwork.id}" class="palette-card" title="Click to discover the source artwork">
             <!-- Color Palette Only - No Artwork Info -->
             <div class="palette-visual">
               <ColorPalette 
@@ -62,6 +62,7 @@
 </div>
 
 <style>
+  /* ... keep all your existing styles ... */
   .palettes-page {
     min-height: 100vh;
     background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
