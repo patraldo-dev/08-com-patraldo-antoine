@@ -8,14 +8,8 @@
   import { onMount } from 'svelte';
   import { trackVisit } from '$lib/utils/visitTracker.js';
   import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
+  import { browser } from '$app/environment';
   import { onNavigate } from '$app/navigation';
-
-onNavigate((navigation) => {
-  console.log('Navigation started:', navigation);
-  navigation.complete.then(() => {
-    console.log('Navigation completed');
-  });
-});
 
   const { data } = $props();
 

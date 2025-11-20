@@ -8,21 +8,21 @@ import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
  * @returns {Array} Shuffled array
  */
 function shuffleArray(array, seed = null) {
-  // Use today's date as seed for daily shuffle
+  // Use today's date in UTC to avoid timezone issues during language switches
   if (seed === null) {
     const today = new Date();
-    seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    // Use UTC date to be consistent across the whole day
+    seed = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
   }
   
-  // Seeded random number generator
   const rng = (s) => {
-    let x = Math.sin(s++) * 10000;
+    let x = Math.sin(s + seed) * 10000;
     return x - Math.floor(x);
   };
   
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(rng(seed + i) * (i + 1));
+    const j = Math.floor(rng(i) * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
