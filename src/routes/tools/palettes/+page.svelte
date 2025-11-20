@@ -47,7 +47,7 @@
             
             <!-- Minimal Info - Keep it Mysterious -->
             <div class="palette-info">
-              <span class="discovery-hint">Click to reveal artwork</span>
+              <span class="discovery-hint">{$t('pages.tools.palettesClickToReveal')}</span>
             </div>
           </a>
         {/each}
