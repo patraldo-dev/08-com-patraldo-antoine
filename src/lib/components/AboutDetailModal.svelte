@@ -19,7 +19,8 @@ const videoSrc = $derived(dailyVideo
  const videoTitle = $derived(
    dailyVideo 
     ? `About Antoine - ${dailyVideo.title}`
-    : 'About Antoine - Creative Journey';
+    : 'About Antoine - Creative Journey'
+);
   
   // Use $effect to manage body scroll and keyboard events
   $effect(() => {
