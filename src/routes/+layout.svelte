@@ -43,6 +43,27 @@
       // 6. NOW set ready (don't wait for subscription)
       isReady = true;
 
+// 7. Suppress Cloudflare Stream beacon errors (browser only)
+if (browser) {
+  const originalError = console.error;
+  console.error = function(...args) {
+    if (args[0] && typeof args[0] === 'string' &&
+        args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+      return;
+    }
+    originalError.apply(console, args);
+  };
+
+  window.addEventListener('error', (event) => {
+    if (event.target && event.target.src && 
+        event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    }
+  }, true);
+}
+
       // 8. Handle locale changes with proper cleanup
       const unsubscribeLocale = locale.subscribe(async (newLang) => {
         if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
