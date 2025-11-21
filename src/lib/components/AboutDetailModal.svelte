@@ -1,32 +1,37 @@
-<!-- src/lib/components/AboutDetailModal.svelte -->
+
 <script>
-  import { browser } from '$app/environment';
-  
+  import { browser, run, state, derived, effect } from 'svelte';  
+
+  // Props with defaults using $props rune
   let { open = false, onClose, dailyVideo } = $props();
-  
+
+  // Handle Escape key close - use effect with cleanup function
   function handleKeydown(e) {
     if (e.key === 'Escape') {
       onClose();
     }
   }
-  
-  // Use today's video or fallback to hard-coded one
-  $: videoSrc = dailyVideo 
-    ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
-    : 'https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false';
-  
-  $: videoTitle = dailyVideo 
-    ? `About Antoine - ${dailyVideo.title}`
-    : 'About Antoine - Creative Journey';
-  
-  // Use $effect to manage body scroll and keyboard events
-  $effect(() => {
+
+  // Derived state using $derived rune
+  const videoSrc = derived(
+    dailyVideo,
+    v => v 
+      ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${v.video_id}/iframe?autoplay=true&controls=true&muted=false`
+      : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false`
+  );
+
+  const videoTitle = derived(
+    dailyVideo,
+    v => v ? `About Antoine - ${v.title}` : 'About Antoine - Creative Journey'
+  );
+
+  // $effect to manage body overflow and keyboard events reactively
+  effect(() => {
     if (!browser) return;
-    
+
     if (open) {
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleKeydown);
-      
       return () => {
         document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKeydown);
@@ -38,12 +43,12 @@
 </script>
 
 {#if open}
-  <div class="modal-overlay" onclick={onClose}>
-    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
-      <button class="close-btn" onclick={onClose} aria-label="Close about modal">
+  <div class="modal-overlay" on:click={onClose}>
+    <div class="modal-content" on:click|stopPropagation>
+      <button class="close-btn" on:click={onClose} aria-label="Close about modal">
         <span class="close-icon">×</span>
       </button>
-      
+
       <div class="content-wrapper">
         <!-- Video Section -->
         <section class="video-section">
@@ -56,22 +61,23 @@
               {/if}
             </div>
           {/if}
-          
+
           <div class="modal-video-wrapper">
             <iframe
-              src={videoSrc}
+              src={$videoSrc}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
               allowfullscreen
               loading="lazy"
-              title={videoTitle}
+              title={$videoTitle}
             ></iframe>
           </div>
-          
+
           {#if dailyVideo && dailyVideo.description}
             <div class="video-description">
               <p>{dailyVideo.description}</p>
             </div>
           {/if}
+        </section>
         </section>
         
         <!-- Extended Bio -->
