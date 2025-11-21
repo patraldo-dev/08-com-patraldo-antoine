@@ -9,33 +9,34 @@ import i18n from 'sveltekit-i18n';
 const config = {
   fallbackLocale: 'es',
   initLocale: 'es', // Add this back - it's essential!
-  
+
   loaders: [
     // COMMON STRINGS
-    { locale: 'es', key: 'common', loader: () => import('./locales/es/common.json') },
-    { locale: 'en', key: 'common', loader: () => import('./locales/en/common.json') },
-    { locale: 'fr', key: 'common', loader: () => import('./locales/fr/common.json') },
+    { locale: 'es', key: 'common', loader: async () => (await import('./locales/es/common.json')).default },
+    { locale: 'en', key: 'common', loader: async () => (await import('./locales/en/common.json')).default },
+    { locale: 'fr', key: 'common', loader: async () => (await import('./locales/fr/common.json')).default },
 
     // MAIN SITE PAGES
-    { locale: 'es', key: 'pages.home', loader: () => import('./locales/es/pages/home.json') },
-    { locale: 'en', key: 'pages.home', loader: () => import('./locales/en/pages/home.json') },
-    { locale: 'fr', key: 'pages.home', loader: () => import('./locales/fr/pages/home.json') },
+    { locale: 'es', key: 'pages.home', loader: async () => (await import('./locales/es/pages/home.json')).default },
+    { locale: 'en', key: 'pages.home', loader: async () => (await import('./locales/en/pages/home.json')).default },
+    { locale: 'fr', key: 'pages.home', loader: async () => (await import('./locales/fr/pages/home.json')).default },
 
     // STORYVIEW PAGES
-    { locale: 'es', key: 'pages.stories', loader: () => import('./locales/es/pages/stories.json') },
-    { locale: 'en', key: 'pages.stories', loader: () => import('./locales/en/pages/stories.json') },
-    { locale: 'fr', key: 'pages.stories', loader: () => import('./locales/fr/pages/stories.json') },
+    { locale: 'es', key: 'pages.stories', loader: async () => (await import('./locales/es/pages/stories.json')).default },
+    { locale: 'en', key: 'pages.stories', loader: async () => (await import('./locales/en/pages/stories.json')).default },
+    { locale: 'fr', key: 'pages.stories', loader: async () => (await import('./locales/fr/pages/stories.json')).default },
 
     // COLLECTION PAGE
-    { locale: 'es', key: 'pages.collection', loader: () => import('./locales/es/pages/collection.json') },
-    { locale: 'en', key: 'pages.collection', loader: () => import('./locales/en/pages/collection.json') },
-    { locale: 'fr', key: 'pages.collection', loader: () => import('./locales/fr/pages/collection.json') },
+    { locale: 'es', key: 'pages.collection', loader: async () => (await import('./locales/es/pages/collection.json')).default },
+    { locale: 'en', key: 'pages.collection', loader: async () => (await import('./locales/en/pages/collection.json')).default },
+    { locale: 'fr', key: 'pages.collection', loader: async () => (await import('./locales/fr/pages/collection.json')).default },
 
-    // TOOLS PAGE - REMOVE DUPLICATE
-    { locale: 'es', key: 'pages.tools', loader: () => import('./locales/es/pages/tools.json') },
-    { locale: 'en', key: 'pages.tools', loader: () => import('./locales/en/pages/tools.json') },
-    { locale: 'fr', key: 'pages.tools', loader: () => import('./locales/fr/pages/tools.json') },
+    // TOOLS PAGE
+    { locale: 'es', key: 'pages.tools', loader: async () => (await import('./locales/es/pages/tools.json')).default },
+    { locale: 'en', key: 'pages.tools', loader: async () => (await import('./locales/en/pages/tools.json')).default },
+    { locale: 'fr', key: 'pages.tools', loader: async () => (await import('./locales/fr/pages/tools.json')).default },
   ],
 };
 
 export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
+
