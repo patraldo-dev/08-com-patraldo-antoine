@@ -1,9 +1,7 @@
 <!-- src/lib/components/ui/LanguageSwitcherUniversal.svelte -->
 <script>
-  import { locale } from '$lib/translations';
-  import { browser } from '$app/environment';
+  import { locale, loadTranslations } from '$lib/translations';
   import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
 
   const languages = [
     { code: 'es', name: 'Español', short: 'ES' },
@@ -12,16 +10,21 @@
   ];
 
   async function switchLanguage(newLocale) {
-    if (!browser) return;
+    console.log('🔄 Switching to:', newLocale);
     
     // Set the new locale
-    locale.set(newLocale);
     localStorage.setItem('preferredLanguage', newLocale);
     document.cookie = `preferredLanguage=${newLocale}; path=/; max-age=31536000`;
     
     // Navigate to the same page in the new language
     const currentPath = $page.url.pathname;
-    await goto(currentPath);
+    await loadTranslations(newLocale, currentPath);
+    
+    // Set locale
+    locale.set(newLocale);
+    
+    console.log('✅ Language switched to:', newLocale);
+
   }
 </script>
 
@@ -29,23 +32,26 @@
   <div class="desktop-view">
     {#each languages as language}
       <button
-        class="lang-btn {language.code === $locale ? 'active' : ''}"
-        on:click|preventDefault={() => switchLanguage(language.code)}
-        aria-label="{language.name}"
-        title="{language.name}"
+        class="lang-btn"
+        class:active={language.code === $locale}
+        onclick={() => switchLanguage(language.code)}
+        aria-label={language.name}
+        title={language.name}
       >
         {language.short}
       </button>
     {/each}
   </div>
-
+  
   <div class="mobile-view">
     {#each languages as language}
       <button
-        class="lang-btn {language.code === $locale ? 'active' : ''}"
-        on:click|preventDefault={() => switchLanguage(language.code)}
-        aria-label="{language.name}"
-        title="{language.name}"
+        class="lang-btn"
+        class:active={language.code === $locale}
+        onclick={() => switchLanguage(language.code)}
+        aria-label={language.name}
+        title={language.name}
+
       >
         {language.short}
       </button>
