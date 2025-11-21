@@ -156,7 +156,7 @@ $effect(() => {
         {#if dailyVideo}
           <!-- DYNAMIC IFRAME USING dailyVideo -->
           <iframe
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
             allowfullscreen
             loading="lazy"
