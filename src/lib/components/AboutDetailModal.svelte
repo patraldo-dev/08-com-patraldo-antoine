@@ -43,9 +43,9 @@
 </script>
 
 {#if open}
-  <div class="modal-overlay" on:click={onClose}>
-    <div class="modal-content" on:click|stopPropagation>
-      <button class="close-btn" on:click={onClose} aria-label="Close about modal">
+  <div class="modal-overlay" onclick={onClose}>
+    <div class="modal-content" onclick|stopPropagation>
+      <button class="close-btn" onclick={onClose} aria-label="Close about modal">
         <span class="close-icon">×</span>
       </button>
 
