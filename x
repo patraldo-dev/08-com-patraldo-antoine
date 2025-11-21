@@ -1,59 +1,35 @@
-<script>
-  import { locale, loadTranslations } from '$lib/translations';
-  import { page } from '$app/stores';
+// src/routes/+layout.js
+import { loadTranslations, locale } from '$lib/translations';
+
+export const load = async ({ url, data }) => {
+  const { pathname } = url;
   
-  const languages = [
-    { code: 'es', name: 'Español', short: 'ES' },
-    { code: 'en', name: 'English', short: 'EN' },
-    { code: 'fr', name: 'Français', short: 'FR' }
-  ];
-  
-  async function switchLanguage(newLocale) {
-    console.log('🔄 Switching to:', newLocale);
+  // Only run in browser
+  if (typeof window !== 'undefined') {
+    // Get saved preference or use fallback
+    const savedLocale = 
+      localStorage.getItem('preferredLanguage') || 
+      getCookie('preferredLanguage') || 
+      'es';
     
-    // Save preference
-    localStorage.setItem('preferredLanguage', newLocale);
-    document.cookie = `preferredLanguage=${newLocale}; path=/; max-age=31536000`;
+    console.log('🌍 Loading locale:', savedLocale, 'for path:', pathname);
     
-    // Load translations for new locale
-    const currentPath = $page.url.pathname;
-    await loadTranslations(newLocale, currentPath);
+    // Load translations with explicit locale
+    await loadTranslations(savedLocale, pathname);
     
-    // Set locale
-    locale.set(newLocale);
-    
-    console.log('✅ Language switched to:', newLocale);
+    // Set locale AFTER loading
+    locale.set(savedLocale);
   }
-</script>
-
-<div class="language-switcher">
-  <div class="desktop-view">
-    {#each languages as language}
-      <button
-        class="lang-btn"
-        class:active={language.code === $locale}
-        onclick={() => switchLanguage(language.code)}
-        aria-label={language.name}
-        title={language.name}
-      >
-        {language.short}
-      </button>
-    {/each}
-  </div>
   
-  <div class="mobile-view">
-    {#each languages as language}
-      <button
-        class="lang-btn"
-        class:active={language.code === $locale}
-        onclick={() => switchLanguage(language.code)}
-        aria-label={language.name}
-        title={language.name}
-      >
-        {language.short}
-      </button>
-    {/each}
-  </div>
-</div>
+  return {
+    ...data
+  };
+};
 
-<!-- Keep your existing styles -->
+function getCookie(name) {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
