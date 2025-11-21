@@ -15,6 +15,7 @@
 
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
+  let dailyVideo = $state(null); // ← ADD THIS LINE
 
 // Initialize on mount
 $effect(() => {
@@ -32,9 +33,45 @@ $effect(() => {
   }
 });
 
+// DAILY RANDOM VIDEO SELECTION - ADD THIS EFFECT
+$effect(() => {
+  if (data.videos.length > 0 && !dailyVideo) {
+    // Use your existing 24-hour random logic here
+    const randomIndex = Math.floor(Math.random() * data.videos.length);
+    dailyVideo = data.videos[randomIndex];
+    
+    console.log('Selected daily video:', dailyVideo); // Debug log
+  }
+});
 
-  // Get today's featured video (first from shuffled list)
-  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
+// Watch for hash changes to open specific artworks
+$effect(() => {
+  const hash = $page.url.hash;
+  if (hash && hash.startsWith('#artwork-')) {
+    const artworkId = hash.replace('#artwork-', '');
+    const artwork = data.artworks.find(a => a.id == artworkId);
+    if (artwork) {
+      selectedArtwork = artwork;
+      
+      trackVisit(artwork.id, {
+        display_name: artwork.display_name || artwork.title,
+        title: artwork.title
+      });
+    }
+  }
+});
+
+    // Also handle initial page load with hash
+  onMount(() => {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#artwork-')) {
+      const artworkId = hash.replace('#artwork-', '');
+      const artwork = data.artworks.find(a => a.id == artworkId);
+      if (artwork) {
+        selectedArtwork = artwork;
+      }
+    }
+  });
 
   function openAboutDetail() {
     window.location.hash = '#about-detail';
@@ -54,35 +91,6 @@ $effect(() => {
     // Clear the hash when closing so back button works correctly
     history.replaceState(null, '', window.location.pathname);
   }
-
-  // Watch for hash changes to open specific artworks
-$effect(() => {
-  const hash = $page.url.hash;
-  if (hash && hash.startsWith('#artwork-')) {
-    const artworkId = hash.replace('#artwork-', '');
-    const artwork = data.artworks.find(a => a.id == artworkId);
-    if (artwork) {
-      selectedArtwork = artwork;
-      
-      trackVisit(artwork.id, {
-        display_name: artwork.display_name || artwork.title,
-        title: artwork.title
-      });
-    }
-  }
-});
-
-  // Also handle initial page load with hash
-  onMount(() => {
-    const hash = window.location.hash;
-    if (hash && hash.startsWith('#artwork-')) {
-      const artworkId = hash.replace('#artwork-', '');
-      const artwork = data.artworks.find(a => a.id == artworkId);
-      if (artwork) {
-        selectedArtwork = artwork;
-      }
-    }
-  });
 
 </script>
 
@@ -135,24 +143,35 @@ $effect(() => {
 <!-- About Section -->
 <section id="about" class="about-section">
   <div class="about-container">
-    <div class="about-content"> 
-      <h3>{$t('pages.home.aboutTitle')}</h3> 
+    <div class="about-content">
+      <h3>{$t('pages.home.aboutTitle')}</h3>
       <div class="about-text">
         <p>{$t('pages.home.aboutP1')}</p>
-        <p>{$t('pages.home.aboutP2')}</p> 
+        <p>{$t('pages.home.aboutP2')}</p>
       </div>
     </div>
     
     <div class="about-video">
       <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
-        <!-- JUST THE FALLBACK IFRAME - NO CONDITIONALS -->
-        <iframe
-          src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen
-          loading="lazy"
-          title="About Antoine - Creative Journey"
-        ></iframe>
+        {#if dailyVideo}
+          <!-- DYNAMIC IFRAME USING dailyVideo -->
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title={dailyVideo.title || "Featured Video"}
+          ></iframe>
+        {:else}
+          <!-- Fallback to original hardcoded video if no dailyVideo -->
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title="About Antoine - Creative Journey"
+          ></iframe>
+        {/if}
         <div class="click-overlay"></div>
         <div class="video-overlay">
           <span>{$t('pages.home.clickToLearnMore')}</span>
@@ -161,6 +180,7 @@ $effect(() => {
     </div>
   </div>
 </section>
+
 
   <!-- Email Signup Section -->
   <section id="contact" class="signup-section">
