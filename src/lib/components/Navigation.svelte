@@ -9,8 +9,17 @@
   let isMenuOpen = $state(false);
   
   // Get current route to determine navigation behavior
-  let currentPath = $derived($page.url.pathname);
-  let isOnHomePage = $derived(currentPath === '/');
+//  let currentPath = $derived($page.url.pathname);
+// let isOnHomePage = $derived(currentPath === '/');
+
+// CHANGE TO:
+function getCurrentPath() {
+  return typeof window !== 'undefined' ? window.location.pathname : '';
+}
+
+function isOnHomePage() {
+  return getCurrentPath() === '/';
+}
   
   function toggleMenu(event) {
     if (event) {
@@ -39,28 +48,24 @@
     if (href.startsWith('#')) {
       event.preventDefault();
       
-      if (isOnHomePage) {
-        // We're on home page - just scroll
-        setTimeout(() => {
-          const target = document.querySelector(href);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            history.pushState(null, '', href);
-          }
-        }, 100);
-      } else {
-        // We're on another page - navigate to home then scroll
-        goto('/' + href);
+if (href.startsWith('#')) {
+  event.preventDefault();
+  
+  if (isOnHomePage()) {  // ← ADD PARENTHESES HERE
+    // We're on home page - just scroll
+    setTimeout(() => {
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, '', href);
       }
-      return;
-    }
-    
-    // Internal routes (like /stories, /collection)
-    if (href.startsWith('/')) {
-      event.preventDefault();
-      goto(href);
-      return;
-    }
+    }, 100);
+  } else {
+    // We're on another page - navigate to home then scroll
+    goto('/' + href);
+  }
+  return;
+}
     
     // External links work normally (no preventDefault)
   }
