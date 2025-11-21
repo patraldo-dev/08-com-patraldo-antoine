@@ -9,6 +9,11 @@
     }
   }
 
+  // Handle content click to stop propagation
+  function handleContentClick(e) {
+    e.stopPropagation();
+  }
+
   // Use let declarations for derived values with reactive assignments
   let videoSrc = $derived(dailyVideo 
     ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
@@ -38,7 +43,7 @@
 
 {#if open}
   <div class="modal-overlay" onclick={onClose}>
-    <div class="modal-content" onclick|stopPropagation={() => {}}>
+    <div class="modal-content" onclick={handleContentClick}>
       <button class="close-btn" onclick={onClose} aria-label="Close about modal">
         <span class="close-icon">×</span>
       </button>
