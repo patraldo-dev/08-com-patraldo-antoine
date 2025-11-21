@@ -17,24 +17,24 @@
   let showAboutDetail = $state(false);
 
 //// Initialize on mount
-//$effect(() => {
-//  if (browser) {
-//    // Set initial state
-//    showAboutDetail = window.location.hash === '#about-detail';
-//    
-//    // Optional: listen for hash changes if needed
-//    const handleHashChange = () => {
-//      showAboutDetail = window.location.hash === '#about-detail';
-//    };
-//    
-//    window.addEventListener('hashchange', handleHashChange);
-//    return () => window.removeEventListener('hashchange', handleHashChange);
-//  }
-//});
+$effect(() => {
+  if (browser) {
+    // Set initial state
+    showAboutDetail = window.location.hash === '#about-detail';
+    
+    // Optional: listen for hash changes if needed
+    const handleHashChange = () => {
+      showAboutDetail = window.location.hash === '#about-detail';
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }
+});
 
 
   // Get today's featured video (first from shuffled list)
-//  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
+  const dailyVideo = $derived(data.videos.length > 0 ? data.videos[0] : null);
 
   function openAboutDetail() {
     window.location.hash = '#about-detail';
@@ -56,7 +56,6 @@
   }
 
   // Watch for hash changes to open specific artworks
-// Watch for hash changes to open specific artworks
 $effect(() => {
   const hash = $page.url.hash;
   if (hash && hash.startsWith('#artwork-')) {
