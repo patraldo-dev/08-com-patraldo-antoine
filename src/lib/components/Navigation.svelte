@@ -1,25 +1,10 @@
-<!-- src/lib/components/UI/Navigation.svelte -->
+<!-- src/lib/components/Navigation.svelte -->
 <script>
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
   import { t } from '$lib/translations';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
   let isMenuOpen = $state(false);
-  
-  // Get current route to determine navigation behavior
-//  let currentPath = $derived($page.url.pathname);
-// let isOnHomePage = $derived(currentPath === '/');
-
-// CHANGE TO:
-function getCurrentPath() {
-  return typeof window !== 'undefined' ? window.location.pathname : '';
-}
-
-function isOnHomePage() {
-  return getCurrentPath() === '/';
-}
   
   function toggleMenu(event) {
     if (event) {
@@ -44,30 +29,23 @@ function isOnHomePage() {
   function handleLinkClick(event, href) {
     closeMenu();
     
-    // Hash links (anchors) - only work on home page
+    // Hash links (anchors) - simple scroll only
     if (href.startsWith('#')) {
       event.preventDefault();
       
-if (href.startsWith('#')) {
-  event.preventDefault();
-  
-  if (isOnHomePage()) {  // ← ADD PARENTHESES HERE
-    // We're on home page - just scroll
-    setTimeout(() => {
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.pushState(null, '', href);
-      }
-    }, 100);
-  } else {
-    // We're on another page - navigate to home then scroll
-    goto('/' + href);
-  }
-  return;
-}
+      setTimeout(() => {
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.pushState(null, '', href);
+        }
+        // If target not found, do nothing - stay on current page
+      }, 100);
+      return;
+    }
     
-    // External links work normally (no preventDefault)
+    // Internal routes - let default browser behavior handle these
+    // No preventDefault, no goto calls
   }
   
   function handleOutsideClick(event) {
@@ -102,18 +80,18 @@ if (href.startsWith('#')) {
 </script>
 
 <nav>
-  <a href="/" class="logo-link" onclick={(e) => handleLinkClick(e, '/')}>
+  <a href="/" class="logo-link">
     <h1>ANTOINE PATRALDO</h1>
   </a>
   
   <!-- Desktop Menu -->
   <div class="nav-links desktop-menu">
-    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
-    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
-    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
-    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    <a href="/#work">{$t('common.navWork')}</a>
+    <a href="/#about">{$t('common.navAbout')}</a>
+    <a href="/stories">{$t('common.navStories')}</a>
+    <a href="/tools">{$t('common.navTools')}</a>
+    <a href="/collection">{$t('common.navCollection')}</a>
+    <a href="/#contact">{$t('common.navContact')}</a>
     <LanguageSwitcherUniversal/>
   </div>
   
@@ -138,12 +116,12 @@ if (href.startsWith('#')) {
   
   <!-- Mobile Menu -->
   <div class="mobile-menu" class:open={isMenuOpen}>
-    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
-    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
-    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
-    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    <a href="/#work">{$t('common.navWork')}</a>
+    <a href="/#about">{$t('common.navAbout')}</a>
+    <a href="/stories">{$t('common.navStories')}</a>
+    <a href="/tools">{$t('common.navTools')}</a>
+    <a href="/collection">{$t('common.navCollection')}</a>
+    <a href="/#contact">{$t('common.navContact')}</a>
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
