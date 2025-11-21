@@ -1,14 +1,11 @@
 // src/lib/translations.js
 import i18n from 'sveltekit-i18n';
+import { browser } from '$app/environment';
 
-/**
- * Internationalization config for Antoine.patraldo.com
- * Supports: Mexican Spanish (es), American English (en), Canadian French (fr)
- * @type {import('sveltekit-i18n').Config}
- */
+/** @type {import('sveltekit-i18n').Config} */
 const config = {
   fallbackLocale: 'es',
-
+  // Remove initLocale from here!
   loaders: [
     // COMMON STRINGS
     { locale: 'es', key: 'common', loader: async () => (await import('./locales/es/common.json')).default },
@@ -37,5 +34,13 @@ const config = {
   ],
 };
 
-export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
+// Only initialize i18n if running in browser to avoid SSR errors
+export const {
+  t,
+  locale,
+  locales,
+  loading,
+  loadTranslations
+} = browser ? new i18n(config) : {};
+
 
