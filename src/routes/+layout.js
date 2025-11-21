@@ -1,16 +1,18 @@
 // src/routes/+layout.js
 import { loadTranslations, locale } from '$lib/translations';
-import { browser } from '$app/environment';
 
 export const load = async ({ url, data }) => {
   const { pathname } = url;
   
-  if (browser) {
+  // Check if we're in browser context (not SSR)
+  if (typeof window !== 'undefined') {
     // Get saved language preference BEFORE loading translations
     const savedLocale = 
       localStorage.getItem('preferredLanguage') || 
       getCookie('preferredLanguage') || 
       'es'; // fallback to Spanish
+    
+    console.log('Restoring saved locale:', savedLocale);
     
     // Set the locale first
     locale.set(savedLocale);
