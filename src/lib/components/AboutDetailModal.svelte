@@ -78,7 +78,6 @@
             </div>
           {/if}
         </section>
-        </section>
         
         <!-- Extended Bio -->
         <section class="bio-section">
