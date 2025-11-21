@@ -16,7 +16,7 @@
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
 
-//// Initialize on mount
+// Initialize on mount
 $effect(() => {
   if (browser) {
     // Set initial state
@@ -83,6 +83,14 @@ $effect(() => {
       }
     }
   });
+
+{#if showAboutDetail}
+  <AboutDetailModal 
+    open={showAboutDetail} 
+    onClose={() => showAboutDetail = false}
+    dailyVideo={dailyVideo}
+  />
+{/if}
 
 </script>
 
