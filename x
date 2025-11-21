@@ -1,35 +1,37 @@
-// src/routes/+layout.js
-import { loadTranslations, locale } from '$lib/translations';
+// src/lib/translations.js
+import i18n from 'sveltekit-i18n';
 
-export const load = async ({ url, data }) => {
-  const { pathname } = url;
+/** @type {import('sveltekit-i18n').Config} */
+const config = {
+  fallbackLocale: 'es',
+  // Remove initLocale from here!
   
-  // Only run in browser
-  if (typeof window !== 'undefined') {
-    // Get saved preference or use fallback
-    const savedLocale = 
-      localStorage.getItem('preferredLanguage') || 
-      getCookie('preferredLanguage') || 
-      'es';
+  loaders: [
+    // COMMON STRINGS
+    { locale: 'es', key: 'common', loader: async () => (await import('./locales/es/common.json')).default },
+    { locale: 'en', key: 'common', loader: async () => (await import('./locales/en/common.json')).default },
+    { locale: 'fr', key: 'common', loader: async () => (await import('./locales/fr/common.json')).default },
     
-    console.log('🌍 Loading locale:', savedLocale, 'for path:', pathname);
+    // MAIN SITE PAGES
+    { locale: 'es', key: 'pages.home', loader: async () => (await import('./locales/es/pages/home.json')).default },
+    { locale: 'en', key: 'pages.home', loader: async () => (await import('./locales/en/pages/home.json')).default },
+    { locale: 'fr', key: 'pages.home', loader: async () => (await import('./locales/fr/pages/home.json')).default },
     
-    // Load translations with explicit locale
-    await loadTranslations(savedLocale, pathname);
+    // STORYVIEW PAGES
+    { locale: 'es', key: 'pages.stories', loader: async () => (await import('./locales/es/pages/stories.json')).default },
+    { locale: 'en', key: 'pages.stories', loader: async () => (await import('./locales/en/pages/stories.json')).default },
+    { locale: 'fr', key: 'pages.stories', loader: async () => (await import('./locales/fr/pages/stories.json')).default },
     
-    // Set locale AFTER loading
-    locale.set(savedLocale);
-  }
-  
-  return {
-    ...data
-  };
+    // COLLECTION PAGE
+    { locale: 'es', key: 'pages.collection', loader: async () => (await import('./locales/es/pages/collection.json')).default },
+    { locale: 'en', key: 'pages.collection', loader: async () => (await import('./locales/en/pages/collection.json')).default },
+    { locale: 'fr', key: 'pages.collection', loader: async () => (await import('./locales/fr/pages/collection.json')).default },
+    
+    // TOOLS PAGE
+    { locale: 'es', key: 'pages.tools', loader: async () => (await import('./locales/es/pages/tools.json')).default },
+    { locale: 'en', key: 'pages.tools', loader: async () => (await import('./locales/en/pages/tools.json')).default },
+    { locale: 'fr', key: 'pages.tools', loader: async () => (await import('./locales/fr/pages/tools.json')).default },
+  ],
 };
 
-function getCookie(name) {
-  if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
+export const { t, locale, locales, loading, loadTranslations } = new i18n(config);

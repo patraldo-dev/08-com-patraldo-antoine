@@ -8,7 +8,6 @@ import i18n from 'sveltekit-i18n';
  */
 const config = {
   fallbackLocale: 'es',
-  initLocale: 'es', // Add this back - it's essential!
 
   loaders: [
     // COMMON STRINGS
