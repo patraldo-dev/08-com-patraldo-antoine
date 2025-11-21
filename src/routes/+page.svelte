@@ -84,6 +84,8 @@ $effect(() => {
     }
   });
 
+</script>
+
 {#if showAboutDetail}
   <AboutDetailModal 
     open={showAboutDetail} 
@@ -91,8 +93,6 @@ $effect(() => {
     dailyVideo={dailyVideo}
   />
 {/if}
-
-</script>
 
 <svelte:head>
   <title>{$t('pages.home.metaTitle')}</title>
