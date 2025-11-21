@@ -9,13 +9,13 @@
     }
   }
 
-  // Derived state using $derived rune
-  $derived(videoSrc = dailyVideo 
+  // Use let declarations for derived values with reactive assignments
+  let videoSrc = $derived(dailyVideo 
     ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
     : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false`
   );
 
-  $derived(videoTitle = dailyVideo 
+  let videoTitle = $derived(dailyVideo 
     ? `About Antoine - ${dailyVideo.title}` 
     : 'About Antoine - Creative Journey'
   );
