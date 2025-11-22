@@ -1,13 +1,28 @@
+// svelte.config.js
 import adapter from "@sveltejs/adapter-cloudflare";
+import { sveltekit } from "@sveltejs/kit/vite";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
+import { defineConfig } from "vite";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter()
-	}
+  // SvelteKit-specific options
+  kit: {
+    adapter: adapter(),
+    // You may also want to alias $lib/paraglide later if needed,
+    // but the Vite plugin handles codegen so usually not required.
+  },
 };
 
-export default config;
+export default defineConfig({
+  plugins: [
+    sveltekit(),
+    paraglideVitePlugin({
+      project: "./project.inlang",
+      outdir: "./src/lib/paraglide", // matches your earlier choice
+      strategy: ["url", "cookie", "baseLocale"],
+    }),
+  ],
+  // Pass SvelteKit config through
+  ...config,
+});
