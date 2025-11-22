@@ -33,14 +33,11 @@ $effect(() => {
   }
 });
 
-// DAILY RANDOM VIDEO SELECTION - ADD THIS EFFECT
 $effect(() => {
   if (data.videos.length > 0 && !dailyVideo) {
-    // Use your existing 24-hour random logic here
-    const randomIndex = Math.floor(Math.random() * data.videos.length);
-    dailyVideo = data.videos[randomIndex];
-    
-    console.log('Selected daily video:', dailyVideo); // Debug log
+    // Server already did the daily shuffle, just use first video
+    dailyVideo = data.videos[0];
+    console.log("Today's featured video:", dailyVideo.title);
   }
 });
 
