@@ -1,263 +1,315 @@
-<!-- src/lib/components/AboutDetailModal.svelte -->
 <script>
+  import Sketchbook from '$lib/components/Sketchbook.svelte';
+  import StoryView from '$lib/components/StoryView.svelte';
+  import EmailSignup from '$lib/components/EmailSignup.svelte';
+  import { t, locale } from '$lib/translations';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+  import { trackVisit } from '$lib/utils/visitTracker.js';
+  import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
   import { browser } from '$app/environment';
-  
-  let { open = false, onClose, dailyVideo } = $props();
-  
-  function handleKeydown(e) {
-    if (e.key === 'Escape') {
-      onClose();
+  import { onNavigate } from '$app/navigation';
+
+  const { data } = $props();
+
+  let selectedArtwork = $state(null);
+  let showAboutDetail = $state(false);
+  let dailyVideo = $state(null); // ← ADD THIS LINE
+
+// Initialize on mount
+$effect(() => {
+  if (browser) {
+    // Set initial state
+    showAboutDetail = window.location.hash === '#about-detail';
+    
+    // Optional: listen for hash changes if needed
+    const handleHashChange = () => {
+      showAboutDetail = window.location.hash === '#about-detail';
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }
+});
+
+$effect(() => {
+  if (data.videos.length > 0 && !dailyVideo) {
+    // Your existing daily selection logic
+    dailyVideo = data.videos[0]; // or use seeded random
+    
+    // Set up midnight reset
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0); // Next midnight
+    
+    const msUntilMidnight = tomorrow - now;
+    
+    const midnightTimeout = setTimeout(() => {
+      dailyVideo = null; // This will trigger re-selection
+      console.log('Midnight - resetting daily video');
+    }, msUntilMidnight);
+    
+    return () => clearTimeout(midnightTimeout);
+  }
+});
+
+// Watch for hash changes to open specific artworks
+$effect(() => {
+  const hash = $page.url.hash;
+  if (hash && hash.startsWith('#artwork-')) {
+    const artworkId = hash.replace('#artwork-', '');
+    const artwork = data.artworks.find(a => a.id == artworkId);
+    if (artwork) {
+      selectedArtwork = artwork;
+      
+      trackVisit(artwork.id, {
+        display_name: artwork.display_name || artwork.title,
+        title: artwork.title
+      });
     }
   }
-  
-  // Use today's video or fallback to hard-coded one
-  $: videoSrc = dailyVideo 
-    ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
-    : 'https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false';
-  
-  $: videoTitle = dailyVideo 
-    ? `About Antoine - ${dailyVideo.title}`
-    : 'About Antoine - Creative Journey';
-  
-  // Use $effect to manage body scroll and keyboard events
-  $effect(() => {
-    if (!browser) return;
-    
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      document.addEventListener('keydown', handleKeydown);
-      
-      return () => {
-        document.body.style.overflow = '';
-        document.removeEventListener('keydown', handleKeydown);
-      };
-    } else {
-      document.body.style.overflow = '';
+});
+
+    // Also handle initial page load with hash
+  onMount(() => {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#artwork-')) {
+      const artworkId = hash.replace('#artwork-', '');
+      const artwork = data.artworks.find(a => a.id == artworkId);
+      if (artwork) {
+        selectedArtwork = artwork;
+      }
     }
   });
+
+  function openAboutDetail() {
+    window.location.hash = '#about-detail';
+  }
+
+  function closeAboutDetail() {
+    showAboutDetail = false;  // Add this to actually close the modal
+    window.location.hash = '#about';
+  }
+
+  function handleSelectArtwork(event) {
+    selectedArtwork = event.detail;
+  }
+
+  function handleCloseStory() {
+    selectedArtwork = null;
+    // Clear the hash when closing so back button works correctly
+    history.replaceState(null, '', window.location.pathname);
+  }
+
 </script>
 
-{#if open}
-  <div class="modal-overlay" onclick={onClose}>
-    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
-      <button class="close-btn" onclick={onClose} aria-label="Close about modal">
-        <span class="close-icon">×</span>
-      </button>
-      
-      <div class="content-wrapper">
-        <!-- Video Section -->
-        <section class="video-section">
-          {#if dailyVideo}
-            <div class="daily-feature-badge">
-              <span class="badge-icon">🎨</span>
-              <span class="badge-text">Daily Feature: {dailyVideo.title}</span>
-              {#if dailyVideo.year}
-                <span class="badge-year">({dailyVideo.year})</span>
-              {/if}
-            </div>
-          {/if}
-          
-          <div class="modal-video-wrapper">
-            <iframe
-              src={videoSrc}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-              title={videoTitle}
-            ></iframe>
-          </div>
-          
-          {#if dailyVideo && dailyVideo.description}
-            <div class="video-description">
-              <p>{dailyVideo.description}</p>
-            </div>
-          {/if}
-        </section>
-        
-        <!-- Extended Bio -->
-        <section class="bio-section">
-          <h2>About Antoine Patraldo</h2>
-          
-          <div class="bio-content">
-            <p>
-              Antoine Patraldo is a contemporary artist exploring the intersection of 
-              digital and traditional mediums. His work combines animated sketches, 
-              interactive storytelling, and mixed media to create immersive experiences 
-              that invite viewers to engage with art in new ways.
-            </p>
-            
-            <div class="bio-highlights">
-              <div class="highlight-item">
-                <h3>🎨 Artistic Approach</h3>
-                <p>Blending sketchbook intimacy with digital innovation, each piece tells a story that unfolds through interaction and discovery.</p>
-              </div>
-              
-              <div class="highlight-item">
-                <h3>💡 Creative Philosophy</h3>
-                <p>Believing that art should be accessible and engaging, Antoine creates works that invite participation and personal interpretation.</p>
-              </div>
-              
-              <div class="highlight-item">
-                <h3>🌍 Digital Storytelling</h3>
-                <p>Using technology as a canvas to explore narratives that bridge the physical and digital realms.</p>
-              </div>
-            </div>
+{#if showAboutDetail}
+  <AboutDetailModal 
+    open={showAboutDetail} 
+    onClose={() => showAboutDetail = false}
+    dailyVideo={dailyVideo}
+  />
+{/if}
 
-            <h3>Education & Background</h3>
-            <ul>
-              <li>Self-taught artist with over a decade of digital experimentation</li>
-              <li>Background in interactive design and creative technology</li>
-              <li>Continuous exploration of new mediums and techniques</li>
-            </ul>
-            
-            <h3>Featured Exhibitions & Projects</h3>
-            <ul>
-              <li>2024 - "Interactive Sketchbook" - Digital Exhibition</li>
-              <li>2023 - "Animated Narratives" - Online Gallery</li>
-              <li>2022 - "Digital Impressionism" - Virtual Showcase</li>
-            </ul>
-            
-            <h3>Tools & Techniques</h3>
-            <ul>
-              <li>Digital illustration and animation</li>
-              <li>Interactive web experiences</li>
-              <li>Mixed media combining traditional and digital elements</li>
-              <li>Real-time creative coding</li>
-            </ul>
-          </div>
-        </section>
-        
-        <!-- Contact/Social -->
-        <section class="contact-section">
-          <h3>Get in Touch</h3>
-          <p>Interested in collaborations, commissions, or just want to talk about art?</p>
-          
-          <div class="social-links">
-            <a href="mailto:antoine@patraldo.com" class="social-link email">
-              <span class="social-icon">✉️</span>
-              <span class="social-text">Email</span>
-            </a>
-            <a href="https://instagram.com/antoine.patraldo" target="_blank" rel="noopener noreferrer" class="social-link instagram">
-              <span class="social-icon">📷</span>
-              <span class="social-text">Instagram</span>
-            </a>
-          </div>
-          
-          <div class="newsletter-cta">
-            <h4>Stay Updated</h4>
-            <p>Receive new stories, artwork releases, and exhibition announcements.</p>
-            <a href="/#contact" class="newsletter-btn" onclick={onClose}>
-              Subscribe to Updates
-            </a>
-          </div>
-        </section>
+<svelte:head>
+  <title>{$t('pages.home.metaTitle')}</title>
+  <meta name="description" content={$t('pages.home.metaDescription')} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
+</svelte:head>
+
+{#if selectedArtwork}
+  <StoryView
+    artwork={selectedArtwork}
+    on:close={handleCloseStory}
+  />
+{:else}
+  <!-- Hero Section -->
+  <section class="hero-simple">
+    <div class="hero-content">
+      <h1>{$t('pages.home.heroTitle')}</h1>
+      <p class="subtitle">{$t('pages.home.heroSubtitle')}</p>
+    </div>
+  </section>
+
+  <!-- Sketchbook Section -->
+  <section id="work" class="sketchbook-section">
+    {#if data?.artworks?.length > 0}
+      <Sketchbook
+        artworks={data.artworks}
+        on:selectArtwork={handleSelectArtwork}
+      />
+    {:else}
+      <div class="no-data-message">
+        <h3>📭 No Artworks Yet</h3>
+        <p>Add some artworks to your database to see the sketchbook!</p>
+      </div>
+    {/if}
+  </section>
+{/if}
+
+<!-- About Section -->
+<section id="about" class="about-section">
+  <div class="about-container">
+    <div class="about-content">
+      <h3>{$t('pages.home.aboutTitle')}</h3>
+      <div class="about-text">
+        <p>{$t('pages.home.aboutP1')}</p>
+        <p>{$t('pages.home.aboutP2')}</p>
+      </div>
+    </div>
+    
+    <div class="about-video">
+      <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
+        {#if dailyVideo}
+          <!-- DYNAMIC IFRAME USING dailyVideo -->
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title={dailyVideo.title || "Featured Video"}
+          ></iframe>
+        {:else}
+          <!-- Fallback to original hardcoded video if no dailyVideo -->
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title="About Antoine - Creative Journey"
+          ></iframe>
+        {/if}
+        <div class="click-overlay"></div>
+        <div class="video-overlay">
+          <span>{$t('pages.home.clickToLearnMore')}</span>
+        </div>
       </div>
     </div>
   </div>
-{/if}
+</section>
+
+
+  <!-- Email Signup Section -->
+  <section id="contact" class="signup-section">
+    <div class="container">
+      <h3>{$t('pages.home.signupTitle')}</h3>
+      <p>{$t('pages.home.signupDescription')}</p>
+      <EmailSignup />
+    </div>
+  </section>
 
 <style>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 9999;
+  .hero-simple {
+    min-height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    overflow-y: auto;
-    animation: fadeIn 0.3s ease;
+    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+    padding: 4rem 2rem;
+    text-align: center;
   }
   
-  .modal-content {
+  .hero-content {
+    max-width: 800px;
+  }
+  
+  .hero-content h1 {
+    font-family: 'Georgia', serif;
+    font-size: 3rem;
+    font-weight: 100;
+    margin: 0 0 1.5rem;
+    letter-spacing: 2px;
+    color: #2c5e3d;
+    line-height: 1.2;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: #4a4a3c;
+    font-style: italic;
+    margin: 0;
+  }
+  
+  .sketchbook-section {
+    padding: 4rem 0;
+    background: linear-gradient(180deg, #edebe8 0%, #fafafa 100%);
+    min-height: 70vh;
+  }
+  
+  .no-data-message {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem 2rem;
     background: white;
-    border-radius: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .no-data-message h3 {
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  
+  /* About Section - Enhanced with Video */
+  .about-section {
+    padding: 6rem 2rem;
+    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+  }
+  
+  .about-container {
     max-width: 1200px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: slideUp 0.4s ease;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  
-  .close-btn {
-    position: sticky;
-    top: 1rem;
-    right: 1rem;
-    float: right;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    border: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
     align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
   }
   
-  .close-btn:hover {
-    background: rgba(0, 0, 0, 0.9);
-    transform: scale(1.1);
+  .about-content {
+    /* Remove old max-width since we're using grid now */
   }
   
-  .content-wrapper {
-    padding: 3rem;
+  .about-content h3 {
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    color: #2c5e3d;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    line-height: 1.2;
+    text-align: left; /* Override center alignment */
   }
   
-  /* Video Section */
-  .video-section {
-    margin-bottom: 3rem;
-  }
-  
-  .daily-feature-badge {
-    background: linear-gradient(135deg, #2c5e3d, #4a7c59);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.3);
-  }
-  
-  .badge-icon {
+  .about-text p {
+    font-family: 'Georgia', serif;
     font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4a4a3c;
+    margin-bottom: 1.5rem;
   }
   
-  .badge-text {
-    font-weight: 600;
+  .about-video {
+    position: relative;
   }
   
-  .badge-year {
-    opacity: 0.9;
-    font-size: 0.8rem;
-  }
-  
-  .modal-video-wrapper {
+  .video-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    background: #000;
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.15),
+      0 0 0 8px white,
+      0 0 0 10px #d4c9a8;
   }
   
-  .modal-video-wrapper iframe {
+  .video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -266,246 +318,183 @@
     border: none;
   }
   
-  .video-description {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f8f8f8;
-    border-radius: 8px;
-    border-left: 4px solid #2c5e3d;
-  }
-  
-  .video-description p {
-    margin: 0;
-    font-style: italic;
-    color: #666;
-    line-height: 1.5;
-  }
-  
-  /* Bio Section */
-  .bio-section {
-    margin-bottom: 3rem;
-  }
-  
-  .bio-section h2 {
-    font-size: 2.5rem;
-    font-weight: 300;
-    color: #1a1a1a;
-    margin-bottom: 2rem;
-    font-family: 'Georgia', serif;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 1rem;
-  }
-  
-  .bio-section h3 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #2c5e3d;
-    margin: 2.5rem 0 1rem;
-    border-left: 3px solid #d4c9a8;
-    padding-left: 1rem;
-  }
-  
-  .bio-content p {
-    line-height: 1.8;
-    color: #333;
-    margin-bottom: 1.5rem;
-    font-size: 1.05rem;
-  }
-  
-  .bio-highlights {
-    display: grid;
-    gap: 1.5rem;
-    margin: 2rem 0;
-  }
-  
-  .highlight-item {
-    background: linear-gradient(135deg, #f8f7f4, #f0ede8);
-    padding: 1.5rem;
-    border-radius: 8px;
-    border-left: 4px solid #d4c9a8;
-  }
-  
-  .highlight-item h3 {
-    margin: 0 0 0.5rem 0 !important;
-    border: none !important;
-    padding: 0 !important;
-    font-size: 1.2rem;
-  }
-  
-  .highlight-item p {
-    margin: 0;
-    color: #666;
-  }
-  
-  .bio-content ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .bio-content li {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f0f0f0;
-    position: relative;
-    padding-left: 1.5rem;
-  }
-  
-  .bio-content li:before {
-    content: "•";
-    color: #2c5e3d;
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-  }
-  
-  /* Contact Section */
-  .contact-section {
-    background: linear-gradient(135deg, #f8f7f4, #f0ede8);
-    padding: 2.5rem;
-    border-radius: 12px;
-    border: 1px solid #e8e4dc;
-  }
-  
-  .contact-section h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #2c5e3d;
-  }
-  
-  .contact-section p {
-    color: #666;
-    margin-bottom: 1.5rem;
-  }
-  
-  .social-links {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-  }
-  
-  .social-link {
-    padding: 1rem 1.5rem;
-    background: white;
-    color: #1a1a1a;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 2px solid transparent;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  
-  .social-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    border-color: #2c5e3d;
-  }
-  
-  .social-icon {
-    font-size: 1.2rem;
-  }
-  
-  .social-text {
-    font-weight: 500;
-  }
-  
-  .newsletter-cta {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
+  /* Signup Section */
+  .signup-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
     text-align: center;
-    border: 2px dashed #d4c9a8;
   }
   
-  .newsletter-cta h4 {
-    margin: 0 0 0.5rem 0;
-    color: #2c5e3d;
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
   
-  .newsletter-cta p {
-    margin: 0 0 1rem 0;
-    font-size: 0.9rem;
+  h3 {
+    font-size: 1.75rem;
+    font-weight: 200;
+    margin-bottom: 2rem;
+    text-align: center;
   }
   
-  .newsletter-btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: #2c5e3d;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+  .signup-section h3 {
+    margin-bottom: 1rem;
   }
   
-  .newsletter-btn:hover {
-    background: #234a31;
-    transform: translateY(-1px);
+  .signup-section p {
+    margin-bottom: 2rem;
+    color: #666;
+    font-size: 1rem;
   }
   
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideUp {
-    from { 
-      opacity: 0;
-      transform: translateY(20px);
+  /* Desktop Responsive */
+  @media (min-width: 768px) {
+    .hero-content h1 {
+      font-size: 4rem;
     }
-    to { 
-      opacity: 1;
-      transform: translateY(0);
+    
+    .subtitle {
+      font-size: 1.4rem;
+    }
+    
+    .container {
+      padding: 0 2rem;
+    }
+    
+    h3 {
+      font-size: 2.5rem;
+    }
+    
+    .signup-section p {
+      font-size: 1.1rem;
     }
   }
   
-  /* Responsive Design */
+  /* Tablet Responsive */
+  @media (max-width: 968px) {
+    .about-container {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    
+    .about-content h3 {
+      font-size: 2rem;
+      text-align: center;
+    }
+    
+    .about-text p {
+      font-size: 1rem;
+      text-align: center;
+    }
+    
+    .about-section {
+      padding: 4rem 1.5rem;
+    }
+  }
+  
+  /* Mobile Responsive */
   @media (max-width: 768px) {
-    .modal-overlay {
-      padding: 0;
+    .hero-simple {
+      min-height: 50vh;
+      padding: 3rem 1rem;
     }
     
-    .modal-content {
-      max-height: 100vh;
-      border-radius: 0;
-    }
-    
-    .content-wrapper {
-      padding: 1.5rem;
-    }
-    
-    .bio-section h2 {
+    .hero-content h1 {
       font-size: 2rem;
     }
     
-    .bio-highlights {
-      grid-template-columns: 1fr;
+    .subtitle {
+      font-size: 1rem;
     }
     
-    .social-links {
-      flex-direction: column;
+    .sketchbook-section {
+      padding: 2rem 0;
     }
     
-    .daily-feature-badge {
-      font-size: 0.8rem;
-      padding: 0.5rem 1rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .content-wrapper {
-      padding: 1rem;
-    }
-    
-    .bio-section h2 {
+    .about-content h3 {
       font-size: 1.75rem;
     }
     
-    .contact-section {
-      padding: 1.5rem;
+    .about-section {
+      padding: 3rem 1rem;
     }
   }
+
+.video-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.video-wrapper:hover .video-overlay {
+  opacity: 1;
+}
+
+.video-overlay span {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Mobile: Always show the overlay hint since there's no hover */
+@media (max-width: 768px) {
+  .video-overlay {
+    opacity: 0.8;
+    padding: 1rem;
+  }
+  
+  .video-overlay span {
+    font-size: 0.95rem;
+  }
+}
+
+/* Touch devices: Show overlay by default */
+@media (hover: none) and (pointer: coarse) {
+  .video-overlay {
+    opacity: 0.8;
+  }
+}
+
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 3; /* Above click overlay */
+}
+
 </style>
