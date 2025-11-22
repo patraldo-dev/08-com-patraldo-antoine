@@ -35,9 +35,23 @@ $effect(() => {
 
 $effect(() => {
   if (data.videos.length > 0 && !dailyVideo) {
-    // Server already did the daily shuffle, just use first video
-    dailyVideo = data.videos[0];
-    console.log("Today's featured video:", dailyVideo.title);
+    // Your existing daily selection logic
+    dailyVideo = data.videos[0]; // or use seeded random
+    
+    // Set up midnight reset
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0); // Next midnight
+    
+    const msUntilMidnight = tomorrow - now;
+    
+    const midnightTimeout = setTimeout(() => {
+      dailyVideo = null; // This will trigger re-selection
+      console.log('Midnight - resetting daily video');
+    }, msUntilMidnight);
+    
+    return () => clearTimeout(midnightTimeout);
   }
 });
 
