@@ -3,107 +3,73 @@
   import '../app.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { locale, loadTranslations, loading } from '$lib/i18n';
+  import { locale, setLocale } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
   import { browser } from '$app/environment';
- 
-  let isReady = false;
   
   // Check if current page needs full-height layout (no top margin)
   $: isFullHeightPage = $page.url.pathname === '/about';
   
-  // Initialize i18n on client
-  onMount(async () => {
-    try {
-      // 1. Check localStorage first
-      let lang = localStorage.getItem('preferredLanguage');
-      
-      // 2. If none, default to es
-      if (!lang) {
-        lang = 'es';
-        localStorage.setItem('preferredLanguage', lang);
-      }
-      
-      // 3. Only allow supported locales
-      if (!['es', 'en', 'fr'].includes(lang)) {
-        lang = 'es';
-        localStorage.setItem('preferredLanguage', lang);
-      }
-      
-      // 4. Set locale first
-      await locale.set(lang);
+  // Initialize locale on client
+  onMount(() => {
+    // 1. Check localStorage for preferred language
+    let lang = localStorage.getItem('preferredLanguage');
     
-      // 5. Load translations in parallel
-      await Promise.all([
-        loadTranslations(lang, 'common'),
-        loadTranslations(lang, location.pathname)
-      ]);
-      console.log('✅ All translations loaded');
-
-      // 6. NOW set ready (don't wait for subscription)
-      isReady = true;
-
-// 7. Suppress Cloudflare Stream beacon errors (browser only)
-if (browser) {
-  const originalError = console.error;
-  console.error = function(...args) {
-    if (args[0] && typeof args[0] === 'string' &&
-        args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
-      return;
+    // 2. Default to Spanish if none set
+    if (!lang || !['es', 'en', 'fr'].includes(lang)) {
+      lang = 'es';
+      localStorage.setItem('preferredLanguage', lang);
     }
-    originalError.apply(console, args);
-  };
-
-  window.addEventListener('error', (event) => {
-    if (event.target && event.target.src && 
-        event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
-    }
-  }, true);
-}
-
-      // 8. Handle locale changes with proper cleanup
-      const unsubscribeLocale = locale.subscribe(async (newLang) => {
-        if (newLang && ['es', 'en', 'fr'].includes(newLang) && newLang !== lang) {
-          lang = newLang;
-          localStorage.setItem('preferredLanguage', newLang);
-          isReady = false;
-          // ... rest of your locale change logic ...
+    
+    // 3. Set the locale (instant, no loading needed!)
+    setLocale(lang);
+    
+    // 4. Suppress Cloudflare Stream beacon errors (browser only)
+    if (browser) {
+      const originalError = console.error;
+      console.error = function(...args) {
+        if (args[0] && typeof args[0] === 'string' &&
+            args[0].includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+          return;
         }
-      });
-
-      // 9. Cleanup - return unsubscribe function
-      return () => {
-        unsubscribeLocale();
+        originalError.apply(console, args);
       };
-
-    } catch (error) {
-      console.error('i18n error:', error);
-      isReady = true;
+      
+      window.addEventListener('error', (event) => {
+        if (event.target && event.target.src && 
+            event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
+          event.preventDefault();
+          event.stopPropagation();
+          return false;
+        }
+      }, true);
     }
+    
+    // 5. Save locale changes to localStorage
+    const unsubscribeLocale = locale.subscribe((newLang) => {
+      if (newLang && ['es', 'en', 'fr'].includes(newLang)) {
+        localStorage.setItem('preferredLanguage', newLang);
+      }
+    });
+    
+    // Cleanup on unmount
+    return () => {
+      unsubscribeLocale();
+    };
   });
-
 </script>
 
-{#if isReady}
-  <div class="app">
-    <Navigation />
-    
-    <main class:full-height={isFullHeightPage}>
-      <slot />
-    </main>
-    
-    <footer>
-      <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
-    </footer>
-  </div>
-{:else}
-  <div class="loading-screen">
-    <div class="loader"></div>
-  </div>
-{/if}
+<div class="app">
+  <Navigation />
+  
+  <main class:full-height={isFullHeightPage}>
+    <slot />
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
+  </footer>
+</div>
 
 <style>
   .app {
