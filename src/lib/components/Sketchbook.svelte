@@ -2,7 +2,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Matter from 'matter-js';
-  import { locale, t } from '$lib/translations';
+  import { locale, t } from '$lib/i18n';
   import StoryView from './StoryView.svelte';
 
   // Props

@@ -1,6 +1,6 @@
 <!-- src/routes/tools/wallpapers/+page.svelte -->
 <script>
-  import { t } from '$lib/translations';
+  import { t } from '$lib/i18n';
   
   let { data } = $props();
   let selectedDevice = $state('desktop');

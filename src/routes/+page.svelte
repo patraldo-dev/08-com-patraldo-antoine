@@ -2,7 +2,7 @@
   import Sketchbook from '$lib/components/Sketchbook.svelte';
   import StoryView from '$lib/components/StoryView.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
-  import { t, locale } from '$lib/translations';
+  import { t, locale } from '$lib/i18n';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';

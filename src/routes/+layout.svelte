@@ -3,7 +3,7 @@
   import '../app.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { locale, loadTranslations, loading } from '$lib/translations';
+  import { locale, loadTranslations, loading } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
   import { browser } from '$app/environment';
  

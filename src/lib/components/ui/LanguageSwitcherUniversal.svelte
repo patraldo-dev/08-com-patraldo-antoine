@@ -1,6 +1,6 @@
 <!-- src/lib/components/ui/LanguageSwitcherUniversal.svelte -->
 <script>
-  import { locale } from '$lib/translations';
+  import { locale } from '$lib/i18n';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
