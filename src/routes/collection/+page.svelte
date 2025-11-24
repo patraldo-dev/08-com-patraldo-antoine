@@ -213,6 +213,14 @@
   
   let visitedCount = $derived(Object.keys(visits).length);
   let favoritesCount = $derived(favorites.size);
+
+$effect(() => {
+    console.log('Artworks with tags:', allArtworks.map(a => ({
+      id: a.id,
+      name: a.display_name,
+      tags: a.tags
+    })));
+  });
 </script>
 
 <svelte:head>
