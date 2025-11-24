@@ -40,12 +40,6 @@
 
   onMount(() => {
     loadCollectionData();
-
-    // FIXED: Remove the object syntax, just call the function
-    console.log('Collection translations on mount:', {
-      collectionTitle: $t('pages.collection.title'),
-      commonNav: $t('common.navCollection')
-    });
     
     window.addEventListener('artworkVisited', loadCollectionData);
     window.addEventListener('favoriteToggled', loadCollectionData);
@@ -509,6 +503,46 @@
     margin: 0 auto;
     padding: 0 2rem 4rem;
   }
+.collection-page .layout {
+  max-width: none !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.collection-page {
+  padding: 0.5rem 0.5rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Make everything more compact */
+.collection-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+}
+
+.collection-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Compact stats bar */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+}
 
 .stats-bar {
   display: grid;
