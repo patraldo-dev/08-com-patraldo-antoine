@@ -275,25 +275,52 @@
   </header>
   
   <div class="layout">
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number">{visitedCount}</div>
-        <div class="stat-label">{$t('pages.collection.statsViewed')}</div>
+    <!-- Mood Filter -->
+    <div class="compact-mood-filter">
+      <div class="mood-filter-header">
+        <span class="filter-title">{$t('tags.filter.title')}</span>
+        <span class="filter-prompt">{$t('tags.filter.prompt')}</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-number">{stats.totalViews || 0}</div>
-        <div class="stat-label">{$t('pages.collection.statsTotalViews')}</div>
+      
+      <div class="mood-buttons compact">
+        {#each moodOptions as mood}
+          <button 
+            class="mood-button {selectedMood === mood.value ? 'active' : ''}"
+            onclick={() => selectedMood = mood.value}
+          >
+            {$t(mood.label)}
+          </button>
+        {/each}
       </div>
-      <div class="stat-card">
-        <div class="stat-number">{favoritesCount}</div>
-        <div class="stat-label">{$t('pages.collection.statsFavorites')}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{allArtworks.length - visitedCount}</div>
-        <div class="stat-label">{$t('pages.collection.statsToDiscover')}</div>
-      </div>
+      
+      {#if selectedMood}
+        <div class="mood-active-filter">
+          <span>Showing: <strong>{$t(moodOptions.find(m => m.value === selectedMood)?.label)}</strong></span>
+          <button class="clear-mood" onclick={() => selectedMood = ''}>×</button>
+        </div>
+      {/if}
     </div>
+
+    <!-- Stats -->
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-number">{visitedCount}</span>
+    <span class="stat-label">{$t('pages.collection.statsViewed')}</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{stats.totalViews || 0}</span>
+    <span class="stat-label">{$t('pages.collection.statsTotalViews')}</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{favoritesCount}</span>
+    <span class="stat-label">{$t('pages.collection.statsFavorites')}</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{allArtworks.length - visitedCount}</span>
+    <span class="stat-label">{$t('pages.collection.statsToDiscover')}</span>
+  </div>
+</div>
     
     <!-- Controls -->
     <div class="controls">
@@ -508,43 +535,69 @@
     margin: 0 auto;
     padding: 0 2rem 4rem;
   }
-  
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: default;
+  text-align: center;
+}
+
+.stat-item:hover {
+  background: rgba(44, 94, 61, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+  font-weight: bold;
+  color: #2c5e3d;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
   }
   
-  .stat-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border: 1px solid #e0e0e0;
-    transition: all 0.3s ease;
+  .stat-item {
+    padding: 0.75rem;
   }
-  
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+@media (max-width: 480px) {
+  .stats-bar {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
-  
-  .stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 0.5rem;
-  }
-  
-  .stat-label {
-    font-size: 0.9rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-  }
+}
   
   .controls {
     background: white;
