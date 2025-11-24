@@ -106,5 +106,16 @@
   "pages.tools.wallpapersultrawide": "Ultra-large",
   "pages.tools.wallpapersdownload": "Télécharger",
   "pages.tools.wallpapersselectsize": "Sélectionner la Taille du Fond d'Écran",
-  "sketchbook.prompt": "Un dessin chaque jour. Une histoire chaque semaine."
+  "sketchbook.prompt": "Un dessin chaque jour. Une histoire chaque semaine.",
+  "tags.mood.melancholic": "Mélancolique",
+  "tags.mood.vibrant": "Énergique",
+  "tags.mood.surreal": "Surréaliste",
+  "tags.mood.playful": "Joueur",
+  "tags.mood.contemplative": "Contemplatif",
+  "tags.mood.energetic": "Dynamique",
+  "tags.mood.calm": "Calme",
+  "tags.mood.mysterious": "Mystérieux",
+  "tags.filter.title": "Filtrer par humeur",
+  "tags.filter.all": "Toutes les œuvres",
+  "tags.filter.prompt": "Comment vous sentez-vous aujourd'hui ?"
 }
