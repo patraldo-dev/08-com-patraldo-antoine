@@ -226,32 +226,6 @@
 
 </svelte:head>
 
-<!-- Compact Mood Filter -->
-<div class="compact-mood-filter">
-  <div class="mood-filter-header">
-    <span class="filter-title">{$t('tags.filter.title')}</span>
-    <span class="filter-prompt">{$t('tags.filter.prompt')}</span>
-  </div>
-  
-  <div class="mood-buttons compact">
-    {#each moodOptions as mood}
-      <button 
-        class="mood-button {selectedMood === mood.value ? 'active' : ''}"
-        onclick={() => selectedMood = mood.value}
-      >
-        {$t(mood.label)}
-      </button>
-    {/each}
-  </div>
-  
-  {#if selectedMood}
-    <div class="mood-active-filter">
-      <span>Showing: <strong>{$t(moodOptions.find(m => m.value === selectedMood)?.label)}</strong></span>
-      <button class="clear-mood" onclick={() => selectedMood = ''}>×</button>
-    </div>
-  {/if}
-</div>
-
 <div class="collection-page">
   <header class="collection-header">
     <div class="header-content">
