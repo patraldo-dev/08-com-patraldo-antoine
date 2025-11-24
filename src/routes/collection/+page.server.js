@@ -10,22 +10,26 @@ export async function load({ platform }) {
       return { allArtworks: [] };
     }
 
-    // Fetch ALL artworks (we'll filter on client side based on visits)
+    // Fetch artworks WITH their tags
     const result = await db
       .prepare(`
         SELECT 
-          id,
-          title,
-          display_name,
-          type,
-          image_id,
-          video_id,
-          description,
-          year,
-          story_enabled
-        FROM artworks
-        WHERE published = 1
-        ORDER BY year DESC, order_index DESC
+          a.id,
+          a.title,
+          a.display_name,
+          a.type,
+          a.image_id,
+          a.video_id,
+          a.description,
+          a.year,
+          a.story_enabled,
+          GROUP_CONCAT(t.name) as tags
+        FROM artworks a
+        LEFT JOIN artwork_tags at ON a.id = at.artwork_id
+        LEFT JOIN tags t ON at.tag_id = t.id
+        WHERE a.published = 1
+        GROUP BY a.id
+        ORDER BY a.year DESC, a.order_index DESC
       `)
       .all();
 
@@ -41,7 +45,8 @@ export async function load({ platform }) {
       videoId: artwork.video_id,
       description: artwork.description,
       year: artwork.year,
-      story_enabled: artwork.story_enabled || false
+      story_enabled: artwork.story_enabled || false,
+      tags: artwork.tags ? artwork.tags.split(',') : [] // Parse tags from CSV to array
     }));
 
     return { allArtworks };
