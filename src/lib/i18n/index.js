@@ -14,13 +14,16 @@ export const locale = writable('es'); // Default to Spanish
 // Available locales
 export const locales = ['en', 'es', 'fr'];
 
-// Create a derived store for the t function
 export const t = derived(locale, ($locale) => {
   return (key) => {
-    // Simple key lookup in flat structure
-    const translation = translations[$locale]?.[key];
+    // Try exact match first
+    let translation = translations[$locale]?.[key];
     
-    // Return translation or the key itself as fallback
+    // If not found, try lowercase version
+    if (!translation) {
+      translation = translations[$locale]?.[key.toLowerCase()];
+    }
+    
     return translation || key;
   };
 });
