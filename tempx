@@ -1,16 +1,39 @@
-        <h1>{artwork.display_name || artwork.title}</h1> <!-- Add fallback -->
-        <p>Year: {artwork.year}</p>
-        <p>{artwork.description}</p>
-
-        {#if artwork.video_id}
-          <video controls poster={getImageSource(artwork)} title="Video: {artwork.display_name || artwork.title}"> <!-- Add fallback here too -->
-            <source src={`https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/${artwork.video_id}/original`} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        {:else}
-          <img
-            src={getImageSource(artwork)}
-            alt={artwork.display_name || artwork.title} <!-- This one was already good -->
-            class="artwork-image"
-          />
-        {/if}
+<script>
+  // ... your existing code ...
+  
+  // Add mood filter state
+  let selectedMood = $state('');
+  
+  // Mood filter options
+  const moodOptions = [
+    { value: '', label: 'tags.filter.all' },
+    { value: 'melancholic', label: 'tags.mood.melancholic' },
+    { value: 'vibrant', label: 'tags.mood.vibrant' },
+    { value: 'surreal', label: 'tags.mood.surreal' },
+    { value: 'playful', label: 'tags.mood.playful' },
+    { value: 'contemplative', label: 'tags.mood.contemplative' },
+    { value: 'energetic', label: 'tags.mood.energetic' },
+    { value: 'calm', label: 'tags.mood.calm' },
+    { value: 'mysterious', label: 'tags.mood.mysterious' }
+  ];
+  
+  // Update your filteredArtworks to include mood filtering
+  let filteredArtworks = $derived(allArtworks.filter(artwork => {
+    const isVisited = !!visits[artwork.id];
+    const isFav = favorites.has(artwork.id.toString());
+    
+    // Apply mood filter first
+    if (selectedMood && (!artwork.tags || !artwork.tags.includes(selectedMood))) {
+      return false;
+    }
+    
+    // Then apply existing collection filters
+    switch(filter) {
+      case 'visited': return isVisited;
+      case 'favorites': return isFav;
+      case 'unvisited': return !isVisited;
+      case 'all':
+      default: return true;
+    }
+  }));
+</script>

@@ -1,4 +1,4 @@
-<!-- src/routes/collection/+page.svelte -->
+    <!-- src/routes/collection/+page.svelte -->
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -18,20 +18,34 @@
   let visits = $state({});
   let favorites = $state(new Set());
   let stats = $state({});
-  let filter = $state('all'); // Changed default to 'all' to show artworks initially
+  let filter = $state('all');
   let sortBy = $state('recent');
   let showMenu = $state(false);
   let showToast = $state(false);
   let toastMessage = $state('');
-  
+  let selectedMood = $state('');
+
+  // Mood filter options - MOVE THIS UP HERE
+  const moodOptions = [
+    { value: '', label: 'tags.filter.all' },
+    { value: 'melancholic', label: 'tags.mood.melancholic' },
+    { value: 'vibrant', label: 'tags.mood.vibrant' },
+    { value: 'surreal', label: 'tags.mood.surreal' },
+    { value: 'playful', label: 'tags.mood.playful' },
+    { value: 'contemplative', label: 'tags.mood.contemplative' },
+    { value: 'energetic', label: 'tags.mood.energetic' },
+    { value: 'calm', label: 'tags.mood.calm' },
+    { value: 'mysterious', label: 'tags.mood.mysterious' }
+  ];
+
   onMount(() => {
     loadCollectionData();
 
-// Add translation debug
-  console.log('Collection translations on mount:', {
-    collectionTitle: $t('pages.collection.title'),
-    commonNav: $t('common.navCollection')
-  });
+    // FIXED: Remove the object syntax, just call the function
+    console.log('Collection translations on mount:', {
+      collectionTitle: $t('pages.collection.title'),
+      commonNav: $t('common.navCollection')
+    });
     
     window.addEventListener('artworkVisited', loadCollectionData);
     window.addEventListener('favoriteToggled', loadCollectionData);
@@ -49,6 +63,26 @@
     favorites = getAllFavorites();
     stats = getVisitStats();
   }
+
+  // FIXED: Move filteredArtworks AFTER loadCollectionData function
+  let filteredArtworks = $derived(allArtworks.filter(artwork => {
+    const isVisited = !!visits[artwork.id];
+    const isFav = favorites.has(artwork.id.toString());
+    
+    // Apply mood filter first
+    if (selectedMood && (!artwork.tags || !artwork.tags.includes(selectedMood))) {
+      return false;
+    }
+    
+    // Then apply existing collection filters
+    switch(filter) {
+      case 'visited': return isVisited;
+      case 'favorites': return isFav;
+      case 'unvisited': return !isVisited;
+      case 'all':
+      default: return true;
+    }
+  }));
   
   function handleToggleFavorite(artworkId, event) {
     event.preventDefault();
@@ -205,6 +239,32 @@
   <title>{$t('pages.home.metaTitle')} - {$t('common.navCollection')}</title>
 
 </svelte:head>
+
+<!-- Compact Mood Filter -->
+<div class="compact-mood-filter">
+  <div class="mood-filter-header">
+    <span class="filter-title">{$t('tags.filter.title')}</span>
+    <span class="filter-prompt">{$t('tags.filter.prompt')}</span>
+  </div>
+  
+  <div class="mood-buttons compact">
+    {#each moodOptions as mood}
+      <button 
+        class="mood-button {selectedMood === mood.value ? 'active' : ''}"
+        onclick={() => selectedMood = mood.value}
+      >
+        {$t(mood.label)}
+      </button>
+    {/each}
+  </div>
+  
+  {#if selectedMood}
+    <div class="mood-active-filter">
+      <span>Showing: <strong>{$t(moodOptions.find(m => m.value === selectedMood)?.label)}</strong></span>
+      <button class="clear-mood" onclick={() => selectedMood = ''}>×</button>
+    </div>
+  {/if}
+</div>
 
 <div class="collection-page">
   <header class="collection-header">
@@ -1001,4 +1061,85 @@
       grid-template-columns: 1fr;
     }
   }
+
+.compact-mood-filter {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.mood-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.filter-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.filter-prompt {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.mood-buttons.compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.mood-buttons.compact .mood-button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 2rem;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+}
+
+.mood-buttons.compact .mood-button:hover {
+  border-color: #2c5e3d;
+}
+
+.mood-buttons.compact .mood-button.active {
+  background: #2c5e3d;
+  color: white;
+  border-color: #2c5e3d;
+}
+
+.mood-active-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: #e8f5e8;
+  border-radius: 6px;
+  border-left: 4px solid #2c5e3d;
+  font-size: 0.85rem;
+}
+
+.clear-mood {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.clear-mood:hover {
+  color: #333;
+}
 </style>
