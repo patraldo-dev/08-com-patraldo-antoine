@@ -431,13 +431,20 @@ $effect(() => {
   </div>
 </div>
 
-<!-- Slide-out menu -->
-{#if showMenu}
-  <div class="menu-overlay" onclick={toggleMenu}></div>
+<!-- Slide-out menu - auto-opens for mood filter -->
+{#if showMenu || selectedMood}
+  <div class="menu-overlay" onclick={() => { showMenu = false; selectedMood = ''; }}></div>
   <nav class="slide-menu">
     <div class="menu-header">
-      <h2>{$t('pages.collection.title')}</h2>
-      <button class="close-button" onclick={toggleMenu}>×</button>
+      {#if selectedMood}
+        <div>
+          <h2>{$t('tags.filter.title')}</h2>
+          <p class="mood-subtitle">{$t(`tags.mood.${selectedMood}`)}</p>
+        </div>
+      {:else}
+        <h2>{$t('pages.collection.title')}</h2>
+      {/if}
+      <button class="close-button" onclick={() => { showMenu = false; selectedMood = ''; }}>×</button>
     </div>
     <ul class="menu-list">
       {#each sortedArtworks as artwork (artwork.id)}
@@ -984,13 +991,20 @@ $effect(() => {
     font-size: 0.9rem;
   }
 
-  .menu-thumb {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
+.menu-thumb {
+  width: 80px;   /* was 40px */
+  height: 80px;  /* was 40px */
+  object-fit: cover;
+  border-radius: 8px;  /* was 4px */
+  flex-shrink: 0;
+}
+
+.mood-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c5e3d;
+  margin: 0.25rem 0 0 0;
+}
 
   /* Toast */
   .toast {
