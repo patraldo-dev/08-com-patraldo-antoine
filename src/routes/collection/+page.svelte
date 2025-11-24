@@ -64,7 +64,6 @@
     stats = getVisitStats();
   }
 
-  // FIXED: Move filteredArtworks AFTER loadCollectionData function
   let filteredArtworks = $derived(allArtworks.filter(artwork => {
     const isVisited = !!visits[artwork.id];
     const isFav = favorites.has(artwork.id.toString());
@@ -198,19 +197,6 @@
   function toggleMenu() {
     showMenu = !showMenu;
   }
-  
-  let filteredArtworks = $derived(allArtworks.filter(artwork => {
-    const isVisited = !!visits[artwork.id];
-    const isFav = favorites.has(artwork.id.toString());
-    
-    switch(filter) {
-      case 'visited': return isVisited;
-      case 'favorites': return isFav;
-      case 'unvisited': return !isVisited;
-      case 'all':
-      default: return true;
-    }
-  }));
   
   let sortedArtworks = $derived([...filteredArtworks].sort((a, b) => {
     switch(sortBy) {
