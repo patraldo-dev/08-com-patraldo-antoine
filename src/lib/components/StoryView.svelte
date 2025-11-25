@@ -22,10 +22,14 @@
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
   
-  function handleClose() {
-    dispatch('close');
+ function handleClose() {
+  // Restore scrolling BEFORE dispatching close
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
   }
-  
+  dispatch('close');
+} 
+
   function openVideoDetail() {
     showVideoDetail = true;
   }
