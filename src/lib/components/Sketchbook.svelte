@@ -387,7 +387,12 @@
   <div class="sketchbook-container" bind:this={sketchbookContainer}>
     <div class="magazine-spread" class:animating={isAnimating}>
       <!-- Left page -->
-      <div class="magazine-page left" on:click={(e) => leftArtwork && selectImage(e, leftArtwork)}>
+      <div 
+        class="magazine-page left" 
+        class:flipping={flipDirection === 'backward'}
+        class:backward={flipDirection === 'backward'}
+        on:click={(e) => leftArtwork && selectImage(e, leftArtwork)}
+      >
         {#if leftArtwork}
           <div class="artwork-wrapper">
             <img
@@ -409,9 +414,8 @@
       <!-- Right page -->
       <div 
         class="magazine-page right" 
-        class:flipping={flipDirection}
+        class:flipping={flipDirection === 'forward'}
         class:forward={flipDirection === 'forward'}
-        class:backward={flipDirection === 'backward'}
         on:click={(e) => rightArtwork && selectImage(e, rightArtwork)}
       >
         {#if rightArtwork}
