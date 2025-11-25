@@ -1,270 +1,532 @@
 <!-- src/lib/components/Sketchbook.svelte -->
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import Matter from 'matter-js';
   import { locale, t } from '$lib/i18n';
   import StoryView from './StoryView.svelte';
-  
+
   // Props
   export let artworks = [];
-  
+
   // State
-  let currentSpread = 0; // Track which spread (pair) we're on
+  let currentPage = 0;
   let selectedImage = null;
+  let isDragging = false;
+  let dragProgress = 0;
   let isAnimating = false;
-  let flipDirection = null; // 'forward' or 'backward'
-  
+
   // DOM refs
   let sketchbookContainer;
-  
+  let pageRightEl;
+  let pageLeftEl;
+
+  // Matter.js (headless - no canvas rendering)
+  let engine;
+  let runner;
+  let mouse;
+  let mouseConstraint;
+  let pageCornerBody;
+  let pagePivot;
+  let updateLoopId = null;
+  let mouseElement; // Invisible div for mouse interaction
+
   // Preload sounds
   let flipSound;
   let selectSound;
-  
+  let dragSound;
+
+  // Cache dimensions
+  let containerWidth = 0;
+  let containerHeight = 600; // Increased from 500
+
+  // i18n
+  $: promptText = getPromptText($locale);
+
+  function getPromptText(currentLocale) {
+    const prompts = {
+      'es': 'Un dibujo cada día. Una historia cada semana.',
+      'en': 'A drawing each day. A story each week.',
+      'fr': 'Un dessin chaque jour. Une histoire chaque semaine.'
+    };
+    return prompts[currentLocale] || prompts['es'];
+  }
+
   onMount(async () => {
+    // Preload sounds
     try {
       flipSound = new Audio('/sounds/page-flip.mp3');
       flipSound.volume = 0.3;
+
       selectSound = new Audio('/sounds/select.mp3');
       selectSound.volume = 0.2;
+
+      dragSound = new Audio('/sounds/paper-rustle.mp3');
+      dragSound.volume = 0.15;
+      dragSound.loop = true;
     } catch (e) {
       console.log('Audio not available');
     }
+
+    if (sketchbookContainer) {
+      initPhysics();
+    }
   });
-  
-  function nextSpread() {
-    if (isAnimating) return;
-    const totalSpreads = Math.ceil(artworks.length / 2);
-    if (currentSpread < totalSpreads - 1) {
-      playFlip();
-      isAnimating = true;
-      flipDirection = 'forward';
-      setTimeout(() => {
-        currentSpread++;
-        flipDirection = null;
-      }, 400);
-      setTimeout(() => { 
-        isAnimating = false; 
-      }, 600);
+
+  function initPhysics() {
+    if (!sketchbookContainer) return;
+    
+    const containerRect = sketchbookContainer.getBoundingClientRect();
+    containerWidth = containerRect.width;
+    
+    // Responsive height
+    containerHeight = window.innerWidth < 768 ? 500 : 600;
+
+    // Create engine with optimized settings (headless - no rendering)
+    engine = Matter.Engine.create({
+      enableSleeping: true,
+      positionIterations: 6,
+      velocityIterations: 4
+    });
+    engine.gravity.y = 0.3;
+
+    // Page corner that user can drag
+    const cornerX = containerWidth * 0.75;
+    const cornerY = containerHeight * 0.15;
+
+    pageCornerBody = Matter.Bodies.circle(cornerX, cornerY, 30, {
+      density: 0.001,
+      frictionAir: 0.02,
+      restitution: 0.3,
+      sleepThreshold: 60,
+      label: 'pageCorner'
+    });
+
+// Add this right after creating pageCornerBody in initPhysics()
+console.log('Physics body at:', {
+  x: pageCornerBody.position.x,
+  y: pageCornerBody.position.y,
+  containerWidth,
+  containerHeight
+});
+
+console.log('Corner indicator at:', {
+  left: containerWidth * 0.75 - 30,
+  top: containerHeight * 0.15 - 30
+});
+
+    // Pivot point
+    pagePivot = Matter.Bodies.circle(containerWidth / 2, containerHeight / 2, 5, {
+      isStatic: true
+    });
+
+    // Constraint connecting corner to pivot
+    const pageConstraint = Matter.Constraint.create({
+      bodyA: pagePivot,
+      bodyB: pageCornerBody,
+      stiffness: 0.008,
+      damping: 0.05,
+      length: Math.hypot(cornerX - containerWidth/2, cornerY - containerHeight/2)
+    });
+
+    // Create invisible mouse element for interaction
+mouseElement = document.createElement('div');
+mouseElement.style.position = 'absolute';
+mouseElement.style.top = (containerHeight * 0.15 - 40) + 'px'; // Position at corner
+mouseElement.style.left = (containerWidth * 0.75 - 40) + 'px';  // Position at corner
+mouseElement.style.width = '80px';  // Small area
+mouseElement.style.height = '80px'; // Small area
+mouseElement.style.pointerEvents = 'auto'; // NOW it won't block scrolling
+mouseElement.style.cursor = 'grab';
+mouseElement.style.zIndex = '10';
+    sketchbookContainer.appendChild(mouseElement);
+
+    // Add mouse control (no canvas needed)
+    mouse = Matter.Mouse.create(mouseElement);
+    mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2
+      }
+    });
+
+const cornerIndicator = document.createElement('div');
+cornerIndicator.style.position = 'absolute';
+// These should match the pageCornerBody position exactly
+cornerIndicator.style.left = (cornerX - 30) + 'px'; // Use cornerX variable, offset by radius
+cornerIndicator.style.top = (cornerY - 30) + 'px';  // Use cornerY variable, offset by radius
+cornerIndicator.style.width = '60px';
+cornerIndicator.style.height = '60px';
+cornerIndicator.style.pointerEvents = 'none'; // Make it visual only, not clickable
+cornerIndicator.style.borderRadius = '50%';
+cornerIndicator.style.background = 'rgba(212, 201, 168, 0.3)';
+cornerIndicator.style.border = '2px dashed #d4c9a8';
+cornerIndicator.style.display = 'flex';
+cornerIndicator.style.alignItems = 'center';
+cornerIndicator.style.justifyContent = 'center';
+cornerIndicator.style.fontSize = '1.8rem';
+cornerIndicator.style.color = '#4a4a3c';
+cornerIndicator.innerHTML = '⤵';
+cornerIndicator.style.zIndex = '6';
+sketchbookContainer.appendChild(cornerIndicator);
+
+
+    // Detect drag events
+    Matter.Events.on(mouseConstraint, 'startdrag', (event) => {
+      if (event.body === pageCornerBody) {
+        isDragging = true;
+        Matter.Sleeping.set(pageCornerBody, false);
+        
+        if (dragSound && dragSound.paused) {
+          dragSound.play().catch(() => {});
+        }
+        
+        if (!updateLoopId) {
+          startUpdateLoop();
+        }
+      }
+    });
+
+    Matter.Events.on(mouseConstraint, 'enddrag', (event) => {
+      if (event.body === pageCornerBody) {
+        isDragging = false;
+        if (dragSound) {
+          dragSound.pause();
+          dragSound.currentTime = 0;
+        }
+
+        const dragDistance = containerWidth / 2 - pageCornerBody.position.x;
+        if (dragDistance > containerWidth * 0.25) {
+          completePage('forward');
+        } else {
+          resetPageCorner();
+        }
+      }
+    });
+
+    // Add to world
+    Matter.World.add(engine.world, [pageCornerBody, pagePivot, pageConstraint, mouseConstraint]);
+
+    // Run engine (headless - no renderer)
+    runner = Matter.Runner.create();
+    Matter.Runner.run(runner, engine);
+  }
+
+  function startUpdateLoop() {
+    const updateLoop = () => {
+      if (!pageRightEl || !pageCornerBody || !sketchbookContainer) {
+        stopUpdateLoop();
+        return;
+      }
+
+      if (!isDragging && !isAnimating) {
+        stopUpdateLoop();
+        return;
+      }
+
+      const cornerX = pageCornerBody.position.x;
+      const maxDrag = containerWidth / 2;
+      const currentDrag = Math.max(0, (containerWidth * 0.75) - cornerX);
+      dragProgress = Math.min(1, currentDrag / maxDrag);
+
+      const rotateY = dragProgress * -180;
+      pageRightEl.style.transform = `rotateY(${rotateY}deg)`;
+      pageRightEl.style.boxShadow = `0 0 ${20 * dragProgress}px rgba(0,0,0,${0.4 * dragProgress})`;
+
+      updateLoopId = requestAnimationFrame(updateLoop);
+    };
+    updateLoop();
+  }
+
+  function stopUpdateLoop() {
+    if (updateLoopId) {
+      cancelAnimationFrame(updateLoopId);
+      updateLoopId = null;
     }
   }
-  
-  function prevSpread() {
-    if (isAnimating) return;
-    if (currentSpread > 0) {
-      playFlip();
-      isAnimating = true;
-      flipDirection = 'backward';
+
+  function resetPageCorner() {
+    if (pageCornerBody && sketchbookContainer) {
+      Matter.Body.setPosition(pageCornerBody, {
+        x: containerWidth * 0.75,
+        y: containerHeight * 0.15
+      });
+      Matter.Body.setVelocity(pageCornerBody, { x: 0, y: 0 });
+      
       setTimeout(() => {
-        currentSpread--;
-        flipDirection = null;
-      }, 400);
-      setTimeout(() => { 
-        isAnimating = false; 
-      }, 600);
+        Matter.Sleeping.set(pageCornerBody, true);
+      }, 100);
     }
   }
-  
-  function playFlip() {
+
+  function completePage(direction) {
+    let targetPage = currentPage;
+    const totalPages = artworks.length;
+
+    if (direction === 'forward') {
+      if (currentPage < totalPages - 1) {
+        targetPage = currentPage + 1;
+      } else {
+        resetPageCorner();
+        return;
+      }
+    } else if (direction === 'backward') {
+      if (currentPage > 0) {
+        targetPage = currentPage - 1;
+      } else {
+        return;
+      }
+    } else {
+      return;
+    }
+
     if (flipSound) {
       flipSound.currentTime = 0;
       flipSound.play().catch(() => {});
     }
+
+    const pageElementToFlip = pageRightEl;
+    if (!pageElementToFlip) return;
+
+    isAnimating = true;
+    startUpdateLoop();
+
+    let animProgress = dragProgress;
+    const animateFlip = () => {
+      animProgress += 0.05;
+      if (animProgress >= 1) {
+        currentPage = targetPage;
+        dragProgress = 0;
+        isAnimating = false;
+
+        resetPageCorner();
+        return;
+      }
+
+      dragProgress = animProgress;
+      const rotateY = (direction === 'forward' ? -1 : 1) * animProgress * 180;
+      pageElementToFlip.style.transform = `rotateY(${rotateY}deg)`;
+      pageElementToFlip.style.boxShadow = `0 0 ${20 * animProgress}px rgba(0,0,0,${0.4 * animProgress})`;
+
+      requestAnimationFrame(animateFlip);
+    };
+    animateFlip();
   }
-  
+
   function selectImage(event, image) {
     event.stopPropagation();
     selectedImage = image;
+
     if (selectSound) {
       selectSound.currentTime = 0;
       selectSound.play().catch(() => {});
     }
   }
-  
+
   function goBackToSketchbook() {
     selectedImage = null;
-    isAnimating = false;
+    // Restart physics if needed
+    if (engine && pageCornerBody) {
+      Matter.Sleeping.set(pageCornerBody, false);
+    }
   }
-  
+
   onDestroy(() => {
+    stopUpdateLoop();
+    
+    if (mouseConstraint) {
+      Matter.Events.off(mouseConstraint, 'startdrag');
+      Matter.Events.off(mouseConstraint, 'enddrag');
+    }
+    if (runner) Matter.Runner.stop(runner);
+    if (engine) {
+      Matter.World.clear(engine.world);
+      Matter.Engine.clear(engine);
+    }
+    if (mouseElement && mouseElement.parentNode) {
+      mouseElement.parentNode.removeChild(mouseElement);
+    }
+    
+    if (dragSound) {
+      dragSound.pause();
+      dragSound.remove();
+    }
     if (flipSound) flipSound.remove();
     if (selectSound) selectSound.remove();
   });
-  
-  // Get left and right artworks for current spread
-  $: leftIndex = currentSpread * 2;
-  $: rightIndex = currentSpread * 2 + 1;
-  $: leftArtwork = artworks[leftIndex] || null;
-  $: rightArtwork = artworks[rightIndex] || null;
-  $: totalSpreads = Math.ceil(artworks.length / 2);
-  
+
+  $: totalPages = artworks.length;
+
+  $: currentArtwork = currentPage >= 0 && currentPage < totalPages
+    ? artworks[currentPage]
+    : null;
+
+  $: previousArtwork = currentPage > 0 && currentPage - 1 < totalPages
+    ? artworks[currentPage - 1]
+    : null;
+
+  // Use 'gallery' variant for better quality (larger than thumbnail)
   function getImageSource(artwork) {
-    if (!artwork) return null;
-    if (artwork.thumbnailId) {
+    // Try thumbnailId first (from your page.server.js transform)
+    if (artwork && artwork.thumbnailId) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/gallery`;
+      const VARIANT = 'gallery'; // Changed from 'thumbnail' to 'gallery'
+      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.thumbnailId}/${VARIANT}`;
     }
-    if (artwork.image_id) {
+    // Fallback to image_id (direct from database)
+    if (artwork && artwork.image_id) {
       const ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/gallery`;
+      const VARIANT = 'gallery';
+      return `https://imagedelivery.net/${ACCOUNT_HASH}/${artwork.image_id}/${VARIANT}`;
     }
+    console.warn("Could not determine image source for artwork:", artwork);
     return null;
   }
+
 </script>
 
 <style>
   .sketchbook-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 900px; /* Increased from 800px */
     margin: 0 auto;
-    padding: 1rem;
-    perspective: 1500px;
+    padding: 0.5rem; /* Reduced padding for more space */
+    perspective: 1200px;
     position: relative;
   }
-  
-  .magazine-spread {
+
+  .sketchbook {
     position: relative;
     width: 100%;
-    height: 700px;
+    height: 600px; /* Increased from 500px */
     background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
     border: 6px solid #d4c9a8;
     border-radius: 12px;
     box-shadow:
-      0 10px 40px rgba(0,0,0,0.25),
-      inset 0 0 20px rgba(212, 201, 168, 0.3);
+      0 10px 30px rgba(0,0,0,0.2),
+      inset 0 0 15px rgba(212, 201, 168, 0.3);
     overflow: hidden;
-    display: flex;
-    transition: none;
-    transform-style: preserve-3d;
-    perspective: 1500px;
+    cursor: grab;
+    user-select: none;
   }
-  
-  .magazine-spread.animating {
-    pointer-events: none;
+
+  .sketchbook.dragging {
+    cursor: grabbing;
   }
-  
-  /* Magazine pages */
-  .magazine-page {
+
+  .page-left, .page-right {
+    position: absolute;
+    top: 0;
     width: 50%;
     height: 100%;
-    padding: 2.5rem;
+    padding: 2.5rem; /* Increased from 2rem */
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    font-family: 'Georgia', serif;
+    pointer-events: none;
+  }
+
+  .page-left {
+    left: 0;
+    border-right: 1px dotted #ccc;
     background: #fcfaf6;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.5s ease, box-shadow 0.5s ease;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-  }
-  
-  .magazine-page:hover:not(.flipping) {
-    background: #f8f6f2;
-  }
-  
-  .magazine-page.left {
-    border-right: 2px solid #d4c9a8;
     transform-origin: right center;
+    transform-style: preserve-3d;
   }
-  
-  .magazine-page.right {
+
+  .page-right {
+    right: 0;
+    background: #fcfaf6;
     transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: box-shadow 0.1s;
+    will-change: transform;
   }
-  
-  /* Page flip animations */
-  .magazine-page.flipping.forward {
-    animation: pageFlipForward 0.6s ease-in-out;
+
+  .prompt-text {
+    font-size: 1.2rem; /* Slightly increased */
+    line-height: 1.6;
+    text-align: center;
+    color: #4a4a3c;
+    opacity: 0.9;
+    font-style: italic;
   }
-  
-  .magazine-page.flipping.backward {
-    animation: pageFlipBackward 0.6s ease-in-out;
+
+  .page-number {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
   }
-  
-  @keyframes pageFlipForward {
-    0% {
-      transform: rotateY(0deg);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-    50% {
-      transform: rotateY(-90deg);
-      box-shadow: -20px 0 30px rgba(0,0,0,0.3);
-    }
-    100% {
-      transform: rotateY(-180deg);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
+
+  .placeholder {
+    font-size: 2rem;
+    color: #ddd;
+    font-style: italic;
   }
-  
-  @keyframes pageFlipBackward {
-    0% {
-      transform: rotateY(0deg);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-    50% {
-      transform: rotateY(90deg);
-      box-shadow: 20px 0 30px rgba(0,0,0,0.3);
-    }
-    100% {
-      transform: rotateY(180deg);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-  }
-  
-  .artwork-wrapper {
+
+  .art-thumbnail {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: auto;
+    gap: 0.75rem;
   }
-  
-  .magazine-page img {
-    max-width: 95%;
-    max-height: 85%;
+
+  .art-thumbnail img {
+    max-width: 95%; /* Increased from 90% */
+    max-height: 85%; /* Increased from 80% */
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0d8c4;
   }
-  
-  .magazine-page:hover img {
+
+  .art-thumbnail img:hover {
     transform: scale(1.03);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
-  
-  .artwork-caption {
-    font-family: 'Georgia', serif;
-    font-size: 1rem;
+
+  .sketch.title{
+    font-size: 1rem; /* Slightly increased */
     color: #4a4a3c;
     text-align: center;
     font-style: italic;
     max-width: 90%;
   }
-  
-  .empty-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Georgia', serif;
-    font-size: 1.5rem;
-    color: #d4c9a8;
+
+  .drag-hint {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.85rem;
+    color: #4a4a3c;
+    opacity: 0.5;
     font-style: italic;
+    pointer-events: none;
+    transition: opacity 0.3s;
   }
-  
-  /* Navigation arrows */
+
+  .drag-hint.hidden {
+    opacity: 0;
+  }
+
   .nav-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 55px;
-    height: 55px;
+    width: 50px; /* Slightly larger */
+    height: 50px;
     border: 2px solid #d4c9a8;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: #4a4a3c;
     cursor: pointer;
     display: flex;
@@ -272,108 +534,71 @@
     justify-content: center;
     z-index: 10;
     transition: all 0.3s ease;
+    pointer-events: auto;
   }
-  
-  .nav-arrow:hover:not(:disabled) {
+
+  .nav-arrow:hover {
     background: white;
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
-  
-  .nav-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-  
+
   .nav-arrow.prev {
-    left: -1.5rem;
+    left: 1rem;
   }
-  
+
   .nav-arrow.next {
-    right: -1.5rem;
+    right: 1rem;
   }
-  
-  .spread-counter {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Georgia', serif;
-    font-size: 0.9rem;
-    color: #999;
-    font-style: italic;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.5rem 1.5rem;
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  
-  /* Gutter/spine effect */
-  .magazine-spine {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(to bottom, 
-      transparent 0%, 
-      rgba(212, 201, 168, 0.5) 20%, 
-      rgba(212, 201, 168, 0.8) 50%, 
-      rgba(212, 201, 168, 0.5) 80%, 
-      transparent 100%);
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 5;
-  }
-  
-  /* Mobile responsive */
-  @media (max-width: 968px) {
-    .magazine-spread {
-      flex-direction: column;
-      height: auto;
-    }
-    
-    .magazine-page {
-      width: 100%;
-      min-height: 400px;
-      border-right: none !important;
-    }
-    
-    .magazine-page.left {
-      border-bottom: 2px solid #d4c9a8;
-    }
-    
-    .magazine-spine {
-      display: none;
-    }
-    
-    .nav-arrow.prev {
-      left: 1rem;
-    }
-    
-    .nav-arrow.next {
-      right: 1rem;
-    }
-  }
-  
+
   @media (max-width: 768px) {
     .sketchbook-container {
-      padding: 0.5rem;
+      max-width: 100%;
+      padding: 0.25rem;
     }
-    
-    .magazine-spread {
-      height: auto;
+
+    .sketchbook {
+      height: 500px; /* Keep reasonable height on mobile */
     }
-    
-    .magazine-page {
+
+    .page-left, .page-right {
       padding: 1.5rem;
-      min-height: 350px;
     }
-    
+
+    .prompt-text {
+      font-size: 1rem;
+    }
+
+    .sketch.title{
+      font-size: 0.9rem;
+    }
+
     .nav-arrow {
-      width: 45px;
-      height: 45px;
-      font-size: 1.8rem;
+      width: 42px;
+      height: 42px;
+      font-size: 1.75rem;
+    }
+
+    .art-thumbnail img {
+      max-width: 92%;
+      max-height: 82%;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 480px) {
+    .sketchbook {
+      height: 450px;
+    }
+
+    .page-left, .page-right {
+      padding: 1rem;
+    }
+
+    .nav-arrow {
+      width: 38px;
+      height: 38px;
+      font-size: 1.5rem;
     }
   }
 </style>
@@ -385,76 +610,68 @@
   />
 {:else}
   <div class="sketchbook-container" bind:this={sketchbookContainer}>
-    <div class="magazine-spread" class:animating={isAnimating}>
-      <!-- Left page -->
-      <div 
-        class="magazine-page left" 
-        class:flipping={flipDirection === 'backward'}
-        class:backward={flipDirection === 'backward'}
-        on:click={(e) => leftArtwork && selectImage(e, leftArtwork)}
-      >
-        {#if leftArtwork}
-          <div class="artwork-wrapper">
+    <div class="sketchbook" class:dragging={isDragging}>
+      <div class="page-left" bind:this={pageLeftEl}> 
+        {#if currentPage > 0 && previousArtwork} 
+          <div class="art-thumbnail previous" on:click={(e) => selectImage(e, previousArtwork)}>
             <img
-              src={getImageSource(leftArtwork)}
-              alt={leftArtwork.display_name || leftArtwork.title}
-            />
-            <div class="artwork-caption">
-              {leftArtwork.display_name || leftArtwork.title}
-            </div>
+              src={getImageSource(previousArtwork)}
+              alt={previousArtwork.display_name || previousArtwork.title}
+              title="Click to explore this story"
+            >
+            <div class="sketch.title">{previousArtwork.display_name || previousArtwork.title}</div>
           </div>
         {:else}
-          <div class="empty-page">·</div>
+          <div class="prompt-text">{promptText}</div>
+          {#if currentPage > 0} 
+            <div class="page-number">
+              Página {currentPage + 1} / {totalPages} 
+            </div>
+          {/if}
         {/if}
       </div>
-      
-      <!-- Magazine spine/gutter -->
-      <div class="magazine-spine"></div>
-      
-      <!-- Right page -->
-      <div 
-        class="magazine-page right" 
-        class:flipping={flipDirection === 'forward'}
-        class:forward={flipDirection === 'forward'}
-        on:click={(e) => rightArtwork && selectImage(e, rightArtwork)}
-      >
-        {#if rightArtwork}
-          <div class="artwork-wrapper">
+
+      <div class="page-right" bind:this={pageRightEl}>
+        {#if currentArtwork}
+          <div class="art-thumbnail" on:click={(e) => selectImage(e, currentArtwork)}>
             <img
-              src={getImageSource(rightArtwork)}
-              alt={rightArtwork.display_name || rightArtwork.title}
-            />
-            <div class="artwork-caption">
-              {rightArtwork.display_name || rightArtwork.title}
-            </div>
+              src={getImageSource(currentArtwork)}
+              alt={currentArtwork.display_name || currentArtwork.title}
+              title="Click to explore this story"
+            >
+            <div class="sketch.title">{currentArtwork.display_name || currentArtwork.title}</div>
           </div>
         {:else}
-          <div class="empty-page">·</div>
+          <span class="placeholder">...</span>
         {/if}
       </div>
-      
-      <!-- Navigation -->
-      <button 
-        class="nav-arrow prev" 
-        on:click={prevSpread}
-        disabled={currentSpread === 0}
-        aria-label="Previous spread"
-      >
-        ‹
-      </button>
-      
-      <button 
-        class="nav-arrow next" 
-        on:click={nextSpread}
-        disabled={currentSpread >= totalSpreads - 1}
-        aria-label="Next spread"
-      >
-        ›
-      </button>
-      
-      <div class="spread-counter">
-        Spread {currentSpread + 1} of {totalSpreads}
+
+      {#if currentPage > 0}
+        <button class="nav-arrow prev" on:click={() => completePage('backward')} aria-label="Previous page">
+          ‹
+        </button>
+      {/if}
+      {#if currentPage < totalPages - 1} 
+        <button class="nav-arrow next" on:click={() => completePage('forward')} aria-label="Next page">
+          ›
+        </button>
+      {/if}
+
+      <div class="drag-hint" class:hidden={isDragging || currentPage > 0}>
+        Drag the corner →
       </div>
     </div>
+  </div>
+{/if}
+
+
+{#if selectedImage}
+  <StoryView 
+    artwork={selectedImage}
+    on:close={goBackToSketchbook}
+  />
+{:else}
+  <div class="sketchbook-container" bind:this={sketchbookContainer}>
+    <!-- all the sketchbook content -->
   </div>
 {/if}
