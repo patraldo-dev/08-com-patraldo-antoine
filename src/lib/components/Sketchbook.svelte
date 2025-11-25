@@ -11,6 +11,7 @@
   let currentSpread = 0; // Track which spread (pair) we're on
   let selectedImage = null;
   let isAnimating = false;
+  let flipDirection = null; // 'forward' or 'backward'
   
   // DOM refs
   let sketchbookContainer;
@@ -36,8 +37,14 @@
     if (currentSpread < totalSpreads - 1) {
       playFlip();
       isAnimating = true;
-      currentSpread++;
-      setTimeout(() => { isAnimating = false; }, 300);
+      flipDirection = 'forward';
+      setTimeout(() => {
+        currentSpread++;
+        flipDirection = null;
+      }, 400);
+      setTimeout(() => { 
+        isAnimating = false; 
+      }, 600);
     }
   }
   
@@ -46,8 +53,14 @@
     if (currentSpread > 0) {
       playFlip();
       isAnimating = true;
-      currentSpread--;
-      setTimeout(() => { isAnimating = false; }, 300);
+      flipDirection = 'backward';
+      setTimeout(() => {
+        currentSpread--;
+        flipDirection = null;
+      }, 400);
+      setTimeout(() => { 
+        isAnimating = false; 
+      }, 600);
     }
   }
   
@@ -120,11 +133,13 @@
       inset 0 0 20px rgba(212, 201, 168, 0.3);
     overflow: hidden;
     display: flex;
-    transition: opacity 0.3s ease;
+    transition: none;
+    transform-style: preserve-3d;
+    perspective: 1500px;
   }
   
   .magazine-spread.animating {
-    opacity: 0.7;
+    pointer-events: none;
   }
   
   /* Magazine pages */
@@ -139,15 +154,61 @@
     background: #fcfaf6;
     position: relative;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.2s ease, transform 0.5s ease, box-shadow 0.5s ease;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
   }
   
-  .magazine-page:hover {
+  .magazine-page:hover:not(.flipping) {
     background: #f8f6f2;
   }
   
   .magazine-page.left {
     border-right: 2px solid #d4c9a8;
+    transform-origin: right center;
+  }
+  
+  .magazine-page.right {
+    transform-origin: left center;
+  }
+  
+  /* Page flip animations */
+  .magazine-page.flipping.forward {
+    animation: pageFlipForward 0.6s ease-in-out;
+  }
+  
+  .magazine-page.flipping.backward {
+    animation: pageFlipBackward 0.6s ease-in-out;
+  }
+  
+  @keyframes pageFlipForward {
+    0% {
+      transform: rotateY(0deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    50% {
+      transform: rotateY(-90deg);
+      box-shadow: -20px 0 30px rgba(0,0,0,0.3);
+    }
+    100% {
+      transform: rotateY(-180deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+  }
+  
+  @keyframes pageFlipBackward {
+    0% {
+      transform: rotateY(0deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    50% {
+      transform: rotateY(90deg);
+      box-shadow: 20px 0 30px rgba(0,0,0,0.3);
+    }
+    100% {
+      transform: rotateY(180deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
   }
   
   .artwork-wrapper {
@@ -346,7 +407,13 @@
       <div class="magazine-spine"></div>
       
       <!-- Right page -->
-      <div class="magazine-page right" on:click={(e) => rightArtwork && selectImage(e, rightArtwork)}>
+      <div 
+        class="magazine-page right" 
+        class:flipping={flipDirection}
+        class:forward={flipDirection === 'forward'}
+        class:backward={flipDirection === 'backward'}
+        on:click={(e) => rightArtwork && selectImage(e, rightArtwork)}
+      >
         {#if rightArtwork}
           <div class="artwork-wrapper">
             <img
