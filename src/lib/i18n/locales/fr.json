@@ -117,5 +117,8 @@
   "tags.mood.mysterious": "Mystérieux",
   "tags.filter.title": "Filtrer par humeur",
   "tags.filter.all": "Toutes les œuvres",
-  "tags.filter.prompt": "Comment vous sentez-vous aujourd'hui ?"
+  "tags.filter.prompt": "Comment vous sentez-vous aujourd'hui ?",
+  "sketchbook.spread": "Planche",
+  "sketchbook.of": "de",
+  "sketchbook.page": "Pages"
 }

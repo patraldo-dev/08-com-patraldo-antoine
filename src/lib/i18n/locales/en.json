@@ -117,5 +117,8 @@
   "tags.mood.mysterious": "Mysterious",
   "tags.filter.title": "Filter by mood",
   "tags.filter.all": "All artworks",
-  "tags.filter.prompt": "How are you feeling today?"
+  "tags.filter.prompt": "How are you feeling today?",
+  "sketchbook.spread": "Spread",
+  "sketchbook.of": "of",
+  "sketchbook.page": "Page"
 }
