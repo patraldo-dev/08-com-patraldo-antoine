@@ -9,6 +9,8 @@
   let currentSpread = 0; // Track spreads (pairs) instead of individual pages
   let selectedImage = null;
   let flipSound, selectSound;
+  let isFlipping = false;
+  let flipDirection = null; // 'forward' or 'backward'
   
   onMount(async () => {
     try {
@@ -22,23 +24,39 @@
   });
   
   function nextSpread() {
+    if (isFlipping) return;
     const totalSpreads = Math.ceil(artworks.length / 2);
     if (currentSpread < totalSpreads - 1) {
       if (flipSound) {
         flipSound.currentTime = 0;
         flipSound.play().catch(() => {});
       }
-      currentSpread++;
+      isFlipping = true;
+      flipDirection = 'forward';
+      
+      setTimeout(() => {
+        currentSpread++;
+        flipDirection = null;
+        isFlipping = false;
+      }, 600);
     }
   }
   
   function prevSpread() {
+    if (isFlipping) return;
     if (currentSpread > 0) {
       if (flipSound) {
         flipSound.currentTime = 0;
         flipSound.play().catch(() => {});
       }
-      currentSpread--;
+      isFlipping = true;
+      flipDirection = 'backward';
+      
+      setTimeout(() => {
+        currentSpread--;
+        flipDirection = null;
+        isFlipping = false;
+      }, 600);
     }
   }
   
@@ -99,7 +117,7 @@
   <div class="sketchbook-container">
     <div class="sketchbook">
       <!-- Left page -->
-      <div class="page-left">
+      <div class="page-left" class:flipping={flipDirection === 'backward'}>
         {#if leftArtwork}
           <div class="art-thumbnail" on:click={(e) => selectImage(e, leftArtwork)}>
             <img
@@ -117,7 +135,7 @@
       </div>
       
       <!-- Right page -->
-      <div class="page-right">
+      <div class="page-right" class:flipping={flipDirection === 'forward'}>
         {#if rightArtwork}
           <div class="art-thumbnail" on:click={(e) => selectImage(e, rightArtwork)}>
             <img
@@ -175,6 +193,8 @@
       inset 0 0 15px rgba(212, 201, 168, 0.3);
     overflow: hidden;
     user-select: none;
+    perspective: 1500px;
+    transform-style: preserve-3d;
   }
   
   .page-left, .page-right {
@@ -194,11 +214,56 @@
     left: 0;
     border-right: 1px dotted #ccc;
     background: #fcfaf6;
+    transform-origin: right center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
   }
   
   .page-right {
     right: 0;
     background: #fcfaf6;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  
+  /* Page flip animations */
+  .page-left.flipping {
+    animation: pageFlipLeft 0.6s ease-in-out;
+  }
+  
+  .page-right.flipping {
+    animation: pageFlipRight 0.6s ease-in-out;
+  }
+  
+  @keyframes pageFlipRight {
+    0% {
+      transform: rotateY(0deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    50% {
+      transform: rotateY(-90deg);
+      box-shadow: -20px 0 30px rgba(0,0,0,0.3);
+    }
+    100% {
+      transform: rotateY(-180deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+  }
+  
+  @keyframes pageFlipLeft {
+    0% {
+      transform: rotateY(0deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    50% {
+      transform: rotateY(90deg);
+      box-shadow: 20px 0 30px rgba(0,0,0,0.3);
+    }
+    100% {
+      transform: rotateY(180deg);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
   }
   
   .prompt-text {
