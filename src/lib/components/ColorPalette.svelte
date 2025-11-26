@@ -299,7 +299,7 @@
   .action-btn {
     padding: 0.375rem 0.75rem;
     background: var(--color-primary);
-    color: white;
+    color: #517782;
     border: none;
     border-radius: 6px;
     font-size: 0.875rem;
