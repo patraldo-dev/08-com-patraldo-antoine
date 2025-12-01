@@ -1,4 +1,5 @@
-// Final working verify endpoint
+import { getTranslation } from '$lib/i18n/server';
+
 export async function GET({ url, platform, request }) {
   try {
     const token = url.searchParams.get('token');
