@@ -1,6 +1,4 @@
-// src/routes/api/verify/+server.js
-import { getTranslation } from '$lib/i18n/server';
-
+// Final working verify endpoint
 export async function GET({ url, platform, request }) {
   try {
     const token = url.searchParams.get('token');
@@ -24,11 +22,11 @@ export async function GET({ url, platform, request }) {
       return new Response(t('subscription.tokenExpired'), { status: 400 });
     }
     
-    // Update subscriber as confirmed
+    // SIMPLIFIED: No updated_at
     await platform.env.DB.prepare(`
       UPDATE subscribers 
       SET confirmed = 1, token = NULL, token_expires_at = NULL,
-          locale = ?, updated_at = datetime('now')
+          locale = ?
       WHERE email = ? AND type = 'art-updates'
     `).bind(locale, subscriber.email).run();
     
