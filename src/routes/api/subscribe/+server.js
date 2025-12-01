@@ -1,6 +1,7 @@
 export async function POST({ request, platform }) {
   try {
     const { email } = await request.json();
+    const origin = request.headers.get('origin') || 'https://antoine.patraldo.com';
     
     if (!email || !isValidEmail(email)) {
       return new Response(
@@ -56,7 +57,7 @@ export async function POST({ request, platform }) {
     
     // Try to send verification email, but don't fail if it doesn't work
     try {
-      await sendVerificationEmail(email, platform.env, token, expiresAt);
+      await sendVerificationEmail(email, platform.env, token, expiresAt, origin);
       console.log('Verification email sent successfully');
       
       return new Response(
@@ -98,10 +99,11 @@ function generateToken() {
   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function sendVerificationEmail(email, env, token, expiresAt) {
-  // Use the request origin or environment variable
-  const baseUrl = env.BASE_URL || 'https://antoine.patraldo.com';
+async function sendVerificationEmail(email, env, token, expiresAt, origin) {
+  const baseUrl = origin || env.BASE_URL || 'https://antoine.patraldo.com';
   const verificationUrl = `${baseUrl}/api/verify?token=${token}`;
+  
+  console.log('Verification URL:', verificationUrl);
   
   const htmlContent = `
   <!DOCTYPE html>
@@ -141,17 +143,8 @@ async function sendEmail(to, subject, htmlContent, env) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
-      // IMPORTANT: Use patraldo.com (your main domain) instead of email.patraldo.com
-      // Choose one of these options:
-      
-      // Option A: Use patraldo.com (cleanest)
+      // FIXED: Using patraldo.com instead of email.patraldo.com
       const fromAddress = `Antoine Patraldo <newsletter@patraldo.com>`;
-      
-      // Option B: Or use your verified Cloudflare email routing
-      // const fromAddress = `Antoine Patraldo <antoine@patraldo.com>`;
-      
-      // Option C: If you must use a subdomain, use the same one as your website
-      // const fromAddress = `Antoine Patraldo <subscribe@antoine.patraldo.com>`;
       
       const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
         method: 'POST',

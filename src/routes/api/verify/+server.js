@@ -1,4 +1,4 @@
-export async function GET({ url, platform }) {
+export async function GET({ url, platform, request }) {
   try {
     const token = url.searchParams.get('token');
     if (!token) {
@@ -25,8 +25,11 @@ export async function GET({ url, platform }) {
       WHERE email = ? AND type = 'art-updates'
     `).bind(subscriber.email).run();
     
-    // Redirect to success page
-    return Response.redirect('https://antoine.patraldo.com/subscription-confirmed', 302);
+    // Get origin from request headers or use environment variable
+    const origin = request.headers.get('origin') || platform.env?.BASE_URL || 'https://antoine.patraldo.com';
+    
+    // Redirect to success page - make sure this page exists!
+    return Response.redirect(`${origin}/subscription-confirmed`, 302);
   } catch (error) {
     console.error('Verification error:', error);
     return new Response('Verification failed', { status: 500 });
