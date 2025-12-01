@@ -141,10 +141,17 @@ async function sendEmail(to, subject, htmlContent, env) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
-      // IMPORTANT: Use your main website domain, not email subdomain
-      const fromAddress = `Antoine Patraldo <noreply@antoine.patraldo.com>`;
-      // Or if patraldo.com is your main verified domain in Mailgun:
-      // const fromAddress = `Antoine Patraldo <subscribe@patraldo.com>`;
+      // IMPORTANT: Use patraldo.com (your main domain) instead of email.patraldo.com
+      // Choose one of these options:
+      
+      // Option A: Use patraldo.com (cleanest)
+      const fromAddress = `Antoine Patraldo <newsletter@patraldo.com>`;
+      
+      // Option B: Or use your verified Cloudflare email routing
+      // const fromAddress = `Antoine Patraldo <antoine@patraldo.com>`;
+      
+      // Option C: If you must use a subdomain, use the same one as your website
+      // const fromAddress = `Antoine Patraldo <subscribe@antoine.patraldo.com>`;
       
       const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
         method: 'POST',
