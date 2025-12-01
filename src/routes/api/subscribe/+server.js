@@ -99,9 +99,11 @@ function generateToken() {
 }
 
 async function sendVerificationEmail(email, env, token, expiresAt) {
-  const verificationUrl = `https://antoine.patraldo.com/verify?token=${token}`;
+  // Use the request origin or environment variable
+  const baseUrl = env.BASE_URL || 'https://antoine.patraldo.com';
+  const verificationUrl = `${baseUrl}/api/verify?token=${token}`;
   
-const htmlContent = `
+  const htmlContent = `
   <!DOCTYPE html>
   <html>
   <head>
@@ -125,19 +127,24 @@ const htmlContent = `
     </div>
   </body>
   </html>
-`;
+  `;
 
   await sendEmail(email, 'Confirme su suscripción a Antoine Patraldo', htmlContent, env);
 }
 
 async function sendEmail(to, subject, htmlContent, env) {
   const maxRetries = 3;
-  const retryDelay = 1000; // 1 second between retries
+  const retryDelay = 1000;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      // IMPORTANT: Use your main website domain, not email subdomain
+      const fromAddress = `Antoine Patraldo <noreply@antoine.patraldo.com>`;
+      // Or if patraldo.com is your main verified domain in Mailgun:
+      // const fromAddress = `Antoine Patraldo <subscribe@patraldo.com>`;
       
       const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
         method: 'POST',
@@ -146,7 +153,7 @@ async function sendEmail(to, subject, htmlContent, env) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
-          from: `antoine@patraldo.com`,
+          from: fromAddress,
           to: to,
           subject: subject,
           html: htmlContent
@@ -170,7 +177,6 @@ async function sendEmail(to, subject, htmlContent, env) {
         throw new Error(`Failed to send email after ${maxRetries} attempts: ${error.message}`);
       }
       
-      // Wait before retrying
       await new Promise(resolve => setTimeout(resolve, retryDelay));
     }
   }
