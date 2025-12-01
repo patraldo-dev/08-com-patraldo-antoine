@@ -1,20 +1,43 @@
+<!-- src/routes/subscription-confirmed/+page.svelte -->
+<script>
+  import { page } from '$app/stores';
+  import { t } from '$lib/i18n';
+  
+  // Get locale from URL
+  import { locale } from '$lib/i18n';
+  
+  // Set locale from URL param
+  import { onMount } from 'svelte';
+  import { setLocale } from '$lib/i18n';
+  
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLocale = urlParams.get('locale');
+    if (urlLocale && ['en', 'es', 'fr'].includes(urlLocale)) {
+      setLocale(urlLocale);
+    }
+  });
+</script>
+
 <svelte:head>
-  <title>Subscription Confirmed | Antoine Patraldo</title>
-  <meta name="description" content="Your subscription to Antoine Patraldo's art updates has been confirmed." />
+  <title>{$t('subscription.confirmedTitle')} | Antoine Patraldo</title>
+  <meta name="description" content="{$t('subscription.confirmedDescription')}" />
 </svelte:head>
+
 <section class="confirmation">
   <div class="container">
     <div class="confirmation-content">
-      <h2>¡Subscripción Confirmada!</h2>
+      <h2>{$t('subscription.confirmedTitle')}</h2>
       <div class="icon">✓</div>
-      <p>Gracias por suscribirte a las actualizaciones sobre mi trabajo.</p>
-      <p>Recibirás correos electrónicos ocasionales sobre nuevas obras, exposiciones y novedades del estudio.</p>
-      <a href="/" class="button">Volver a la Galería</a>
+      <p>{$t('subscription.confirmedMessage1')}</p>
+      <p>{$t('subscription.confirmedMessage2')}</p>
+      <a href="/" class="button">{$t('subscription.backToGallery')}</a>
     </div>
   </div>
 </section>
 
 <style>
+  /* Your existing CSS remains the same */
   .confirmation {
     min-height: 70vh;
     display: flex;
@@ -84,4 +107,3 @@
     }
   }
 </style>
-

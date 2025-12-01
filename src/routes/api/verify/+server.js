@@ -1,3 +1,4 @@
+//src/routes/api/subscribe/+server.js
 import { getTranslation } from '$lib/i18n/server';
 
 export async function GET({ url, platform, request }) {
@@ -33,7 +34,7 @@ export async function GET({ url, platform, request }) {
     
     // Redirect to localized success page
     const origin = request.headers.get('origin') || 'https://antoine.patraldo.com';
-    return Response.redirect(`${origin}/${locale}/subscription-confirmed`, 302);
+    return Response.redirect(`${origin}/subscription-confirmed?locale=${locale}`, 302);
     
   } catch (error) {
     console.error('Verification error:', error);

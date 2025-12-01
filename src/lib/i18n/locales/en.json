@@ -139,6 +139,12 @@
   "email.buttonNotWorking": "If the button doesn't work, you can copy and paste the following link into your browser:",
   "email.linkExpires": "This link will expire in 24 hours.",
   "email.copyright": "© 2025 Antoine Patraldo. All rights reserved.",
-  "email.ignoreIfNotRequested": "If you didn't subscribe to these updates, you can ignore this email."
+  "email.ignoreIfNotRequested": "If you didn't subscribe to these updates, you can ignore this email.",
+
+  "subscription.confirmedTitle": "Subscription Confirmed!",
+  "subscription.confirmedDescription": "Your subscription to Antoine Patraldo's art updates has been confirmed.",
+  "subscription.confirmedMessage1": "Thank you for subscribing to updates about my work.",
+  "subscription.confirmedMessage2": "You'll receive occasional emails about new artworks, exhibitions, and studio news.",
+  "subscription.backToGallery": "Back to Gallery"
 
 }
