@@ -120,5 +120,25 @@
   "tags.filter.prompt": "How are you feeling today?",
   "sketchbook.spread": "Spread",
   "sketchbook.of": "of",
-  "sketchbook.page": "Page"
+  "sketchbook.page": "Page",
+
+  "subscription.validEmailRequired": "Valid email is required",
+  "subscription.processingFailed": "Could not process subscription",
+  "subscription.invalidToken": "Invalid verification token",
+  "subscription.tokenExpired": "Verification token expired",
+  "subscription.verificationFailed": "Verification failed",
+  "subscription.alreadyRegistered": "Already registered, thank you!",
+  "subscription.checkEmail": "Please check your email to confirm your subscription.",
+  "subscription.emailFailed": "Subscription registered, but we couldn't send the confirmation email.",
+  
+  "email.subject": "Confirm your subscription to Antoine Patraldo",
+  "email.verificationTitle": "Confirm subscription",
+  "email.confirmSubscription": "Confirm your subscription",
+  "email.thankYou": "Thank you for registering with Antoine Patraldo. Please click to confirm your email.",
+  "email.confirmButton": "Confirm email",
+  "email.buttonNotWorking": "If the button doesn't work, you can copy and paste the following link into your browser:",
+  "email.linkExpires": "This link will expire in 24 hours.",
+  "email.copyright": "© 2025 Antoine Patraldo. All rights reserved.",
+  "email.ignoreIfNotRequested": "If you didn't subscribe to these updates, you can ignore this email."
+
 }

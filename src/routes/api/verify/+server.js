@@ -1,8 +1,14 @@
+// src/routes/api/verify/+server.js
+import { getTranslation } from '$lib/i18n/server';
+
 export async function GET({ url, platform, request }) {
   try {
     const token = url.searchParams.get('token');
+    const locale = url.searchParams.get('locale') || 'es';
+    const t = getTranslation(locale);
+    
     if (!token) {
-      return new Response('Invalid verification token', { status: 400 });
+      return new Response(t('subscription.invalidToken'), { status: 400 });
     }
     
     const subscriber = await platform.env.DB.prepare(`
@@ -11,27 +17,28 @@ export async function GET({ url, platform, request }) {
     `).bind(token).first();
     
     if (!subscriber) {
-      return new Response('Invalid verification token', { status: 400 });
+      return new Response(t('subscription.invalidToken'), { status: 400 });
     }
     
     if (new Date(subscriber.token_expires_at) < new Date()) {
-      return new Response('Verification token expired', { status: 400 });
+      return new Response(t('subscription.tokenExpired'), { status: 400 });
     }
     
     // Update subscriber as confirmed
     await platform.env.DB.prepare(`
       UPDATE subscribers 
-      SET confirmed = 1, token = NULL, token_expires_at = NULL 
+      SET confirmed = 1, token = NULL, token_expires_at = NULL,
+          locale = ?, updated_at = datetime('now')
       WHERE email = ? AND type = 'art-updates'
-    `).bind(subscriber.email).run();
+    `).bind(locale, subscriber.email).run();
     
-    // Get origin from request headers or use environment variable
-    const origin = request.headers.get('origin') || platform.env?.BASE_URL || 'https://antoine.patraldo.com';
+    // Redirect to localized success page
+    const origin = request.headers.get('origin') || 'https://antoine.patraldo.com';
+    return Response.redirect(`${origin}/${locale}/subscription-confirmed`, 302);
     
-    // Redirect to success page - make sure this page exists!
-    return Response.redirect(`${origin}/subscription-confirmed`, 302);
   } catch (error) {
     console.error('Verification error:', error);
-    return new Response('Verification failed', { status: 500 });
+    const t = getTranslation('es');
+    return new Response(t('subscription.verificationFailed'), { status: 500 });
   }
 }
