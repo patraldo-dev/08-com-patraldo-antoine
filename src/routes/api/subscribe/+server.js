@@ -144,7 +144,7 @@ async function sendEmail(to, subject, htmlContent, env) {
   console.log('To:', to);
   console.log('Subject:', subject);
   
-  const fromAddress = `Antoine Patraldo <newsletter@patraldo.com>`;
+  const fromAddress = `Antoine Patraldo <newsletter@antoine.patraldo.com>`;
   console.log('FROM Address:', fromAddress);
   console.log('=== END DEBUG ===');
 
