@@ -140,6 +140,14 @@ async function sendVerificationEmail(email, env, token, expiresAt, origin, local
 }
 
 async function sendEmail(to, subject, htmlContent, env) {
+  console.log('=== SEND EMAIL DEBUG ===');
+  console.log('To:', to);
+  console.log('Subject:', subject);
+  
+  const fromAddress = `Antoine Patraldo <newsletter@patraldo.com>`;
+  console.log('FROM Address:', fromAddress);
+  console.log('=== END DEBUG ===');
+
   const maxRetries = 3;
   const retryDelay = 1000;
   
