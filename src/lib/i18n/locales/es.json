@@ -121,7 +121,6 @@
   "sketchbook.spread": "Pliego",
   "sketchbook.of": "de",
   "sketchbook.page": "Página",
-
   "subscription.validEmailRequired": "Se requiere un correo electrónico válido",
   "subscription.processingFailed": "No se pudo procesar la suscripción",
   "subscription.invalidToken": "Token de verificación inválido",
@@ -130,7 +129,6 @@
   "subscription.alreadyRegistered": "Ya está registrado, ¡gracias!",
   "subscription.checkEmail": "Por favor revise su correo electrónico para confirmar su suscripción.",
   "subscription.emailFailed": "Suscripción registrada, pero no pudimos enviar el correo de confirmación.",
-  
   "email.subject": "Confirme su suscripción a Antoine Patraldo",
   "email.verificationTitle": "Confirmar suscripción",
   "email.confirmSubscription": "Confirmar su suscripción",
@@ -140,11 +138,21 @@
   "email.linkExpires": "Este enlace caducará en 24 horas.",
   "email.copyright": "© 2025 Antoine Patraldo. Todos los derechos reservados.",
   "email.ignoreIfNotRequested": "Si no se suscribió a estas actualizaciones, puede ignorar este correo electrónico.",
-
   "subscription.confirmedTitle": "¡Suscripción Confirmada!",
   "subscription.confirmedDescription": "Tu suscripción a las actualizaciones de arte de Antoine Patraldo ha sido confirmada.",
   "subscription.confirmedMessage1": "Gracias por suscribirte a las actualizaciones sobre mi trabajo.",
   "subscription.confirmedMessage2": "Recibirás correos electrónicos ocasionales sobre nuevas obras, exposiciones y novedades del estudio.",
-  "subscription.backToGallery": "Volver a la Galería"
-
+  "subscription.backToGallery": "Volver a la Galería",
+  "channel.hero.channelName": "Canal de Animación",
+  "channel.hero.watchAgain": "Ver de nuevo",
+  "channel.hero.duration": "Duración",
+  "channel.hero.views": "vistas",
+  "channel.hero.view": "vista",
+  "channel.hero.noViews": "Sin vistas",
+  "channel.loading": "Cargando...",
+  "channel.error.noFilm": "No hay película destacada disponible",
+  "channel.error.loadFailed": "Error al cargar el canal",
+  "channel.nav.home": "Inicio",
+  "channel.nav.library": "Biblioteca",
+  "channel.nav.history": "Historial"
 }

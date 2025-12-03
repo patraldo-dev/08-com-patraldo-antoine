@@ -121,7 +121,6 @@
   "sketchbook.spread": "Planche",
   "sketchbook.of": "de",
   "sketchbook.page": "Pages",
-
   "subscription.validEmailRequired": "Un courriel valide est requis",
   "subscription.processingFailed": "Impossible de traiter l'abonnement",
   "subscription.invalidToken": "Jeton de vérification invalide",
@@ -130,7 +129,6 @@
   "subscription.alreadyRegistered": "Déjà inscrit, merci !",
   "subscription.checkEmail": "Veuillez vérifier votre courriel pour confirmer votre abonnement.",
   "subscription.emailFailed": "Abonnement enregistré, mais nous n'avons pas pu envoyer le courriel de confirmation.",
-  
   "email.subject": "Confirmez votre abonnement à Antoine Patraldo",
   "email.verificationTitle": "Confirmer l'abonnement",
   "email.confirmSubscription": "Confirmez votre abonnement",
@@ -140,11 +138,21 @@
   "email.linkExpires": "Ce lien expirera dans 24 heures.",
   "email.copyright": "© 2025 Antoine Patraldo. Tous droits réservés.",
   "email.ignoreIfNotRequested": "Si vous ne vous êtes pas abonné à ces mises à jour, vous pouvez ignorer ce courriel.",
-
   "subscription.confirmedTitle": "Abonnement Confirmé !",
   "subscription.confirmedDescription": "Votre abonnement aux mises à jour artistiques d'Antoine Patraldo a été confirmé.",
   "subscription.confirmedMessage1": "Merci de vous être abonné aux mises à jour sur mon travail.",
   "subscription.confirmedMessage2": "Vous recevrez occasionnellement des courriels sur les nouvelles œuvres, expositions et actualités de l'atelier.",
-  "subscription.backToGallery": "Retour à la Galerie"
-
+  "subscription.backToGallery": "Retour à la Galerie",
+  "channel.hero.channelName": "Chaîne d'animation",
+  "channel.hero.watchAgain": "Regarder à nouveau",
+  "channel.hero.duration": "Durée",
+  "channel.hero.views": "vues",
+  "channel.hero.view": "vue",
+  "channel.hero.noViews": "Aucune vue",
+  "channel.loading": "Chargement...",
+  "channel.error.noFilm": "Aucun film en vedette disponible",
+  "channel.error.loadFailed": "Échec du chargement de la chaîne",
+  "channel.nav.home": "Accueil",
+  "channel.nav.library": "Bibliothèque",
+  "channel.nav.history": "Historique"
 }
