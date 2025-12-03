@@ -3,7 +3,6 @@
   import { t } from '$lib/i18n';
   import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
   import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
-  import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
   
   let { data } = $props();
 </script>
@@ -14,9 +13,6 @@
 
 {#if !data.film}
   <div class="error-page">
-    <div class="language-switcher-container">
-      <LanguageSwitcherUniversal />
-    </div>
     <div class="error-content">
       <h1>{$t('canal.error.noFilm')}</h1>
       <p>{$t('canal.error.loadFailed')}</p>
@@ -25,10 +21,6 @@
   </div>
 {:else}
   <div class="canal-page">
-    <div class="language-switcher-container">
-      <LanguageSwitcherUniversal />
-    </div>
-    
     <VideoPlayer 
       videoId={data.film.stream_video_id}
       customerCode={data.customerCode}
