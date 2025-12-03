@@ -88,11 +88,36 @@ export class CanalDatabase {
   /**
    * @returns {Promise<Film | null>}
    */
-  async getFeaturedFilm() {
-    return await this.db
-      .prepare('SELECT * FROM films WHERE is_featured = 1 ORDER BY created_at DESC LIMIT 1')
-      .first();
+async getFeaturedFilm() {
+  if (!this.artworksDb) {
+    return null; // No artworks DB available
   }
+  
+  const artwork = await this.artworksDb
+    .prepare(`
+      SELECT 
+        id as stream_video_id,
+        title_en as title_es,
+        title_en as title_en,
+        title_en as title_fr,  -- Use English as fallback for all
+        '' as description_es,
+        '' as description_en,
+        '' as description_fr,
+        1 as thumbnail_url,    -- Map video_id or adjust
+        0 as duration,
+        1 as is_featured,
+        created_at,
+        0 as view_count
+      FROM artworks 
+      WHERE video_id IS NOT NULL 
+      ORDER BY created_at DESC 
+      LIMIT 1
+    `)
+    .first();
+  
+  return artwork || null;
+}
+
 
   /**
    * @param {string} id
