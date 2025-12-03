@@ -92,6 +92,10 @@ async getFeaturedFilm() {
   if (!this.artworksDb) {
     return null; // No artworks DB available
   }
+
+if (!featuredFilm) {
+  return null;
+}
   
   const artwork = await this.artworksDb
     .prepare(`
