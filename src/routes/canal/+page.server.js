@@ -7,11 +7,15 @@ export async function load({ platform, locals }) {
     throw error(500, 'Database not configured');
   }
 
-  const db = new CanalDatabase(platform.env.DB);
+  // Pass both databases
+  const db = new CanalDatabase(
+    platform.env.DB,           // films table
+    platform.env.ARTWORKS_DB   // artworks table (optional)
+  );
+  
   const featuredFilm = await db.getFeaturedFilm();
   
   if (!featuredFilm) {
-    // Instead of throwing, return a flag for the client to handle with i18n
     return {
       film: null,
       customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
@@ -19,7 +23,7 @@ export async function load({ platform, locals }) {
   }
   
   const locale = locals.locale || 'es';
-  const localizedFilm = db.getLocalizedFilm(featuredFilm, locale);
+  const localizedFilm = await db.getLocalizedFilm(featuredFilm, locale);
   
   return {
     film: localizedFilm,

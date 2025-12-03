@@ -1,3 +1,4 @@
+// src/lib/server/canal-db.js
 import { nanoid } from 'nanoid';
 
 /**
@@ -15,6 +16,7 @@ import { nanoid } from 'nanoid';
  * @property {number} is_featured
  * @property {number} created_at
  * @property {number} view_count
+ * @property {number} [artwork_id] - Optional link to artwork in ARTWORKS_DB
  */
 
 /**
@@ -28,26 +30,30 @@ import { nanoid } from 'nanoid';
  * @property {number} is_featured
  * @property {number} created_at
  * @property {number} view_count
+ * @property {number} [artwork_id]
+ * @property {Object} [artwork] - Optional linked artwork data
  */
 
 export class CanalDatabase {
   /**
-   * @param {import('@cloudflare/workers-types').D1Database} db
+   * @param {import('@cloudflare/workers-types').D1Database} db - artist-portfolio-db
+   * @param {import('@cloudflare/workers-types').D1Database} [artworksDb] - antoine-artworks (optional)
    */
-  constructor(db) {
+  constructor(db, artworksDb = null) {
     this.db = db;
+    this.artworksDb = artworksDb;
   }
 
   /**
-   * Get localized film data
+   * Get localized film data with optional artwork
    * @param {Film} film
    * @param {string} locale - es, en, fr (or es-MX, en-US, fr-CA)
-   * @returns {LocalizedFilm}
+   * @returns {Promise<LocalizedFilm>}
    */
-  getLocalizedFilm(film, locale = 'es') {
+  async getLocalizedFilm(film, locale = 'es') {
     const lang = locale.split('-')[0];
     
-    return {
+    const localizedFilm = {
       id: film.id,
       title: film[`title_${lang}`] || film.title_es,
       description: film[`description_${lang}`] || film.description_es,
@@ -56,8 +62,27 @@ export class CanalDatabase {
       duration: film.duration,
       is_featured: film.is_featured,
       created_at: film.created_at,
-      view_count: film.view_count
+      view_count: film.view_count,
+      artwork_id: film.artwork_id
     };
+
+    // If film is linked to artwork and we have artworks DB, fetch artwork
+    if (film.artwork_id && this.artworksDb) {
+      try {
+        const artwork = await this.artworksDb
+          .prepare('SELECT * FROM artworks WHERE id = ?')
+          .bind(film.artwork_id)
+          .first();
+        
+        if (artwork) {
+          localizedFilm.artwork = artwork;
+        }
+      } catch (err) {
+        console.error('Failed to fetch linked artwork:', err);
+      }
+    }
+
+    return localizedFilm;
   }
 
   /**
