@@ -3,22 +3,22 @@ import { CanalDatabase } from '$lib/server/canal-db.js';
 import { error } from '@sveltejs/kit';
 
 export async function load({ platform, locals }) {
-  if (!platform?.env?.DB) {
-    throw error(500, 'Database not configured');
+  if (!platform?.env?.ARTWORKS_DB) {
+    throw error(500, 'Artworks database not configured');
   }
 
-  // Pass both databases
-  const db = new CanalDatabase(
-    platform.env.DB,           // films table
-    platform.env.ARTWORKS_DB   // artworks table (optional)
-  );
+  const db = new CanalDatabase(platform.env.ARTWORKS_DB, {
+    cloudflareAccountHash: platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH,
+    defaultCustomerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE
+  });
   
   const featuredFilm = await db.getFeaturedFilm();
   
   if (!featuredFilm) {
     return {
       film: null,
-      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
+      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || '',
+      error: 'No video content available'
     };
   }
   

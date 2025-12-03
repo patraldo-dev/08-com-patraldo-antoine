@@ -2,7 +2,7 @@
 import { nanoid } from 'nanoid';
 
 /**
- * @typedef {Object} Film
+ * @typedef {Object} ArtworkFilm
  * @property {string} id
  * @property {string} title_es
  * @property {string} title_en
@@ -16,7 +16,8 @@ import { nanoid } from 'nanoid';
  * @property {number} is_featured
  * @property {number} created_at
  * @property {number} view_count
- * @property {number} [artwork_id] - Optional link to artwork in ARTWORKS_DB
+ * @property {number} artwork_id - Link to artwork in ARTWORKS_DB
+ * @property {string} [image_id] - Original image_id from artwork
  */
 
 /**
@@ -30,44 +31,261 @@ import { nanoid } from 'nanoid';
  * @property {number} is_featured
  * @property {number} created_at
  * @property {number} view_count
- * @property {number} [artwork_id]
+ * @property {number} artwork_id
  * @property {Object} [artwork] - Optional linked artwork data
+ */
+
+/**
+ * @typedef {Object} Artwork
+ * @property {number} id
+ * @property {string} title
+ * @property {string} slug
+ * @property {string} type
+ * @property {string} image_id
+ * @property {string} video_id
+ * @property {string} description
+ * @property {number} year
+ * @property {boolean} featured
+ * @property {boolean} published
+ * @property {number} order_index
+ * @property {string} created_at
+ * @property {string} updated_at
+ * @property {boolean} story_enabled
+ * @property {string} story_intro
+ * @property {string} display_name
  */
 
 export class CanalDatabase {
   /**
-   * @param {import('@cloudflare/workers-types').D1Database} db - artist-portfolio-db
-   * @param {import('@cloudflare/workers-types').D1Database} [artworksDb] - antoine-artworks (optional)
+   * @param {import('@cloudflare/workers-types').D1Database} artworksDb - antoine-artworks (primary)
+   * @param {Object} options - Configuration options
+   * @param {string} [options.cloudflareAccountHash] - For constructing image URLs
+   * @param {string} [options.defaultCustomerCode] - Cloudflare Stream customer code
    */
-  constructor(db, artworksDb = null) {
-    this.db = db;
+  constructor(artworksDb, options = {}) {
     this.artworksDb = artworksDb;
+    this.cloudflareAccountHash = options.cloudflareAccountHash || '';
+    this.defaultCustomerCode = options.defaultCustomerCode || '';
   }
 
   /**
-   * Get localized film data with optional artwork
-   * @param {Film} film
+   * Convert Cloudflare Images image_id to full URL
+   * @param {string} imageId
+   * @param {string} [variant] - Image variant (default: 'public')
+   * @returns {string}
+   */
+  imageIdToUrl(imageId, variant = 'public') {
+    if (!imageId) return '';
+    if (imageId.startsWith('http')) return imageId;
+    if (!this.cloudflareAccountHash) return imageId; // Return as-is if no account hash
+    return `https://imagedelivery.net/${this.cloudflareAccountHash}/${imageId}/${variant}`;
+  }
+
+  /**
+   * Get featured film from artworks database
+   * @param {Object} [options]
+   * @param {boolean} [options.includeArtworkData] - Whether to include full artwork data
+   * @returns {Promise<ArtworkFilm | null>}
+   */
+  async getFeaturedFilm(options = {}) {
+    if (!this.artworksDb) {
+      console.error('No artworks database available');
+      return null;
+    }
+
+    try {
+      const artwork = await this.artworksDb
+        .prepare(`
+          SELECT * FROM artworks 
+          WHERE video_id IS NOT NULL 
+            AND TRIM(video_id) != ''
+            AND published = true
+          ORDER BY 
+            featured DESC, -- Featured artworks first
+            created_at DESC 
+          LIMIT 1
+        `)
+        .first();
+      
+      if (!artwork) {
+        return null;
+      }
+
+      return await this.artworkToFilm(artwork, options);
+      
+    } catch (error) {
+      console.error('Error fetching featured film from artworks:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get film by artwork ID
+   * @param {number} artworkId
+   * @param {Object} [options]
+   * @param {boolean} [options.includeArtworkData]
+   * @returns {Promise<ArtworkFilm | null>}
+   */
+  async getFilmByArtworkId(artworkId, options = {}) {
+    try {
+      const artwork = await this.artworksDb
+        .prepare('SELECT * FROM artworks WHERE id = ? AND published = true')
+        .bind(artworkId)
+        .first();
+      
+      if (!artwork || !artwork.video_id) {
+        return null;
+      }
+
+      return await this.artworkToFilm(artwork, options);
+    } catch (error) {
+      console.error(`Error fetching film for artwork ${artworkId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get all films (artworks with videos)
+   * @param {Object} [options]
+   * @param {number} [options.limit] - Maximum number of films to return
+   * @param {number} [options.offset] - Pagination offset
+   * @param {boolean} [options.featuredOnly] - Only return featured artworks
+   * @returns {Promise<ArtworkFilm[]>}
+   */
+  async getAllFilms(options = {}) {
+    const { limit = 50, offset = 0, featuredOnly = false } = options;
+    
+    try {
+      let query = `
+        SELECT * FROM artworks 
+        WHERE video_id IS NOT NULL 
+          AND TRIM(video_id) != ''
+          AND published = true
+      `;
+      
+      if (featuredOnly) {
+        query += ' AND featured = true';
+      }
+      
+      query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+      
+      const result = await this.artworksDb
+        .prepare(query)
+        .bind(limit, offset)
+        .all();
+      
+      const films = [];
+      for (const artwork of result.results) {
+        const film = await this.artworkToFilm(artwork);
+        if (film) films.push(film);
+      }
+      
+      return films;
+    } catch (error) {
+      console.error('Error fetching all films:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Convert artwork to film format
+   * @param {Artwork} artwork
+   * @param {Object} [options]
+   * @param {boolean} [options.includeArtworkData]
+   * @returns {Promise<ArtworkFilm>}
+   */
+  async artworkToFilm(artwork, options = {}) {
+    const { includeArtworkData = false } = options;
+    
+    // Parse created_at timestamp
+    let createdAt;
+    try {
+      createdAt = artwork.created_at ? Date.parse(artwork.created_at) : Date.now();
+    } catch {
+      createdAt = Date.now();
+    }
+    
+    // Estimate duration based on artwork type or use default
+    const duration = this.estimateDuration(artwork);
+    
+    const film = {
+      id: `artwork-${artwork.id}`,
+      title_es: artwork.title || 'Untitled',
+      title_en: artwork.title || 'Untitled',
+      title_fr: artwork.title || 'Untitled',
+      description_es: artwork.description || '',
+      description_en: artwork.description || '',
+      description_fr: artwork.description || '',
+      stream_video_id: artwork.video_id,
+      thumbnail_url: this.imageIdToUrl(artwork.image_id),
+      duration: duration,
+      is_featured: artwork.featured ? 1 : 0,
+      created_at: createdAt,
+      view_count: 0, // Could be tracked separately if needed
+      artwork_id: artwork.id,
+      image_id: artwork.image_id || '' // Keep original for reference
+    };
+    
+    // Include full artwork data if requested
+    if (includeArtworkData) {
+      film.artwork = artwork;
+    }
+    
+    return film;
+  }
+
+  /**
+   * Estimate video duration based on artwork type
+   * @param {Artwork} artwork
+   * @returns {number} Duration in seconds
+   */
+  estimateDuration(artwork) {
+    // Default durations based on artwork type
+    const durationMap = {
+      'video': 180, // 3 minutes for regular videos
+      'short-film': 600, // 10 minutes for short films
+      'animation': 120, // 2 minutes for animations
+      'performance': 300, // 5 minutes for performances
+      'documentation': 240 // 4 minutes for documentation
+    };
+    
+    return durationMap[artwork.type?.toLowerCase()] || 180; // Default 3 minutes
+  }
+
+  /**
+   * Get localized film data
+   * @param {ArtworkFilm} film
    * @param {string} locale - es, en, fr (or es-MX, en-US, fr-CA)
+   * @param {Object} [options]
+   * @param {boolean} [options.includeArtworkData] - Fetch and include full artwork
    * @returns {Promise<LocalizedFilm>}
    */
-  async getLocalizedFilm(film, locale = 'es') {
+  async getLocalizedFilm(film, locale = 'es', options = {}) {
+    if (!film) {
+      throw new Error('No film provided for localization');
+    }
+    
+    const { includeArtworkData = false } = options;
     const lang = locale.split('-')[0];
+    const supportedLangs = ['es', 'en', 'fr'];
+    const actualLang = supportedLangs.includes(lang) ? lang : 'es';
     
     const localizedFilm = {
       id: film.id,
-      title: film[`title_${lang}`] || film.title_es,
-      description: film[`description_${lang}`] || film.description_es,
+      title: film[`title_${actualLang}`] || film.title_es || 'Untitled',
+      description: film[`description_${actualLang}`] || film.description_es || '',
       stream_video_id: film.stream_video_id,
       thumbnail_url: film.thumbnail_url,
-      duration: film.duration,
-      is_featured: film.is_featured,
+      duration: film.duration || 0,
+      is_featured: film.is_featured || 0,
       created_at: film.created_at,
-      view_count: film.view_count,
-      artwork_id: film.artwork_id
+      view_count: film.view_count || 0,
+      artwork_id: film.artwork_id,
+      image_id: film.image_id
     };
 
-    // If film is linked to artwork and we have artworks DB, fetch artwork
-    if (film.artwork_id && this.artworksDb) {
+    // Fetch and include artwork data if requested
+    if (includeArtworkData && film.artwork_id && this.artworksDb) {
       try {
         const artwork = await this.artworksDb
           .prepare('SELECT * FROM artworks WHERE id = ?')
@@ -86,110 +304,140 @@ export class CanalDatabase {
   }
 
   /**
-   * @returns {Promise<Film | null>}
-   */
-async getFeaturedFilm() {
-  if (!this.artworksDb) {
-    return null; // No artworks DB available
-  }
-
-if (!featuredFilm) {
-  return null;
-}
-  
-  const artwork = await this.artworksDb
-    .prepare(`
-      SELECT 
-        id as stream_video_id,
-        title_en as title_es,
-        title_en as title_en,
-        title_en as title_fr,  -- Use English as fallback for all
-        '' as description_es,
-        '' as description_en,
-        '' as description_fr,
-        1 as thumbnail_url,    -- Map video_id or adjust
-        0 as duration,
-        1 as is_featured,
-        created_at,
-        0 as view_count
-      FROM artworks 
-      WHERE video_id IS NOT NULL 
-      ORDER BY created_at DESC 
-      LIMIT 1
-    `)
-    .first();
-  
-  return artwork || null;
-}
-
-
-  /**
-   * @param {string} id
-   * @returns {Promise<Film | null>}
-   */
-  async getFilmById(id) {
-    return await this.db
-      .prepare('SELECT * FROM films WHERE id = ?')
-      .bind(id)
-      .first();
-  }
-
-  /**
-   * @returns {Promise<Film[]>}
-   */
-  async getAllFilms() {
-    const result = await this.db
-      .prepare('SELECT * FROM films ORDER BY created_at DESC')
-      .all();
-    return result.results;
-  }
-
-  /**
+   * Increment view count for a film (stored separately if needed)
    * @param {string} filmId
    * @returns {Promise<void>}
    */
   async incrementViewCount(filmId) {
-    await this.db
-      .prepare('UPDATE films SET view_count = view_count + 1 WHERE id = ?')
-      .bind(filmId)
+    // Since we don't have a films table, you could:
+    // 1. Create a view_counts table
+    // 2. Use analytics service
+    // 3. Log to console for now
+    console.log(`View incremented for film: ${filmId}`);
+    
+    // Example of creating a view_counts table:
+    /*
+    await this.artworksDb
+      .prepare(`
+        CREATE TABLE IF NOT EXISTS view_counts (
+          id TEXT PRIMARY KEY,
+          film_id TEXT NOT NULL,
+          view_count INTEGER DEFAULT 0,
+          last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `)
       .run();
+    
+    await this.artworksDb
+      .prepare(`
+        INSERT INTO view_counts (id, film_id, view_count) 
+        VALUES (?, ?, 1)
+        ON CONFLICT(id) DO UPDATE SET 
+          view_count = view_count + 1,
+          last_viewed = CURRENT_TIMESTAMP
+      `)
+      .bind(`view-${filmId}`, filmId)
+      .run();
+    */
   }
 
   /**
+   * Record watch history (stub - implement if needed)
    * @param {string} userId
    * @param {string} filmId
    * @param {number} progress
    * @returns {Promise<void>}
    */
   async recordWatchHistory(userId, filmId, progress) {
-    const id = nanoid();
-    const watched_at = Date.now();
-
-    await this.db
-      .prepare(
-        'INSERT INTO watch_history (id, user_id, film_id, watched_at, progress) VALUES (?, ?, ?, ?, ?)'
-      )
-      .bind(id, userId, filmId, watched_at, progress)
-      .run();
+    console.log(`Watch history: user ${userId}, film ${filmId}, progress ${progress}%`);
+    // Implement if you add user accounts and want to track watch history
   }
 
   /**
+   * Get user watch history (stub - implement if needed)
    * @param {string} userId
    * @param {number} limit
    * @returns {Promise<any[]>}
    */
   async getUserWatchHistory(userId, limit = 20) {
-    const result = await this.db
-      .prepare(
-        `SELECT f.*, w.watched_at, w.progress
-         FROM watch_history w
-         JOIN films f ON w.film_id = f.id
-         WHERE w.user_id = ?
-         ORDER BY w.watched_at DESC
-         LIMIT ?`
-      )
-      .bind(userId, limit)
-      .all();
-    return result.results;
+    console.log(`Getting watch history for user ${userId}`);
+    return []; // Implement if needed
+  }
+
+  /**
+   * Search films by title or description
+   * @param {string} query
+   * @param {Object} [options]
+   * @returns {Promise<ArtworkFilm[]>}
+   */
+  async searchFilms(query, options = {}) {
+    const { limit = 20 } = options;
+    
+    if (!query?.trim()) {
+      return this.getAllFilms({ limit });
+    }
+    
+    try {
+      const searchTerm = `%${query}%`;
+      const result = await this.artworksDb
+        .prepare(`
+          SELECT * FROM artworks 
+          WHERE (title LIKE ? OR description LIKE ?)
+            AND video_id IS NOT NULL 
+            AND TRIM(video_id) != ''
+            AND published = true
+          ORDER BY created_at DESC 
+          LIMIT ?
+        `)
+        .bind(searchTerm, searchTerm, limit)
+        .all();
+      
+      const films = [];
+      for (const artwork of result.results) {
+        const film = await this.artworkToFilm(artwork);
+        if (film) films.push(film);
+      }
+      
+      return films;
+    } catch (error) {
+      console.error('Error searching films:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get films by artwork type
+   * @param {string} type
+   * @param {Object} [options]
+   * @returns {Promise<ArtworkFilm[]>}
+   */
+  async getFilmsByType(type, options = {}) {
+    const { limit = 50 } = options;
+    
+    try {
+      const result = await this.artworksDb
+        .prepare(`
+          SELECT * FROM artworks 
+          WHERE type = ? 
+            AND video_id IS NOT NULL 
+            AND TRIM(video_id) != ''
+            AND published = true
+          ORDER BY created_at DESC 
+          LIMIT ?
+        `)
+        .bind(type, limit)
+        .all();
+      
+      const films = [];
+      for (const artwork of result.results) {
+        const film = await this.artworkToFilm(artwork);
+        if (film) films.push(film);
+      }
+      
+      return films;
+    } catch (error) {
+      console.error(`Error fetching films by type ${type}:`, error);
+      return [];
+    }
   }
 }
