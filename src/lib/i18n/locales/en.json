@@ -154,5 +154,17 @@
   "channel.error.loadFailed": "Failed to load channel",
   "channel.nav.home": "Home",
   "channel.nav.library": "Library",
-  "channel.nav.history": "History"
+  "channel.nav.history": "History",
+  "canal.hero.channelName": "Animation Channel",
+  "canal.hero.watchAgain": "Watch Again",
+  "canal.hero.duration": "Duration",
+  "canal.hero.views": "views",
+  "canal.hero.view": "view",
+  "canal.hero.noViews": "No views",
+  "canal.loading": "Loading...",
+  "canal.error.noFilm": "No featured film available",
+  "canal.error.loadFailed": "Failed to load channel",
+  "canal.nav.home": "Home",
+  "canal.nav.library": "Library",
+  "canal.nav.history": "History"
 }

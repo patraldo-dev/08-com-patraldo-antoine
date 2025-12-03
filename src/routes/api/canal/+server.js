@@ -1,20 +1,19 @@
 import { json, error } from '@sveltejs/kit';
-import { ChannelDatabase } from '$lib/server/channel-db.js';
+import { CanalDatabase } from '$lib/server/canal-db.js';
 
 /**
  * @type {import('./$types').RequestHandler}
  */
-export async function GET({ platform, url }) {
+export async function GET({ platform, locals, url }) {
   if (!platform?.env?.DB) {
     throw error(500, 'Database not configured');
   }
 
   try {
-    const db = new ChannelDatabase(platform.env.DB);
-    const locale = url.searchParams.get('locale') || 'es';
+    const db = new CanalDatabase(platform.env.DB);
+    const locale = locals.locale || url.searchParams.get('locale') || 'es';
     const films = await db.getAllFilms();
     
-    // Localize all films
     const localizedFilms = films.map(film => db.getLocalizedFilm(film, locale));
     
     return json({ films: localizedFilms });

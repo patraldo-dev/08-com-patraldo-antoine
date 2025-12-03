@@ -1,30 +1,18 @@
 <script>
-  import VideoPlayer from '$lib/components/channel/VideoPlayer.svelte';
-  import HeroOverlay from '$lib/components/channel/HeroOverlay.svelte';
+  import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
+  import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
   
-  /**
-   * @typedef {Object} PageData
-   * @property {Object} film
-   * @property {string} film.title
-   * @property {string} film.description
-   * @property {string} film.stream_video_id
-   * @property {number} film.duration
-   * @property {number} film.view_count
-   * @property {string} customerCode
-   * @property {string} locale
-   */
-  
-  /** @type {{ data: PageData }} */
+  /** @type {{ data: any }} */
   let { data } = $props();
 </script>
 
 <svelte:head>
-  <title>{data.film.title} - Canal de Animación</title>
+  <title>{data.film.title}</title>
   <meta name="description" content={data.film.description} />
 </svelte:head>
 
-<div class="channel-page">
+<div class="canal-page">
   <div class="language-switcher-container">
     <LanguageSwitcherUniversal />
   </div>
@@ -36,11 +24,11 @@
     muted={false}
   />
   
-  <HeroOverlay film={data.film} locale={data.locale} />
+  <HeroOverlay film={data.film} />
 </div>
 
 <style>
-  .channel-page {
+  .canal-page {
     position: relative;
     width: 100%;
     height: 100vh;
@@ -53,6 +41,5 @@
     top: 2rem;
     right: 2rem;
     z-index: 100;
-    pointer-events: auto;
   }
 </style>

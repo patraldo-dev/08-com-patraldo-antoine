@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Movie Channel - Integration with Existing i18n Setup
-# Default language: es (Spanish)
-# Uses flattened JSON structure
-# Reuses existing LanguageSwitcherUniversal component
+# Movie Channel - Integration Following Existing Structure
+# API routes: src/routes/api/canal/
+# Page routes: src/routes/canal/
 
 set -e
 
@@ -21,8 +20,9 @@ print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 integrate_feature() {
     echo -e "${BLUE}"
     echo "╔═══════════════════════════════════════════════╗"
-    echo "║   Movie Channel - Existing Setup Integration ║"
-    echo "║   Default: es | Uses: Flattened JSON         ║"
+    echo "║   Movie Channel - Correct Structure          ║"
+    echo "║   API: routes/api/canal/                     ║"
+    echo "║   Pages: routes/canal/                       ║"
     echo "╚═══════════════════════════════════════════════╝"
     echo -e "${NC}"
     
@@ -31,12 +31,16 @@ integrate_feature() {
         exit 1
     fi
     
-    # Verify existing i18n structure
-    if [ ! -f "src/lib/i18n/locales/es.json" ]; then
-        print_warning "src/lib/i18n/locales/es.json not found. Will create it."
+    # Create feature branch
+    read -p "Create new feature branch? (y/n): " CREATE_BRANCH
+    if [ "$CREATE_BRANCH" = "y" ]; then
+        read -p "Enter branch name (default: feature/movie-channel): " BRANCH_NAME
+        BRANCH_NAME=${BRANCH_NAME:-feature/movie-channel}
+        git checkout -b "$BRANCH_NAME"
+        print_success "Branch created: $BRANCH_NAME"
     fi
     
-    # Install dependencies (if needed)
+    # Install dependencies
     print_step "Checking dependencies..."
     if ! npm list nanoid &> /dev/null; then
         npm install nanoid
@@ -47,8 +51,9 @@ integrate_feature() {
     
     # Create structure
     print_step "Creating directory structure..."
-    mkdir -p src/lib/components/channel
-    mkdir -p src/routes/api/channel/films
+    mkdir -p src/lib/components/canal
+    mkdir -p src/routes/api/canal
+    mkdir -p src/routes/canal/film/[id]
     mkdir -p migrations
     print_success "Directory structure created"
     
@@ -64,8 +69,11 @@ integrate_feature() {
     # Create components
     create_components
     
-    # Create routes
-    create_routes
+    # Create API routes
+    create_api_routes
+    
+    # Create page routes
+    create_page_routes
     
     create_readme
     
@@ -75,23 +83,25 @@ integrate_feature() {
     echo -e "${GREEN}║      Movie Channel Integrated! 🎬             ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${BLUE}Next steps:${NC}"
-    echo "1. Review updated translations in src/lib/i18n/locales/"
-    echo "2. Run migration: wrangler d1 migrations apply <db> --remote"
-    echo "3. Add CLOUDFLARE_STREAM_CUSTOMER_CODE to environment"
-    echo "4. Default URL: /canal (Spanish)"
-    echo "5. English: /en/channel"
-    echo "6. French: /fr/chaîne"
+    echo -e "${BLUE}Structure created:${NC}"
+    echo "  src/routes/canal/              (page routes)"
+    echo "  src/routes/api/canal/          (API routes)"
+    echo "  src/lib/components/canal/      (components)"
     echo ""
-    echo -e "${YELLOW}Note: Uses your existing LanguageSwitcherUniversal component${NC}"
+    echo -e "${BLUE}Next steps:${NC}"
+    echo "1. Review translations in src/lib/i18n/locales/"
+    echo "2. Run: wrangler d1 migrations apply <db> --remote"
+    echo "3. Add CLOUDFLARE_STREAM_CUSTOMER_CODE to wrangler.jsonc"
+    echo "4. Visit: /canal (works in all languages)"
 }
 
 create_migration() {
     print_step "Creating database migration..."
     TIMESTAMP=$(date +%s)
     
-    cat > migrations/${TIMESTAMP}_movie_channel.sql << 'EOF'
--- Movie Channel Feature with i18n support
+    cat > "migrations/${TIMESTAMP}_canal.sql" << 'EOF'
+-- Canal (Movie Channel) Feature with i18n support
+-- Default language: Spanish (es)
 
 CREATE TABLE IF NOT EXISTS films (
   id TEXT PRIMARY KEY,
@@ -123,90 +133,88 @@ CREATE INDEX idx_watch_history_film ON watch_history(film_id);
 CREATE INDEX idx_films_featured ON films(is_featured);
 EOF
 
-    print_success "Migration created: migrations/${TIMESTAMP}_movie_channel.sql"
+    print_success "Migration created: migrations/${TIMESTAMP}_canal.sql"
 }
 
 update_translations() {
-    print_step "Adding channel translations to existing JSON files..."
+    print_step "Adding canal translations..."
     
-    # Create temporary translation additions file
-    cat > /tmp/channel_translations_es.json << 'EOF'
+    # Spanish translations
+    cat > /tmp/canal_translations_es.json << 'EOF'
 {
-  "channel.hero.channelName": "Canal de Animación",
-  "channel.hero.watchAgain": "Ver de nuevo",
-  "channel.hero.duration": "Duración",
-  "channel.hero.views": "vistas",
-  "channel.hero.view": "vista",
-  "channel.hero.noViews": "Sin vistas",
-  "channel.loading": "Cargando...",
-  "channel.error.noFilm": "No hay película destacada disponible",
-  "channel.error.loadFailed": "Error al cargar el canal",
-  "channel.nav.home": "Inicio",
-  "channel.nav.library": "Biblioteca",
-  "channel.nav.history": "Historial"
+  "canal.hero.channelName": "Canal de Animación",
+  "canal.hero.watchAgain": "Ver de nuevo",
+  "canal.hero.duration": "Duración",
+  "canal.hero.views": "vistas",
+  "canal.hero.view": "vista",
+  "canal.hero.noViews": "Sin vistas",
+  "canal.loading": "Cargando...",
+  "canal.error.noFilm": "No hay película destacada disponible",
+  "canal.error.loadFailed": "Error al cargar el canal",
+  "canal.nav.home": "Inicio",
+  "canal.nav.library": "Biblioteca",
+  "canal.nav.history": "Historial"
 }
 EOF
 
-    cat > /tmp/channel_translations_en.json << 'EOF'
+    # English translations
+    cat > /tmp/canal_translations_en.json << 'EOF'
 {
-  "channel.hero.channelName": "Animation Channel",
-  "channel.hero.watchAgain": "Watch Again",
-  "channel.hero.duration": "Duration",
-  "channel.hero.views": "views",
-  "channel.hero.view": "view",
-  "channel.hero.noViews": "No views",
-  "channel.loading": "Loading...",
-  "channel.error.noFilm": "No featured film available",
-  "channel.error.loadFailed": "Failed to load channel",
-  "channel.nav.home": "Home",
-  "channel.nav.library": "Library",
-  "channel.nav.history": "History"
+  "canal.hero.channelName": "Animation Channel",
+  "canal.hero.watchAgain": "Watch Again",
+  "canal.hero.duration": "Duration",
+  "canal.hero.views": "views",
+  "canal.hero.view": "view",
+  "canal.hero.noViews": "No views",
+  "canal.loading": "Loading...",
+  "canal.error.noFilm": "No featured film available",
+  "canal.error.loadFailed": "Failed to load channel",
+  "canal.nav.home": "Home",
+  "canal.nav.library": "Library",
+  "canal.nav.history": "History"
 }
 EOF
 
-    cat > /tmp/channel_translations_fr.json << 'EOF'
+    # French translations
+    cat > /tmp/canal_translations_fr.json << 'EOF'
 {
-  "channel.hero.channelName": "Chaîne d'animation",
-  "channel.hero.watchAgain": "Regarder à nouveau",
-  "channel.hero.duration": "Durée",
-  "channel.hero.views": "vues",
-  "channel.hero.view": "vue",
-  "channel.hero.noViews": "Aucune vue",
-  "channel.loading": "Chargement...",
-  "channel.error.noFilm": "Aucun film en vedette disponible",
-  "channel.error.loadFailed": "Échec du chargement de la chaîne",
-  "channel.nav.home": "Accueil",
-  "channel.nav.library": "Bibliothèque",
-  "channel.nav.history": "Historique"
+  "canal.hero.channelName": "Chaîne d'animation",
+  "canal.hero.watchAgain": "Regarder à nouveau",
+  "canal.hero.duration": "Durée",
+  "canal.hero.views": "vues",
+  "canal.hero.view": "vue",
+  "canal.hero.noViews": "Aucune vue",
+  "canal.loading": "Chargement...",
+  "canal.error.noFilm": "Aucun film en vedette disponible",
+  "canal.error.loadFailed": "Échec du chargement de la chaîne",
+  "canal.nav.home": "Accueil",
+  "canal.nav.library": "Bibliothèque",
+  "canal.nav.history": "Historique"
 }
 EOF
 
-    print_warning "Manual step required: Merge these translations into your existing JSON files:"
-    print_warning "  - /tmp/channel_translations_es.json → src/lib/i18n/locales/es.json"
-    print_warning "  - /tmp/channel_translations_en.json → src/lib/i18n/locales/en.json"
-    print_warning "  - /tmp/channel_translations_fr.json → src/lib/i18n/locales/fr.json"
-    
-    # Attempt automatic merge if jq is available
     if command -v jq &> /dev/null; then
-        print_step "jq detected - attempting automatic merge..."
-        
+        print_step "Merging translations with jq..."
         for lang in es en fr; do
             if [ -f "src/lib/i18n/locales/${lang}.json" ]; then
-                jq -s '.[0] * .[1]' "src/lib/i18n/locales/${lang}.json" "/tmp/channel_translations_${lang}.json" > "/tmp/merged_${lang}.json"
+                jq -s '.[0] * .[1]' "src/lib/i18n/locales/${lang}.json" "/tmp/canal_translations_${lang}.json" > "/tmp/merged_${lang}.json"
                 mv "/tmp/merged_${lang}.json" "src/lib/i18n/locales/${lang}.json"
                 print_success "Merged translations into ${lang}.json"
             else
-                cp "/tmp/channel_translations_${lang}.json" "src/lib/i18n/locales/${lang}.json"
-                print_success "Created new ${lang}.json"
+                cp "/tmp/canal_translations_${lang}.json" "src/lib/i18n/locales/${lang}.json"
+                print_success "Created ${lang}.json"
             fi
         done
+    else
+        print_warning "jq not found. Merge these files manually:"
+        echo "  /tmp/canal_translations_*.json → src/lib/i18n/locales/"
     fi
 }
 
 create_db_helper() {
     print_step "Creating database helper..."
     
-    cat > src/lib/server/channel-db.js << 'EOF'
+    cat > src/lib/server/canal-db.js << 'EOF'
 import { nanoid } from 'nanoid';
 
 /**
@@ -226,7 +234,20 @@ import { nanoid } from 'nanoid';
  * @property {number} view_count
  */
 
-export class ChannelDatabase {
+/**
+ * @typedef {Object} LocalizedFilm
+ * @property {string} id
+ * @property {string} title
+ * @property {string} description
+ * @property {string} stream_video_id
+ * @property {string} thumbnail_url
+ * @property {number} duration
+ * @property {number} is_featured
+ * @property {number} created_at
+ * @property {number} view_count
+ */
+
+export class CanalDatabase {
   /**
    * @param {import('@cloudflare/workers-types').D1Database} db
    */
@@ -235,35 +256,37 @@ export class ChannelDatabase {
   }
 
   /**
-   * Get localized film data based on locale
+   * Get localized film data
    * @param {Film} film
-   * @param {string} locale - Locale code (es, en, fr)
-   * @returns {Object} Localized film object
+   * @param {string} locale - es, en, fr (or es-MX, en-US, fr-CA)
+   * @returns {LocalizedFilm}
    */
   getLocalizedFilm(film, locale = 'es') {
-    // Map full locale codes to language codes
     const lang = locale.split('-')[0];
     
     return {
-      ...film,
+      id: film.id,
       title: film[`title_${lang}`] || film.title_es,
-      description: film[`description_${lang}`] || film.description_es
+      description: film[`description_${lang}`] || film.description_es,
+      stream_video_id: film.stream_video_id,
+      thumbnail_url: film.thumbnail_url,
+      duration: film.duration,
+      is_featured: film.is_featured,
+      created_at: film.created_at,
+      view_count: film.view_count
     };
   }
 
   /**
-   * Get the featured film
    * @returns {Promise<Film | null>}
    */
   async getFeaturedFilm() {
-    const result = await this.db
+    return await this.db
       .prepare('SELECT * FROM films WHERE is_featured = 1 ORDER BY created_at DESC LIMIT 1')
       .first();
-    return result;
   }
 
   /**
-   * Get film by ID
    * @param {string} id
    * @returns {Promise<Film | null>}
    */
@@ -275,7 +298,6 @@ export class ChannelDatabase {
   }
 
   /**
-   * Get all films
    * @returns {Promise<Film[]>}
    */
   async getAllFilms() {
@@ -286,41 +308,6 @@ export class ChannelDatabase {
   }
 
   /**
-   * Create a new film
-   * @param {Omit<Film, 'id' | 'created_at' | 'view_count'>} film
-   * @returns {Promise<Film>}
-   */
-  async createFilm(film) {
-    const id = nanoid();
-    const created_at = Date.now();
-    
-    await this.db
-      .prepare(
-        `INSERT INTO films (id, title_es, title_en, title_fr, description_es, description_en, description_fr, 
-         stream_video_id, thumbnail_url, duration, is_featured, created_at, view_count)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`
-      )
-      .bind(
-        id,
-        film.title_es,
-        film.title_en,
-        film.title_fr,
-        film.description_es,
-        film.description_en,
-        film.description_fr,
-        film.stream_video_id,
-        film.thumbnail_url,
-        film.duration,
-        film.is_featured,
-        created_at
-      )
-      .run();
-
-    return { ...film, id, created_at, view_count: 0 };
-  }
-
-  /**
-   * Increment view count for a film
    * @param {string} filmId
    * @returns {Promise<void>}
    */
@@ -332,7 +319,6 @@ export class ChannelDatabase {
   }
 
   /**
-   * Record watch history for a user
    * @param {string} userId
    * @param {string} filmId
    * @param {number} progress
@@ -344,15 +330,13 @@ export class ChannelDatabase {
 
     await this.db
       .prepare(
-        `INSERT INTO watch_history (id, user_id, film_id, watched_at, progress)
-         VALUES (?, ?, ?, ?, ?)`
+        'INSERT INTO watch_history (id, user_id, film_id, watched_at, progress) VALUES (?, ?, ?, ?, ?)'
       )
       .bind(id, userId, filmId, watched_at, progress)
       .run();
   }
 
   /**
-   * Get user's watch history
    * @param {string} userId
    * @param {number} limit
    * @returns {Promise<any[]>}
@@ -374,21 +358,21 @@ export class ChannelDatabase {
 }
 EOF
 
-    print_success "Database helper created"
+    print_success "Database helper created: src/lib/server/canal-db.js"
 }
 
 create_components() {
-    print_step "Creating channel components..."
+    print_step "Creating components..."
     
-    # VideoPlayer component
-    cat > src/lib/components/channel/VideoPlayer.svelte << 'EOF'
+    # VideoPlayer
+    cat > src/lib/components/canal/VideoPlayer.svelte << 'EOF'
 <script>
   /**
    * @typedef {Object} Props
-   * @property {string} videoId - Cloudflare Stream video ID
-   * @property {string} customerCode - Cloudflare Stream customer code
-   * @property {boolean} [autoplay] - Autoplay video
-   * @property {boolean} [muted] - Start muted
+   * @property {string} videoId
+   * @property {string} customerCode
+   * @property {boolean} [autoplay]
+   * @property {boolean} [muted]
    */
   
   /** @type {Props} */
@@ -431,6 +415,7 @@ create_components() {
     align-items: center;
     justify-content: center;
     background: #000;
+    z-index: 5;
   }
   
   .spinner {
@@ -448,8 +433,8 @@ create_components() {
 </style>
 EOF
 
-    # HeroOverlay component - uses existing i18n
-    cat > src/lib/components/channel/HeroOverlay.svelte << 'EOF'
+    # HeroOverlay
+    cat > src/lib/components/canal/HeroOverlay.svelte << 'EOF'
 <script>
   import { t } from '$lib/i18n';
   
@@ -464,14 +449,12 @@ EOF
   /**
    * @typedef {Object} Props
    * @property {Film} film
-   * @property {string} [locale] - Current locale for home link
    */
   
   /** @type {Props} */
-  let { film, locale = 'es' } = $props();
+  let { film } = $props();
   
   /**
-   * Format duration in seconds to MM:SS
    * @param {number} seconds
    * @returns {string}
    */
@@ -482,24 +465,20 @@ EOF
   }
   
   /**
-   * Format view count with proper pluralization
    * @param {number} count
    * @returns {string}
    */
   function formatViews(count) {
-    if (count === 0) return $t('channel.hero.noViews');
-    if (count === 1) return `1 ${$t('channel.hero.view')}`;
-    return `${count} ${$t('channel.hero.views')}`;
+    if (count === 0) return $t('canal.hero.noViews');
+    if (count === 1) return `1 ${$t('canal.hero.view')}`;
+    return `${count} ${$t('canal.hero.views')}`;
   }
-  
-  /** @type {string} */
-  let homeLink = $derived(locale === 'es' ? '/' : `/${locale}`);
 </script>
 
 <div class="hero-overlay">
   <div class="brand">
-    <a href={homeLink} class="home-link">← {$t('channel.nav.home')}</a>
-    <h1 class="channel-name">{$t('channel.hero.channelName')}</h1>
+    <a href="/" class="home-link">← {$t('canal.nav.home')}</a>
+    <h1 class="channel-name">{$t('canal.hero.channelName')}</h1>
   </div>
   
   <div class="film-info">
@@ -507,7 +486,7 @@ EOF
     <p class="film-description">{film.description}</p>
     <div class="metadata">
       <span class="duration">
-        {$t('channel.hero.duration')}: {formatDuration(film.duration)}
+        {$t('canal.hero.duration')}: {formatDuration(film.duration)}
       </span>
       <span class="views">
         {formatViews(film.view_count)}
@@ -600,6 +579,11 @@ EOF
   }
   
   @media (max-width: 768px) {
+    .brand {
+      top: 1rem;
+      left: 1rem;
+    }
+    
     .film-title {
       font-size: 2rem;
     }
@@ -613,17 +597,49 @@ EOF
 </style>
 EOF
 
-    print_success "Components created (uses your existing i18n setup)"
+    print_success "Components created in src/lib/components/canal/"
 }
 
-create_routes() {
-    print_step "Creating routes..."
+create_api_routes() {
+    print_step "Creating API routes..."
     
-    # Spanish route (default) - /canal
-    mkdir -p src/routes/canal
+    # API: Get all films
+    cat > src/routes/api/canal/+server.js << 'EOF'
+import { json, error } from '@sveltejs/kit';
+import { CanalDatabase } from '$lib/server/canal-db.js';
+
+/**
+ * @type {import('./$types').RequestHandler}
+ */
+export async function GET({ platform, locals, url }) {
+  if (!platform?.env?.DB) {
+    throw error(500, 'Database not configured');
+  }
+
+  try {
+    const db = new CanalDatabase(platform.env.DB);
+    const locale = locals.locale || url.searchParams.get('locale') || 'es';
+    const films = await db.getAllFilms();
     
+    const localizedFilms = films.map(film => db.getLocalizedFilm(film, locale));
+    
+    return json({ films: localizedFilms });
+  } catch (err) {
+    console.error('Failed to fetch films:', err);
+    throw error(500, 'Failed to fetch films');
+  }
+}
+EOF
+
+    print_success "API routes created in src/routes/api/canal/"
+}
+
+create_page_routes() {
+    print_step "Creating page routes..."
+    
+    # Main canal page server
     cat > src/routes/canal/+page.server.js << 'EOF'
-import { ChannelDatabase } from '$lib/server/channel-db.js';
+import { CanalDatabase } from '$lib/server/canal-db.js';
 import { error } from '@sveltejs/kit';
 
 /**
@@ -634,7 +650,7 @@ export async function load({ platform, locals }) {
     throw error(500, 'Database not configured');
   }
 
-  const db = new ChannelDatabase(platform.env.DB);
+  const db = new CanalDatabase(platform.env.DB);
   const featuredFilm = await db.getFeaturedFilm();
   
   if (!featuredFilm) {
@@ -646,40 +662,28 @@ export async function load({ platform, locals }) {
   
   return {
     film: localizedFilm,
-    customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || 'CUSTOMER_CODE_NOT_SET',
-    locale: locale
+    customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
   };
 }
 EOF
 
+    # Main canal page
     cat > src/routes/canal/+page.svelte << 'EOF'
 <script>
-  import VideoPlayer from '$lib/components/channel/VideoPlayer.svelte';
-  import HeroOverlay from '$lib/components/channel/HeroOverlay.svelte';
+  import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
+  import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
   
-  /**
-   * @typedef {Object} PageData
-   * @property {Object} film
-   * @property {string} film.title
-   * @property {string} film.description
-   * @property {string} film.stream_video_id
-   * @property {number} film.duration
-   * @property {number} film.view_count
-   * @property {string} customerCode
-   * @property {string} locale
-   */
-  
-  /** @type {{ data: PageData }} */
+  /** @type {{ data: any }} */
   let { data } = $props();
 </script>
 
 <svelte:head>
-  <title>{data.film.title} - Canal de Animación</title>
+  <title>{data.film.title}</title>
   <meta name="description" content={data.film.description} />
 </svelte:head>
 
-<div class="channel-page">
+<div class="canal-page">
   <div class="language-switcher-container">
     <LanguageSwitcherUniversal />
   </div>
@@ -691,11 +695,11 @@ EOF
     muted={false}
   />
   
-  <HeroOverlay film={data.film} locale={data.locale} />
+  <HeroOverlay film={data.film} />
 </div>
 
 <style>
-  .channel-page {
+  .canal-page {
     position: relative;
     width: 100%;
     height: 100vh;
@@ -708,191 +712,177 @@ EOF
     top: 2rem;
     right: 2rem;
     z-index: 100;
-    pointer-events: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .language-switcher-container {
+      top: 1rem;
+      right: 1rem;
+    }
   }
 </style>
 EOF
 
-    # English route - /en/channel
-    mkdir -p src/routes/en/channel
-    cp src/routes/canal/+page.server.js src/routes/en/channel/+page.server.js
-    cp src/routes/canal/+page.svelte src/routes/en/channel/+page.svelte
-    
-    # French route - /fr/chaîne
-    mkdir -p "src/routes/fr/chaîne"
-    cp src/routes/canal/+page.server.js "src/routes/fr/chaîne/+page.server.js"
-    cp src/routes/canal/+page.svelte "src/routes/fr/chaîne/+page.svelte"
-    
-    # API endpoint (language-agnostic)
-    cat > src/routes/api/canal/films/+server.js << 'EOF'
-import { json, error } from '@sveltejs/kit';
-import { ChannelDatabase } from '$lib/server/channel-db.js';
+    # Individual film page server
+    cat > src/routes/canal/film/[id]/+page.server.js << 'EOF'
+import { CanalDatabase } from '$lib/server/canal-db.js';
+import { error } from '@sveltejs/kit';
 
 /**
- * @type {import('./$types').RequestHandler}
+ * @type {import('./$types').PageServerLoad}
  */
-export async function GET({ platform, url }) {
+export async function load({ platform, locals, params }) {
   if (!platform?.env?.DB) {
     throw error(500, 'Database not configured');
   }
 
-  try {
-    const db = new ChannelDatabase(platform.env.DB);
-    const locale = url.searchParams.get('locale') || 'es';
-    const films = await db.getAllFilms();
-    
-    // Localize all films
-    const localizedFilms = films.map(film => db.getLocalizedFilm(film, locale));
-    
-    return json({ films: localizedFilms });
-  } catch (err) {
-    console.error('Failed to fetch films:', err);
-    throw error(500, 'Failed to fetch films');
+  const db = new CanalDatabase(platform.env.DB);
+  const film = await db.getFilmById(params.id);
+  
+  if (!film) {
+    throw error(404, 'Film not found');
   }
+  
+  const locale = locals.locale || 'es';
+  const localizedFilm = db.getLocalizedFilm(film, locale);
+  
+  return {
+    film: localizedFilm,
+    customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
+  };
 }
 EOF
 
-    print_success "Routes created (Spanish default at /canal)"
+    # Individual film page
+    cat > src/routes/canal/film/[id]/+page.svelte << 'EOF'
+<script>
+  import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
+  import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
+  import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
+  
+  /** @type {{ data: any }} */
+  let { data } = $props();
+</script>
+
+<svelte:head>
+  <title>{data.film.title}</title>
+  <meta name="description" content={data.film.description} />
+</svelte:head>
+
+<div class="canal-page">
+  <div class="language-switcher-container">
+    <LanguageSwitcherUniversal />
+  </div>
+  
+  <VideoPlayer 
+    videoId={data.film.stream_video_id}
+    customerCode={data.customerCode}
+    autoplay={true}
+    muted={false}
+  />
+  
+  <HeroOverlay film={data.film} />
+</div>
+
+<style>
+  .canal-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+  }
+  
+  .language-switcher-container {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+  }
+</style>
+EOF
+
+    print_success "Page routes created in src/routes/canal/"
 }
 
 create_readme() {
-    print_step "Creating documentation..."
-    
-    cat > CHANNEL_FEATURE.md << 'EOF'
-# Movie Channel Feature
+    cat > CANAL_FEATURE.md << 'EOF'
+# Canal (Movie Channel) Feature
 
-Integrated with your existing i18n setup. Default language: **Spanish (es)**.
+## Structure
 
-## Features
-
-✅ Uses your existing flattened JSON translations
-✅ Integrates with your LanguageSwitcherUniversal component
-✅ Svelte 5 runes throughout
-✅ JSDoc type annotations
-✅ Cloudflare Stream video player
-✅ Multilingual film content in database
-
-## Routes
-
-- **Spanish (default)**: `/canal`
-- **English**: `/en/channel`
-- **French**: `/fr/chaîne`
-
-## Translation Keys Added
-
-The script adds these keys to your existing JSON files:
-
-```json
-{
-  "channel.hero.channelName": "...",
-  "channel.hero.duration": "...",
-  "channel.hero.views": "...",
-  "channel.nav.home": "...",
-  "channel.loading": "...",
-  "channel.error.noFilm": "..."
-}
-```
-
-## Database Schema
-
-Films table with localized content (Spanish primary):
-- `title_es`, `title_en`, `title_fr`
-- `description_es`, `description_en`, `description_fr`
-
-## Components Created
-
-- `src/lib/components/channel/VideoPlayer.svelte` - Cloudflare Stream player
-- `src/lib/components/channel/HeroOverlay.svelte` - Film info overlay with i18n
-
-## Adding a Featured Film
-
-```bash
-wrangler d1 execute <your-db-name> --command="
-  INSERT INTO films (
-    id, title_es, title_en, title_fr,
-    description_es, description_en, description_fr,
-    stream_video_id, thumbnail_url, duration, 
-    is_featured, created_at, view_count
-  ) VALUES (
-    'film1',
-    'Animación Asombrosa',
-    'Amazing Animation',
-    'Animation Incroyable',
-    'Una historia maravillosa',
-    'A wonderful story',
-    'Une histoire merveilleuse',
-    'YOUR_CLOUDFLARE_STREAM_VIDEO_ID',
-    '',
-    300,
-    1,
-    $(date +%s)000,
-    0
-  )
-"
-```
-
-## Environment Variables
-
-Add to `wrangler.jsonc`:
-
-```jsonc
-{
-  "vars": {
-    "CLOUDFLARE_STREAM_CUSTOMER_CODE": "your-customer-code-here"
-  }
-}
-```
-
-Get your customer code from: Cloudflare Dashboard → Stream → Settings
-
-## File Structure
+Following your existing patterns:
 
 ```
 src/
-├── lib/
-│   ├── components/
-│   │   └── channel/
-│   │       ├── VideoPlayer.svelte
-│   │       └── HeroOverlay.svelte
-│   ├── server/
-│   │   └── channel-db.js
-│   └── i18n/
-│       └── locales/
-│           ├── es.json (updated)
-│           ├── en.json (updated)
-│           └── fr.json (updated)
-└── routes/
-    ├── canal/                    # Spanish (default)
-    │   ├── +page.svelte
-    │   ├── +page.server.js
-    │   └── api/
-    │       └── films/
-    │           └── +server.js
-    ├── en/
-    │   └── channel/              # English
-    └── fr/
-        └── chaîne/               # French
+├── routes/
+│   ├── api/
+│   │   └── canal/
+│   │       └── +server.js          (GET all films)
+│   └── canal/
+│       ├── +page.svelte            (featured film)
+│       ├── +page.server.js
+│       └── film/
+│           └── [id]/
+│               ├── +page.svelte    (individual film)
+│               └── +page.server.js
+└── lib/
+    ├── components/
+    │   └── canal/
+    │       ├── VideoPlayer.svelte
+    │       └── HeroOverlay.svelte
+    └── server/
+        └── canal-db.js
 ```
 
-## Next Steps
+## Routes
 
-1. Review and merge translation additions
-2. Run database migration
-3. Upload video to Cloudflare Stream
-4. Add featured film to database
-5. Test at `/canal`
+- `/canal` - Featured film (works in all languages)
+- `/canal/film/[id]` - Individual film
+- `/api/canal` - API to get all films
 
-## Future Enhancements
+## Setup
 
-- Film library page (`/biblioteca`)
-- User watch history
-- Categories and tags
-- Search functionality
-- Recommendations based on viewing history
-- Continue watching feature
+1. Run migration:
+   ```bash
+   wrangler d1 migrations apply <your-db> --remote
+   ```
+
+2. Add to wrangler.jsonc:
+   ```jsonc
+   {
+     "vars": {
+       "CLOUDFLARE_STREAM_CUSTOMER_CODE": "your-code"
+     }
+   }
+   ```
+
+3. Add a film:
+   ```bash
+   wrangler d1 execute <db> --command="
+     INSERT INTO films (
+       id, title_es, title_en, title_fr,
+       description_es, description_en, description_fr,
+       stream_video_id, thumbnail_url, duration,
+       is_featured, created_at, view_count
+     ) VALUES (
+       'film1',
+       'Mi Primera Animación',
+       'My First Animation',
+       'Ma Première Animation',
+       'Una historia increíble',
+       'An amazing story',
+       'Une histoire incroyable',
+       'YOUR_STREAM_VIDEO_ID',
+       '', 300, 1, $(date +%s)000, 0
+     )
+   "
+   ```
+
+4. Visit `/canal`
 EOF
 
-    print_success "Documentation created: CHANNEL_FEATURE.md"
+    print_success "Documentation created: CANAL_FEATURE.md"
 }
 
 integrate_feature

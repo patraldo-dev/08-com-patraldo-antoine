@@ -154,5 +154,17 @@
   "channel.error.loadFailed": "Échec du chargement de la chaîne",
   "channel.nav.home": "Accueil",
   "channel.nav.library": "Bibliothèque",
-  "channel.nav.history": "Historique"
+  "channel.nav.history": "Historique",
+  "canal.hero.channelName": "Chaîne d'animation",
+  "canal.hero.watchAgain": "Regarder à nouveau",
+  "canal.hero.duration": "Durée",
+  "canal.hero.views": "vues",
+  "canal.hero.view": "vue",
+  "canal.hero.noViews": "Aucune vue",
+  "canal.loading": "Chargement...",
+  "canal.error.noFilm": "Aucun film en vedette disponible",
+  "canal.error.loadFailed": "Échec du chargement de la chaîne",
+  "canal.nav.home": "Accueil",
+  "canal.nav.library": "Bibliothèque",
+  "canal.nav.history": "Historique"
 }
