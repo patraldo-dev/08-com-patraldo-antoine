@@ -1,5 +1,5 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "common.navCanal": "Film Channel",
   "common.navhome": "Home",
   "common.navwork": "Work",
   "common.navabout": "About",

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
   "common.navhome": "Accueil",
+  "common.navCanal": "Chaîne",
   "common.navwork": "Travail",
   "common.navabout": "À propos",
   "common.navstories": "Histoires",
