@@ -2,16 +2,14 @@
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
   
-  // Reactive thumbnail URL - recalculates when props change
-  const thumbnailUrl = $derived(() => {
-    const imageId = film.thumbnail_url;
-    if (!imageId) return '';
-    if (imageId.startsWith('http')) return imageId;
-    if (cloudflareAccountHash && imageId) {
-      return `https://imagedelivery.net/${cloudflareAccountHash}/${imageId}/public`;
-    }
-    return '';
-  });
+  // Reactive thumbnail URL
+  const thumbnailUrl = $derived(
+    film.thumbnail_url?.startsWith('http') 
+      ? film.thumbnail_url
+      : cloudflareAccountHash && film.thumbnail_url
+      ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/public`
+      : ''
+  );
   
   function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -19,11 +17,10 @@
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
   
-  // Handle image error
   function handleImageError(event) {
     event.target.style.display = 'none';
     const placeholder = event.target.nextElementSibling;
-    if (placeholder && placeholder.classList.contains('thumbnail-placeholder')) {
+    if (placeholder?.classList.contains('thumbnail-placeholder')) {
       placeholder.style.display = 'flex';
     }
   }
@@ -40,7 +37,6 @@
       />
     {/if}
     
-    <!-- Fallback placeholder -->
     <div class="thumbnail-placeholder" class:show={!thumbnailUrl}>
       <div class="play-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
@@ -73,26 +69,26 @@
     display: block;
     text-decoration: none;
     color: inherit;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
   }
   
   .video-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   }
   
   .thumbnail-container {
     position: relative;
-    aspect-ratio: 16/9;
-    background: #f0f0f0;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+    background: #000;
+    border-radius: 8px;
     overflow: hidden;
   }
   
   .thumbnail-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -104,66 +100,46 @@
     left: 0;
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #1a1a1a;
   }
   
   .thumbnail-placeholder.show {
     display: flex;
   }
   
-  .thumbnail-placeholder:not(.show) {
-    display: none;
-  }
-  
-  .play-icon {
-    opacity: 0.8;
-    transition: opacity 0.2s;
-  }
-  
-  .video-card:hover .play-icon {
-    opacity: 1;
-  }
-  
   .duration-badge {
     position: absolute;
     bottom: 8px;
     right: 8px;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .video-info {
-    padding: 1rem;
+    padding: 1rem 0;
   }
   
   .video-info h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
     font-size: 1.1rem;
-    line-height: 1.3;
   }
   
   .description {
-    margin: 0 0 0.5rem 0;
     color: #666;
     font-size: 0.9rem;
-    line-height: 1.4;
+    margin: 0 0 0.5rem;
   }
   
   .metadata {
     display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: #888;
-  }
-  
-  .type {
-    text-transform: capitalize;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #999;
   }
 </style>
