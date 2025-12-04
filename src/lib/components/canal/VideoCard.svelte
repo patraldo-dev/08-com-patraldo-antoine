@@ -2,28 +2,22 @@
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
   
-  // Reactive thumbnail URL
-  $derived.void(() => {
-    // This ensures the function runs reactively
-  });
-  
-  function getThumbnailUrl(imageId) {
+  // Reactive thumbnail URL - recalculates when props change
+  const thumbnailUrl = $derived(() => {
+    const imageId = film.thumbnail_url;
     if (!imageId) return '';
     if (imageId.startsWith('http')) return imageId;
     if (cloudflareAccountHash && imageId) {
       return `https://imagedelivery.net/${cloudflareAccountHash}/${imageId}/public`;
     }
     return '';
-  }
+  });
   
   function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
-  
-  // Compute thumbnail URL
-  const thumbnailUrl = $derived(getThumbnailUrl(film.thumbnail_url));
 </script>
 
 <a href={`/canal/watch/${film.id}`} class="video-card">
