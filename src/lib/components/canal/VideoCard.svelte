@@ -18,6 +18,15 @@
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
+  
+  // Handle image error
+  function handleImageError(event) {
+    event.target.style.display = 'none';
+    const placeholder = event.target.nextElementSibling;
+    if (placeholder && placeholder.classList.contains('thumbnail-placeholder')) {
+      placeholder.style.display = 'flex';
+    }
+  }
 </script>
 
 <a href={`/canal/watch/${film.id}`} class="video-card">
@@ -27,7 +36,7 @@
         src={thumbnailUrl} 
         alt={film.title}
         loading="lazy"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        onerror={handleImageError}
       />
     {/if}
     
