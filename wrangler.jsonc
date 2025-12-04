@@ -25,8 +25,7 @@
 	},
 	"vars": {
 		"MAILGUN_DOMAIN": "patraldo.com",
-                "CLOUDFLARE_STREAM_CUSTOMER_CODE": "9kroafxwku5qm6fx",
-                "CLOUDFLARE_IMAGES_ACCOUNT_HASH" : "4bRSwPonOXfEIBVZiDXg0w"
+                "CLOUDFLARE_STREAM_CUSTOMER_CODE": "9kroafxwku5qm6fx"
  
 	},
 	"d1_databases": [
