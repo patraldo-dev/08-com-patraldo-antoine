@@ -56,7 +56,7 @@
   .canal-nav {
     position: absolute;
     top: 20px;
-    right: 20px;
+    right: 80px;
     z-index: 100;
     display: flex;
     gap: 10px;

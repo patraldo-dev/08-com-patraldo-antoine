@@ -40,10 +40,12 @@ export async function load({ platform, locals }) {
     }
     groupedFilms[type].push(film);
   });
+
+return {
+  films: localizedFilms,
+  groupedFilms,
+  customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || '',
+  cloudflareAccountHash: platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH || ''
+};
   
-  return {
-    films: localizedFilms,
-    groupedFilms,
-    customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
-  };
 }

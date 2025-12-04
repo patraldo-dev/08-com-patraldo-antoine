@@ -57,9 +57,13 @@
     <section class="all-videos">
       <h2>{$t('canal.gallery.allVideos')} ({films.length})</h2>
       <div class="videos-grid">
-        {#each films as film (film.id)}
-          <VideoCard {film} {customerCode} />
-        {/each}
+{#each films as film (film.id)}
+  <VideoCard 
+    {film} 
+    customerCode={customerCode}
+    cloudflareAccountHash={cloudflareAccountHash}
+  />
+{/each}
       </div>
     </section>
     

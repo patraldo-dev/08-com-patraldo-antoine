@@ -1,6 +1,15 @@
 <!-- src/lib/components/canal/VideoCard.svelte -->
 <script>
-  let { film, customerCode } = $props();
+  let { film, customerCode, cloudflareAccountHash = '' } = $props();
+  
+  function getThumbnailUrl(imageId) {
+    if (!imageId) return '';
+    if (imageId.startsWith('http')) return imageId;
+    if (cloudflareAccountHash && imageId) {
+      return `https://imagedelivery.net/${cloudflareAccountHash}/${imageId}/public`;
+    }
+    return '';
+  }
   
   function formatDuration(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -11,21 +20,32 @@
 
 <a href={`/canal/watch/${film.id}`} class="video-card">
   <div class="thumbnail-container">
-    {#if film.thumbnail_url}
-      <img 
-        src={film.thumbnail_url} 
-        alt={film.title}
-        loading="lazy"
-      />
-    {:else}
-      <div class="thumbnail-placeholder">
-        <span>Video</span>
+    <!-- Use getThumbnailUrl() here -->
+    {#let thumbnailUrl = getThumbnailUrl(film.thumbnail_url)}
+      {#if thumbnailUrl}
+        <img 
+          src={thumbnailUrl} 
+          alt={film.title}
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+      {/if}
+    {/let}
+    
+    <!-- Fallback placeholder -->
+    <div class="thumbnail-placeholder" class:show={!getThumbnailUrl(film.thumbnail_url)}>
+      <div class="play-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
       </div>
-    {/if}
+    </div>
+    
     <div class="duration-badge">
       {formatDuration(film.duration)}
     </div>
   </div>
+  
   <div class="video-info">
     <h3>{film.title}</h3>
     {#if film.description}
@@ -71,6 +91,9 @@
   }
   
   .thumbnail-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: flex;
@@ -78,7 +101,23 @@
     justify-content: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    font-size: 1.5rem;
+  }
+  
+  .thumbnail-placeholder.show {
+    display: flex;
+  }
+  
+  .thumbnail-placeholder:not(.show) {
+    display: none;
+  }
+  
+  .play-icon {
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  
+  .video-card:hover .play-icon {
+    opacity: 1;
   }
   
   .duration-badge {
