@@ -5,7 +5,7 @@
   // Reactive thumbnail URL
   const thumbnailUrl = $derived(
     film.thumbnail_url && cloudflareAccountHash
-      ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/gallery`
+      ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/thumbnail`
       : film.thumbnail_url?.startsWith('http')
       ? film.thumbnail_url
       : ''
