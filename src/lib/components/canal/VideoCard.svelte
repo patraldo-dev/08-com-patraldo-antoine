@@ -2,25 +2,34 @@
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
   
+  // Debug: Log the values
+  $effect(() => {
+    console.log('VideoCard Debug:');
+    console.log('- Film ID:', film.id);
+    console.log('- Film title:', film.title);
+    console.log('- thumbnail_url:', film.thumbnail_url);
+    console.log('- cloudflareAccountHash:', cloudflareAccountHash);
+    console.log('- Generated URL:', thumbnailUrl);
+  });
+  
   // Reactive thumbnail URL
   const thumbnailUrl = $derived(
     film.thumbnail_url && cloudflareAccountHash
       ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/thumbnail`
-      : film.thumbnail_url?.startsWith('http')
-      ? film.thumbnail_url
       : ''
   );
   
   let imageError = $state(false);
   
   function formatDuration(seconds) {
-    if (!seconds || seconds === 0) return '0:15'; // Default for artworks without duration
+    if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
   
-  function handleImageError() {
+  function handleImageError(event) {
+    console.error('Image failed to load:', event.target.src);
     imageError = true;
   }
 </script>
@@ -41,6 +50,12 @@
             <path d="M8 5v14l11-7z"/>
           </svg>
         </div>
+        {#if !cloudflareAccountHash}
+          <p style="color: red; font-size: 0.7rem; position: absolute; bottom: 4px;">Missing account hash</p>
+        {/if}
+        {#if !film.thumbnail_url}
+          <p style="color: red; font-size: 0.7rem; position: absolute; bottom: 4px;">Missing image_id</p>
+        {/if}
       </div>
     {/if}
     
@@ -55,7 +70,7 @@
       <p class="description">{film.description.slice(0, 100)}{film.description.length > 100 ? '...' : ''}</p>
     {/if}
     <div class="metadata">
-      <span class="views">{film.view_count || 0} {film.view_count === 1 ? 'view' : 'views'}</span>
+      <span class="views">{film.view_count || 0} views</span>
       {#if film.type}
         <span class="type">{film.type}</span>
       {/if}
@@ -79,7 +94,7 @@
   .thumbnail-container {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%; /* 16:9 */
+    padding-bottom: 56.25%;
     background: #1a1a1a;
     border-radius: 8px;
     overflow: hidden;
