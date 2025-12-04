@@ -1,32 +1,33 @@
 // src/routes/canal/+page.server.js
 import { CanalDatabase } from '$lib/server/canal-db.js';
-import { error } from '@sveltejs/kit';
 
 export async function load({ platform, locals }) {
   if (!platform?.env?.ARTWORKS_DB) {
-    throw error(500, 'Artworks database not configured');
-  }
-
-  const db = new CanalDatabase(platform.env.ARTWORKS_DB, {
-    cloudflareAccountHash: platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH,
-    defaultCustomerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE
-  });
-  
-  const featuredFilm = await db.getFeaturedFilm();
-  
-  if (!featuredFilm) {
     return {
       film: null,
-      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || '',
-      error: 'No video content available'
+      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
+    };
+  }
+
+  const db = new CanalDatabase(
+    platform.env.ARTWORKS_DB,
+    platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
+  );
+  
+  const featuredArtwork = await db.getFeaturedFilm();
+  
+  if (!featuredArtwork) {
+    return {
+      film: null,
+      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
     };
   }
   
   const locale = locals.locale || 'es';
-  const localizedFilm = await db.getLocalizedFilm(featuredFilm, locale);
+  const film = await db.getLocalizedFilm(featuredArtwork, locale);
   
   return {
-    film: localizedFilm,
+    film,
     customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
   };
 }
