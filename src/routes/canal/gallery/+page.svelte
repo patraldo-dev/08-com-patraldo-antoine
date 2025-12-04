@@ -4,155 +4,130 @@
   import VideoCard from '$lib/components/canal/VideoCard.svelte';
   
   let { data } = $props();
-  let { films, groupedFilms, customerCode, error } = data;
-  
-  // Create reactive groups using $derived
-  const filmsByType = $derived(() => {
-    if (!films || films.length === 0) return {};
-    
-    const groups = {};
-    films.forEach(film => {
-      const type = film.artwork?.type || 'Other';
-      if (!groups[type]) groups[type] = [];
-      groups[type].push(film);
-    });
-    return groups;
-  });
 </script>
 
 <svelte:head>
-  <title>{$t('canal.gallery.title')}</title>
+  <title>{$t('canal.gallery.title')} - Canal</title>
 </svelte:head>
 
 <div class="gallery-page">
   <header class="gallery-header">
-    <h1>{$t('canal.gallery.title')}</h1>
-    <p>{$t('canal.gallery.subtitle')}</p>
-  </header>
-  
-  <!-- Navigation -->
-  <nav class="gallery-nav">
-    <a href="/canal" class="nav-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <a href="/canal" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
       </svg>
-      Featured Video
+      {$t('canal.nav.back')}
     </a>
-    <a href="/" class="nav-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      {$t('canal.nav.home')}
-    </a>
-  </nav>
-  
-  {#if error || films.length === 0}
+    <h1>{$t('canal.gallery.title')}</h1>
+  </header>
+
+  {#if data.films.length === 0}
     <div class="empty-state">
-      <p>{$t('canal.gallery.noVideos')}</p>
-      <a href="/canal" class="back-link">← {$t('canal.nav.home')}</a>
+      <p>{$t('canal.gallery.empty')}</p>
+      <a href="/" class="home-btn">Go Home</a>
     </div>
   {:else}
-    <!-- All videos grid -->
-    <section class="all-videos">
-      <h2>{$t('canal.gallery.allVideos')} ({films.length})</h2>
-      <div class="videos-grid">
-{#each films as film (film.id)}
-  <VideoCard 
-    {film} 
-    customerCode={customerCode}
-    cloudflareAccountHash={cloudflareAccountHash}
-  />
-{/each}
-      </div>
-    </section>
-    
-    <!-- Optional: Grouped by type -->
-    {#if Object.keys(filmsByType).length > 1}
-      {#each Object.entries(filmsByType) as [type, typeFilms]}
-        <section class="type-section">
-          <h2>{type} Videos ({typeFilms.length})</h2>
-          <div class="videos-grid">
-            {#each typeFilms as film (film.id)}
-              <VideoCard {film} {customerCode} />
+    <div class="gallery-content">
+      {#each Object.entries(data.groupedFilms) as [type, films]}
+        <section class="film-group">
+          <h2>{type}</h2>
+          <div class="video-grid">
+            {#each films as film (film.id)}
+              <VideoCard 
+                {film} 
+                customerCode={data.customerCode}
+                cloudflareAccountHash={data.cloudflareAccountHash}
+              />
             {/each}
           </div>
         </section>
       {/each}
-    {/if}
+    </div>
   {/if}
 </div>
 
 <style>
   .gallery-page {
-    max-width: 1200px;
-    margin: 0 auto;
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: white;
     padding: 2rem;
   }
   
   .gallery-header {
-    text-align: center;
-    margin-bottom: 3rem;
+    max-width: 1400px;
+    margin: 0 auto 2rem;
   }
   
-  .gallery-nav {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 3rem;
-  }
-  
-  .nav-link {
-    display: flex;
+  .back-link {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background: #f5f5f5;
-    color: #333;
-    padding: 10px 20px;
-    border-radius: 8px;
+    gap: 0.5rem;
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
   }
   
-  .nav-link:hover {
-    background: #e0e0e0;
+  .back-link:hover {
+    opacity: 1;
   }
   
-  .videos-grid {
+  .gallery-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+  }
+  
+  .gallery-content {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .film-group {
+    margin-bottom: 3rem;
+  }
+  
+  .film-group h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #999;
+  }
+  
+  .video-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
-    margin-bottom: 3rem;
   }
   
   .empty-state {
     text-align: center;
-    padding: 4rem;
+    padding: 4rem 2rem;
     color: #666;
   }
   
-  .back-link {
+  .home-btn {
     display: inline-block;
     margin-top: 1rem;
-    padding: 10px 20px;
-    background: #667eea;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border-radius: 8px;
     text-decoration: none;
+    border-radius: 4px;
   }
   
-  .back-link:hover {
-    background: #764ba2;
-  }
-  
-  .type-section {
-    margin-top: 4rem;
-  }
-  
-  .type-section h2 {
-    margin-bottom: 1.5rem;
-    color: #444;
-    text-transform: capitalize;
+  @media (max-width: 768px) {
+    .gallery-page {
+      padding: 1rem;
+    }
+    
+    .gallery-header h1 {
+      font-size: 1.8rem;
+    }
+    
+    .video-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
   }
 </style>

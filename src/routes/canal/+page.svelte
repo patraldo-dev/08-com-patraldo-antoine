@@ -21,23 +21,23 @@
   </div>
 {:else}
   <div class="canal-page">
-    <!-- Add gallery nav button -->
+    <!-- Fixed navigation buttons -->
     <nav class="canal-nav">
-      <a href="/canal/gallery" class="gallery-link">
+      <a href="/canal/gallery" class="nav-button gallery-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
           <rect x="14" y="14" width="7" height="7"></rect>
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
-        {$t('canal.nav.gallery')}
+        <span>{$t('canal.nav.gallery')}</span>
       </a>
-      <a href="/" class="home-link">
+      <a href="/" class="nav-button home-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
           <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
-        {$t('canal.nav.home')}
+        <span>{$t('canal.nav.home')}</span>
       </a>
     </nav>
     
@@ -53,70 +53,90 @@
 {/if}
 
 <style>
+  .canal-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+  }
+  
   .canal-nav {
-    position: absolute;
-    top: 20px;
-    right: 80px;
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
     z-index: 100;
     display: flex;
-    gap: 10px;
+    gap: 1rem;
   }
   
-  .gallery-link, .home-link {
+  .nav-button {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
-    padding: 10px 16px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.2s ease;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    cursor: pointer;
   }
   
-  .gallery-link:hover, .home-link:hover {
-    background: white;
+  .nav-button:hover {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   
   .error-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
   }
   
   .error-content {
     text-align: center;
-    max-width: 400px;
+    color: #fff;
+    padding: 2rem;
   }
   
   .error-content h1 {
+    font-size: 2rem;
     margin-bottom: 1rem;
-    color: #333;
   }
   
   .error-content p {
+    font-size: 1.1rem;
     margin-bottom: 2rem;
-    color: #666;
+    color: #aaa;
   }
   
   .home-link {
-    display: inline-block;
-    background: #667eea;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
+    color: #fff;
     text-decoration: none;
-    transition: background 0.2s;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    display: inline-block;
   }
   
-  .home-link:hover {
-    background: #764ba2;
+  @media (max-width: 768px) {
+    .canal-nav {
+      top: 1rem;
+      right: 1rem;
+      gap: 0.5rem;
+    }
+    
+    .nav-button span {
+      display: none;
+    }
   }
 </style>
