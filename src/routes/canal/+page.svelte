@@ -4,7 +4,6 @@
   import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
   import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
   import Navigation from '$lib/components/Navigation.svelte';
-  import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
   
   let { data } = $props();
 </script>
@@ -25,11 +24,6 @@
   <div class="canal-page">
     <!-- Use your existing Navigation component -->
     <Navigation />
-    
-    <!-- Language switcher in top-right (if not already in Navigation) -->
-    <div class="language-switcher">
-      <LanguageSwitcherUniversal />
-    </div>
     
     <VideoPlayer 
       videoId={data.film.stream_video_id}
