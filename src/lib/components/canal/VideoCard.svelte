@@ -2,6 +2,11 @@
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
   
+  // Reactive thumbnail URL
+  $derived.void(() => {
+    // This ensures the function runs reactively
+  });
+  
   function getThumbnailUrl(imageId) {
     if (!imageId) return '';
     if (imageId.startsWith('http')) return imageId;
@@ -16,24 +21,24 @@
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
+  
+  // Compute thumbnail URL
+  const thumbnailUrl = $derived(getThumbnailUrl(film.thumbnail_url));
 </script>
 
 <a href={`/canal/watch/${film.id}`} class="video-card">
   <div class="thumbnail-container">
-    <!-- Use getThumbnailUrl() here -->
-    {#let thumbnailUrl = getThumbnailUrl(film.thumbnail_url)}
-      {#if thumbnailUrl}
-        <img 
-          src={thumbnailUrl} 
-          alt={film.title}
-          loading="lazy"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-        />
-      {/if}
-    {/let}
+    {#if thumbnailUrl}
+      <img 
+        src={thumbnailUrl} 
+        alt={film.title}
+        loading="lazy"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+    {/if}
     
     <!-- Fallback placeholder -->
-    <div class="thumbnail-placeholder" class:show={!getThumbnailUrl(film.thumbnail_url)}>
+    <div class="thumbnail-placeholder" class:show={!thumbnailUrl}>
       <div class="play-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
           <path d="M8 5v14l11-7z"/>
