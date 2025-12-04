@@ -4,46 +4,45 @@
   
   // Reactive thumbnail URL
   const thumbnailUrl = $derived(
-    film.thumbnail_url?.startsWith('http') 
-      ? film.thumbnail_url
-      : cloudflareAccountHash && film.thumbnail_url
+    film.thumbnail_url && cloudflareAccountHash
       ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/public`
+      : film.thumbnail_url?.startsWith('http')
+      ? film.thumbnail_url
       : ''
   );
   
+  let imageError = $state(false);
+  
   function formatDuration(seconds) {
+    if (!seconds || seconds === 0) return '0:15'; // Default for artworks without duration
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
   
-  function handleImageError(event) {
-    event.target.style.display = 'none';
-    const placeholder = event.target.nextElementSibling;
-    if (placeholder?.classList.contains('thumbnail-placeholder')) {
-      placeholder.style.display = 'flex';
-    }
+  function handleImageError() {
+    imageError = true;
   }
 </script>
 
 <a href={`/canal/watch/${film.id}`} class="video-card">
   <div class="thumbnail-container">
-    {#if thumbnailUrl}
+    {#if thumbnailUrl && !imageError}
       <img 
         src={thumbnailUrl} 
         alt={film.title}
         loading="lazy"
         onerror={handleImageError}
       />
-    {/if}
-    
-    <div class="thumbnail-placeholder" class:show={!thumbnailUrl}>
-      <div class="play-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
+    {:else}
+      <div class="thumbnail-placeholder">
+        <div class="play-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
       </div>
-    </div>
+    {/if}
     
     <div class="duration-badge">
       {formatDuration(film.duration)}
@@ -53,12 +52,12 @@
   <div class="video-info">
     <h3>{film.title}</h3>
     {#if film.description}
-      <p class="description">{film.description.slice(0, 100)}...</p>
+      <p class="description">{film.description.slice(0, 100)}{film.description.length > 100 ? '...' : ''}</p>
     {/if}
     <div class="metadata">
-      <span class="views">{film.view_count} views</span>
-      {#if film.artwork?.type}
-        <span class="type">{film.artwork.type}</span>
+      <span class="views">{film.view_count || 0} {film.view_count === 1 ? 'view' : 'views'}</span>
+      {#if film.type}
+        <span class="type">{film.type}</span>
       {/if}
     </div>
   </div>
@@ -70,6 +69,7 @@
     text-decoration: none;
     color: inherit;
     transition: transform 0.2s;
+    cursor: pointer;
   }
   
   .video-card:hover {
@@ -80,7 +80,7 @@
     position: relative;
     width: 100%;
     padding-bottom: 56.25%; /* 16:9 */
-    background: #000;
+    background: #1a1a1a;
     border-radius: 8px;
     overflow: hidden;
   }
@@ -100,14 +100,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
-    background: #1a1a1a;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
   
-  .thumbnail-placeholder.show {
-    display: flex;
+  .play-icon {
+    opacity: 0.8;
   }
   
   .duration-badge {
@@ -119,6 +119,7 @@
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.85rem;
+    font-weight: 500;
   }
   
   .video-info {
@@ -128,18 +129,25 @@
   .video-info h3 {
     margin: 0 0 0.5rem;
     font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
   }
   
   .description {
-    color: #666;
+    color: #aaa;
     font-size: 0.9rem;
     margin: 0 0 0.5rem;
+    line-height: 1.4;
   }
   
   .metadata {
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
-    color: #999;
+    color: #666;
+  }
+  
+  .type {
+    text-transform: capitalize;
   }
 </style>
