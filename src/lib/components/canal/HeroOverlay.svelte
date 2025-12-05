@@ -30,10 +30,12 @@
   function handleMouseMove() {
     showControls();
   }
+
   /**
    * @param {number} seconds
    * @returns {string}
    */
+
   function formatDuration(seconds) {
     if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
@@ -51,14 +53,13 @@
     return `${count} ${$t('canal.hero.views')}`;
   }
 </script>
+
+
 <div 
-  class="hero-overlay" 
-  class:hidden={!isVisible}
+  class="hero-overlay {!isVisible ? 'hidden' : ''}"
   onmousemove={handleMouseMove}
   ontouchstart={showControls}
 >
-
-<div class="hero-overlay">
   <div class="brand">
     <a href="/" class="home-link">← {$t('canal.nav.home')}</a>
     <h1 class="channel-name">{$t('canal.hero.channelName')}</h1>
@@ -88,10 +89,8 @@
         {$t('canal.nav.gallery')}
       </a>
     </div>
-
   </div>
 </div>
-
 <style>
 .hero-overlay {
     position: fixed;
