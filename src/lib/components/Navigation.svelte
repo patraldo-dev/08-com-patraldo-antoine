@@ -1,4 +1,4 @@
-<!-- src/lib/components/UI/Navigation.svelte -->
+<!-- src/lib/components/Navigation.svelte -->
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -7,6 +7,7 @@
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
   let isMenuOpen = $state(false);
+  let canalDropdownOpen = $state(false);
   
   // Get current route to determine navigation behavior
   let currentPath = $derived($page.url.pathname);
@@ -27,6 +28,7 @@
   
   function closeMenu() {
     isMenuOpen = false;
+    canalDropdownOpen = false; // Also close canal dropdown when menu closes
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
     }
@@ -81,6 +83,14 @@
       closeMenu();
     }
   }
+
+  function toggleCanalDropdown() {
+    canalDropdownOpen = !canalDropdownOpen;
+  }
+  
+  function closeCanalDropdown() {
+    canalDropdownOpen = false;
+  }
   
   onMount(() => {
     document.addEventListener('click', handleOutsideClick, { passive: true });
@@ -106,7 +116,29 @@
     <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
     <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/canal" onclick={(e) => handleLinkClick(e, '/canal')}>{$t('common.navCanal')}</a>
+    
+    <!-- Canal with dropdown - Desktop -->
+    <div 
+      class="nav-item-with-dropdown"
+      onmouseenter={() => canalDropdownOpen = true}
+      onmouseleave={() => canalDropdownOpen = false}
+    >
+      <a href="/canal" onclick={(e) => handleLinkClick(e, '/canal')}>
+        {$t('common.navCanal')}
+      </a>
+      
+      {#if canalDropdownOpen}
+        <div class="dropdown">
+          <a href="/canal" onclick={(e) => { handleLinkClick(e, '/canal'); closeCanalDropdown(); }}>
+            {$t('canal.nav.featured')}
+          </a>
+          <a href="/canal/gallery" onclick={(e) => { handleLinkClick(e, '/canal/gallery'); closeCanalDropdown(); }}>
+            {$t('canal.nav.gallery')}
+          </a>
+        </div>
+      {/if}
+    </div>
+    
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
@@ -137,10 +169,42 @@
     <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
     <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/canal" onclick={(e) => handleLinkClick(e, '/canal')}>{$t('common.navCanal')}</a>
+    
+    <!-- Canal with submenu - Mobile -->
+    <div class="mobile-submenu">
+      <button 
+        class="mobile-submenu-trigger" 
+        onclick={toggleCanalDropdown}
+      >
+        {$t('common.navCanal')}
+        <svg 
+          width="12" 
+          height="12" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          style="transform: rotate({canalDropdownOpen ? '180deg' : '0deg'}); transition: transform 0.2s;"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      
+      {#if canalDropdownOpen}
+        <div class="mobile-dropdown">
+          <a href="/canal" onclick={(e) => handleLinkClick(e, '/canal')}>
+            {$t('canal.nav.featured')}
+          </a>
+          <a href="/canal/gallery" onclick={(e) => handleLinkClick(e, '/canal/gallery')}>
+            {$t('canal.nav.gallery')}
+          </a>
+        </div>
+      {/if}
+    </div>
+    
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -198,6 +262,85 @@
   
   .nav-links a:hover {
     opacity: 0.6;
+  }
+  
+  /* Desktop Dropdown Styles */
+  .nav-item-with-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 0;
+    border-radius: 8px;
+    min-width: 160px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+  }
+  
+  .dropdown a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .dropdown a:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Mobile Submenu Styles */
+  .mobile-submenu {
+    width: 100%;
+  }
+  
+  .mobile-submenu-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    min-height: 48px;
+  }
+  
+  .mobile-dropdown {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(42, 42, 42, 0.2);
+    margin-left: 0.5rem;
+  }
+  
+  .mobile-dropdown a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-decoration: none;
+    color: #2a2a2a;
+    font-weight: 300;
+    border-bottom: none;
+    min-height: auto;
+  }
+  
+  .mobile-dropdown a:hover,
+  .mobile-dropdown a:active {
+    color: #2c5e3d;
   }
   
   .menu-button {
@@ -273,7 +416,7 @@
     padding: 6rem 2rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0;
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;

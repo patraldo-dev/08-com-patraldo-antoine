@@ -1,4 +1,7 @@
+<!-- Add this structure where you have your Canal link in Navigation.svelte -->
+
 <script>
+  // ... your existing script
   let canalDropdownOpen = $state(false);
   
   function toggleCanalDropdown() {

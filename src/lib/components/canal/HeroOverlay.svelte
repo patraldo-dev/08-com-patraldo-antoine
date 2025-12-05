@@ -22,6 +22,7 @@
    * @returns {string}
    */
   function formatDuration(seconds) {
+    if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -55,6 +56,20 @@
         {formatViews(film.view_count)}
       </span>
     </div>
+    
+    <!-- Gallery Button -->
+    <div class="actions">
+      <a href="/canal/gallery" class="gallery-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        {$t('canal.nav.gallery')}
+      </a>
+    </div>
+
   </div>
 </div>
 
@@ -133,12 +148,46 @@
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    margin-bottom: 1.5rem;
   }
   
   .duration, .views {
     color: #aaa;
     font-size: 0.9rem;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Gallery Button Styles */
+  .actions {
+    margin-top: 1.5rem;
+  }
+  
+  .gallery-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  
+  .gallery-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .gallery-btn svg {
+    flex-shrink: 0;
   }
   
   @media (max-width: 768px) {
@@ -155,6 +204,11 @@
       left: 1rem;
       right: 1rem;
       bottom: 2rem;
+    }
+    
+    .gallery-btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
     }
   }
 </style>
