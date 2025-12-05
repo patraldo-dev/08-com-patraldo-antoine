@@ -1,5 +1,5 @@
-// src/routes/canal/+page.server.js
-import { CanalDatabase } from '$lib/server/canal-db.js';
+// src/routes/cine/+page.server.js
+import { CineDatabase } from '$lib/server/cine-db.js';
 
 export async function load({ platform, locals }) {
   if (!platform?.env?.ARTWORKS_DB) {
@@ -9,7 +9,7 @@ export async function load({ platform, locals }) {
     };
   }
 
-  const db = new CanalDatabase(
+  const db = new CineDatabase(
     platform.env.ARTWORKS_DB,
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );

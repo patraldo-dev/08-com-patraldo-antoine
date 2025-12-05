@@ -1,29 +1,29 @@
-<!-- src/routes/canal/gallery/+page.svelte -->
+<!-- src/routes/cine/gallery/+page.svelte -->
 <script>
   import { t } from '$lib/i18n';
-  import VideoCard from '$lib/components/canal/VideoCard.svelte';
+  import VideoCard from '$lib/components/cine/VideoCard.svelte';
   
   let { data } = $props();
 </script>
 
 <svelte:head>
-  <title>{$t('canal.gallery.title')} - Canal</title>
+  <title>{$t('cine.gallery.title')} - Cine</title>
 </svelte:head>
 
 <div class="gallery-page">
   <header class="gallery-header">
-    <a href="/canal" class="back-link">
+    <a href="/cine" class="back-link">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
       </svg>
-      {$t('canal.nav.back')}
+      {$t('cine.nav.back')}
     </a>
-    <h1>{$t('canal.gallery.title')}</h1>
+    <h1>{$t('cine.gallery.title')}</h1>
   </header>
 
   {#if data.films.length === 0}
     <div class="empty-state">
-      <p>{$t('canal.gallery.empty')}</p>
+      <p>{$t('cine.gallery.empty')}</p>
       <a href="/" class="home-btn">Go Home</a>
     </div>
   {:else}

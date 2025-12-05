@@ -48,9 +48,9 @@
    * @returns {string}
    */
   function formatViews(count) {
-    if (count === 0) return $t('canal.hero.noViews');
-    if (count === 1) return `1 ${$t('canal.hero.view')}`;
-    return `${count} ${$t('canal.hero.views')}`;
+    if (count === 0) return $t('cine.hero.noViews');
+    if (count === 1) return `1 ${$t('cine.hero.view')}`;
+    return `${count} ${$t('cine.hero.views')}`;
   }
 </script>
 
@@ -61,8 +61,8 @@
   ontouchstart={showControls}
 >
   <div class="brand">
-    <a href="/" class="home-link">← {$t('canal.nav.home')}</a>
-    <h1 class="channel-name">{$t('canal.hero.channelName')}</h1>
+    <a href="/" class="home-link">← {$t('cine.nav.home')}</a>
+    <h1 class="channel-name">{$t('cine.hero.channelName')}</h1>
   </div>
   
   <div class="film-info">
@@ -70,7 +70,7 @@
     <p class="film-description">{film.description}</p>
     <div class="metadata">
       <span class="duration">
-        {$t('canal.hero.duration')}: {formatDuration(film.duration)}
+        {$t('cine.hero.duration')}: {formatDuration(film.duration)}
       </span>
       <span class="views">
         {formatViews(film.view_count)}
@@ -79,14 +79,14 @@
     
     <!-- Gallery Button -->
     <div class="actions">
-      <a href="/canal/gallery" class="gallery-btn">
+      <a href="/cine/gallery" class="gallery-btn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
           <rect x="14" y="14" width="7" height="7"></rect>
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
-        {$t('canal.nav.gallery')}
+        {$t('cine.nav.gallery')}
       </a>
     </div>
   </div>

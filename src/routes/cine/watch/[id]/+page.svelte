@@ -1,7 +1,7 @@
 <script>
   import { t } from '$lib/i18n';
-  import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
-  import VideoCard from '$lib/components/canal/VideoCard.svelte';
+  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
+  import VideoCard from '$lib/components/cine/VideoCard.svelte';
   
   let { data } = $props();
   
@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.film?.title || 'Video'} - {$t('canal.gallery.title')}</title>
+  <title>{data.film?.title || 'Video'} - {$t('cine.gallery.title')}</title>
 </svelte:head>
 
 {#if !data.film}
@@ -21,22 +21,22 @@
     <div class="error-content">
       <h1>Video Not Found</h1>
       <p>The requested video could not be found.</p>
-      <a href="/canal/gallery" class="gallery-link">
-        {$t('canal.nav.backToGallery')}
+      <a href="/cine/gallery" class="gallery-link">
+        {$t('cine.nav.backToGallery')}
       </a>
     </div>
   </div>
 {:else}
   <div class="watch-page">
     <nav class="watch-nav">
-      <a href="/canal/gallery" class="back-link">
+      <a href="/cine/gallery" class="back-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        {$t('canal.nav.backToGallery')}
+        {$t('cine.nav.backToGallery')}
       </a>
-      <a href="/canal" class="featured-link">
+      <a href="/cine" class="featured-link">
         Featured Video
       </a>
     </nav>
@@ -59,11 +59,11 @@
       <div class="metadata">
         {#if data.film.duration > 0}
           <span class="duration">
-            {$t('canal.hero.duration')}: {formatDuration(data.film.duration)}
+            {$t('cine.hero.duration')}: {formatDuration(data.film.duration)}
           </span>
         {/if}
         <span class="views">
-          {data.film.view_count || 0} {$t('canal.hero.views')}
+          {data.film.view_count || 0} {$t('cine.hero.views')}
         </span>
         {#if data.film.type}
           <span class="type">Type: {data.film.type}</span>

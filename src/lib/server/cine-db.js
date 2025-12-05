@@ -1,4 +1,4 @@
-// src/lib/server/canal-db.js
+// src/lib/server/cine-db.js
 /**
  * @typedef {Object} Artwork
  * @property {number} id
@@ -17,7 +17,7 @@
  * @property {string} display_name
  */
 
-export class CanalDatabase {
+export class CineDatabase {
   /**
    * @param {import('@cloudflare/workers-types').D1Database} artworksDb
    * @param {string} [cloudflareAccountHash]

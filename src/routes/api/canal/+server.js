@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { CanalDatabase } from '$lib/server/canal-db.js';
+import { CineDatabase } from '$lib/server/cine-db.js';
 
 /**
  * @type {import('./$types').RequestHandler}
@@ -10,7 +10,7 @@ export async function GET({ platform, locals, url }) {
   }
 
   try {
-    const db = new CanalDatabase(platform.env.DB);
+    const db = new CineDatabase(platform.env.DB);
     const locale = locals.locale || url.searchParams.get('locale') || 'es';
     const films = await db.getAllFilms();
     

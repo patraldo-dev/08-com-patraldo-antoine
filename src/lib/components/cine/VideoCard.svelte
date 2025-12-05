@@ -1,4 +1,4 @@
-<!-- src/lib/components/canal/VideoCard.svelte -->
+<!-- src/lib/components/cine/VideoCard.svelte -->
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
   
@@ -34,7 +34,7 @@
   }
 </script>
 
-<a href={`/canal/watch/${film.id}`} class="video-card">
+<a href={`/cine/watch/${film.id}`} class="video-card">
   <div class="thumbnail-container">
     {#if thumbnailUrl && !imageError}
       <img 

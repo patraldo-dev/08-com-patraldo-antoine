@@ -1,27 +1,27 @@
-<!-- src/routes/canal/+page.svelte -->
+<!-- src/routes/cine/+page.svelte -->
 <script>
   import { t } from '$lib/i18n';
-  import VideoPlayer from '$lib/components/canal/VideoPlayer.svelte';
-  import HeroOverlay from '$lib/components/canal/HeroOverlay.svelte';
+  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
+  import HeroOverlay from '$lib/components/cine/HeroOverlay.svelte';
   import Navigation from '$lib/components/Navigation.svelte';
   
   let { data } = $props();
 </script>
 
 <svelte:head>
-  <title>{data.film ? data.film.title : $t('canal.error.noFilm')}</title>
+  <title>{data.film ? data.film.title : $t('cine.error.noFilm')}</title>
 </svelte:head>
 
 {#if !data.film}
   <div class="error-page">
     <Navigation />
     <div class="error-content">
-      <h1>{$t('canal.error.noFilm')}</h1>
-      <p>{$t('canal.error.loadFailed')}</p>
+      <h1>{$t('cine.error.noFilm')}</h1>
+      <p>{$t('cine.error.loadFailed')}</p>
     </div>
   </div>
 {:else}
-  <div class="canal-page">
+  <div class="cine-page">
     <!-- Use your existing Navigation component -->
     <Navigation />
     
@@ -37,7 +37,7 @@
 {/if}
 
 <style>
-  .canal-page {
+  .cine-page {
     position: relative;
     width: 100%;
     height: 100vh;

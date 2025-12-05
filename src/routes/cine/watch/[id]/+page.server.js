@@ -1,4 +1,4 @@
-import { CanalDatabase } from '$lib/server/canal-db.js';
+import { CineDatabase } from '$lib/server/cine-db.js';
 import { error } from '@sveltejs/kit';
 
 export async function load({ platform, locals, params }) {
@@ -6,7 +6,7 @@ export async function load({ platform, locals, params }) {
     throw error(500, 'Database not configured');
   }
 
-  const db = new CanalDatabase(
+  const db = new CineDatabase(
     platform.env.ARTWORKS_DB,
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );
