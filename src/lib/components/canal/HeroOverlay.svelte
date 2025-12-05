@@ -16,7 +16,20 @@
   
   /** @type {Props} */
   let { film } = $props();
+  let isVisible = $state(true);
+  let hideTimeout;
   
+  function showControls() {
+    isVisible = true;
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      isVisible = false;
+    }, 3000); // Hide after 3 seconds
+  }
+  
+  function handleMouseMove() {
+    showControls();
+  }
   /**
    * @param {number} seconds
    * @returns {string}
@@ -38,6 +51,12 @@
     return `${count} ${$t('canal.hero.views')}`;
   }
 </script>
+<div 
+  class="hero-overlay" 
+  class:hidden={!isVisible}
+  onmousemove={handleMouseMove}
+  ontouchstart={showControls}
+>
 
 <div class="hero-overlay">
   <div class="brand">
@@ -74,7 +93,7 @@
 </div>
 
 <style>
-  .hero-overlay {
+.hero-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -86,17 +105,27 @@
       to top,
       rgba(0, 0, 0, 0.8) 0%,
       rgba(0, 0, 0, 0.4) 30%,
-      transparent 50%
-    );
+      transparent 50%);
+    transition: opacity 0.5s ease;  /* Correct: semicolon ends declaration */
   }
-  
+
+  .hero-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;  /* Added missing semicolon */
+  }  /* Added missing closing brace */
+
   .brand {
     position: absolute;
     top: 2rem;
     left: 2rem;
     pointer-events: auto;
   }
-  
+
+  .hero-overlay.hidden .brand,
+  .hero-overlay.hidden .film-info {
+    opacity: 0;
+  }
+
   .home-link {
     display: inline-block;
     color: #fff;
