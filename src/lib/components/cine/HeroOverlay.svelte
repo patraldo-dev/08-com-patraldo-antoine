@@ -36,6 +36,17 @@
   function handleTouch() {
     showControls();
   }
+  function handleMouseEnter() {
+    showControls();
+  }
+  
+  function handleMouseLeave() {
+    // Don't hide immediately when mouse leaves
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      isVisible = false;
+    }, 1000); // Wait 1 second before hiding
+  }
   
   onMount(() => {
     // Start the hide timer on mount
@@ -52,6 +63,8 @@
   class:hidden={!isVisible}
   onmousemove={handleMouseMove}
   ontouchstart={handleTouch}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
   role="presentation"
 >
   <div class="brand">
@@ -93,7 +106,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 10;
     background: linear-gradient(
       to top,
@@ -107,20 +120,10 @@
   
   .hero-overlay.hidden {
     opacity: 0;
+    pointer-events: auto;  
+
   }
   
-  /* Keep pointer events on when visible */
-  .hero-overlay .brand,
-  .hero-overlay .film-info {
-    pointer-events: auto;
-    transition: opacity 0.6s ease-out;
-  }
-  
-  /* Disable pointer events when hidden */
-  .hero-overlay.hidden .brand,
-  .hero-overlay.hidden .film-info {
-    pointer-events: none;
-  }
   
   .brand {
     position: absolute;
