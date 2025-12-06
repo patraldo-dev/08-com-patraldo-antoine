@@ -36,6 +36,8 @@ export class CineDatabase {
       .prepare(
         `SELECT * FROM artworks 
          WHERE video_id IS NOT NULL 
+         AND is_cinematic = 1
+         AND aspect_ratio = '16:9'
          AND published = 1 
          AND featured = 1 
          ORDER BY order_index DESC, created_at DESC 
