@@ -13,7 +13,7 @@ export async function load({ platform, locals }) {
   );
   
   try {
-    const artworks = await db.getAllFilms({ limit: 100 });
+    const artworks = await db.getAllCinematics({ limit: 100 }); // ← Changed
     
     if (artworks.length === 0) {
       return {
@@ -26,7 +26,7 @@ export async function load({ platform, locals }) {
     
     const locale = locals.locale || 'es';
     const films = await Promise.all(
-      artworks.map(artwork => db.getLocalizedFilm(artwork, locale))
+      artworks.map(artwork => db.getLocalizedCinematic(artwork, locale)) // ← Changed
     );
     
     // Group by type
@@ -47,6 +47,6 @@ export async function load({ platform, locals }) {
     };
   } catch (err) {
     console.error('Gallery load error:', err);
-    throw error(500, 'Failed to load gallery');
+    throw error(500, `Failed to load gallery: ${err.message}`);
   }
 }

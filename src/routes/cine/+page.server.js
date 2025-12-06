@@ -14,7 +14,7 @@ export async function load({ platform, locals }) {
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );
   
-  const featuredArtwork = await db.getFeaturedFilm();
+  const featuredArtwork = await db.getFeaturedCinematic(); // ← Changed
   
   if (!featuredArtwork) {
     return {
@@ -24,7 +24,7 @@ export async function load({ platform, locals }) {
   }
   
   const locale = locals.locale || 'es';
-  const film = await db.getLocalizedFilm(featuredArtwork, locale);
+  const film = await db.getLocalizedCinematic(featuredArtwork, locale); // ← Changed
   
   return {
     film,

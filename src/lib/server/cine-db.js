@@ -15,6 +15,8 @@
  * @property {boolean} story_enabled
  * @property {string} story_intro
  * @property {string} display_name
+ * @property {boolean} is_cinematic
+ * @property {string} aspect_ratio
  */
 
 export class CineDatabase {
@@ -28,10 +30,10 @@ export class CineDatabase {
   }
 
   /**
-   * Get featured artwork with video
+   * Get featured cinematic artwork (16:9, is_cinematic = 1)
    * @returns {Promise<Artwork | null>}
    */
-  async getFeaturedFilm() {
+  async getFeaturedCinematic() {
     return await this.db
       .prepare(
         `SELECT * FROM artworks 
@@ -47,28 +49,38 @@ export class CineDatabase {
   }
 
   /**
-   * Get artwork by ID
+   * Get cinematic artwork by ID
    * @param {number} id
    * @returns {Promise<Artwork | null>}
    */
-  async getFilmById(id) {
+  async getCinematicById(id) {
     return await this.db
-      .prepare('SELECT * FROM artworks WHERE id = ? AND video_id IS NOT NULL')
+      .prepare(
+        `SELECT * FROM artworks 
+         WHERE id = ? 
+         AND video_id IS NOT NULL
+         AND is_cinematic = 1
+         AND aspect_ratio = '16:9'`
+      )
       .bind(id)
       .first();
   }
 
   /**
-   * Get all artworks with videos
+   * Get all cinematic artworks (16:9, is_cinematic = 1)
    * @param {Object} options
    * @param {number} [options.limit]
    * @param {string} [options.type]
    * @returns {Promise<Artwork[]>}
    */
-  async getAllFilms(options = {}) {
+  async getAllCinematics(options = {}) {
     const { limit = 100, type = null } = options;
     
-    let query = 'SELECT * FROM artworks WHERE video_id IS NOT NULL AND published = 1';
+    let query = `SELECT * FROM artworks 
+                 WHERE video_id IS NOT NULL 
+                 AND is_cinematic = 1
+                 AND aspect_ratio = '16:9'
+                 AND published = 1`;
     const params = [];
     
     if (type) {
@@ -88,17 +100,19 @@ export class CineDatabase {
   }
 
   /**
-   * Get related films (same type)
+   * Get related cinematics (same type, 16:9)
    * @param {string} type
    * @param {number} excludeId
    * @param {number} limit
    * @returns {Promise<Artwork[]>}
    */
-  async getRelatedFilms(type, excludeId, limit = 6) {
+  async getRelatedCinematics(type, excludeId, limit = 6) {
     const result = await this.db
       .prepare(
         `SELECT * FROM artworks 
          WHERE video_id IS NOT NULL 
+         AND is_cinematic = 1
+         AND aspect_ratio = '16:9'
          AND published = 1 
          AND type = ? 
          AND id != ? 
@@ -112,14 +126,35 @@ export class CineDatabase {
   }
 
   /**
-   * Get localized film data (artworks table doesn't have i18n, so just return as-is)
+   * Get daily rotation video (short clips only, is_cinematic = 0)
+   * For use in #about-detail modal
+   * @returns {Promise<Artwork | null>}
+   */
+  async getDailyVideo() {
+    // Get today's "seed" for consistent daily rotation
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const seed = today.split('-').join(''); // YYYYMMDD as number
+    
+    return await this.db
+      .prepare(
+        `SELECT * FROM artworks 
+         WHERE video_id IS NOT NULL 
+         AND (is_cinematic = 0 OR is_cinematic IS NULL)
+         AND published = 1 
+         ORDER BY (id * ?) % 1000
+         LIMIT 1`
+      )
+      .bind(seed)
+      .first();
+  }
+
+  /**
+   * Get localized cinematic data
    * @param {Artwork} artwork
    * @param {string} locale
-   * @returns {Object}
+   * @returns {Promise<Object>}
    */
-  async getLocalizedFilm(artwork, locale = 'es') {
-    // Since artworks table doesn't have multi-language fields,
-    // we just format it to match the expected structure
+  async getLocalizedCinematic(artwork, locale = 'es') {
     return {
       id: artwork.id,
       title: artwork.display_name || artwork.title,
@@ -131,7 +166,9 @@ export class CineDatabase {
       artwork: artwork, // Include full artwork data
       type: artwork.type,
       year: artwork.year,
-      slug: artwork.slug
+      slug: artwork.slug,
+      is_cinematic: artwork.is_cinematic,
+      aspect_ratio: artwork.aspect_ratio
     };
   }
 }

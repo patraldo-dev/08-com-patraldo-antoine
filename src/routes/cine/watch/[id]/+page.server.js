@@ -1,3 +1,4 @@
+// src/routes/cine/watch/[id]/+page.server.js
 import { CineDatabase } from '$lib/server/cine-db.js';
 import { error } from '@sveltejs/kit';
 
@@ -11,7 +12,7 @@ export async function load({ platform, locals, params }) {
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );
   
-  const artwork = await db.getFilmById(parseInt(params.id));
+  const artwork = await db.getCinematicById(parseInt(params.id)); // ← Changed
   
   if (!artwork) {
     return {
@@ -22,11 +23,11 @@ export async function load({ platform, locals, params }) {
   }
   
   const locale = locals.locale || 'es';
-  const film = await db.getLocalizedFilm(artwork, locale);
+  const film = await db.getLocalizedCinematic(artwork, locale); // ← Changed
   
-  const relatedArtworks = await db.getRelatedFilms(artwork.type, artwork.id, 6);
+  const relatedArtworks = await db.getRelatedCinematics(artwork.type, artwork.id, 6); // ← Changed
   const relatedFilms = await Promise.all(
-    relatedArtworks.map(a => db.getLocalizedFilm(a, locale))
+    relatedArtworks.map(a => db.getLocalizedCinematic(a, locale)) // ← Changed
   );
   
   return {
