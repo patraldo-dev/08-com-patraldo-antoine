@@ -1,41 +1,9 @@
+<!-- src/lib/components/cine/HeroOverlay.svelte -->
 <script>
   import { t } from '$lib/i18n';
   
-  /**
-   * @typedef {Object} Film
-   * @property {string} title
-   * @property {string} description
-   * @property {number} duration
-   * @property {number} view_count
-   */
-  
-  /**
-   * @typedef {Object} Props
-   * @property {Film} film
-   */
-  
-  /** @type {Props} */
   let { film } = $props();
-  let isVisible = $state(true);
-  let hideTimeout;
   
-  function showControls() {
-    isVisible = true;
-    clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(() => {
-      isVisible = false;
-    }, 3000); // Hide after 3 seconds
-  }
-  
-  function handleMouseMove() {
-    showControls();
-  }
-
-  /**
-   * @param {number} seconds
-   * @returns {string}
-   */
-
   function formatDuration(seconds) {
     if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
@@ -43,10 +11,6 @@
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
   
-  /**
-   * @param {number} count
-   * @returns {string}
-   */
   function formatViews(count) {
     if (count === 0) return $t('cine.hero.noViews');
     if (count === 1) return `1 ${$t('cine.hero.view')}`;
@@ -54,12 +18,7 @@
   }
 </script>
 
-
-<div 
-  class="hero-overlay {!isVisible ? 'hidden' : ''}"
-  onmousemove={handleMouseMove}
-  ontouchstart={showControls}
->
+<div class="hero-overlay">
   <div class="brand">
     <a href="/" class="home-link">← {$t('cine.nav.home')}</a>
     <h1 class="channel-name">{$t('cine.hero.channelName')}</h1>
@@ -91,8 +50,9 @@
     </div>
   </div>
 </div>
+
 <style>
-.hero-overlay {
+  .hero-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -104,27 +64,17 @@
       to top,
       rgba(0, 0, 0, 0.8) 0%,
       rgba(0, 0, 0, 0.4) 30%,
-      transparent 50%);
-    transition: opacity 0.5s ease;  /* Correct: semicolon ends declaration */
+      transparent 50%
+    );
   }
-
-  .hero-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;  /* Added missing semicolon */
-  }  /* Added missing closing brace */
-
+  
   .brand {
     position: absolute;
     top: 2rem;
     left: 2rem;
     pointer-events: auto;
   }
-
-  .hero-overlay.hidden .brand,
-  .hero-overlay.hidden .film-info {
-    opacity: 0;
-  }
-
+  
   .home-link {
     display: inline-block;
     color: #fff;
