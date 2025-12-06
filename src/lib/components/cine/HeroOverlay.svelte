@@ -1,8 +1,12 @@
 <!-- src/lib/components/cine/HeroOverlay.svelte -->
 <script>
   import { t } from '$lib/i18n';
+  import { onMount } from 'svelte';
   
   let { film } = $props();
+  
+  let isVisible = $state(true);
+  let hideTimeout;
   
   function formatDuration(seconds) {
     if (!seconds || seconds === 0) return '0:15';
@@ -16,9 +20,40 @@
     if (count === 1) return `1 ${$t('cine.hero.view')}`;
     return `${count} ${$t('cine.hero.views')}`;
   }
+  
+  function showControls() {
+    isVisible = true;
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      isVisible = false;
+    }, 3000); // Hide after 3 seconds of inactivity
+  }
+  
+  function handleMouseMove() {
+    showControls();
+  }
+  
+  function handleTouch() {
+    showControls();
+  }
+  
+  onMount(() => {
+    // Start the hide timer on mount
+    showControls();
+    
+    return () => {
+      clearTimeout(hideTimeout);
+    };
+  });
 </script>
 
-<div class="hero-overlay">
+<div 
+  class="hero-overlay" 
+  class:hidden={!isVisible}
+  onmousemove={handleMouseMove}
+  ontouchstart={handleTouch}
+  role="presentation"
+>
   <div class="brand">
     <a href="/" class="home-link">← {$t('cine.nav.home')}</a>
     <h1 class="channel-name">{$t('cine.hero.channelName')}</h1>
@@ -66,13 +101,31 @@
       rgba(0, 0, 0, 0.4) 30%,
       transparent 50%
     );
+    transition: opacity 0.6s ease-out;
+    opacity: 1;
+  }
+  
+  .hero-overlay.hidden {
+    opacity: 0;
+  }
+  
+  /* Keep pointer events on when visible */
+  .hero-overlay .brand,
+  .hero-overlay .film-info {
+    pointer-events: auto;
+    transition: opacity 0.6s ease-out;
+  }
+  
+  /* Disable pointer events when hidden */
+  .hero-overlay.hidden .brand,
+  .hero-overlay.hidden .film-info {
+    pointer-events: none;
   }
   
   .brand {
     position: absolute;
     top: 2rem;
     left: 2rem;
-    pointer-events: auto;
   }
   
   .home-link {
@@ -102,7 +155,6 @@
     bottom: 4rem;
     left: 2rem;
     max-width: 600px;
-    pointer-events: auto;
   }
   
   .film-title {
