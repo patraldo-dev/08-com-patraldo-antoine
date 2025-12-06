@@ -1,4 +1,4 @@
-// src/routes/cine/+page.server.js
+  *// src/routes/cine/+page.server.js
 import { CineDatabase } from '$lib/server/cine-db.js';
 
 export async function load({ platform, locals }) {
@@ -14,7 +14,7 @@ export async function load({ platform, locals }) {
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );
   
-  const featuredArtwork = await db.getFeaturedCinematic(); // ← Changed
+  const featuredArtwork = await db.getFeaturedCinematic();
   
   if (!featuredArtwork) {
     return {
@@ -22,9 +22,10 @@ export async function load({ platform, locals }) {
       customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
     };
   }
-  
+  await db.incrementViewCount(featuredArtwork.id);
+
   const locale = locals.locale || 'es';
-  const film = await db.getLocalizedCinematic(featuredArtwork, locale); // ← Changed
+  const film = await db.getLocalizedCinematic(featuredArtwork, locale);
   
   return {
     film,
