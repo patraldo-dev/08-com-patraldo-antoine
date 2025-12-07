@@ -1,37 +1,69 @@
-  *// src/routes/cine/+page.server.js
-import { CineDatabase } from '$lib/server/cine-db.js';
+// Add to CineDatabase class
 
-export async function load({ platform, locals }) {
-  if (!platform?.env?.ARTWORKS_DB) {
-    return {
-      film: null,
-      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
-    };
-  }
-
-  const db = new CineDatabase(
-    platform.env.ARTWORKS_DB,
-    platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
-  );
+/**
+ * Get or fetch video duration from Cloudflare Stream
+ * @param {string} videoId
+ * @param {number} artworkId
+ * @returns {Promise<number>}
+ */
+async getVideoDuration(videoId, artworkId, accountId, apiKey) {
+  // First check if we already have duration stored
+  const artwork = await this.db
+    .prepare('SELECT duration FROM artworks WHERE id = ?')
+    .bind(artworkId)
+    .first();
   
-  const featuredArtwork = await db.getFeaturedCinematic();
-  
-  if (!featuredArtwork) {
-    return {
-      film: null,
-      customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
-    };
+  if (artwork && artwork.duration && artwork.duration > 0) {
+    return artwork.duration;
   }
   
-  await db.incrementViewCount(featuredArtwork.id);
+  // Fetch from Cloudflare Stream
+  const { getStreamVideoDetails } = await import('./cloudflare-stream.js');
+  const details = await getStreamVideoDetails(videoId, accountId, apiKey);
+  
+  if (details && details.duration) {
+    // Cache it in database
+    await this.db
+      .prepare('UPDATE artworks SET duration = ? WHERE id = ?')
+      .bind(Math.round(details.duration), artworkId)
+      .run();
+    
+    return Math.round(details.duration);
+  }
+  
+  return 0;
+}
 
-  const locale = locals.locale || 'es';
-  const film = await db.getLocalizedCinematic(featuredArtwork, locale);
+/**
+ * Enhanced getLocalizedCinematic with real duration
+ */
+async getLocalizedCinematic(artwork, locale = 'es', fetchDuration = true) {
+  let duration = artwork.duration || 0;
+  
+  // Optionally fetch real duration from Stream API
+  if (fetchDuration && artwork.video_id && duration === 0) {
+    // These would need to be passed in or stored in class
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+    const apiKey = process.env.CLOUDFLARE_API_KEY;
+    
+    if (accountId && apiKey) {
+      duration = await this.getVideoDuration(artwork.video_id, artwork.id, accountId, apiKey);
+    }
+  }
   
   return {
-    film,
-    customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || ''
+    id: artwork.id,
+    title: artwork.display_name || artwork.title,
+    description: artwork.description,
+    stream_video_id: artwork.video_id,
+    thumbnail_url: artwork.image_id,
+    duration: duration,
+    view_count: artwork.view_count || 0,
+    artwork: artwork,
+    type: artwork.type,
+    year: artwork.year,
+    slug: artwork.slug,
+    is_cinematic: artwork.is_cinematic,
+    aspect_ratio: artwork.aspect_ratio
   };
 }
-  
-</style>

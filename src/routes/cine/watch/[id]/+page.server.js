@@ -12,7 +12,7 @@ export async function load({ platform, locals, params }) {
     platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH
   );
   
-  const artwork = await db.getCinematicById(parseInt(params.id)); // ← Changed
+  const artwork = await db.getCinematicById(parseInt(params.id));
   
   if (!artwork) {
     return {
@@ -21,13 +21,14 @@ export async function load({ platform, locals, params }) {
       relatedFilms: []
     };
   }
-  
+  await db.incrementViewCount(artwork.id);
+
   const locale = locals.locale || 'es';
-  const film = await db.getLocalizedCinematic(artwork, locale); // ← Changed
+  const film = await db.getLocalizedCinematic(artwork, locale);
   
-  const relatedArtworks = await db.getRelatedCinematics(artwork.type, artwork.id, 6); // ← Changed
+  const relatedArtworks = await db.getRelatedCinematics(artwork.type, artwork.id, 6);
   const relatedFilms = await Promise.all(
-    relatedArtworks.map(a => db.getLocalizedCinematic(a, locale)) // ← Changed
+    relatedArtworks.map(a => db.getLocalizedCinematic(a, locale))
   );
   
   return {
