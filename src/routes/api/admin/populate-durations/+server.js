@@ -2,12 +2,7 @@
 import { json } from '@sveltejs/kit';
 import { CineDatabase } from '$lib/server/cine-db.js';
 
-/**
- * Admin endpoint to populate video durations from Cloudflare Stream
- * GET /api/admin/populate-durations
- */
 export async function GET({ platform, url }) {
-  // Simple auth check (optional - add your own auth here)
   const authToken = url.searchParams.get('token');
   if (authToken !== 'your-secret-token-here') {
     return json({ error: 'Unauthorized' }, { status: 401 });
@@ -27,52 +22,52 @@ export async function GET({ platform, url }) {
   const db = new CineDatabase(platform.env.ARTWORKS_DB);
 
   try {
-    // Get all artworks with videos
+    // Get just ONE artwork to test
     const result = await platform.env.ARTWORKS_DB
-      .prepare('SELECT id, video_id, title FROM artworks WHERE video_id IS NOT NULL')
+      .prepare('SELECT id, video_id, title FROM artworks WHERE video_id IS NOT NULL LIMIT 1')
       .all();
 
     const artworks = result.results || [];
-    const results = [];
+    const debugInfo = [];
 
     for (const artwork of artworks) {
       try {
-        // Fetch duration from Stream API
-        const duration = await db.getVideoDuration(
-          artwork.video_id,
-          artwork.id,
-          accountId,
-          apiToken
+        // Call Stream API directly with debug info
+        const streamResponse = await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${artwork.video_id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${apiToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
         );
 
-        results.push({
-          id: artwork.id,
-          title: artwork.title,
-          duration: duration,
-          status: 'success'
+        const streamData = await streamResponse.json();
+        
+        debugInfo.push({
+          artwork_id: artwork.id,
+          artwork_title: artwork.title,
+          video_id: artwork.video_id,
+          api_status: streamResponse.status,
+          api_success: streamData.success,
+          api_errors: streamData.errors,
+          duration_found: streamData.result?.duration,
+          full_response: streamData
         });
 
-        // Small delay to respect rate limits
-        await new Promise(resolve => setTimeout(resolve, 100));
       } catch (err) {
-        results.push({
-          id: artwork.id,
-          title: artwork.title,
-          error: err.message,
-          status: 'error'
+        debugInfo.push({
+          artwork_id: artwork.id,
+          error: err.message
         });
       }
     }
 
-    const successCount = results.filter(r => r.status === 'success').length;
-    const errorCount = results.filter(r => r.status === 'error').length;
-
     return json({
-      success: true,
-      processed: artworks.length,
-      successCount,
-      errorCount,
-      results
+      accountId: accountId.substring(0, 8) + '...', // Partial for security
+      hasApiToken: !!apiToken,
+      debugInfo
     });
 
   } catch (err) {
