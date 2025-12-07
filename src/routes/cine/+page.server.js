@@ -1,4 +1,3 @@
-  *// src/routes/cine/+page.server.js
 import { CineDatabase } from '$lib/server/cine-db.js';
 
 export async function load({ platform, locals }) {
