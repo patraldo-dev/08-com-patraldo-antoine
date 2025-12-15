@@ -6,13 +6,12 @@
     imageUrl, 
     artworkTitle = 'Artwork', 
     compact = false,
-    preview = false
+    preview = false  // New prop for preview mode
   } = $props();
   
   let colors = $state([]);
   let loading = $state(true);
   let error = $state(null);
-  let debugInfo = $state(null); // Add debug info
   let copiedIndex = $state(-1);
   let ColorThief = $state(null);
   
@@ -26,11 +25,6 @@
       } catch (err) {
         console.error('Failed to extract colors:', err);
         error = 'Could not extract colors';
-        debugInfo = {
-          error: err.message,
-          imageUrl: imageUrl,
-          type: typeof imageUrl
-        };
         loading = false;
       }
     }
@@ -39,16 +33,10 @@
   async function extractColors() {
     loading = true;
     
-    // Log the URL we're trying to load
-    console.log('🎨 ColorPalette attempting to load:', imageUrl);
-    console.log('🎨 URL type:', typeof imageUrl);
-    console.log('🎨 URL valid?:', imageUrl && imageUrl.length > 0);
-    
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     
     img.onload = () => {
-      console.log('✅ Image loaded successfully');
       try {
         const colorThief = new ColorThief();
         const palette = colorThief.getPalette(img, 6);
@@ -58,53 +46,20 @@
           hex: rgbToHex(rgb[0], rgb[1], rgb[2])
         }));
         
-        console.log('✅ Colors extracted:', colors.length);
         loading = false;
       } catch (err) {
-        console.error('❌ Color extraction error:', err);
+        console.error('Color extraction error:', err);
         error = 'Color extraction failed';
-        debugInfo = {
-          stage: 'extraction',
-          error: err.message,
-          imageUrl: imageUrl
-        };
         loading = false;
       }
     };
     
-    img.onerror = (e) => {
-      console.error('❌ Image load error:', e);
-      console.error('❌ Failed URL:', imageUrl);
-      console.error('❌ Image naturalWidth:', img.naturalWidth);
-      console.error('❌ Image complete:', img.complete);
-      
+    img.onerror = () => {
       error = 'Failed to load image';
-      debugInfo = {
-        stage: 'loading',
-        imageUrl: imageUrl,
-        errorType: e.type,
-        imageComplete: img.complete,
-        naturalWidth: img.naturalWidth
-      };
       loading = false;
     };
     
-    // Try loading the image
     img.src = imageUrl;
-    
-    // Set a timeout to catch hanging loads
-    setTimeout(() => {
-      if (loading && !img.complete) {
-        console.error('⏱️ Image load timeout');
-        error = 'Image load timeout';
-        debugInfo = {
-          stage: 'timeout',
-          imageUrl: imageUrl,
-          imageComplete: img.complete
-        };
-        loading = false;
-      }
-    }, 10000); // 10 second timeout
   }
   
   function rgbToHex(r, g, b) {
@@ -176,7 +131,7 @@
   }
   
   function shareToPinterest() {
-    const url = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(`Color palette from "${artworkTitle}`)}&media=${encodeURIComponent(imageUrl)}`;
+    const url = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(`Color palette from "${artworkTitle}"`)}&media=${encodeURIComponent(imageUrl)}`;
     window.open(url, '_blank');
   }
 </script>
@@ -184,21 +139,10 @@
 {#if loading}
   <div class="palette-loading">
     <span>Extracting colors...</span>
-    <div class="debug-url">Loading: {imageUrl}</div>
   </div>
 {:else if error}
   <div class="palette-error">
-    <div>
-      <strong>{error}</strong>
-      {#if debugInfo}
-        <div class="debug-info">
-          <details>
-            <summary>Debug Info (click to expand)</summary>
-            <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-          </details>
-        </div>
-      {/if}
-    </div>
+    <span>{error}</span>
   </div>
 {:else if colors.length > 0}
   <div class="color-palette {preview ? 'preview-mode' : ''}">
@@ -256,20 +200,20 @@
     padding: 1.5rem;
     border: 1px solid var(--color-border);
   }
-  
+
   .color-palette.preview-mode {
     padding: 0;
     background: transparent;
     border: none;
   }
-  
+
   .palette-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--color-text-primary);
   }
-  
+
   .color-bar {
     display: flex;
     width: 100%;
@@ -278,12 +222,12 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   .preview-bar {
     height: 80px;
     border-radius: 8px;
   }
-  
+
   .color-swatch {
     flex: 1;
     border: none;
@@ -298,36 +242,36 @@
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
-  
+
   .preview-swatch {
     cursor: default;
   }
-  
+
   .preview-swatch:hover {
     transform: scale(1.05);
     z-index: 1;
   }
-  
+
   .color-swatch:hover:not(.preview-swatch) {
     transform: scale(1.05);
     z-index: 1;
   }
-  
+
   .hex-code {
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-  
+
   .color-swatch:hover .hex-code {
     opacity: 1;
   }
-  
+
   .copied-indicator {
     position: absolute;
     font-size: 1rem;
     font-weight: bold;
   }
-  
+
   .palette-actions {
     display: flex;
     flex-direction: column;
@@ -336,7 +280,7 @@
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-border);
   }
-  
+
   .download-group,
   .share-group {
     display: flex;
@@ -344,14 +288,14 @@
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-  
+
   .action-label {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text-secondary);
     min-width: 60px;
   }
-  
+
   .action-btn {
     padding: 0.375rem 0.75rem;
     background: var(--color-primary);
@@ -362,28 +306,19 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
-  
+
   .action-btn:hover {
     background: var(--color-primary-dark);
   }
-  
+
   .palette-loading {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 2rem;
     color: var(--color-text-secondary);
-    gap: 0.5rem;
   }
-  
-  .debug-url {
-    font-size: 0.75rem;
-    color: #666;
-    word-break: break-all;
-    max-width: 100%;
-  }
-  
+
   .palette-error {
     display: flex;
     align-items: center;
@@ -391,31 +326,7 @@
     padding: 2rem;
     color: var(--color-error);
   }
-  
-  .debug-info {
-    margin-top: 1rem;
-    font-size: 0.75rem;
-  }
-  
-  .debug-info details {
-    background: rgba(0, 0, 0, 0.05);
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-  }
-  
-  .debug-info summary {
-    cursor: pointer;
-    font-weight: 500;
-  }
-  
-  .debug-info pre {
-    margin-top: 0.5rem;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-size: 0.7rem;
-  }
-  
+
   @media (max-width: 768px) {
     .download-group,
     .share-group {
