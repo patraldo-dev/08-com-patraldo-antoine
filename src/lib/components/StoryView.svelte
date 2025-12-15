@@ -81,6 +81,21 @@
   $: heroImageUrl = artwork.type === 'still' && artwork.image_id
     ? createImageUrl(artwork.image_id, 'desktop')
     : null;
+
+  $: colorPaletteImageUrl = (() => {
+  // For still images, use image_id
+  if (artwork.image_id) {
+    return createImageUrl(artwork.image_id, 'desktop');
+  }
+  
+  // For animations, use thumbnailId (same as Sketchbook)
+  if (artwork.thumbnailId) {
+    return createImageUrl(artwork.thumbnailId, 'desktop');
+  }
+  
+  // Fallback
+  return artwork.imageUrl || null;
+})(); 
     
   $: parallaxOffset = scrollY * 0.3;
   
@@ -191,13 +206,15 @@
           </div>
         </InkReveal>
         
-
 <InkReveal delay={600}>
+  {#if colorPaletteImageUrl}
     <ColorPalette 
-      imageUrl={heroImageUrl || artwork.imageUrl} 
+      imageUrl={colorPaletteImageUrl} 
       artworkTitle={artwork.display_name || artwork.title}
     />
-  </InkReveal>
+  {/if}
+</InkReveal>
+
 
         <!-- Story Intro (if exists) -->
         {#if artwork.story_intro}
