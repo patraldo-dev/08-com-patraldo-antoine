@@ -136,15 +136,14 @@
       >
 {#if artwork.type === 'animation' && artwork.video_id}
   <div class="video-container">
-    <VideoPlayer 
-      videoId={artwork.video_id}
-      customerCode="9kroafxwku5qm6fx"
-      autoplay={true}
-      muted={false}
-      poster={artwork.thumbnailId 
-    ? `https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/${artwork.thumbnailId}/gallery`
-    : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${artwork.video_id}/thumbnails/thumbnail.jpg?time=1s`}
-    />
+<VideoPlayer 
+  videoId={data.film.stream_video_id}
+  customerCode={data.customerCode}
+  poster={data.film.thumbnail_url && data.cloudflareAccountHash
+  ? `https://imagedelivery.net/${data.cloudflareAccountHash}/${data.film.thumbnail_url}/gallery`
+  : `https://customer-${data.customerCode}.cloudflarestream.com/${data.film.stream_video_id}/thumbnails/thumbnail.jpg?time=10s`
+}
+/>
   </div>
         {:else if heroImageUrl}
           {#if isLoading}
