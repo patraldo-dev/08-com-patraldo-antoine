@@ -5,7 +5,7 @@
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
-  import VideoPlayer from '$lib/components/VideoPlayer.svelte';
+  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
 
   const dispatch = createEventDispatcher();
   
