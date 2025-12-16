@@ -47,6 +47,9 @@
         customerCode={data.customerCode}
         autoplay={true}
         muted={false}
+        poster={data.film.thumbnail_url && data.cloudflareAccountHash
+    ? `https://imagedelivery.net/${data.cloudflareAccountHash}/${data.film.thumbnail_url}/gallery`
+    : `https://customer-${data.customerCode}.cloudflarestream.com/${data.film.stream_video_id}/thumbnails/thumbnail.jpg?time=1s`}
       />
     </div>
     

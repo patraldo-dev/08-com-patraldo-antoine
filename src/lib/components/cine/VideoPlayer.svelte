@@ -1,26 +1,72 @@
 <script>
+  import { onMount } from 'svelte';
+  
   /**
    * @typedef {Object} Props
    * @property {string} videoId
    * @property {string} customerCode
    * @property {boolean} [autoplay]
    * @property {boolean} [muted]
+   * @property {boolean} [controls] - Show native controls (default: true)
+   * @property {string} [poster] - Optional poster image URL
    */
   
   /** @type {Props} */
-  let { videoId, customerCode, autoplay = true, muted = false } = $props();
+  let { 
+    videoId, 
+    customerCode, 
+    autoplay = true, 
+    muted = false,
+    controls = true,
+    poster = undefined
+  } = $props();
+  
   let isLoaded = $state(false);
+  let streamElement = $state(null);
+  let player = $state(null);
+  
+  onMount(async () => {
+    // Load the Stream SDK
+    const script = document.createElement('script');
+    script.src = 'https://embed.cloudflarestream.com/embed/sdk.latest.js';
+    script.async = true;
+    document.head.appendChild(script);
+    
+    // Wait for SDK to load and initialize player
+    script.onload = () => {
+      if (streamElement && window.Stream) {
+        player = window.Stream(streamElement);
+        
+        // Optional: Listen to player events
+        player.addEventListener('play', () => {
+          console.log('Video playing');
+        });
+        
+        player.addEventListener('loadedmetadata', () => {
+          isLoaded = true;
+        });
+      }
+    };
+    
+    return () => {
+      // Cleanup
+      if (script.parentNode) {
+        document.head.removeChild(script);
+      }
+    };
+  });
 </script>
 
 <div class="video-wrapper">
-  <iframe
-    src={`https://customer-${customerCode}.cloudflarestream.com/${videoId}/iframe?autoplay=${autoplay}&muted=${muted}`}
-    style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-    allowfullscreen={true}
-    onload={() => isLoaded = true}
-    title="Video player"
-  ></iframe>
+  <stream
+    bind:this={streamElement}
+    src={videoId}
+    controls={controls}
+    autoplay={autoplay}
+    muted={muted}
+    poster={poster}
+    preload="auto"
+  ></stream>
   
   {#if !isLoaded}
     <div class="loading">
@@ -33,30 +79,36 @@
   .video-wrapper {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background: #000;
+  }
+  
+  stream {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   
   .loading {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000;
-    z-index: 5;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1;
   }
   
   .spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
     border-top-color: #fff;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
   }
   
   @keyframes spin {

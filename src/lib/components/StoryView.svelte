@@ -5,6 +5,7 @@
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
+  import VideoPlayer from '$lib/components/VideoPlayer.svelte';
 
   const dispatch = createEventDispatcher();
   
@@ -133,15 +134,18 @@
         tabindex={hasVideo && artwork.type === 'still' ? "0" : undefined}
         on:keydown={hasVideo && artwork.type === 'still' ? (e) => e.key === 'Enter' && openVideoDetail() : null}
       >
-        {#if artwork.type === 'animation' && artwork.video_id}
-          <div class="video-container">
-            <iframe
-              title="Video: {artwork.display_name || artwork.title}"
-              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
+{#if artwork.type === 'animation' && artwork.video_id}
+  <div class="video-container">
+    <VideoPlayer 
+      videoId={artwork.video_id}
+      customerCode="9kroafxwku5qm6fx"
+      autoplay={true}
+      muted={false}
+      poster={artwork.thumbnailId 
+    ? `https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/${artwork.thumbnailId}/gallery`
+    : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${artwork.video_id}/thumbnails/thumbnail.jpg?time=1s`}
+    />
+  </div>
         {:else if heroImageUrl}
           {#if isLoading}
             <div class="loading-state">
