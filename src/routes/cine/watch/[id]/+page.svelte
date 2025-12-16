@@ -1,4 +1,3 @@
-<!-- src/routes/cine/watch/[id]/+page.svelte -->
 <script>
   import { t } from '$lib/i18n';
   import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
@@ -7,7 +6,6 @@
   let { data } = $props();
   
   function formatDuration(seconds) {
-    if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -47,8 +45,6 @@
       <VideoPlayer 
         videoId={data.film.stream_video_id}
         customerCode={data.customerCode}
-        poster={`https://customer-${data.customerCode}.cloudflarestream.com/${data.film.stream_video_id}/thumbnails/thumbnail.jpg?time=10s&height=720`}
-        controls={true}
         autoplay={true}
         muted={false}
       />

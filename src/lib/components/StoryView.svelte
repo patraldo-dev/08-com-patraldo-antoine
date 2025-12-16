@@ -5,13 +5,10 @@
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
-  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
 
   const dispatch = createEventDispatcher();
   
-  /** @type {Object} */
   export let artwork;
-  export let customerCode = '';  // Add this prop
   
   let isLoading = true;
   let imageError = false;
@@ -25,12 +22,13 @@
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
   
-  function handleClose() {
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
-    }
-    dispatch('close');
-  } 
+ function handleClose() {
+  // Restore scrolling BEFORE dispatching close
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
+  }
+  dispatch('close');
+} 
 
   function openVideoDetail() {
     showVideoDetail = true;
@@ -55,6 +53,7 @@
       document.body.style.overflow = 'hidden';
     }
     
+    // Fetch story content if story is enabled
     if (artwork.story_enabled) {
       await fetchStoryContent();
     }
@@ -68,6 +67,7 @@
   
   async function fetchStoryContent() {
     try {
+      // Fetch from your API endpoint
       const response = await fetch(`/api/story/${artwork.id}`);
       if (response.ok) {
         const data = await response.json();
@@ -83,17 +83,24 @@
     : null;
 
   $: colorPaletteImageUrl = (() => {
-    if (artwork.image_id) {
-      return createImageUrl(artwork.image_id, 'desktop');
-    }
-    if (artwork.thumbnailId) {
-      return createImageUrl(artwork.thumbnailId, 'desktop');
-    }
-    return artwork.imageUrl || null;
-  })();
+  // For still images, use image_id
+  if (artwork.image_id) {
+    return createImageUrl(artwork.image_id, 'desktop');
+  }
+  
+  // For animations, use thumbnailId (same as Sketchbook)
+  if (artwork.thumbnailId) {
+    return createImageUrl(artwork.thumbnailId, 'desktop');
+  }
+  
+  // Fallback
+  return artwork.imageUrl || null;
+})(); 
     
   $: parallaxOffset = scrollY * 0.3;
+  
   $: hasStoryContent = storyContent.length > 0;
+  
   $: hasVideo = !!(artwork.video_id || artwork.videoId);
 </script>
 
@@ -128,12 +135,12 @@
       >
         {#if artwork.type === 'animation' && artwork.video_id}
           <div class="video-container">
-            <VideoPlayer 
-              videoId={artwork.video_id}
-              customerCode={customerCode}
-              poster={`https://customer-${customerCode}.cloudflarestream.com/${artwork.video_id}/thumbnails/thumbnail.jpg?time=10s&height=720`}
-              controls={true}
-            />
+            <iframe
+              title="Video: {artwork.display_name || artwork.title}"
+              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{artwork.video_id}/iframe"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+            ></iframe>
           </div>
         {:else if heroImageUrl}
           {#if isLoading}
@@ -192,21 +199,24 @@
           </div>
         </InkReveal>
         
+        <!-- Main Description -->
         <InkReveal delay={400}>
           <div class="description">
             {artwork.description}
           </div>
         </InkReveal>
         
-        <InkReveal delay={600}>
-          {#if colorPaletteImageUrl}
-            <ColorPalette 
-              imageUrl={colorPaletteImageUrl} 
-              artworkTitle={artwork.display_name || artwork.title}
-            />
-          {/if}
-        </InkReveal>
+<InkReveal delay={600}>
+  {#if colorPaletteImageUrl}
+    <ColorPalette 
+      imageUrl={colorPaletteImageUrl} 
+      artworkTitle={artwork.display_name || artwork.title}
+    />
+  {/if}
+</InkReveal>
 
+
+        <!-- Story Intro (if exists) -->
         {#if artwork.story_intro}
           <InkReveal delay={800}>
             <div class="story-intro">
@@ -215,16 +225,19 @@
           </InkReveal>
         {/if}
         
+        <!-- Multi-media Story Content -->
         {#if hasStoryContent}
           {#each storyContent as item, index}
             <InkReveal delay={800 + (index * 200)}>
               <div class="story-block {item.content_type}">
                 {#if item.content_type === 'heading'}
                   <h2 class="story-heading">{item.content_text}</h2>
+                  
                 {:else if item.content_type === 'text'}
                   <div class="story-paragraph">
                     {item.content_text}
                   </div>
+                  
                 {:else if item.content_type === 'image' && item.media_id}
                   <div class="story-image">
                     <img 
@@ -233,6 +246,7 @@
                       loading="lazy"
                     />
                   </div>
+                  
                 {:else if item.content_type === 'video' && item.video_id}
                   <div class="story-video">
                     <iframe
@@ -248,6 +262,7 @@
           {/each}
         {/if}
         
+        <!-- Tags (if you implement them) -->
         {#if artwork.tags && artwork.tags.length > 0}
           <InkReveal delay={1000 + (storyContent.length * 200)}>
             <div class="tags">
