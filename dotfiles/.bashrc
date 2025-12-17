@@ -122,3 +122,4 @@ export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
+export HISTTIMEFORMAT='%F %T '

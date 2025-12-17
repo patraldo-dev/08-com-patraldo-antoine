@@ -30,6 +30,20 @@ if [[ -f "$CATALOG" ]]; then
   fi
 fi
 
+# In runlib, after catalog check:
+if [[ -f "$CATALOG" ]]; then
+    requires_env=$(grep "^[^\t]*\t${SCRIPT_NAME}\t" "$CATALOG" | cut -f4)
+    if [[ "$requires_env" == "yes" ]] && [[ ! -f "$LIB_ROOT/.env" ]]; then
+        echo "⚠️  WARNING: This script requires .env configuration"
+        echo "   Create $LIB_ROOT/.env with required credentials"
+        read -p "Continue anyway? (y/N): " cont
+        [[ ! $cont =~ ^[Yy]$ ]] && exit 1
+    fi
+fi
+
+# Check if script exists in scripts/
+SCRIPT_PATH="$SCRIPTS_DIR/$SCRIPT_NAME"
+
 # Check if script exists in scripts/
 SCRIPT_PATH="$SCRIPTS_DIR/$SCRIPT_NAME"
 if [[ ! -f "$SCRIPT_PATH" ]]; then
