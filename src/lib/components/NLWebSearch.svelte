@@ -29,34 +29,42 @@
     };
   });
   
-  async function initializeSearch() {
-    // Clean up existing instance first
-    if (chatInstance) {
-      chatInstance.destroy();
-      chatInstance = null;
-    }
-    
-    if (!browser) return;
-    
-    try {
-      const { NLWebDropdownChat } = await import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js');
-      
-      // Wait a bit for the DOM to be ready
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      chatInstance = new NLWebDropdownChat({
-        containerId: 'nlweb-search-container',
-        site: 'https://antoine.patraldo.com',
-        placeholder: $t('search.placeholder'),
-        endpoint: 'https://antoine.patraldo.com',
-        language: navigator.language.split('-')[0]  // 'es', 'fr', 'en'
-      });
-      
-      searchLoaded = true;
-    } catch (error) {
-      console.error('Failed to load NLWeb search:', error);
-    }
+async function initializeSearch() {
+  if (chatInstance) {
+    chatInstance.destroy();
+    chatInstance = null;
   }
+  
+  if (!browser) return;
+  
+  try {
+    const { NLWebDropdownChat } = await import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js');
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    chatInstance = new NLWebDropdownChat({
+      containerId: 'nlweb-search-container',
+      site: 'https://antoine.patraldo.com',
+      placeholder: $t('search.placeholder'),
+      endpoint: 'https://antoine.patraldo.com',
+      language: navigator.language.split('-')[0]
+    });
+    
+    searchLoaded = true;
+    
+    // Focus input for Enter key
+    setTimeout(() => {
+      const input = document.querySelector('#nlweb-search-container input, #nlweb-search-container textarea, [data-search-input]');
+      if (input) {
+        input.focus();
+        input.select();  // Highlight text for easy replace
+      }
+    }, 300);
+    
+  } catch (error) {
+    console.error('Failed to load NLWeb search:', error);
+  }
+}
+
   
   function toggleSearch() {
     if (Date.now() - lastSearch < 3000) return;
