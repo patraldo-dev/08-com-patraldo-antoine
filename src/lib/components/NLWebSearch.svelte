@@ -45,9 +45,9 @@
       
       chatInstance = new NLWebDropdownChat({
         containerId: 'nlweb-search-container',
-        site: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
+        site: 'https://antoine.patraldo.com',
         placeholder: $t('search.placeholder'),
-        endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
+        endpoint: 'https://antoine.patraldo.com',
         language: navigator.language.split('-')[0]  // 'es', 'fr', 'en'
       });
       
