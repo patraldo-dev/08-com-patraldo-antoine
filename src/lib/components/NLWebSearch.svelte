@@ -29,6 +29,7 @@
   });
   
   async function initializeSearch() {
+    chatInstance.destroy();
     if (chatInstance || !browser) return;
     
     try {
@@ -42,6 +43,7 @@
         site: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
         placeholder: $t('search.placeholder'),
         endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev'
+        language: browser ? navigator.language.split('-')[0] : 'en'  // 'es', 'fr'
       });
       
       searchLoaded = true;
@@ -49,13 +51,27 @@
       console.error('Failed to load NLWeb search:', error);
     }
   }
-  
+
   function toggleSearch() {
-    isOpen = !isOpen;
-    if (isOpen && !chatInstance) {
-      initializeSearch();
+  if (!isOpen) {
+    // Opening: recreate fresh instance
+    if (chatInstance) {
+      chatInstance.destroy();
+      chatInstance = null;
+      searchLoaded = false;
     }
+    isOpen = true;
+    initializeSearch();
+  } else {
+    // Closing: clean up
+    if (chatInstance) {
+      chatInstance.destroy();
+      chatInstance = null;
+    }
+    isOpen = false;
+    searchLoaded = false;
   }
+}
   
   function handleKeydown(event) {
     // CMD+K or CTRL+K to open search
