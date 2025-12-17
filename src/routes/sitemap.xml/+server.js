@@ -54,14 +54,3 @@ export async function GET({ locals }) {
     }
   });
 }
-```
-
-**Option 2: Update robots.txt**
-
-Create or update:
-```
-// static/robots.txt
-User-agent: *
-Allow: /
-
-Sitemap: https://antoine.patraldo.com/sitemap.xml
