@@ -1,6 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
     # Check if a commit message is provided as an argument
     if [ -z "$1" ]; then
       echo "Usage: $0 \"Your commit message\""
@@ -20,19 +19,3 @@
     git push origin main
 
     echo "Changes added, committed, and pushed successfully!"
-=======
-if [ -z "$1" ]; then
-  echo "Usage: $0 \"Your commit message\""
-  exit 1
-fi
-
-COMMIT_MESSAGE="$1"
-CURRENT_BRANCH=$(git branch --show-current)
-
-git add .
-git commit -m "$COMMIT_MESSAGE"
-git push origin "$CURRENT_BRANCH"
-
-echo "Changes added, committed, and pushed to branch: $CURRENT_BRANCH"
-
->>>>>>> 866536baf9b1f63e07bae3f5c12dae20760f9bc4

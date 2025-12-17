@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # =============== SECRETS ===============
 .env
 .env.local
@@ -65,3 +66,36 @@ Audio/
 elevenlabs-scripts/
 11ElevenLabs/
 
+=======
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+.dev.vars*
+!.dev.vars.example
+.env*
+
+Assets
+
+src/routes/**/*.bak
+>>>>>>> 866536baf9b1f63e07bae3f5c12dae20760f9bc4

@@ -1,0 +1,369 @@
+{
+  "result": {
+    "images": [
+      {
+        "id": "26fe40df-7745-41dc-7491-97cb36a32f00",
+        "filename": "BlueAlienKing.jpg",
+        "uploaded": "2025-11-13T04:06:04.463Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/26fe40df-7745-41dc-7491-97cb36a32f00/mobile"
+        ]
+      },
+      {
+        "id": "75b29e1a-2d22-4ef7-af19-2f7e3828bd00",
+        "filename": "GreenAlienKing.jpg",
+        "uploaded": "2025-11-13T04:06:03.603Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/75b29e1a-2d22-4ef7-af19-2f7e3828bd00/mobile"
+        ]
+      },
+      {
+        "id": "65dfe0b8-5b3f-4501-a3ee-c99d301a1800",
+        "filename": "YellowAlienKing.jpg",
+        "uploaded": "2025-11-13T04:06:03.444Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/65dfe0b8-5b3f-4501-a3ee-c99d301a1800/mobile"
+        ]
+      },
+      {
+        "id": "d4969f09-777d-46a4-f167-db56837e5300",
+        "filename": "BrownAlienKing.jpg",
+        "uploaded": "2025-11-13T04:06:03.421Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d4969f09-777d-46a4-f167-db56837e5300/mobile"
+        ]
+      },
+      {
+        "id": "7ced0c47-f1ee-4f88-2080-089d9d605200",
+        "filename": "OrangeAlienKing.jpg",
+        "uploaded": "2025-11-13T04:06:03.205Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7ced0c47-f1ee-4f88-2080-089d9d605200/mobile"
+        ]
+      },
+      {
+        "id": "258597a9-caa4-4175-8f3e-cd0b77a56a00",
+        "filename": "MujerGuias.png",
+        "uploaded": "2025-11-13T04:04:48.287Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/258597a9-caa4-4175-8f3e-cd0b77a56a00/mobile"
+        ]
+      },
+      {
+        "id": "7023005b-1359-478f-64eb-a2b3c73fca00",
+        "filename": "Dresses3.png",
+        "uploaded": "2025-11-13T04:02:11.553Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/7023005b-1359-478f-64eb-a2b3c73fca00/mobile"
+        ]
+      },
+      {
+        "id": "e9fd4477-84f5-4a57-ac67-aba89d28b000",
+        "filename": "BlueLeafedPlant.png",
+        "uploaded": "2025-11-13T04:02:04.095Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e9fd4477-84f5-4a57-ac67-aba89d28b000/mobile"
+        ]
+      },
+      {
+        "id": "13bf777c-3736-4972-fef0-9b04d755df00",
+        "filename": "AGR-PinkSuitLady.png",
+        "uploaded": "2025-11-13T04:01:52.427Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/13bf777c-3736-4972-fef0-9b04d755df00/mobile"
+        ]
+      },
+      {
+        "id": "d39cde69-e675-42ae-08b1-53e326689100",
+        "filename": "AGR-BigFeaturedQueenRandom3.jpg",
+        "uploaded": "2025-11-13T04:01:21.638Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/d39cde69-e675-42ae-08b1-53e326689100/mobile"
+        ]
+      },
+      {
+        "id": "12c79899-fb93-4885-508f-d2da0a2fbf00",
+        "filename": "first_frame_ParisSeineScene.png",
+        "uploaded": "2025-11-13T04:01:02.954Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/12c79899-fb93-4885-508f-d2da0a2fbf00/mobile"
+        ]
+      },
+      {
+        "id": "f70e532c-cbf2-485e-e066-aa7500a65b00",
+        "filename": "watermark.png",
+        "uploaded": "2025-10-20T17:47:49.904Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f70e532c-cbf2-485e-e066-aa7500a65b00/mobile"
+        ]
+      },
+      {
+        "id": "2438a786-e027-4744-c85e-6f82fd1eaf00",
+        "filename": "InfinitoJunco.png",
+        "uploaded": "2025-10-05T23:58:28.608Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/2438a786-e027-4744-c85e-6f82fd1eaf00/mobile"
+        ]
+      },
+      {
+        "id": "eda682fa-8928-48fe-81d8-95f7e2723b00",
+        "filename": "qwen-image_la-llorona-en-la-playa.webp",
+        "uploaded": "2025-09-29T00:04:56.344Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/eda682fa-8928-48fe-81d8-95f7e2723b00/mobile"
+        ]
+      },
+      {
+        "id": "4fee572d-dfc1-4be8-e7fc-a05378c12000",
+        "filename": "qwen-image_la-virgen-de-guadalupe-con-una-su-aura.webp",
+        "uploaded": "2025-09-28T23:51:43.934Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4fee572d-dfc1-4be8-e7fc-a05378c12000/mobile"
+        ]
+      },
+      {
+        "id": "fd42e2f6-b1e0-4af8-7241-7b24357e5c00",
+        "filename": "Q-HorsebackOnBeach.webp",
+        "uploaded": "2025-09-28T21:50:03.126Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/fd42e2f6-b1e0-4af8-7241-7b24357e5c00/mobile"
+        ]
+      },
+      {
+        "id": "8b335784-d4d9-44e8-7c84-ee3547f51800",
+        "filename": "qwen-image_la-llorona-en-la-playa.webp",
+        "uploaded": "2025-09-28T20:47:39.897Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/8b335784-d4d9-44e8-7c84-ee3547f51800/mobile"
+        ]
+      },
+      {
+        "id": "f0f34429-b00c-46b0-4c51-15d331dbe400",
+        "filename": "test.png",
+        "uploaded": "2025-09-24T02:52:46.226Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f0f34429-b00c-46b0-4c51-15d331dbe400/mobile"
+        ]
+      },
+      {
+        "id": "4a4cf91e-7d6e-4a81-5a8a-1547dc729e00",
+        "filename": "InfinitoJunco.png",
+        "uploaded": "2025-09-23T21:42:28.297Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/4a4cf91e-7d6e-4a81-5a8a-1547dc729e00/mobile"
+        ]
+      },
+      {
+        "id": "78e80b8c-da57-4f92-f074-be4e85049e00",
+        "filename": "garlic.png",
+        "uploaded": "2025-08-28T00:33:12.171Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/78e80b8c-da57-4f92-f074-be4e85049e00/mobile"
+        ]
+      },
+      {
+        "id": "e63e1c85-a520-4f39-b737-2e4faf880c00",
+        "filename": "output-frame.jpg",
+        "uploaded": "2025-08-13T22:55:03.037Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/e63e1c85-a520-4f39-b737-2e4faf880c00/mobile"
+        ]
+      },
+      {
+        "id": "48c08b9f-0ce4-403d-728b-98064b25e700",
+        "filename": "GMPNG.png",
+        "uploaded": "2025-08-12T21:35:28.309Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/48c08b9f-0ce4-403d-728b-98064b25e700/mobile"
+        ]
+      },
+      {
+        "id": "92c712f4-aec1-4e68-1cec-fcd9682eae00",
+        "filename": "PortfolioTemp.webp",
+        "uploaded": "2025-08-12T03:38:48.441Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/92c712f4-aec1-4e68-1cec-fcd9682eae00/mobile"
+        ]
+      },
+      {
+        "id": "f8a136eb-363e-4a24-0f54-70bb4f4bf800",
+        "filename": "MujerFaceAntoine.jpg",
+        "uploaded": "2025-08-11T21:31:56.554Z",
+        "requireSignedURLs": false,
+        "variants": [
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/full",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/thumbnail",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/tablet",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/cover",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/gallery",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/desktop",
+          "https://imagedelivery.net/4bRSwPonOXfEIBVZiDXg0w/f8a136eb-363e-4a24-0f54-70bb4f4bf800/mobile"
+        ]
+      }
+    ]
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

@@ -1,0 +1,231 @@
+/* ───────────────────────────────────────
+   RESET + BASE STYLES
+   ─────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: #fafafa;
+  color: #2a2a2a;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* Base spacing for fixed nav */
+body main {
+  margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+  body main {
+    margin-top: 70px;
+  }
+}
+
+/* ───────────────────────────────────────
+   DESIGN TOKENS
+   ─────────────────────────────────────── */
+:root {
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  
+  /* Z-index scale */
+  --z-base: 0;
+  --z-content: 1;
+  --z-hero: 2;
+  --z-hero-content: 3;
+  --z-nav: 100;
+  --z-dropdown: 200;
+  --z-modal: 1000;
+  --z-modal-content: 1001;
+  --z-toast: 1100;
+  --z-tooltip: 1200;
+  
+  /* Video hero z-index (for About page) */
+  --z-hero-video: 1;
+  --z-hero-overlay: 2;
+}
+
+/* ───────────────────────────────────────
+   LAYOUT CONTAINER (mobile-first)
+   ─────────────────────────────────────── */
+.layout {
+  width: 100%;
+  max-width: 100%;
+  padding-left: var(--space-sm);
+  padding-right: var(--space-sm);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    max-width: 750px;
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    max-width: 1000px;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+/* Full-bleed sections */
+.full-bleed {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* ───────────────────────────────────────
+   HERO SECTION (for About page video)
+   ─────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #000;
+}
+
+.hero-video-container,
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-hero-video);
+}
+
+.hero-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+  z-index: var(--z-hero-overlay);
+}
+
+.hero-content {
+  position: relative;
+  z-index: var(--z-hero-content);
+  text-align: center;
+  color: white;
+  padding: 0 1rem;
+  max-width: 800px;
+}
+
+.hero-content h2 {
+  font-size: 2rem;
+  font-weight: 100;
+  margin: 0 0 1rem;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+  font-size: 1rem;
+  font-weight: 300;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ───────────────────────────────────────
+   UTILITY CLASSES
+   ─────────────────────────────────────── */
+.scroll-group {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.hero-simple {
+  min-height: 0 !important; /* Remove min-height completely */
+  height: auto !important;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+  padding: 0.5rem 1rem 0.5rem !important; /* Equal tiny padding */
+  text-align: center;
+}
+
+.hero-simple .hero-content {
+  max-width: 90%;
+  text-align: center;
+  padding: 0.5rem 0 !important; /* Internal padding only */
+  margin: 0 !important; /* Remove all margins */
+}
+
+.hero-simple .hero-content h1 {
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1.1 !important; /* Tighter */
+  margin: 0 0 0.25rem 0 !important;
+}
+
+.hero-simple .hero-content .subtitle {
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: 200;
+  opacity: 0.85;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  padding: 0 0 2 0 !important;
+}
+
+.sketchbook-section {
+  margin-top: 0rem !important; /* Start small and adjust */
+}
+
+@media (max-width: 768px) {
+  .hero-simple {
+    min-height: 0 !important;
+    padding: 0.25rem 1rem 0.25rem !important;
+  }
+  
+  .sketchbook-section {
+    margin-top: 0rem !important;
+  }
+}
