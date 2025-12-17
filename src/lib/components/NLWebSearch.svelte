@@ -29,8 +29,13 @@
   });
   
   async function initializeSearch() {
-    chatInstance.destroy();
-    if (chatInstance || !browser) return;
+    // Clean up existing instance first
+    if (chatInstance) {
+      chatInstance.destroy();
+      chatInstance = null;
+    }
+    
+    if (!browser) return;
     
     try {
       const { NLWebDropdownChat } = await import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js');
@@ -42,8 +47,8 @@
         containerId: 'nlweb-search-container',
         site: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
         placeholder: $t('search.placeholder'),
-        endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev'
-        language: browser ? navigator.language.split('-')[0] : 'en'  // 'es', 'fr'
+        endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
+        language: navigator.language.split('-')[0]  // 'es', 'fr', 'en'
       });
       
       searchLoaded = true;
@@ -51,27 +56,27 @@
       console.error('Failed to load NLWeb search:', error);
     }
   }
-
+  
   function toggleSearch() {
-  if (!isOpen) {
-    // Opening: recreate fresh instance
-    if (chatInstance) {
-      chatInstance.destroy();
-      chatInstance = null;
+    if (!isOpen) {
+      // Opening: recreate fresh instance
+      if (chatInstance) {
+        chatInstance.destroy();
+        chatInstance = null;
+        searchLoaded = false;
+      }
+      isOpen = true;
+      initializeSearch();
+    } else {
+      // Closing: clean up
+      if (chatInstance) {
+        chatInstance.destroy();
+        chatInstance = null;
+      }
+      isOpen = false;
       searchLoaded = false;
     }
-    isOpen = true;
-    initializeSearch();
-  } else {
-    // Closing: clean up
-    if (chatInstance) {
-      chatInstance.destroy();
-      chatInstance = null;
-    }
-    isOpen = false;
-    searchLoaded = false;
   }
-}
   
   function handleKeydown(event) {
     // CMD+K or CTRL+K to open search
