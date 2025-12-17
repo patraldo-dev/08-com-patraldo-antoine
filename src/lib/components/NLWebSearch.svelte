@@ -2,9 +2,11 @@
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { t } from '$lib/i18n';
   
   let isOpen = $state(false);
   let searchLoaded = $state(false);
+  let chatInstance = $state(null);
   
   onMount(() => {
     if (!browser) return;
@@ -20,30 +22,39 @@
     cssDropdown.href = 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.css';
     document.head.appendChild(cssDropdown);
     
-    // Load and initialize NLWeb
-    import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js')
-      .then(({ NLWebDropdownChat }) => {
-        const chat = new NLWebDropdownChat({
-          containerId: 'nlweb-search-container',
-          site: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
-          placeholder: 'Ask about artworks, techniques, stories...',
-          endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev'
-        });
-        searchLoaded = true;
-      })
-      .catch(error => {
-        console.error('Failed to load NLWeb search:', error);
-      });
-    
     return () => {
-      // Cleanup if needed
       cssCommon.remove();
       cssDropdown.remove();
     };
   });
   
+  async function initializeSearch() {
+    if (chatInstance || !browser) return;
+    
+    try {
+      const { NLWebDropdownChat } = await import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js');
+      
+      // Wait a bit for the DOM to be ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      chatInstance = new NLWebDropdownChat({
+        containerId: 'nlweb-search-container',
+        site: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
+        placeholder: $t('search.placeholder'),
+        endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev'
+      });
+      
+      searchLoaded = true;
+    } catch (error) {
+      console.error('Failed to load NLWeb search:', error);
+    }
+  }
+  
   function toggleSearch() {
     isOpen = !isOpen;
+    if (isOpen && !chatInstance) {
+      initializeSearch();
+    }
   }
   
   function handleKeydown(event) {
@@ -65,8 +76,8 @@
 <button 
   class="search-fab" 
   onclick={toggleSearch}
-  aria-label="Open AI search"
-  title="Search artworks (⌘K)"
+  aria-label={$t('search.openLabel')}
+  title={$t('search.shortcut')}
 >
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <circle cx="11" cy="11" r="8"></circle>
@@ -79,8 +90,8 @@
   <div class="search-overlay" onclick={() => isOpen = false}>
     <div class="search-modal" onclick={(e) => e.stopPropagation()}>
       <div class="search-header">
-        <h2>Search Artworks</h2>
-        <button class="close-btn" onclick={() => isOpen = false} aria-label="Close search">
+        <h2>{$t('search.title')}</h2>
+        <button class="close-btn" onclick={() => isOpen = false} aria-label={$t('search.closeLabel')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -93,14 +104,14 @@
         {#if !searchLoaded}
           <div class="loading-state">
             <div class="spinner"></div>
-            <p>Loading search...</p>
+            <p>{$t('search.loading')}</p>
           </div>
         {/if}
       </div>
       
       <div class="search-footer">
         <p class="hint">
-          <kbd>⌘K</kbd> to open · <kbd>ESC</kbd> to close
+          <kbd>⌘K</kbd> {$t('search.toOpen')} · <kbd>ESC</kbd> {$t('search.toClose')}
         </p>
       </div>
     </div>
@@ -214,6 +225,7 @@
     overflow-y: auto;
     padding: 1.5rem;
     position: relative;
+    min-height: 300px;
   }
   
   .loading-state {

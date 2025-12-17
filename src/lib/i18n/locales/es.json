@@ -174,5 +174,13 @@
   "cine.gallery.allVideos": "Todos las películas ",
   "cine.gallery.noVideos": "Aún no hay películas disponibles.",
   "cine.gallery.views": "{count} vistas",
-  "cine.gallery.minutes": "{minutes} min"
+  "cine.gallery.minutes": "{minutes} min",
+  "search.title": "Buscar Obras",
+    "search.placeholder": "Pregunta sobre obras, técnicas, historias...",
+    "search.openLabel": "Abrir búsqueda IA",
+    "search.closeLabel": "Cerrar búsqueda",
+    "search.shortcut": "Buscar obras (⌘K)",
+    "search.loading": "Cargando búsqueda...",
+    "search.toOpen": "para abrir",
+    "search.toClose": "para cerrar"
 }

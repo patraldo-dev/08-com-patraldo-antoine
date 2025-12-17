@@ -174,5 +174,13 @@
   "cine.gallery.allVideos": "All Movies",
   "cine.gallery.noVideos": "No movies available yet.",
   "cine.gallery.views": "{count} views",
-  "cine.gallery.minutes": "{minutes} min"
+  "cine.gallery.minutes": "{minutes} min",
+  "search.title": "Search Artworks",
+    "search.placeholder": "Ask about artworks, techniques, stories...",
+    "search.openLabel": "Open AI search",
+    "search.closeLabel": "Close search",
+    "search.shortcut": "Search artworks (⌘K)",
+    "search.loading": "Loading search...",
+    "search.toOpen": "to open",
+    "search.toClose": "to close"
 }
