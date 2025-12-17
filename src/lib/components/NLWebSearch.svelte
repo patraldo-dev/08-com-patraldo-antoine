@@ -45,7 +45,7 @@ async function initializeSearch() {
       containerId: 'nlweb-search-container',
       site: 'https://antoine.patraldo.com',
       placeholder: $t('search.placeholder'),
-      endpoint: 'https://antoine.patraldo.com',
+      endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
       language: navigator.language.split('-')[0]
     });
     
