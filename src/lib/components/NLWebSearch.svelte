@@ -7,6 +7,7 @@
   let isOpen = $state(false);
   let searchLoaded = $state(false);
   let chatInstance = $state(null);
+  let lastSearch = $state(0);
   
   onMount(() => {
     if (!browser) return;
@@ -58,6 +59,9 @@
   }
   
   function toggleSearch() {
+    if (Date.now() - lastSearch < 3000) return;
+      lastSearch = Date.now();
+
     if (!isOpen) {
       // Opening: recreate fresh instance
       if (chatInstance) {
