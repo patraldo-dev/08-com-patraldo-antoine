@@ -5,6 +5,7 @@
   import { page } from '$app/stores';
   import { locale, setLocale } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
+  import NLWebSearch from '$lib/components/NLWebSearch.svelte';
   import { browser } from '$app/environment';
   
   // Check if current page needs full-height layout (no top margin)
@@ -69,6 +70,8 @@
   <footer>
     <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
   </footer>
+
+<NLWebSearch />
 </div>
 
 <style>
