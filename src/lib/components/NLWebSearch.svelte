@@ -46,7 +46,8 @@ async function initializeSearch() {
       site: 'https://antoine.patraldo.com',
       placeholder: $t('search.placeholder'),
       endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
-      language: navigator.language.split('-')[0]
+      language: navigator.language.split('-')[0],
+      acceptLanguage: navigator.language,
     });
     
     searchLoaded = true;
