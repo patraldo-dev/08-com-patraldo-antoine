@@ -91,6 +91,9 @@ const artworks = (data?.artworks || []).map(art => ({
     </p>
   {/if}
 </div>
+{/if}
+</div>
+
 
 <style>
   .stickers-page {
