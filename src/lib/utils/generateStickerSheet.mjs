@@ -1,6 +1,6 @@
 // src/lib/utils/generateStickerSheet.mjs
 /**
- * Generates a printable sticker sheet with cut guides and subtle watermark.
+ * Generates a printable sticker sheet with cut guides and corner watermark.
  * 
  * @param {Array<{id: string, displayName: string, imageUrl: string}>} artworks
  * @param {Object} options
@@ -18,11 +18,11 @@ export async function generateStickerSheet(artworks, {
   if (stickers.length === 0) throw new Error('No artworks provided');
 
   const mmToPx = dpi / 25.4;
-  const pageW = Math.round(210 * mmToPx);   // A4 width
-  const pageH = Math.round(297 * mmToPx);   // A4 height
-  const stickerSize = Math.round(60 * mmToPx); // 60mm sticker (~2.36")
-  const padding = Math.round(10 * mmToPx);     // space between stickers
-  const safeInset = stickerSize * 0.05;        // 5% margin inside each sticker
+  const pageW = Math.round(210 * mmToPx);   // A4
+  const pageH = Math.round(297 * mmToPx);
+  const stickerSize = Math.round(60 * mmToPx);
+  const padding = Math.round(10 * mmToPx);
+  const safeInset = stickerSize * 0.05;
 
   const canvas = Object.assign(document.createElement('canvas'), {
     width: pageW,
@@ -32,7 +32,6 @@ export async function generateStickerSheet(artworks, {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, pageW, pageH);
 
-  // Load all images
   const imgPromises = stickers.map(({ imageUrl }) =>
     new Promise((resolve, reject) => {
       const img = new Image();
@@ -44,21 +43,20 @@ export async function generateStickerSheet(artworks, {
   );
   const images = await Promise.all(imgPromises);
 
-  // Draw each sticker
   for (let i = 0; i < images.length; i++) {
     const row = Math.floor(i / cols);
     const col = i % cols;
     const x = col * (stickerSize + padding) + padding;
     const y = row * (stickerSize + padding) + padding;
 
-    // Draw dashed cut guide
+    // Dashed cut guide
     ctx.strokeStyle = '#cccccc';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
     ctx.strokeRect(x, y, stickerSize, stickerSize);
     ctx.setLineDash([]);
 
-    // Draw artwork with safe margin
+    // Artwork with margin
     const img = images[i];
     const contentSize = stickerSize - safeInset * 2;
     const scale = Math.min(contentSize / img.width, contentSize / img.height);
@@ -68,25 +66,26 @@ export async function generateStickerSheet(artworks, {
     const dy = y + safeInset + (contentSize - h) / 2;
     ctx.drawImage(img, dx, dy, w, h);
 
-// Watermark: "antoine." along bottom edge, "patraldo.com" rotated 90° clockwise on right edge
-const fontSize = stickerSize * 0.07;
-ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-ctx.fontStyle = 'italic';
+    // ✅ NEW WATERMARK: corner L-shape, rotated
+    const fontSize = stickerSize * 0.07;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+    ctx.fontStyle = 'italic';
 
-// "antoine." — bottom edge, flush right
-ctx.textAlign = 'right';
-ctx.textBaseline = 'bottom';
-ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+    // "antoine." along bottom
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
 
-// "patraldo.com" — right edge, rotated 90° clockwise (reads correctly when tilted)
-ctx.save();
-ctx.translate(x + stickerSize, y + stickerSize);
-ctx.rotate(Math.PI / 2);
-ctx.textAlign = 'left';
-ctx.textBaseline = 'top';
-ctx.fillText('patraldo.com', 0, 0);
-ctx.restore();
+    // "patraldo.com" rotated 90° clockwise on right edge
+    ctx.save();
+    ctx.translate(x + stickerSize, y + stickerSize);
+    ctx.rotate(Math.PI / 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('patraldo.com', 0, 0);
+    ctx.restore();
+  }
 
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
