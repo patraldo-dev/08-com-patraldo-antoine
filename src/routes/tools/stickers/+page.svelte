@@ -42,13 +42,16 @@ const artworks = (data?.artworks || []).map(art => ({
     }
   }
 
-  function toggleSelection(id) {
-    if (selected.has(id)) {
-      selected.delete(id);
-    } else {
-      selected.add(id);
-    }
+function toggleSelection(id) {
+  const newSet = new Set(selected);
+  if (newSet.has(id)) {
+    newSet.delete(id);
+  } else {
+    newSet.add(id);
   }
+  selected = newSet;
+}
+
 </script>
 
 <div class="stickers-page">
