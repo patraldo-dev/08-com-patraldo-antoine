@@ -86,8 +86,7 @@
   "pages.tools.ctatitle": "Have an idea?",
   "pages.tools.ctadescription": "Tell me what creative tools you'd like to see! I'm always looking to support artists and designers.",
   "pages.tools.ctabutton": "Get in touch",
-
-"pages.tools.palettes.title": "Color Palettes",
+  "pages.tools.palettes.title": "Color Palettes",
     "pages.tools.palettes.metaDescription": "Explore color palettes extracted from Antoine Patraldo's daily sketchbook practice - one drawing each day, one story each week.",
     "pages.tools.palettes.heading": "Color Palettes from Daily Practice",
     "pages.tools.palettes.subtitle": "Every drawing carries its own color story. These palettes emerge from my daily sketchbook—one drawing each day, one story each week.",
@@ -182,5 +181,14 @@
     "search.shortcut": "Search artworks (⌘K)",
     "search.loading": "Loading search...",
     "search.toOpen": "to open",
-    "search.toClose": "to close"
+    "search.toClose": "to close",
+  "pages.tools.stickersTitle": "Printable Stickers",
+  "pages.tools.stickersDescription": "Create custom sticker sheets from your favorite artworks—ready to print at home or professionally.",
+  "sticker.title": "Printable Stickers",
+  "sticker.description": "Select your favorite artworks to create a custom sticker sheet. Download the PNG and print at home or through a professional service.",
+  "sticker.noArtworks": "No artworks available.",
+  "sticker.downloadSheet": "Download Sheet ({count} selected)",
+  "sticker.generating": "Generating your sticker sheet...",
+  "sticker.selected": "{count} selected",
+  "sticker.error": "Failed to generate sticker sheet. Please ensure images are accessible and try again."
 }

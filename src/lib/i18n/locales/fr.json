@@ -182,5 +182,14 @@
     "search.shortcut": "Rechercher des œuvres (⌘K)",
     "search.loading": "Chargement de la recherche...",
     "search.toOpen": "pour ouvrir",
-    "search.toClose": "pour fermer"
+    "search.toClose": "pour fermer",
+"pages.tools.stickersTitle": "Autocollants Imprimables",
+  "pages.tools.stickersDescription": "Créez des planches personnalisées d'autocollants à partir de vos œuvres préférées, prêtes à imprimer à la maison ou par un service professionnel.",
+  "sticker.title": "Autocollants Imprimables",
+  "sticker.description": "Sélectionnez vos œuvres préférées pour créer une planche personnalisée d'autocollants. Téléchargez le PNG et imprimez-le chez vous ou via un service professionnel.",
+  "sticker.noArtworks": "Aucune œuvre disponible.",
+  "sticker.downloadSheet": "Télécharger la planche ({count} sélectionnées)",
+  "sticker.generating": "Génération de votre planche d'autocollants...",
+  "sticker.selected": "{count} sélectionnées",
+  "sticker.error": "Échec de la génération de la planche d'autocollants. Veuillez vérifier que les images sont accessibles et réessayer."
 }

@@ -182,5 +182,14 @@
     "search.shortcut": "Buscar obras (⌘K)",
     "search.loading": "Cargando búsqueda...",
     "search.toOpen": "para abrir",
-    "search.toClose": "para cerrar"
+    "search.toClose": "para cerrar",
+"pages.tools.stickersTitle": "Calcomanías para Imprimir",
+  "pages.tools.stickersDescription": "Crea hojas personalizadas de calcomanías con tus obras favoritas, listas para imprimir en casa o con un servicio profesional.",
+  "sticker.title": "Calcomanías para Imprimir",
+  "sticker.description": "Selecciona tus obras favoritas para crear una hoja personalizada de calcomanías. Descarga el PNG e imprímelo en casa o mediante un servicio profesional.",
+  "sticker.noArtworks": "No hay obras disponibles.",
+  "sticker.downloadSheet": "Descargar hoja ({count} seleccionadas)",
+  "sticker.generating": "Generando tu hoja de calcomanías...",
+  "sticker.selected": "{count} seleccionadas",
+  "sticker.error": "Error al generar la hoja de calcomanías. Asegúrate de que las imágenes estén accesibles e inténtalo de nuevo."
 }
