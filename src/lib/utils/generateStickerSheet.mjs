@@ -80,7 +80,7 @@ export async function generateStickerSheet(artworks, {
     // "patraldo.com" rotated 90° clockwise on right edge
     ctx.save();
     ctx.translate(x + stickerSize, y + stickerSize);
-    ctx.rotate(Math.PI / 2);
+    ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText('patraldo.com', 0, 0);
