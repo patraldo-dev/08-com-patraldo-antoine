@@ -2,7 +2,6 @@
 <script>
   import { generateStickerSheet } from '$lib/utils/generateStickerSheet.mjs';
   import { t } from '$lib/i18n';
-  import { interpolate } from '$lib/utils/interpolate.mjs';
 
   const { data } = $props();
 
@@ -75,23 +74,21 @@ const artworks = (data?.artworks || []).map(art => ({
     </div>
 
     <div class="actions">
-      <button
-        disabled={selected.size === 0 || isGenerating}
-        onclick={downloadSheet}
-        class="primary"
-      >
-        {#if isGenerating}
-          {$t('sticker.generating')}
-        {:else}
-          {interpolate(t('sticker.downloadSheet'), { count: selected.size })}
-        {/if}
-      </button>
-      {#if selected.size > 0}
-        <p class="selection-hint">
-          {interpolate(t('sticker.selected'), { count: selected.size })}
-        </p>
-      {/if}
-    </div>
+  <button
+    disabled={selected.size === 0 || isGenerating}
+    onclick={downloadSheet}
+    class="primary"
+  >
+    {#if isGenerating}
+      {$t('sticker.generating')}
+    {:else}
+      {$t('sticker.downloadSheet').replace('{count}', selected.size)}
+    {/if}
+  </button>
+  {#if selected.size > 0}
+    <p class="selection-hint">
+      {$t('sticker.selected').replace('{count}', selected.size)}
+    </p>
   {/if}
 </div>
 
