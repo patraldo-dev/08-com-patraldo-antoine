@@ -81,8 +81,8 @@ export async function generateStickerSheet(artworks, {
     ctx.save();
     ctx.translate(x + stickerSize, y + stickerSize);
     ctx.rotate(-Math.PI / 2);
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
     ctx.fillText('patraldo.com', 0, 0);
     ctx.restore();
   }
