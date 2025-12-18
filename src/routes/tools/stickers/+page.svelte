@@ -3,7 +3,7 @@
   import { generateStickerSheet } from '$lib/utils/generateStickerSheet.mjs';
   import { t } from '$lib/i18n';
 
-  export let data;
+  const { data } = $props();
 
   // Cloudflare Images config
   const CF_ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
