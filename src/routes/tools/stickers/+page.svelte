@@ -66,7 +66,7 @@
             alt={artwork.displayName}
             loading="lazy"
             onclick={() => toggleSelection(artwork.id)}
-            class: selected={selected.has(artwork.id)}
+            class:selected={selected.has(artwork.id)}
           />
           <p>{artwork.displayName}</p>
         </div>

@@ -31,19 +31,19 @@
       <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
     </a>
 
+<!-- Stickers - NOW LIVE -->
+  <a href="/tools/stickers" class="tool-card available">
+    <div class="tool-icon">🖨️</div>
+    <h3>{$t('pages.tools.stickersTitle')}</h3>
+    <p>{$t('pages.tools.stickersDescription')}</p>
+    <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
+  </a>
+
     <!-- Avatar Creator - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">👤</div>
       <h3>{$t('pages.tools.avatarCreatorTitle')}</h3>
       <p>{$t('pages.tools.avatarCreatorDescription')}</p>
-      <span class="status-badge">{$t('pages.tools.statusComingSoon')}</span>
-    </div>
-
-    <!-- Stickers - Coming Soon -->
-    <div class="tool-card coming-soon">
-      <div class="tool-icon">✨</div>
-      <h3>{$t('pages.tools.stickersTitle')}</h3>
-      <p>{$t('pages.tools.stickersDescription')}</p>
       <span class="status-badge">{$t('pages.tools.statusComingSoon')}</span>
     </div>
 
