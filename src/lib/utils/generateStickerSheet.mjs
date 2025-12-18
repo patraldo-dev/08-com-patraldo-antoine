@@ -68,18 +68,25 @@ export async function generateStickerSheet(artworks, {
     const dy = y + safeInset + (contentSize - h) / 2;
     ctx.drawImage(img, dx, dy, w, h);
 
-    // ✅ Add subtle watermark: "antoine.patraldo.com"
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    ctx.font = `${stickerSize * 0.07}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-    ctx.fontStyle = 'italic';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(
-      'antoine.patraldo.com',
-      x + stickerSize - safeInset / 2,
-      y + stickerSize - safeInset / 3
-    );
-  }
+// Watermark: "antoine." along bottom edge, "patraldo.com" rotated 90° clockwise on right edge
+const fontSize = stickerSize * 0.07;
+ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+ctx.fontStyle = 'italic';
+
+// "antoine." — bottom edge, flush right
+ctx.textAlign = 'right';
+ctx.textBaseline = 'bottom';
+ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+
+// "patraldo.com" — right edge, rotated 90° clockwise (reads correctly when tilted)
+ctx.save();
+ctx.translate(x + stickerSize, y + stickerSize);
+ctx.rotate(Math.PI / 2);
+ctx.textAlign = 'left';
+ctx.textBaseline = 'top';
+ctx.fillText('patraldo.com', 0, 0);
+ctx.restore();
 
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
