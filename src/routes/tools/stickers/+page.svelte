@@ -2,15 +2,16 @@
 <script>
   import { generateStickerSheet } from '$lib/utils/generateStickerSheet.mjs';
   import { t } from '$lib/i18n';
+  import { interpolate } from '$lib/utils/interpolate.mjs';
 
   const { data } = $props();
 
   // Cloudflare Images config
   const CF_ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
-  const CF_VARIANT = 'full'; // or 'gallery' for smaller file size; 'full' for print
+  const CF_VARIANT = 'gallery'; // or 'full' for higher res
 
   const artworks = data.artworks.map(art => ({
-    id: art.id,
+    id: String(art.id),
     displayName: art.display_name || art.title,
     imageUrl: `https://imagedelivery.net/${CF_ACCOUNT_HASH}/${art.image_id}/${CF_VARIANT}`
   }));
@@ -82,12 +83,12 @@
         {#if isGenerating}
           {$t('sticker.generating')}
         {:else}
-          {$t('sticker.downloadSheet', { count: selected.size })}
+          {interpolate(t('sticker.downloadSheet'), { count: selected.size })}
         {/if}
       </button>
       {#if selected.size > 0}
         <p class="selection-hint">
-          {$t('sticker.selected', { count: selected.size })}
+          {interpolate(t('sticker.selected'), { count: selected.size })}
         </p>
       {/if}
     </div>
@@ -148,8 +149,5 @@
     margin-top: 0.75rem;
     color: #666;
     font-style: italic;
-  }
-  .error {
-    color: #c00;
   }
 </style>
