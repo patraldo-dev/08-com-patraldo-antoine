@@ -10,11 +10,11 @@
   const CF_ACCOUNT_HASH = '4bRSwPonOXfEIBVZiDXg0w';
   const CF_VARIANT = 'gallery'; // or 'full' for higher res
 
-  const artworks = data.artworks.map(art => ({
-    id: String(art.id),
-    displayName: art.display_name || art.title,
-    imageUrl: `https://imagedelivery.net/${CF_ACCOUNT_HASH}/${art.image_id}/${CF_VARIANT}`
-  }));
+const artworks = (data?.artworks || []).map(art => ({
+  id: String(art.id),
+  displayName: art.display_name || art.title,
+  imageUrl: `https://imagedelivery.net/${CF_ACCOUNT_HASH}/${art.image_id}/${CF_VARIANT}`
+}));
 
   let selected = $state(new Set());
   let isGenerating = $state(false);
