@@ -1,9 +1,0 @@
-<iframe
-  src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/ae704cadc61df756c41bc2f3404f2cf0/iframe?muted=true&loop=true&autoplay=true&controls=false&preload=auto"
-  class="hero-video"
-  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-  allowfullscreen="true"
-  loading="eager"
-  title="Hero video"
-></iframe>
- 
