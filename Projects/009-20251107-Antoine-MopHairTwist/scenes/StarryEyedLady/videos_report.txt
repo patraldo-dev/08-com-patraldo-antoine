@@ -1,7 +1,0 @@
-../ManTwist/muted_ManTwistingOriginal.mp4              830,1108       10 sec
-StarryEyedLady01.mp4                                   830,1108        5 sec
-../ManTwist/muted_ManTwistingCloseupWide.mp4' : NOT FOUND
-StarryEyedLady02.mp4                                   830,1108        5 sec
-../ManTwist/muted_ManTwistingCloseupWide.mp4           830,1108       10 sec
-../ManTwist/muted_ManTwistingOriginal.mp4              830,1108       10 sec
-StarryEyedLady02.mp4                                   830,1108        5 sec

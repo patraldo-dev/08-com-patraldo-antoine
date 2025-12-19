@@ -1,2 +1,0 @@
-file 'ParisSeineScene03x10.mp4'
-file 'ParisSeineScene.mp4' 

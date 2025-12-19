@@ -1,16 +1,21 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Usage: $0 \"Your commit message\""
-  exit 1
-fi
+    # Check if a commit message is provided as an argument
+    if [ -z "$1" ]; then
+      echo "Usage: $0 \"Your commit message\""
+      exit 1
+    fi
 
-COMMIT_MESSAGE="$1"
-CURRENT_BRANCH=$(git branch --show-current)
+    COMMIT_MESSAGE="$1"
 
-git add .
-git commit -m "$COMMIT_MESSAGE"
-git push origin "$CURRENT_BRANCH"
+    # Add all changes to the staging area
+    git add .
 
-echo "Changes added, committed, and pushed to branch: $CURRENT_BRANCH"
+    # Commit the changes with the provided message
+    git commit -m "$COMMIT_MESSAGE"
 
+    # Push the changes to the remote repository (assuming 'origin' and 'main' or 'master' branch)
+    # You might need to adjust 'main' to 'master' depending on your repository's default branch
+    git push origin main
+
+    echo "Changes added, committed, and pushed successfully!"

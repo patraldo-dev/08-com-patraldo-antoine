@@ -1,4 +1,0 @@
-file 'output4_panRight_zoomJardin5s.mp4'
-file 'output4_panRight_zoomJardin5s_hflip.mp4'
-file 'output4_panRight_zoomJardin5s.mp4'
-

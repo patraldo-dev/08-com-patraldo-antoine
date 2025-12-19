@@ -1,1 +1,0 @@
-This folder contains the built output assets for the worker "08-com-patraldo-antoine" generated at 2025-11-18T01:28:33.441Z.

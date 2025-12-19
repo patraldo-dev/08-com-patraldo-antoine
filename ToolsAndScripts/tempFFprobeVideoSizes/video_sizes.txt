@@ -1,9 +1,0 @@
-MujerFloresBolas_jardin5s.mp4: 960,960
-MujerMisteriosaConcat23.mp4: 720,1280
-output_cropped18.mp4: 720,1050
-output_cropped28.mp4: 720,794
-output_MujerMistoriosa10s_zoomed_tighter.mp4: 622,830
-output_MujMist_zoomed_18.mp4: 622,830
-output_MujMist_zoomed_28.mp4: 622,830
-output_vFlipped_zoomed.mp4: 622,830
-output_zoom_warm_15.mp4: 622,830
