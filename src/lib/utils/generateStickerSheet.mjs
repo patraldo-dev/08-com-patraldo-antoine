@@ -42,7 +42,7 @@ const addWatermark = (ctx, x, y, stickerSize) => {
   // antoine. - left nudge
   ctx.textAlign = 'right';
   ctx.textBaseline = 'bottom';
-  ctx.fillText('antoine.', x + stickerSize - 8, y + stickerSize);
+  ctx.fillText('antoine.', x + stickerSize - 18, y + stickerSize);
 
   // patraldo.com - UPWARD nudge + left
   ctx.save();
