@@ -32,6 +32,28 @@ export async function generateStickerSheet(artworks, {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, pageW, pageH);
 
+  // ✅ WATERMARK FUNCTION
+  const addWatermark = (ctx, x, y, stickerSize) => {
+    const fontSize = stickerSize * 0.07;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+    ctx.fontStyle = 'italic';
+
+    // "antoine." bottom-right (normal orientation)
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+
+    // "patraldo.com" bottom-left (when image rotates 90° clockwise)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.PI / 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('patraldo.com', 0, stickerSize);
+    ctx.restore();
+  };
+
   const imgPromises = stickers.map(({ imageUrl }) =>
     new Promise((resolve, reject) => {
       const img = new Image();
@@ -66,28 +88,12 @@ export async function generateStickerSheet(artworks, {
     const dy = y + safeInset + (contentSize - h) / 2;
     ctx.drawImage(img, dx, dy, w, h);
 
-// ✅ NEW WATERMARK: corner L-shape, rotated - TRUE L
-const fontSize = stickerSize * 0.07;
-ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-ctx.fontStyle = 'italic';
-
-// "antoine." bottom-right (normal orientation)
-ctx.textAlign = 'right';
-ctx.textBaseline = 'bottom';
-ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
-
-// "patraldo.com" bottom-left (when image rotates 90° clockwise)
-ctx.save();
-ctx.translate(x, y);  // Move to TOP-LEFT corner
-ctx.rotate(Math.PI / 2);  // Rotate 90° clockwise
-ctx.textAlign = 'left';  // Left-align after rotation
-ctx.textBaseline = 'bottom';
-ctx.fillText('patraldo.com', 0, stickerSize);  // Flush bottom edge
-ctx.restore();
-}
+    // Add L-shape watermark
+    addWatermark(ctx, x, y, stickerSize);
+  }
 
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
   });
+}
 
