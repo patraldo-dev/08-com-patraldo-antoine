@@ -6,6 +6,7 @@
   import { locale, setLocale } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
   import NLWebSearch from '$lib/components/NLWebSearch.svelte';
+  import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
   import { browser } from '$app/environment';
   
   // Check if current page needs full-height layout (no top margin)
@@ -72,6 +73,7 @@
   </footer>
 
 <NLWebSearch />
+<AIArtAssistant />
 </div>
 
 <style>
