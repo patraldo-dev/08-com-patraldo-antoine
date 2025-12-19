@@ -39,12 +39,12 @@ const addWatermark = (ctx, x, y, stickerSize) => {
   ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
   ctx.fontStyle = 'italic';
 
-  // antoine. bottom-right
+  // antoine. - nudged left to avoid overlap
   ctx.textAlign = 'right';
   ctx.textBaseline = 'bottom';
-  ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+  ctx.fillText('antoine.', x + stickerSize - 8, y + stickerSize);
 
-  // patraldo.com - bottom-right → vertical UP
+  // patraldo.com - vertical from bottom-right
   ctx.save();
   ctx.translate(x + stickerSize - 2, y + stickerSize);
   ctx.rotate(-Math.PI / 2);
