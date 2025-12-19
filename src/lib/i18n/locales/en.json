@@ -190,5 +190,9 @@
   "sticker.downloadSheet": "Download Sheet ({count} selected)",
   "sticker.generating": "Generating your sticker sheet...",
   "sticker.selected": "{count} selected",
-  "sticker.error": "Failed to generate sticker sheet. Please ensure images are accessible and try again."
+  "sticker.error": "Failed to generate sticker sheet. Please ensure images are accessible and try again.",
+  "sticker.formatDefault": "png",
+  "sticker.formatPng": "PNG",
+  "sticker.formatPdf": "PDF",
+  "sticker.formatLabel": "Format"
 }

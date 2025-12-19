@@ -17,7 +17,8 @@
 
   let selected = $state(new Set());
   let isGenerating = $state(false);
-  let format = $state('png'); // 'png' or 'pdf'
+  let format = $state($t('sticker.formatDefault') || 'png');  
+
 
   async function downloadSheet() {
     if (selected.size === 0) return;
@@ -88,19 +89,13 @@
 
     <div class="actions">
       <div class="format-toggle">
-        <button 
-          class="format-btn {format === 'png' ? 'active' : ''}"
-          onclick={toggleFormat}
-        >
-          PNG
-        </button>
-        <button 
-          class="format-btn {format === 'pdf' ? 'active' : ''}"
-          onclick={toggleFormat}
-        >
-          PDF
-        </button>
-        <span>Format: <strong>{format.toUpperCase()}</strong></span>
+<button class="format-btn {format === 'png' ? 'active' : ''}" onclick={toggleFormat}>
+  {$t('sticker.formatPng')}
+</button>
+<button class="format-btn {format === 'pdf' ? 'active' : ''}" onclick={toggleFormat}>
+  {$t('sticker.formatPdf')}
+</button>
+<span>{$t('sticker.formatLabel')}: <strong>{format.toUpperCase()}</strong></span>
       </div>
 
       <button

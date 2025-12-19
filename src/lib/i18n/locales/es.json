@@ -191,5 +191,9 @@
   "sticker.downloadSheet": "Descargar hoja ({count} seleccionadas)",
   "sticker.generating": "Generando tu hoja de calcomanías...",
   "sticker.selected": "{count} seleccionadas",
-  "sticker.error": "Error al generar la hoja de calcomanías. Asegúrate de que las imágenes estén accesibles e inténtalo de nuevo."
+  "sticker.error": "Error al generar la hoja de calcomanías. Asegúrate de que las imágenes estén accesibles e inténtalo de nuevo.",
+  "sticker.formatDefault": "png",
+  "sticker.formatPng": "PNG",
+  "sticker.formatPdf": "PDF",
+  "sticker.formatLabel": "Formato"
 }

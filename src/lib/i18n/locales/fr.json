@@ -191,5 +191,9 @@
   "sticker.downloadSheet": "Télécharger la planche ({count} sélectionnées)",
   "sticker.generating": "Génération de votre planche d'autocollants...",
   "sticker.selected": "{count} sélectionnées",
-  "sticker.error": "Échec de la génération de la planche d'autocollants. Veuillez vérifier que les images sont accessibles et réessayer."
+  "sticker.error": "Échec de la génération de la planche d'autocollants. Veuillez vérifier que les images sont accessibles et réessayer.",
+  "sticker.formatDefault": "png",
+  "sticker.formatPng": "PNG",
+  "sticker.formatPdf": "PDF",
+  "sticker.formatLabel": "Format"
 }
