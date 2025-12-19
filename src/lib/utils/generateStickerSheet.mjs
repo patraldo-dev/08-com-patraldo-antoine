@@ -83,7 +83,7 @@ export async function generateStickerSheet(artworks, {
     ctx.rotate(Math.PI / 2);
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
-    ctx.fillText('patraldo.com', 0, 0);
+    ctx.fillText('patraldo.com', 0, -fontSize * 0.8);
     ctx.restore();
   }
 
