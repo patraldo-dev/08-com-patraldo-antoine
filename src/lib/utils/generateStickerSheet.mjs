@@ -33,26 +33,26 @@ export async function generateStickerSheet(artworks, {
   ctx.fillRect(0, 0, pageW, pageH);
 
   // ✅ WATERMARK FUNCTION
-  const addWatermark = (ctx, x, y, stickerSize) => {
-    const fontSize = stickerSize * 0.07;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-    ctx.fontStyle = 'italic';
+const addWatermark = (ctx, x, y, stickerSize) => {
+  const fontSize = stickerSize * 0.07;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+  ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+  ctx.fontStyle = 'italic';
 
-    // "antoine." bottom-right (normal orientation)
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+  // "antoine." bottom-right ✓ (this works)
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
 
-    // "patraldo.com" bottom-left (when image rotates 90° clockwise)
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(Math.PI / 2);
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('patraldo.com', 0, stickerSize);
-    ctx.restore();
-  };
+  // "patraldo.com" - FIXED position
+  ctx.save();
+  ctx.translate(x + stickerSize, y);  // Bottom-right corner
+  ctx.rotate(-Math.PI / 2);  // Rotate COUNTER-clockwise for right edge
+  ctx.textAlign = 'top';
+  ctx.textBaseline = 'right';
+  ctx.fillText('patraldo.com', 0, 0);
+  ctx.restore();
+};
 
   const imgPromises = stickers.map(({ imageUrl }) =>
     new Promise((resolve, reject) => {
