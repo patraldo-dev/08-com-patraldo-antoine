@@ -85,8 +85,10 @@ ctx.textAlign = 'left';  // Left-align after rotation
 ctx.textBaseline = 'bottom';
 ctx.fillText('patraldo.com', 0, stickerSize);  // Flush bottom edge
 ctx.restore();
+}
 
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
   });
 }
+
