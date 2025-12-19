@@ -66,26 +66,25 @@ export async function generateStickerSheet(artworks, {
     const dy = y + safeInset + (contentSize - h) / 2;
     ctx.drawImage(img, dx, dy, w, h);
 
-    // ✅ NEW WATERMARK: corner L-shape, rotated
-    const fontSize = stickerSize * 0.07;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-    ctx.fontStyle = 'italic';
+// ✅ NEW WATERMARK: corner L-shape, rotated - TRUE L
+const fontSize = stickerSize * 0.07;
+ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+ctx.fontStyle = 'italic';
 
-    // "antoine." along bottom
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
+// "antoine." bottom-right (normal orientation)
+ctx.textAlign = 'right';
+ctx.textBaseline = 'bottom';
+ctx.fillText('antoine.', x + stickerSize, y + stickerSize);
 
-    // "patraldo.com" rotated 90° clockwise on right edge
-    ctx.save();
-    ctx.translate(x + stickerSize, y + stickerSize);
-    ctx.rotate(-Math.PI / 2);
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('patraldo.com', 0, -fontSize * 0.8);
-    ctx.restore();
-  }
+// "patraldo.com" bottom-left (when image rotates 90° clockwise)
+ctx.save();
+ctx.translate(x, y);  // Move to TOP-LEFT corner
+ctx.rotate(Math.PI / 2);  // Rotate 90° clockwise
+ctx.textAlign = 'left';  // Left-align after rotation
+ctx.textBaseline = 'bottom';
+ctx.fillText('patraldo.com', 0, stickerSize);  // Flush bottom edge
+ctx.restore();
 
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
