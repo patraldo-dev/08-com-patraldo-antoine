@@ -90,5 +90,4 @@ ctx.restore();
   return new Promise((resolve) => {
     canvas.toBlob(resolve, 'image/png', 1.0);
   });
-}
 
