@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"colorthief": "^2.6.0",
+		"jspdf": "^3.0.4",
 		"matter-js": "^0.20.0"
 	}
 }

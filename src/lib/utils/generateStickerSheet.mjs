@@ -7,12 +7,14 @@
  * @param {number} [options.cols=3]
  * @param {number} [options.rows=3]
  * @param {number} [options.dpi=300]
+ * @param {string} [options.format='png']
  * @returns {Promise<Blob>}
  */
 export async function generateStickerSheet(artworks, {
   cols = 3,
   rows = 3,
-  dpi = 300
+  dpi = 300,
+  format = 'png'
 } = {}) {
   const stickers = artworks.slice(0, cols * rows);
   if (stickers.length === 0) throw new Error('No artworks provided');
@@ -32,28 +34,27 @@ export async function generateStickerSheet(artworks, {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, pageW, pageH);
 
-  // ✅ WATERMARK FUNCTION
-const addWatermark = (ctx, x, y, stickerSize) => {
-  const fontSize = stickerSize * 0.07;
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-  ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
-  ctx.fontStyle = 'italic';
+  // ✅ WATERMARK FUNCTION - YOUR PERFECTED PIXELS
+  const addWatermark = (ctx, x, y, stickerSize) => {
+    const fontSize = stickerSize * 0.07;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.font = `${fontSize}px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`;
+    ctx.fontStyle = 'italic';
 
-  // antoine. - left nudge
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'bottom';
-  ctx.fillText('antoine.', x + stickerSize - 28, y + stickerSize);
+    // antoine. - left nudge
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('antoine.', x + stickerSize - 28, y + stickerSize);
 
-  // patraldo.com - UPWARD nudge + left
-  ctx.save();
-  ctx.translate(x + stickerSize - 2, y + stickerSize - 38);  
-  ctx.rotate(-Math.PI / 2);
-  ctx.textAlign = 'start';
-  ctx.textBaseline = 'bottom';
-  ctx.fillText('patraldo.com', 0, 0);
-  ctx.restore();
-};
-
+    // patraldo.com - UPWARD nudge + left
+    ctx.save();
+    ctx.translate(x + stickerSize - 2, y + stickerSize - 38);  
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'start';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('patraldo.com', 0, 0);
+    ctx.restore();
+  };
 
   const imgPromises = stickers.map(({ imageUrl }) =>
     new Promise((resolve, reject) => {
@@ -91,6 +92,15 @@ const addWatermark = (ctx, x, y, stickerSize) => {
 
     // Add L-shape watermark
     addWatermark(ctx, x, y, stickerSize);
+  }
+
+  // ✅ PDF/PNG DUAL OUTPUT
+  if (format === 'pdf') {
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', 0, 0, 210, 297);
+    return new Promise(resolve => resolve(doc.output('blob')));
   }
 
   return new Promise((resolve) => {
