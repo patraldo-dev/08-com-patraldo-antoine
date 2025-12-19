@@ -195,5 +195,20 @@
   "sticker.formatDefault": "png",
   "sticker.formatPng": "PNG",
   "sticker.formatPdf": "PDF",
-  "sticker.formatLabel": "Formato"
+  "sticker.formatLabel": "Formato",
+"assistant.title": "Pregunta a Antoine",
+    "assistant.openLabel": "Abrir asistente IA",
+    "assistant.closeLabel": "Cerrar asistente",
+    "assistant.clearChat": "Limpiar conversación",
+    "assistant.sendLabel": "Enviar mensaje",
+    "assistant.inputPlaceholder": "Pregunta sobre mi trabajo, técnicas o inspiración...",
+    "assistant.welcomeGeneral": "¡Hola! Estoy aquí para compartir perspectivas sobre mi práctica artística, técnicas y las historias detrás de mi trabajo. ¿Qué te gustaría saber?",
+    "assistant.welcomeArtwork": "¡Hola! Hablemos de \"{title}\". ¿Qué te gustaría saber sobre esta pieza?",
+    "assistant.discussing": "Hablando de",
+    "assistant.error": "Disculpa, encontré un error. Por favor intenta preguntar de nuevo.",
+    "assistant.suggestionsTitle": "Intenta preguntar:",
+    "assistant.suggested.inspiration": "¿Qué inspiró esta pieza?",
+    "assistant.suggested.technique": "¿Qué técnica usaste?",
+    "assistant.suggested.process": "¿Cuál es tu proceso creativo?",
+    "assistant.suggested.similar": "Muéstrame trabajos similares"
 }
