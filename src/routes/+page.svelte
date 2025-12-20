@@ -17,21 +17,25 @@
   let showAboutDetail = $state(false);
   let dailyVideo = $state(null); // ← ADD THIS LINE
 
-// Initialize on mount
 $effect(() => {
   if (browser) {
-    // Set initial state
-    showAboutDetail = window.location.hash === '#about-detail';
-    
-    // Optional: listen for hash changes if needed
-    const handleHashChange = () => {
+    const updateModalState = () => {
       showAboutDetail = window.location.hash === '#about-detail';
+    };
+    
+    // Initial check
+    updateModalState();
+    
+    // Listen for hash changes
+    const handleHashChange = () => {
+      updateModalState();
     };
     
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }
 });
+
 
 $effect(() => {
   if (data.videos.length > 0 && !dailyVideo) {
@@ -90,7 +94,7 @@ $effect(() => {
 
   function closeAboutDetail() {
     showAboutDetail = false;  // Add this to actually close the modal
-    window.location.hash = '#about';
+    window.location.hash = '';
   }
 
   function handleSelectArtwork(event) {
