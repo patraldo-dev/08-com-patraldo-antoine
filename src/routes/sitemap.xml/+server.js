@@ -1,19 +1,11 @@
 // src/routes/sitemap.xml/+server.js
+import generatedRoutes from '$lib/generated-routes.json';
+
 export async function GET({ locals }) {
   const baseUrl = 'https://antoine.patraldo.com';
   
-  // Static pages with priorities
-  const staticPages = [
-    { url: '', priority: '1.0', changefreq: 'daily' },
-    { url: 'collection', priority: '0.9', changefreq: 'weekly' },
-    { url: 'cine', priority: '0.8', changefreq: 'weekly' },
-    { url: 'cine/gallery', priority: '0.8', changefreq: 'weekly' },
-    { url: 'stories', priority: '0.7', changefreq: 'weekly' },
-    { url: 'tools', priority: '0.6', changefreq: 'monthly' },
-    { url: 'tools/palettes', priority: '0.6', changefreq: 'weekly' },
-    { url: 'tools/wallpapers', priority: '0.6', changefreq: 'weekly' },
-    { url: 'tools/stickers', priority: '0.6', changefreq: 'weekly' },
-  ];
+  // Use auto-generated routes from build script
+  const staticPages = generatedRoutes;
   
   try {
     // Fetch all published artworks (both regular and cinematic)
