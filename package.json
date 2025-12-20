@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+                "build": "node scripts/generate-routes.js && vite build",
                 "generate:routes": "node scripts/generate-routes.js",
 		"preview": "npm run build && wrangler dev",
 		"prepare": "svelte-kit sync || echo ''",
