@@ -23,10 +23,8 @@ $effect(() => {
       showAboutDetail = window.location.hash === '#about-detail';
     };
     
-    // Initial check
-    updateModalState();
+    updateModalState(); // Initial check
     
-    // Listen for hash changes
     const handleHashChange = () => {
       updateModalState();
     };
@@ -112,7 +110,7 @@ $effect(() => {
 {#if showAboutDetail}
   <AboutDetailModal 
     open={showAboutDetail} 
-    onClose={() => showAboutDetail = false}
+    onClose={closeAboutDetail}
     dailyVideo={dailyVideo}
   />
 {/if}
