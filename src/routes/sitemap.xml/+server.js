@@ -12,6 +12,7 @@ export async function GET({ locals }) {
     { url: 'tools', priority: '0.6', changefreq: 'monthly' },
     { url: 'tools/palettes', priority: '0.6', changefreq: 'weekly' },
     { url: 'tools/wallpapers', priority: '0.6', changefreq: 'weekly' },
+    { url: 'tools/stickers', priority: '0.6', changefreq: 'weekly' },
   ];
   
   try {
