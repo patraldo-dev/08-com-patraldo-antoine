@@ -210,5 +210,21 @@
     "assistant.suggested.inspiration": "¿Qué inspiró esta pieza?",
     "assistant.suggested.technique": "¿Qué técnica usaste?",
     "assistant.suggested.process": "¿Cuál es tu proceso creativo?",
-    "assistant.suggested.similar": "Muéstrame trabajos similares"
+    "assistant.suggested.similar": "Muéstrame trabajos similares",
+"about.modal.closeLabel": "Cerrar información",
+    "about.modal.videoPrefix": "El Proyecto",
+    "about.modal.defaultVideoTitle": "Sobre el Proyecto - Colaboración Creativa",
+    "about.modal.todaysFeatured": "Obra Destacada de Hoy",
+    "about.modal.projectTitle": "La Colaboración",
+    "about.modal.projectIntro": "Esta es una colaboración innovadora a la vanguardia de la animación creativa, explorando qué sucede cuando la expresión artística espontánea se encuentra con la artesanía técnica de vanguardia. Es donde la creatividad pura converge con la innovación digital sistemática.",
+    "about.modal.artistTitle": "El Artista",
+    "about.modal.artistDescription": "Antoine crea dibujos espontáneos con lápices de colores—sin planes, sin modelos, solo intuición. Comenzado en 2022, el trabajo fluye de la imaginación: plantas fantásticas, monstruos felices, rostros expresivos e infinitos ojos.",
+    "about.modal.studioTitle": "El Estudio",
+    "about.modal.studioDescription": "¡Pinche Poutine! Digital aporta experiencia técnica, animando los dibujos estáticos de Antoine usando herramientas de código abierto: animated-drawings de Meta, Wan Video y FFMPEG—todo desde la línea de comandos en un Chromebook.",
+    "about.modal.processTitle": "El Proceso",
+    "about.modal.processDescription": "Cada dibujo comienza con lápices de colores en cualquier papel que esté cerca. El estudio luego aprovecha la IA y herramientas de animación de código abierto para dar vida a estos personajes, creando narrativas cortas a partir de imágenes individuales. Es una innovación continua en narración colaborativa en la intersección del arte y la tecnología.",
+    "about.modal.toolsTitle": "Herramientas y Tecnología",
+    "about.modal.coloredPencils": "Lápices de Colores",
+    "about.modal.connectTitle": "Sobre el Estudio",
+    "about.modal.connectDescription": "¡Pinche Poutine! Digital está a la vanguardia del desarrollo web creativo y proyectos de animación innovadores. Somos pioneros en creatividad accesible a través de herramientas de código abierto y técnicas de vanguardia."
 }

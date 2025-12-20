@@ -210,5 +210,21 @@
     "assistant.suggested.inspiration": "Qu'est-ce qui a inspiré cette pièce?",
     "assistant.suggested.technique": "Quelle technique avez-vous utilisée?",
     "assistant.suggested.process": "Quel est votre processus créatif?",
-    "assistant.suggested.similar": "Montrez-moi des œuvres similaires"
+    "assistant.suggested.similar": "Montrez-moi des œuvres similaires",
+"about.modal.closeLabel": "Fermer à propos",
+    "about.modal.videoPrefix": "Le Projet",
+    "about.modal.defaultVideoTitle": "À Propos du Projet - Collaboration Créative",
+    "about.modal.todaysFeatured": "Œuvre en Vedette Aujourd'hui",
+    "about.modal.projectTitle": "La Collaboration",
+    "about.modal.projectIntro": "Ceci est une collaboration innovante à l'avant-garde de l'animation créative, explorant ce qui se passe lorsque l'expression artistique spontanée rencontre l'artisanat technique de pointe. C'est là que la créativité brute converge avec l'innovation numérique systématique.",
+    "about.modal.artistTitle": "L'Artiste",
+    "about.modal.artistDescription": "Antoine crée des dessins spontanés avec des crayons de couleur—sans plans, sans modèles, juste l'intuition. Commencé en 2022, le travail découle de l'imagination : plantes fantastiques, monstres joyeux, visages expressifs et yeux infinis.",
+    "about.modal.studioTitle": "Le Studio",
+    "about.modal.studioDescription": "¡Pinche Poutine! Digital apporte une expertise technique, animant les dessins statiques d'Antoine en utilisant des outils open source : animated-drawings de Meta, Wan Video et FFMPEG—le tout depuis la ligne de commande sur un Chromebook.",
+    "about.modal.processTitle": "Le Processus",
+    "about.modal.processDescription": "Chaque dessin commence avec des crayons de couleur sur n'importe quel papier à proximité. Le studio exploite ensuite l'IA et des outils d'animation open source pour donner vie à ces personnages, créant de courts récits à partir d'images uniques. C'est une innovation continue en narration collaborative à l'intersection de l'art et de la technologie.",
+    "about.modal.toolsTitle": "Outils et Technologie",
+    "about.modal.coloredPencils": "Crayons de Couleur",
+    "about.modal.connectTitle": "À Propos du Studio",
+    "about.modal.connectDescription": "¡Pinche Poutine! Digital est à l'avant-garde du développement web créatif et des projets d'animation innovants. Nous sommes pionniers de la créativité accessible grâce aux outils open source et aux techniques de pointe."
 }
