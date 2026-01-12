@@ -131,9 +131,9 @@ export async function getAllArtworksWithTransforms(db, options = {}) {
   
   query += ` ORDER BY order_index ASC, id DESC`;
   
-  const results = await db.prepare(query).bind(...bindings).all();
+  const { results } = await db.prepare(query).bind(...bindings).all();
 
-  return results.results.map(artwork => ({
+  return results.map(artwork => ({
     id: artwork.id,
     title: artwork.title,
     slug: artwork.slug,

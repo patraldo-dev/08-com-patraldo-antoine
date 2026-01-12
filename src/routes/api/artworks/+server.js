@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+irtmport { json } from '@sveltejs/kit';
 
 export async function GET({ platform }) {
   try {

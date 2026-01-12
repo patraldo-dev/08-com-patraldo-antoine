@@ -34,11 +34,11 @@
     return results;
   });
   
-  let imageUrl = $derived(
-    selectedArtwork 
-      ? getArtworkImageUrl({ CLOUDFLARE_ACCOUNT_ID: data.cloudflareAccountId }, selectedArtwork)
-      : ''
-  );
+let imageUrl = $derived(
+  selectedArtwork 
+    ? getArtworkImageUrl(selectedArtwork)
+    : ''
+);
   
   // Helper function to get artwork type label
   function typeLabel(type) {
@@ -199,7 +199,7 @@
             onclick={() => selectArtwork(artwork)}
           >
             <img
-              src={getThumbnailUrl({ CLOUDFLARE_ACCOUNT_ID: data.cloudflareAccountId }, artwork.imageId)}
+              src={getThumbnailUrl(artwork.imageId)}
               alt={artwork.title}
               loading="lazy"
             />
