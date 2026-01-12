@@ -1,0 +1,12 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+  echo "Usage: $0 \"Your commit message\""
+  exit 1
+fi
+COMMIT_MESSAGE="$1"
+git add . ':!src/lib/generated-*.json'
+git commit -m "$COMMIT_MESSAGE" || echo "No changes to commit"
+git pull origin $(git branch --show-current) --rebase
+git push origin $(git branch --show-current)
+echo "Done!"
+

@@ -9,7 +9,7 @@
     COMMIT_MESSAGE="$1"
 
     # Add all changes to the staging area
-    git add .
+    git add . ':!src/lib/generated-*.json'
 
     # Commit the changes with the provided message
     git commit -m "$COMMIT_MESSAGE"
