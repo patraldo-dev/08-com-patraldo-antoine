@@ -23,7 +23,7 @@ export async function GET({ params, platform }) {
       return json({ error: 'Invalid artwork ID' }, { status: 400 });
     }
 
-    const artwork = await getArtworkWithTransform(platform.env.DB, artworkId);
+    const artwork = await getArtworkWithTransform(platform.env.ARTWORKS.DB, artworkId);
     
     if (!artwork) {
       return json({ error: 'Artwork not found' }, { status: 404 });
@@ -58,14 +58,14 @@ export async function POST({ params, request, platform }) {
     const { transform, reset = false } = body;
 
     if (reset) {
-      await resetArtworkTransform(platform.env.DB, artworkId);
+      await resetArtworkTransform(platform.env.ARTWORKS.DB, artworkId);
     } else if (transform) {
       // Validate transform structure
       if (!transform.rotation || !transform.position || !transform.scale) {
         return json({ error: 'Invalid transform structure' }, { status: 400 });
       }
 
-      await saveArtworkTransform(platform.env.DB, artworkId, transform);
+      await saveArtworkTransform(platform.env.ARTWORKS.DB, artworkId, transform);
     } else {
       return json({ error: 'Transform data or reset flag required' }, { status: 400 });
     }
@@ -95,7 +95,7 @@ export async function DELETE({ params, platform }) {
       return json({ error: 'Invalid artwork ID' }, { status: 400 });
     }
 
-    await resetArtworkTransform(platform.env.DB, artworkId);
+    await resetArtworkTransform(platform.env.ARTWORKS.DB, artworkId);
 
     return json({ success: true });
   } catch (error) {

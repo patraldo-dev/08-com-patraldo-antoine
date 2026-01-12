@@ -15,7 +15,7 @@ export async function load({ platform }) {
 
   try {
     // Load all published artworks
-    const artworks = await getAllArtworksWithTransforms(platform.env.DB, {
+    const artworks = await getAllArtworksWithTransforms(platform.env.ARTWORKS.DB, {
       published: true
     });
     
