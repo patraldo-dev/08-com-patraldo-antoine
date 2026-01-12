@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-                "build": "node scripts/generate-routes.js && vite build",
-                "generate:routes": "node scripts/generate-routes.js",
+		"build": "node scripts/generate-routes.js && vite build",
+		"generate:routes": "node scripts/generate-routes.js",
 		"preview": "npm run build && wrangler dev",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
@@ -27,6 +27,7 @@
 	"dependencies": {
 		"colorthief": "^2.6.0",
 		"jspdf": "^3.0.4",
-		"matter-js": "^0.20.0"
+		"matter-js": "^0.20.0",
+		"three": "^0.182.0"
 	}
 }
