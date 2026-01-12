@@ -3,7 +3,7 @@ import { readdirSync, statSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 const ROUTES_DIR = 'src/routes';
-const OUTPUT_FILE = 'src/lib/generated-routes.json';
+const OUTPUT_FILE = 'scripts/generated-routes.json';
 
 // Routes to exclude from sitemap
 const EXCLUDE_PATTERNS = [

@@ -73,6 +73,7 @@ node_modules
 .vercel
 .netlify
 .wrangler
+scripts/generated-routes.json
 /.svelte-kit
 /build
 
