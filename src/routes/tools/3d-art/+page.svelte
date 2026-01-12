@@ -1,4 +1,5 @@
 <script>
+  import { t } from '$lib/i18n/index.js';
   import Image3DManipulator from '$lib/components/Image3DManipulator.svelte';
   import { getArtworkImageUrl, getThumbnailUrl } from '$lib/cloudflare/images.js';
   
@@ -39,6 +40,12 @@
       : ''
   );
   
+  // Helper function to get artwork type label
+  function typeLabel(type) {
+    const key = `3dart_type_${type}`;
+    return $t(key) || type;
+  }
+  
   // Actions
   async function saveTransform() {
     if (!manipulator || !selectedArtwork) return;
@@ -58,17 +65,17 @@
       const result = await response.json();
       
       if (result.success) {
-        saveMessage = 'Transform saved successfully!';
+        saveMessage = $t('3dart_successSaved');
         messageType = 'success';
         // Update local state
         selectedArtwork.transform = transform;
       } else {
-        saveMessage = 'Failed to save: ' + result.error;
+        saveMessage = $t('3dart_saveFailed') + ' ' + result.error;
         messageType = 'error';
       }
     } catch (error) {
       console.error('Save error:', error);
-      saveMessage = 'Error: ' + error.message;
+      saveMessage = $t('3dart_unknownError') + ' ' + error.message;
       messageType = 'error';
     } finally {
       isSaving = false;
@@ -90,10 +97,10 @@
       const result = await response.json();
       
       if (result.success) {
-        saveMessage = 'Transform reset successfully!';
+        saveMessage = $t('3dart_successReset');
         messageType = 'success';
         
-        // Reset the component
+        // Reset component
         if (manipulator) {
           manipulator.resetTransform();
         }
@@ -105,12 +112,12 @@
           scale: { x: 1, y: 1, z: 1 }
         };
       } else {
-        saveMessage = 'Failed to reset: ' + result.error;
+        saveMessage = $t('3dart_resetFailed') + ' ' + result.error;
         messageType = 'error';
       }
     } catch (error) {
       console.error('Reset error:', error);
-      saveMessage = 'Error: ' + error.message;
+      saveMessage = $t('3dart_unknownError') + ' ' + error.message;
       messageType = 'error';
     } finally {
       isResetting = false;
@@ -121,46 +128,35 @@
   function selectArtwork(artwork) {
     selectedArtwork = artwork;
   }
-  
-  function typeLabel(type) {
-    const labels = {
-      'still': 'Still Image',
-      'animation': 'Animation',
-      'gif': 'GIF',
-      'video': 'Video',
-      'mixed': 'Mixed Media'
-    };
-    return labels[type] || type;
-  }
 </script>
 
 <svelte:head>
-  <title>3D Artwork Manipulator</title>
-  <meta name="description" content="Manipulate your artworks in 3D space" />
+  <title>{$t('3dart_title')}</title>
+  <meta name="description" content={$t('3dart_description')} />
 </svelte:head>
 
 <div class="page">
   <header>
-    <h1>3D Artwork Manipulator</h1>
-    <p>Select an artwork and manipulate it in 3D space</p>
+    <h1>{$t('3dart_title')}</h1>
+    <p>{$t('3dart_description')}</p>
   </header>
 
   <!-- Filters and Controls -->
   <div class="controls">
     <div class="filter-group">
-      <label for="type-filter">Type:</label>
+      <label for="type-filter">{$t('3dart_type')}:</label>
       <select id="type-filter" bind:value={filterType}>
-        <option value="all">All Types</option>
-        <option value="still">Still Images</option>
-        <option value="animation">Animations</option>
-        <option value="gif">GIFs</option>
-        <option value="video">Videos</option>
-        <option value="mixed">Mixed Media</option>
+        <option value="all">{$t('3dart_allTypes')}</option>
+        <option value="still">{typeLabel('still')}</option>
+        <option value="animation">{typeLabel('animation')}</option>
+        <option value="gif">{typeLabel('gif')}</option>
+        <option value="video">{typeLabel('video')}</option>
+        <option value="mixed">{typeLabel('mixed')}</option>
       </select>
       
       <label class="checkbox-label">
         <input type="checkbox" bind:checked={filterFeatured} />
-        Featured only
+        {$t('3dart_featuredOnly')}
       </label>
     </div>
 
@@ -171,7 +167,7 @@
           disabled={isSaving} 
           class="btn-primary"
         >
-          {isSaving ? 'Saving...' : 'Save Transform'}
+          {isSaving ? $t('3dart_saving') : $t('3dart_save')}
         </button>
 
         <button 
@@ -179,7 +175,7 @@
           disabled={isResetting} 
           class="btn-secondary"
         >
-          {isResetting ? 'Resetting...' : 'Reset'}
+          {isResetting ? $t('3dart_resetting') : $t('3dart_reset')}
         </button>
       {/if}
     </div>
@@ -194,9 +190,9 @@
   <div class="main-content">
     <!-- Artwork Selector Sidebar -->
     <aside class="sidebar">
-      <h2>Artworks ({filteredArtworks.length})</h2>
+      <h2>{$t('3dart_artworks')} ({filteredArtworks().length})</h2>
       <div class="artwork-list">
-        {#each filteredArtworks as artwork}
+        {#each filteredArtworks() as artwork}
           <button
             class="artwork-item"
             class:active={selectedArtwork?.id === artwork.id}
@@ -219,8 +215,8 @@
           </button>
         {/each}
         
-        {#if filteredArtworks.length === 0}
-          <p class="no-results">No artworks match the current filters.</p>
+        {#if filteredArtworks().length === 0}
+          <p class="no-results">{$t('3dart_noArtworks')}</p>
         {/if}
       </div>
     </aside>
@@ -236,7 +232,7 @@
           />
           
           <div class="instructions">
-            <p>Drag to rotate • Scroll to zoom</p>
+            <p>{$t('3dart_instructions')}</p>
           </div>
         </div>
 
@@ -249,19 +245,19 @@
           <div class="artwork-tags">
             <span class="tag">{typeLabel(selectedArtwork.type)}</span>
             {#if selectedArtwork.featured}
-              <span class="tag featured">Featured</span>
+              <span class="tag featured">{$t('3dart_tag_featured')}</span>
             {/if}
             {#if selectedArtwork.isCinematic}
-              <span class="tag cinematic">Cinematic</span>
+              <span class="tag cinematic">{$t('3dart_tag_cinematic')}</span>
             {/if}
           </div>
           
           {#if selectedArtwork.transform}
             <div class="transform-info">
-              <h3>Current Transform</h3>
+              <h3>{$t('3dart_currentTransform')}</h3>
               <div class="transform-grid">
                 <div>
-                  <span class="label">Rotation:</span>
+                  <span class="label">{$t('3dart_rotation')}:</span>
                   <span class="value">
                     X={selectedArtwork.transform.rotation.x.toFixed(2)}
                     Y={selectedArtwork.transform.rotation.y.toFixed(2)}
@@ -269,7 +265,7 @@
                   </span>
                 </div>
                 <div>
-                  <span class="label">Position:</span>
+                  <span class="label">{$t('3dart_position')}:</span>
                   <span class="value">
                     X={selectedArtwork.transform.position.x.toFixed(2)}
                     Y={selectedArtwork.transform.position.y.toFixed(2)}
@@ -277,7 +273,7 @@
                   </span>
                 </div>
                 <div>
-                  <span class="label">Scale:</span>
+                  <span class="label">{$t('3dart_scale')}:</span>
                   <span class="value">
                     X={selectedArtwork.transform.scale.x.toFixed(2)}
                     Y={selectedArtwork.transform.scale.y.toFixed(2)}
@@ -296,8 +292,8 @@
               <circle cx="8.5" cy="8.5" r="1.5"></circle>
               <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-            <p>Select an artwork to begin</p>
-            <p class="hint">Use the filters or browse the list on the left</p>
+            <p>{$t('3dart_selectArtwork')}</p>
+            <p class="hint">{$t('3dart_selectHint')}</p>
           </div>
         </div>
       {/if}

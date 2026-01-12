@@ -1,10 +1,10 @@
 import { getAllArtworksWithTransforms } from '$lib/db/artwork-transforms.js';
 
 /**
- * Load artworks with transformations for the 3D art manipulator
+ * Load artworks with transformations for 3D art manipulator
  * @type {import('./$types').PageServerLoad}
  */
-export async function load({ platform, locals }) {
+export async function load({ platform }) {
   if (!platform?.env?.DB) {
     return { 
       artworks: [], 
