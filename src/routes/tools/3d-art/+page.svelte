@@ -1,27 +1,26 @@
 <script>
+  import { onMount } from 'svelte';
   import { t } from '$lib/i18n/index.js';
   import Image3DManipulator from '$lib/components/Image3DManipulator.svelte';
-  import { getArtworkImageUrl, getThumbnailUrl } from '$lib/cloudflare/images.js';
+  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { getThumbnailUrl } from '$lib/cloudflare/images.js';
   
   let { data } = $props();
   
-  /** @type {import('svelte').ComponentType} */
-  let manipulator;
+  // Reference to 3D manipulator methods
+  let image3DMethods = $state(null);
   
-  // State
-  let selectedArtwork = $state(data.artworks[0] || null);
+  let selectedArtwork = $state(data.artworks?.[0] || null);
   let isSaving = $state(false);
   let isResetting = $state(false);
   let saveMessage = $state('');
   let messageType = $state('success');
   
-  // Filter options
   let filterType = $state('all');
   let filterFeatured = $state(false);
   
-  // Computed values
   let filteredArtworks = $derived(() => {
-    let results = data.artworks;
+    let results = data.artworks || [];
     
     if (filterType !== 'all') {
       results = results.filter(artwork => artwork.type === filterType);
@@ -34,27 +33,28 @@
     return results;
   });
   
-let imageUrl = $derived(
-  selectedArtwork 
-    ? getArtworkImageUrl(selectedArtwork)
-    : ''
-);
+  let imageUrl = $derived(
+    selectedArtwork && selectedArtwork.imageId
+      ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${selectedArtwork.imageId}/public`
+      : ''
+  );
   
-  // Helper function to get artwork type label
-  function typeLabel(type) {
-    const key = `3dart_type_${type}`;
-    return $t(key) || type;
-  }
+  onMount(() => {
+    setTimeout(() => {
+      if (window.image3DMethods) {
+        image3DMethods = window.image3DMethods;
+      }
+    }, 100);
+  });
   
-  // Actions
   async function saveTransform() {
-    if (!manipulator || !selectedArtwork) return;
+    if (!image3DMethods || !selectedArtwork) return;
     
     isSaving = true;
     saveMessage = '';
     
     try {
-      const transform = manipulator.transform;
+      const transform = image3DMethods.transform;
       
       const response = await fetch(`/api/artworks/${selectedArtwork.id}/transform`, {
         method: 'POST',
@@ -67,8 +67,6 @@ let imageUrl = $derived(
       if (result.success) {
         saveMessage = $t('3dart_successSaved');
         messageType = 'success';
-        // Update local state
-        selectedArtwork.transform = transform;
       } else {
         saveMessage = $t('3dart_saveFailed') + ' ' + result.error;
         messageType = 'error';
@@ -84,7 +82,7 @@ let imageUrl = $derived(
   }
   
   async function resetTransform() {
-    if (!selectedArtwork) return;
+    if (!image3DMethods || !selectedArtwork) return;
     
     isResetting = true;
     saveMessage = '';
@@ -101,16 +99,7 @@ let imageUrl = $derived(
         messageType = 'success';
         
         // Reset component
-        if (manipulator) {
-          manipulator.resetTransform();
-        }
-        
-        // Update local state
-        selectedArtwork.transform = {
-          rotation: { x: 0, y: 0, z: 0 },
-          position: { x: 0, y: 0, z: 0 },
-          scale: { x: 1, y: 1, z: 1 }
-        };
+        image3DMethods.resetTransform();
       } else {
         saveMessage = $t('3dart_resetFailed') + ' ' + result.error;
         messageType = 'error';
@@ -128,6 +117,17 @@ let imageUrl = $derived(
   function selectArtwork(artwork) {
     selectedArtwork = artwork;
   }
+  
+  function typeLabel(type) {
+    const labels = {
+      'still': 'Imagen Fija',
+      'animation': 'Animación',
+      'gif': 'GIF',
+      'video': 'Video',
+      'mixed': 'Medios Mixtos'
+    };
+    return labels[type] || type;
+  }
 </script>
 
 <svelte:head>
@@ -141,7 +141,6 @@ let imageUrl = $derived(
     <p>{$t('3dart_description')}</p>
   </header>
 
-  <!-- Filters and Controls -->
   <div class="controls">
     <div class="filter-group">
       <label for="type-filter">{$t('3dart_type')}:</label>
@@ -159,26 +158,6 @@ let imageUrl = $derived(
         {$t('3dart_featuredOnly')}
       </label>
     </div>
-
-    <div class="action-group">
-      {#if selectedArtwork}
-        <button 
-          onclick={saveTransform} 
-          disabled={isSaving} 
-          class="btn-primary"
-        >
-          {isSaving ? $t('3dart_saving') : $t('3dart_save')}
-        </button>
-
-        <button 
-          onclick={resetTransform} 
-          disabled={isResetting} 
-          class="btn-secondary"
-        >
-          {isResetting ? $t('3dart_resetting') : $t('3dart_reset')}
-        </button>
-      {/if}
-    </div>
   </div>
 
   {#if saveMessage}
@@ -188,7 +167,6 @@ let imageUrl = $derived(
   {/if}
 
   <div class="main-content">
-    <!-- Artwork Selector Sidebar -->
     <aside class="sidebar">
       <h2>{$t('3dart_artworks')} ({filteredArtworks().length})</h2>
       <div class="artwork-list">
@@ -199,7 +177,7 @@ let imageUrl = $derived(
             onclick={() => selectArtwork(artwork)}
           >
             <img
-              src={getThumbnailUrl(artwork.imageId)}
+              src={artwork.imageId ? getThumbnailUrl(artwork.imageId) : ''}
               alt={artwork.title}
               loading="lazy"
             />
@@ -214,29 +192,19 @@ let imageUrl = $derived(
             {/if}
           </button>
         {/each}
-        
-        {#if filteredArtworks().length === 0}
-          <p class="no-results">{$t('3dart_noArtworks')}</p>
-        {/if}
       </div>
     </aside>
 
-    <!-- 3D Manipulator -->
     <div class="manipulator-container">
       {#if selectedArtwork}
         <div class="manipulator-wrapper">
-          <svelte:component 
-            this={Image3DManipulator} 
-            {imageUrl} 
-            bind:this={manipulator}
-          />
+          <svelte:component this={Image3DManipulator} {imageUrl} />
           
           <div class="instructions">
             <p>{$t('3dart_instructions')}</p>
           </div>
         </div>
 
-        <!-- Artwork Details -->
         <aside class="artwork-details">
           <h2>{selectedArtwork.title}</h2>
           <p class="artwork-year">{selectedArtwork.year}</p>
@@ -247,53 +215,12 @@ let imageUrl = $derived(
             {#if selectedArtwork.featured}
               <span class="tag featured">{$t('3dart_tag_featured')}</span>
             {/if}
-            {#if selectedArtwork.isCinematic}
-              <span class="tag cinematic">{$t('3dart_tag_cinematic')}</span>
-            {/if}
           </div>
-          
-          {#if selectedArtwork.transform}
-            <div class="transform-info">
-              <h3>{$t('3dart_currentTransform')}</h3>
-              <div class="transform-grid">
-                <div>
-                  <span class="label">{$t('3dart_rotation')}:</span>
-                  <span class="value">
-                    X={selectedArtwork.transform.rotation.x.toFixed(2)}
-                    Y={selectedArtwork.transform.rotation.y.toFixed(2)}
-                    Z={selectedArtwork.transform.rotation.z.toFixed(2)}
-                  </span>
-                </div>
-                <div>
-                  <span class="label">{$t('3dart_position')}:</span>
-                  <span class="value">
-                    X={selectedArtwork.transform.position.x.toFixed(2)}
-                    Y={selectedArtwork.transform.position.y.toFixed(2)}
-                    Z={selectedArtwork.transform.position.z.toFixed(2)}
-                  </span>
-                </div>
-                <div>
-                  <span class="label">{$t('3dart_scale')}:</span>
-                  <span class="value">
-                    X={selectedArtwork.transform.scale.x.toFixed(2)}
-                    Y={selectedArtwork.transform.scale.y.toFixed(2)}
-                    Z={selectedArtwork.transform.scale.z.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          {/if}
         </aside>
       {:else}
         <div class="placeholder">
           <div class="placeholder-content">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
             <p>{$t('3dart_selectArtwork')}</p>
-            <p class="hint">{$t('3dart_selectHint')}</p>
           </div>
         </div>
       {/if}
@@ -327,9 +254,7 @@ let imageUrl = $derived(
 
   .controls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     padding: 16px;
     background: #f9fafb;
@@ -340,7 +265,6 @@ let imageUrl = $derived(
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-wrap: wrap;
   }
 
   .filter-group label {
@@ -369,51 +293,6 @@ let imageUrl = $derived(
     cursor: pointer;
   }
 
-  .action-group {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-primary {
-    padding: 10px 20px;
-    background: #10b981;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: #059669;
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-secondary {
-    padding: 10px 20px;
-    background: #6b7280;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: #4b5563;
-  }
-
-  .btn-secondary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   .message {
     padding: 12px 20px;
     border-radius: 6px;
@@ -435,7 +314,6 @@ let imageUrl = $derived(
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 20px;
-    flex: 1;
   }
 
   .sidebar {
@@ -473,8 +351,6 @@ let imageUrl = $derived(
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
-    text-align: left;
-    width: 100%;
   }
 
   .artwork-item:hover {
@@ -516,12 +392,6 @@ let imageUrl = $derived(
   .featured-badge {
     color: #f59e0b;
     font-size: 16px;
-  }
-
-  .no-results {
-    text-align: center;
-    color: #6b7280;
-    padding: 20px;
   }
 
   .manipulator-container {
@@ -601,44 +471,6 @@ let imageUrl = $derived(
     color: #92400e;
   }
 
-  .tag.cinematic {
-    background: #dbeafe;
-    color: #1e40af;
-  }
-
-  .transform-info {
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  .transform-info h3 {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
-  }
-
-  .transform-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .transform-grid > div {
-    display: flex;
-    gap: 8px;
-  }
-
-  .transform-grid .label {
-    font-weight: 500;
-    min-width: 80px;
-    color: #374151;
-  }
-
-  .transform-grid .value {
-    font-family: monospace;
-    font-size: 14px;
-    color: #6b7280;
-  }
-
   .placeholder {
     flex: 1;
     display: flex;
@@ -653,19 +485,6 @@ let imageUrl = $derived(
   .placeholder-content {
     text-align: center;
     color: #9ca3af;
-  }
-
-  .placeholder-content svg {
-    margin-bottom: 16px;
-    color: #d1d5db;
-  }
-
-  .placeholder-content p {
-    margin: 4px 0;
-  }
-
-  .placeholder-content .hint {
-    font-size: 14px;
   }
 
   @media (max-width: 1024px) {
@@ -689,25 +508,6 @@ let imageUrl = $derived(
   }
 
   @media (max-width: 768px) {
-    .controls {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .filter-group,
-    .action-group {
-      flex-direction: column;
-    }
-
-    .filter-group select {
-      width: 100%;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-      width: 100%;
-    }
-
     header h1 {
       font-size: 1.5rem;
     }

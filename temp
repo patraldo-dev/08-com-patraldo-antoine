@@ -1,113 +1,66 @@
-import { json } from '@sveltejs/kit';
-import { 
-  saveArtworkTransform, 
-  getArtworkWithTransform,
-  resetArtworkTransform
-} from '$lib/db/artwork-transforms.js';
-
-/**
- * GET - Retrieve artwork with transformation data
- * @param {import('@sveltejs/kit').RequestEvent} event
- */
-export async function GET({ params, platform }) {
-  const { id } = params;
-  
-  const db = platform?.env?.ARTWORKS_DB;
-  
-  if (!db) {
-    console.error('ARTWORKS_DB not available');
-    return json({ error: 'Database not available' }, { status: 500 });
-  }
-
-  try {
-    const artworkId = parseInt(id);
-    
-    if (isNaN(artworkId)) {
-      return json({ error: 'Invalid artwork ID' }, { status: 400 });
-    }
-
-    const artwork = await getArtworkWithTransform(db, artworkId);
-    
-    if (!artwork) {
-      return json({ error: 'Artwork not found' }, { status: 404 });
-    }
-
-    return json(artwork);
-  } catch (error) {
-    console.error('Get artwork transform error:', error);
-    return json({ error: error.message }, { status: 500 });
-  }
+{
+        "$schema": "node_modules/wrangler/config-schema.json",
+        "name": "08-com-patraldo-antoine",
+        "main": ".svelte-kit/cloudflare/_worker.js",
+        "r2_buckets": [
+                {
+                        "binding": "ANTOINEART",
+                        "bucket_name": "antoine-patraldo"
+                }
+        ],
+        "compatibility_date": "2025-08-10",
+        "compatibility_flags": [
+                "nodejs_compat"
+        ],
+        "ai": {
+            "binding": "AI"
+        },
+        "assets": {
+                "binding": "ASSETS",
+                "directory": ".svelte-kit/cloudflare"
+        },
+        "observability": {
+                "enabled": false,
+                "head_sampling_rate": 1,
+                "logs": {
+                        "enabled": true,
+                        "head_sampling_rate": 1,
+                        "persist": true,
+                        "invocation_logs": true
+                },
+                "traces": {
+                        "enabled": true,
+                        "persist": true,
+                        "head_sampling_rate": 1
+                }
+        },
+        "vars": {
+                "MAILGUN_DOMAIN": "patraldo.com",
+                "CLOUDFLARE_STREAM_CUSTOMER_CODE": "9kroafxwku5qm6fx",
+                "CLOUDFLARE_IMAGES_ACCOUNT_HASH": "4bRSwPonOXfEIBVZiDXg0w"
+        },
+        "d1_databases": [
+                {
+                        "binding": "DB",
+                        "database_name": "artist-portfolio-db",
+                        "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
+                },
+                {
+                        "binding": "ARTWORKS_DB",
+                        "database_name": "antoine-artworks",
+                        "database_id": "3598ab99-fd4f-410d-a6bc-55e4958dc158"
+                },
+                {
+                        "binding": "stories_db",
+                        "database_name": "stories-db",
+                        "database_id": "95a9b887-d9d6-45ff-860d-1fe00f73ca0a",
+                        "remote": true
+                }
+        ],
+        "env": {
+                "newcomponent/Image3DManipulator": {
+                        "name": "08-com-patraldo-antoine-newcomponent-image3dmanipulator"
+                }
+        }
 }
 
-/**
- * POST - Save transformation for artwork
- * @param {import('@sveltejs/kit').RequestEvent} event
- */
-export async function POST({ params, request, platform }) {
-  const { id } = params;
-  
-  const db = platform?.env?.ARTWORKS_DB;
-  
-  if (!db) {
-    console.error('ARTWORKS_DB not available');
-    return json({ error: 'Database not available' }, { status: 500 });
-  }
-
-  try {
-    const artworkId = parseInt(id);
-    
-    if (isNaN(artworkId)) {
-      return json({ error: 'Invalid artwork ID' }, { status: 400 });
-    }
-
-    const body = await request.json();
-    const { transform, reset = false } = body;
-
-    if (reset) {
-      await resetArtworkTransform(db, artworkId);
-    } else if (transform) {
-      if (!transform.rotation || !transform.position || !transform.scale) {
-        return json({ error: 'Invalid transform structure' }, { status: 400 });
-      }
-
-      await saveArtworkTransform(db, artworkId, transform);
-    } else {
-      return json({ error: 'Transform data or reset flag required' }, { status: 400 });
-    }
-
-    return json({ success: true });
-  } catch (error) {
-    console.error('Save transform error:', error);
-    return json({ error: error.message }, { status: 500 });
-  }
-}
-
-/**
- * DELETE - Reset transformation for artwork
- * @param {import('@sveltejs/kit').RequestEvent} event
- */
-export async function DELETE({ params, platform }) {
-  const { id } = params;
-  
-  const db = platform?.env?.ARTWORKS_DB;
-  
-  if (!db) {
-    console.error('ARTWORKS_DB not available');
-    return json({ error: 'Database not available' }, { status: 500 });
-  }
-
-  try {
-    const artworkId = parseInt(id);
-    
-    if (isNaN(artworkId)) {
-      return json({ error: 'Invalid artwork ID' }, { status: 400 });
-    }
-
-    await resetArtworkTransform(db, artworkId);
-
-    return json({ success: true });
-  } catch (error) {
-    console.error('Reset transform error:', error);
-    return json({ error: error.message }, { status: 500 });
-  }
-}

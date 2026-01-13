@@ -98,7 +98,6 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // Add lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -106,7 +105,6 @@
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    // Add grid helper
     const gridHelper = new THREE.GridHelper(10, 10, 0xcccccc, 0xe0e0e0);
     scene.add(gridHelper);
   }
@@ -126,7 +124,7 @@
           map: texture,
           side: THREE.DoubleSide
         });
-
+        
         imageMesh = new THREE.Mesh(geometry, material);
         scene.add(imageMesh);
       },
@@ -148,13 +146,10 @@
     canvas.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('wheel', onMouseWheel);
     canvas.addEventListener('mouseleave', onMouseUp);
-
-    // Touch events for mobile
+    
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
-
-    window.addEventListener('resize', onWindowResize);
   }
 
   /**
@@ -176,11 +171,16 @@
     const deltaX = event.clientX - previousMousePosition.x;
     const deltaY = event.clientY - previousMousePosition.y;
 
-    rotation.y += deltaX * 0.01;
-    rotation.x += deltaY * 0.01;
+    rotation = { 
+      x: rotation.x + deltaY * 0.01,
+      y: rotation.y + deltaX * 0.01,
+      z: rotation.z
+    };
 
-    imageMesh.rotation.x = rotation.x;
-    imageMesh.rotation.y = rotation.y;
+    if (imageMesh) {
+      imageMesh.rotation.x = rotation.x;
+      imageMesh.rotation.y = rotation.y;
+    }
 
     previousMousePosition = { x: event.clientX, y: event.clientY };
   }
@@ -198,14 +198,19 @@
    */
   function onMouseWheel(event) {
     if (!imageMesh) return;
-
+    
     event.preventDefault();
 
     const zoomFactor = event.deltaY > 0 ? 0.95 : 1.05;
-    scale.x *= zoomFactor;
-    scale.y *= zoomFactor;
+    scale = { 
+      x: scale.x * zoomFactor,
+      y: scale.y * zoomFactor,
+      z: scale.z
+    };
 
-    imageMesh.scale.set(scale.x, scale.y, scale.z);
+    if (imageMesh) {
+      imageMesh.scale.set(scale.x, scale.y, scale.z);
+    }
   }
 
   /**
@@ -216,9 +221,9 @@
     if (event.touches.length === 1) {
       event.preventDefault();
       isDragging = true;
-      previousMousePosition = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY
+      previousMousePosition = { 
+        x: event.touches[0].clientX, 
+        y: event.touches[0].clientY 
       };
     }
   }
@@ -235,15 +240,20 @@
     const deltaX = event.touches[0].clientX - previousMousePosition.x;
     const deltaY = event.touches[0].clientY - previousMousePosition.y;
 
-    rotation.y += deltaX * 0.01;
-    rotation.x += deltaY * 0.01;
+    rotation = { 
+      x: rotation.x + deltaY * 0.01,
+      y: rotation.y + deltaX * 0.01,
+      z: rotation.z
+    };
 
-    imageMesh.rotation.x = rotation.x;
-    imageMesh.rotation.y = rotation.y;
+    if (imageMesh) {
+      imageMesh.rotation.x = rotation.x;
+      imageMesh.rotation.y = rotation.y;
+    }
 
-    previousMousePosition = {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY
+    previousMousePosition = { 
+      x: event.touches[0].clientX, 
+      y: event.touches[0].clientY 
     };
   }
 
@@ -259,7 +269,7 @@
    */
   function onWindowResize() {
     if (!camera || !renderer || !container) return;
-
+    
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -282,10 +292,7 @@
    * @param {number} z - Rotation around Z axis
    */
   function setRotation(x, y, z) {
-    rotation.x = x;
-    rotation.y = y;
-    rotation.z = z;
-
+    rotation = { x, y, z };
     if (imageMesh) {
       imageMesh.rotation.set(x, y, z);
     }
@@ -298,10 +305,7 @@
    * @param {number} z - Z position
    */
   function setPosition(x, y, z) {
-    position.x = x;
-    position.y = y;
-    position.z = z;
-
+    position = { x, y, z };
     if (imageMesh) {
       imageMesh.position.set(x, y, z);
     }
@@ -314,10 +318,7 @@
    * @param {number} z - Z scale
    */
   function setScale(x, y, z) {
-    scale.x = x;
-    scale.y = y;
-    scale.z = z;
-
+    scale = { x, y, z };
     if (imageMesh) {
       imageMesh.scale.set(x, y, z);
     }
@@ -327,9 +328,15 @@
    * Reset all transformations to default values
    */
   function resetTransform() {
-    setRotation(0, 0, 0);
-    setPosition(0, 0, 0);
-    setScale(1, 1, 1);
+    rotation = { x: 0, y: 0, z: 0 };
+    position = { x: 0, y: 0, z: 0 };
+    scale = { x: 1, y: 1, z: 1 };
+    
+    if (imageMesh) {
+      imageMesh.rotation.set(0, 0, 0);
+      imageMesh.position.set(0, 0, 0);
+      imageMesh.scale.set(1, 1, 1);
+    }
   }
 
   /**
@@ -353,9 +360,9 @@
   });
 
   /**
-   * Expose methods to parent component
+   * Expose transform and methods for parent access
    */
-  let exposed = {
+  let methods = {
     get transform() {
       return transform;
     },
@@ -364,8 +371,12 @@
     setScale,
     resetTransform
   };
-
-  defineExpose(exposed);
+  
+  $effect(() => {
+    if (typeof methods !== 'undefined') {
+      window.image3DMethods = methods;
+    }
+  });
 </script>
 
 <div class="image-3d-container" bind:this={container}>

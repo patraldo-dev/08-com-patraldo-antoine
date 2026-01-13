@@ -1,11 +1,10 @@
 // src/routes/sitemap.xml/+server.js
-import generatedRoutes from '$lib/generated-routes.json';
-
 export async function GET({ locals }) {
   const baseUrl = 'https://antoine.patraldo.com';
   
-  // Use auto-generated routes from build script
-  const staticPages = generatedRoutes;
+  // Dynamic import for generated routes from scripts/
+  const generatedRoutesModule = await import('../../../scripts/generated-routes.json');
+  const staticPages = generatedRoutesModule.default;
   
   try {
     // Fetch all published artworks (both regular and cinematic)
@@ -85,3 +84,4 @@ export async function GET({ locals }) {
     });
   }
 }
+
