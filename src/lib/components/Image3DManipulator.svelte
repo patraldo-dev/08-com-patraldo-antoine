@@ -2,85 +2,26 @@
   import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
 
-  /**
-   * The URL of the image to manipulate in 3D space
-   * @type {string}
-   */
   let { imageUrl } = $props();
 
-  /**
-   * DOM reference for the Three.js container
-   * @type {HTMLDivElement}
-   */
   let container;
-
-  /**
-   * Three.js scene object
-   * @type {THREE.Scene}
-   */
   let scene;
-
-  /**
-   * Three.js camera object
-   * @type {THREE.PerspectiveCamera}
-   */
   let camera;
-
-  /**
-   * Three.js renderer object
-   * @type {THREE.WebGLRenderer}
-   */
   let renderer;
-
-  /**
-   * Mesh containing the image texture
-   * @type {THREE.Mesh}
-   */
   let imageMesh;
 
-  /**
-   * Current rotation state
-   * @type {{x: number, y: number, z: number}}
-   */
   let rotation = $state({ x: 0, y: 0, z: 0 });
-
-  /**
-   * Current position state
-   * @type {{x: number, y: number, z: number}}
-   */
   let position = $state({ x: 0, y: 0, z: 0 });
-
-  /**
-   * Current scale state
-   * @type {{x: number, y: number, z: number}}
-   */
   let scale = $state({ x: 1, y: 1, z: 1 });
-
-  /**
-   * Whether the user is currently dragging
-   * @type {boolean}
-   */
   let isDragging = $state(false);
-
-  /**
-   * Previous mouse position for drag calculations
-   * @type {{x: number, y: number}}
-   */
   let previousMousePosition = { x: 0, y: 0 };
 
-  /**
-   * Derived transform object for external access
-   * @type {{rotation: {x: number, y: number, z: number}, position: {x: number, y: number, z: number}, scale: {x: number, y: number, z: number}}}
-   */
   let transform = $derived({
     rotation,
     position,
     scale
   });
 
-  /**
-   * Initialize the Three.js scene, camera, and renderer
-   */
   function initializeScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
@@ -109,10 +50,6 @@
     scene.add(gridHelper);
   }
 
-  /**
-   * Load an image as a texture onto a plane geometry
-   * @param {string} url - The URL of the image to load
-   */
   function loadTexture(url) {
     const textureLoader = new THREE.TextureLoader();
 
@@ -135,9 +72,6 @@
     );
   }
 
-  /**
-   * Set up mouse and touch event listeners for manipulation
-   */
   function setupEventListeners() {
     const canvas = renderer.domElement;
 
@@ -150,21 +84,15 @@
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
+
+    window.addEventListener('resize', onWindowResize);
   }
 
-  /**
-   * Handle mouse down event - start dragging
-   * @param {MouseEvent} event - The mouse event
-   */
   function onMouseDown(event) {
     isDragging = true;
     previousMousePosition = { x: event.clientX, y: event.clientY };
   }
 
-  /**
-   * Handle mouse move event - rotate image if dragging
-   * @param {MouseEvent} event - The mouse event
-   */
   function onMouseMove(event) {
     if (!isDragging || !imageMesh) return;
 
@@ -185,20 +113,13 @@
     previousMousePosition = { x: event.clientX, y: event.clientY };
   }
 
-  /**
-   * Handle mouse up event - stop dragging
-   */
   function onMouseUp() {
     isDragging = false;
   }
 
-  /**
-   * Handle mouse wheel event - zoom in/out
-   * @param {WheelEvent} event - The wheel event
-   */
   function onMouseWheel(event) {
     if (!imageMesh) return;
-    
+
     event.preventDefault();
 
     const zoomFactor = event.deltaY > 0 ? 0.95 : 1.05;
@@ -213,25 +134,14 @@
     }
   }
 
-  /**
-   * Handle touch start event - start dragging on mobile
-   * @param {TouchEvent} event - The touch event
-   */
   function onTouchStart(event) {
     if (event.touches.length === 1) {
       event.preventDefault();
       isDragging = true;
-      previousMousePosition = { 
-        x: event.touches[0].clientX, 
-        y: event.touches[0].clientY 
-      };
+      previousMousePosition = { x: event.touches[0].clientX, y: event.touches[0].clientY };
     }
   }
 
-  /**
-   * Handle touch move event - rotate image on mobile
-   * @param {TouchEvent} event - The touch event
-   */
   function onTouchMove(event) {
     if (!isDragging || event.touches.length !== 1 || !imageMesh) return;
 
@@ -251,33 +161,21 @@
       imageMesh.rotation.y = rotation.y;
     }
 
-    previousMousePosition = { 
-      x: event.touches[0].clientX, 
-      y: event.touches[0].clientY 
-    };
+    previousMousePosition = { x: event.touches[0].clientX, y: event.touches[0].clientY };
   }
 
-  /**
-   * Handle touch end event - stop dragging on mobile
-   */
   function onTouchEnd() {
     isDragging = false;
   }
 
-  /**
-   * Handle window resize event - update camera and renderer
-   */
   function onWindowResize() {
     if (!camera || !renderer || !container) return;
-    
+
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
   }
 
-  /**
-   * Animation loop - render the scene continuously
-   */
   function animate() {
     requestAnimationFrame(animate);
     if (renderer && scene && camera) {
@@ -285,12 +183,6 @@
     }
   }
 
-  /**
-   * Set rotation values programmatically
-   * @param {number} x - Rotation around X axis
-   * @param {number} y - Rotation around Y axis
-   * @param {number} z - Rotation around Z axis
-   */
   function setRotation(x, y, z) {
     rotation = { x, y, z };
     if (imageMesh) {
@@ -298,12 +190,6 @@
     }
   }
 
-  /**
-   * Set position values programmatically
-   * @param {number} x - X position
-   * @param {number} y - Y position
-   * @param {number} z - Z position
-   */
   function setPosition(x, y, z) {
     position = { x, y, z };
     if (imageMesh) {
@@ -311,12 +197,6 @@
     }
   }
 
-  /**
-   * Set scale values programmatically
-   * @param {number} x - X scale
-   * @param {number} y - Y scale
-   * @param {number} z - Z scale
-   */
   function setScale(x, y, z) {
     scale = { x, y, z };
     if (imageMesh) {
@@ -324,14 +204,11 @@
     }
   }
 
-  /**
-   * Reset all transformations to default values
-   */
   function resetTransform() {
     rotation = { x: 0, y: 0, z: 0 };
     position = { x: 0, y: 0, z: 0 };
     scale = { x: 1, y: 1, z: 1 };
-    
+
     if (imageMesh) {
       imageMesh.rotation.set(0, 0, 0);
       imageMesh.position.set(0, 0, 0);
@@ -339,9 +216,6 @@
     }
   }
 
-  /**
-   * Initialize component on mount
-   */
   onMount(async () => {
     initializeScene();
     loadTexture(imageUrl);
@@ -349,9 +223,6 @@
     setupEventListeners();
   });
 
-  /**
-   * Clean up on unmount
-   */
   onDestroy(() => {
     window.removeEventListener('resize', onWindowResize);
     if (renderer) {
@@ -359,9 +230,6 @@
     }
   });
 
-  /**
-   * Expose transform and methods for parent access
-   */
   let methods = {
     get transform() {
       return transform;
@@ -371,7 +239,7 @@
     setScale,
     resetTransform
   };
-  
+
   $effect(() => {
     if (typeof methods !== 'undefined') {
       window.image3DMethods = methods;
@@ -380,7 +248,6 @@
 </script>
 
 <div class="image-3d-container" bind:this={container}>
-  {@render children?.()}
 </div>
 
 <style>
