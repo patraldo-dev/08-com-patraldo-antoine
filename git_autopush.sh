@@ -1,21 +1,33 @@
 #!/bin/bash
 
-    # Check if a commit message is provided as an argument
-    if [ -z "$1" ]; then
-      echo "Usage: $0 \"Your commit message\""
-      exit 1
-    fi
+# Check if a commit message is provided as an argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 \"Your commit message\""
+  exit 1
+fi
 
-    COMMIT_MESSAGE="$1"
+COMMIT_MESSAGE="$1"
 
-    # Add all changes to the staging area
-    git add . ':!src/lib/generated-*.json'
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current)
 
-    # Commit the changes with the provided message
-    git commit -m "$COMMIT_MESSAGE"
+# Add all changes (excluding generated files)
+git add . ':!scripts/generated-routes.json' ':!.svelte-kit/'
 
-    # Push the changes to the remote repository (assuming 'origin' and 'main' or 'master' branch)
-    # You might need to adjust 'main' to 'master' depending on your repository's default branch
-    git push origin main
+# Commit if there are changes
+if git diff --staged --quiet; then
+  echo "No changes to commit"
+else
+  git commit -m "$COMMIT_MESSAGE"
+fi
 
-    echo "Changes added, committed, and pushed successfully!"
+# Pull latest changes first (handles Cloudflare auto-commits)
+echo "Pulling latest changes from $CURRENT_BRANCH..."
+git pull origin "$CURRENT_BRANCH" --rebase
+
+# Push to current branch
+echo "Pushing to origin/$CURRENT_BRANCH..."
+git push origin "$CURRENT_BRANCH"
+
+echo "Changes added, committed, and pushed to $CURRENT_BRANCH successfully!"
+

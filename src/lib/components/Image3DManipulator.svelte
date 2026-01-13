@@ -84,8 +84,6 @@
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
-
-    window.addEventListener('resize', onWindowResize);
   }
 
   function onMouseDown(event) {
@@ -119,7 +117,7 @@
 
   function onMouseWheel(event) {
     if (!imageMesh) return;
-
+    
     event.preventDefault();
 
     const zoomFactor = event.deltaY > 0 ? 0.95 : 1.05;
@@ -168,9 +166,10 @@
     isDragging = false;
   }
 
+  // FIX: Define this function - it was missing!
   function onWindowResize() {
     if (!camera || !renderer || !container) return;
-
+    
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -208,7 +207,7 @@
     rotation = { x: 0, y: 0, z: 0 };
     position = { x: 0, y: 0, z: 0 };
     scale = { x: 1, y: 1, z: 1 };
-
+    
     if (imageMesh) {
       imageMesh.rotation.set(0, 0, 0);
       imageMesh.position.set(0, 0, 0);
@@ -241,14 +240,13 @@
   };
 
   $effect(() => {
-    if (typeof methods !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof methods !== 'undefined') {
       window.image3DMethods = methods;
     }
   });
 </script>
 
-<div class="image-3d-container" bind:this={container}>
-</div>
+<div class="image-3d-container" bind:this={container}></div>
 
 <style>
   .image-3d-container {
