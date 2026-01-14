@@ -63,11 +63,11 @@
       url,
       (texture) => {
         const geometry = new THREE.PlaneGeometry(3, 3 * texture.image.height / texture.image.width);
-        const material = new THREE.MeshStandardMaterial({
+        const material = new THREE.MeshBasicMaterial({
           map: texture,
           side: THREE.DoubleSide
         });
-        
+
         imageMesh = new THREE.Mesh(geometry, material);
         scene.add(imageMesh);
       },
