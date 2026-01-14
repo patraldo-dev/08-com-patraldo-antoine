@@ -23,31 +23,34 @@
     scale
   });
   
-  function initializeScene() {
-    if (!THREE) return;
-    
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
-    
-    camera = new THREE.PerspectiveCamera(
-      75,
-      container.clientWidth / container.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
-    
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
-    
-    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+function initializeScene() {
+  if (!THREE) return;
 
-    const gridHelper = new THREE.GridHelper(10, 10, 0xcccccc, 0xe0e0e0);
-    scene.add(gridHelper);
-  }
-  
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0f0f0);
+
+  camera = new THREE.PerspectiveCamera(
+    75,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 5;
+
+  renderer = new THREE.WebGLRenderer({ 
+    antialias: window.innerWidth > 768,
+    powerPreference: "high-performance"
+  });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+
+  const gridHelper = new THREE.GridHelper(10, 10, 0xcccccc, 0xe0e0e0);
+  scene.add(gridHelper);
+}
+
   function loadTexture(url) {
     if (!THREE) return;
     
