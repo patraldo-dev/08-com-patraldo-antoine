@@ -166,6 +166,12 @@
     </div>
   {/if}
 
+<!-- DEBUG: Add before <div class="main-content"> -->
+<div style="background: red; color: white; padding: 10px; font-size: 14px;">
+  Images: {filteredArtworks().length} | Selected: {selectedArtwork?.title || 'None'}
+</div>
+
+
   <div class="main-content">
     <aside class="sidebar">
       <h2>{$t('3dart_artworks')} ({filteredArtworks().length})</h2>
@@ -510,45 +516,35 @@
   }
 
 @media (max-width: 768px) {
-  /* Header */
   header h1 {
     font-size: 1.5rem;
   }
   
-  /* Stack layout vertically */
   .main-content {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;  /* No !important */
     gap: 16px;
   }
   
-  /* Sidebar BELOW 3D viewer */
   .sidebar {
-    max-height: none !important;
-    order: 2;
+    max-height: none;
+    order: 2;  /* Thumbnails below */
   }
   
-  /* 3D viewer takes priority */
   .manipulator-wrapper {
-    min-height: 60vh !important;
+    min-height: 50vh;  /* Smaller */
     order: 1;
   }
   
-  /* Horizontal thumbnail scroll */
   .artwork-list {
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0;
   }
   
   .artwork-item {
-    min-width: 160px;
+    min-width: 140px;
     flex: 0 0 auto;
-  }
-  
-  /* Controls stack */
-  .controls {
-    flex-direction: column !important;
-    align-items: stretch !important;
   }
 }
 
