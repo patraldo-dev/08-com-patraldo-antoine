@@ -318,8 +318,5 @@
     width: 100% !important;
     height: 100% !important;
     touch-action: none;
-    position: relative !important;
-    z-index: 1 !important;
   }
-
 </style>
