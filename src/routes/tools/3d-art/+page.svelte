@@ -166,12 +166,6 @@
     </div>
   {/if}
 
-<!-- DEBUG: Add before <div class="main-content"> -->
-<div style="background: red; color: white; padding: 10px; font-size: 14px;">
-  Images: {filteredArtworks().length} | Selected: {selectedArtwork?.title || 'None'}
-</div>
-
-
   <div class="main-content">
     <aside class="sidebar">
       <h2>{$t('3dart_artworks')} ({filteredArtworks().length})</h2>
@@ -515,27 +509,36 @@
     }
   }
 
+/* Add this to your +page.svelte <style> section */
+
+/* MOBILE FIX: Force explicit height on 3D container */
 @media (max-width: 768px) {
-  header h1 {
-    font-size: 1.5rem;
+  .manipulator-wrapper {
+    min-height: 400px !important;  /* Force minimum height */
+    height: 60vh !important;        /* Or use viewport height */
+    width: 100% !important;
+    position: relative !important;
   }
   
-  /* SIMPLIFIED: Just make it vertical stack */
-  .main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  /* Make sure canvas fills the container */
+  .manipulator-wrapper :global(.image-3d-container) {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
   }
   
-  /* 3D viewer first, full width */
-  .manipulator-container {
-    order: -1;  /* Force to top */
+  /* Ensure instructions don't block interaction */
+  .instructions {
+    pointer-events: none !important;
+    z-index: 10 !important;
   }
   
-  /* Make thumbnails ALWAYS visible */
+  /* Fix sidebar scroll on mobile */
   .sidebar {
-    max-height: 220px !important;
-    overflow: hidden;
+    max-height: 180px !important;
+    overflow: visible !important;
   }
   
   .artwork-list {
@@ -543,35 +546,34 @@
     flex-direction: row !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    padding: 8px 0;
-    gap: 8px;
+    gap: 8px !important;
+    padding: 8px 0 !important;
+    -webkit-overflow-scrolling: touch !important;
   }
   
   .artwork-item {
-    min-width: 120px !important;
+    min-width: 100px !important;
     flex: 0 0 auto !important;
+    flex-direction: column !important;
     padding: 8px !important;
   }
   
   .artwork-item img {
-    width: 60px !important;
-    height: 60px !important;
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .artwork-info {
+    text-align: center !important;
+  }
+  
+  .artwork-title {
+    font-size: 11px !important;
+  }
+  
+  .artwork-meta {
+    font-size: 10px !important;
   }
 }
-
-/* MOBILE EMERGENCY FIX */
-@media (max-width: 768px) {
-  .sidebar {
-    display: block !important;
-    background: red !important;  /* Makes it visible */
-    min-height: 200px !important;
-  }
-}
-
-.sidebar { z-index: 10; }
-
-@media (max-width: 768px) { .sidebar { z-index: 20 !important; background: white !important; } }
-
-
 
 </style>
