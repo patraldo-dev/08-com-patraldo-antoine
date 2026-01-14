@@ -509,18 +509,25 @@
     }
   }
 
-/* Add this to your +page.svelte <style> section */
+/* MOBILE FIXES - Replace your mobile CSS with this */
 
-/* MOBILE FIX: Force explicit height on 3D container */
 @media (max-width: 768px) {
-  .manipulator-wrapper {
-    min-height: 400px !important;  /* Force minimum height */
-    height: 60vh !important;        /* Or use viewport height */
-    width: 100% !important;
-    position: relative !important;
+  /* Main layout: thumbnails BELOW canvas */
+  .main-content {
+    display: flex;
+    flex-direction: column-reverse; /* Thumbnails go to bottom */
+    gap: 16px;
   }
   
-  /* Make sure canvas fills the container */
+  /* 3D Canvas - Full width, good height */
+  .manipulator-wrapper {
+    min-height: 450px !important;
+    height: 65vh !important;
+    width: 100% !important;
+    position: relative !important;
+    margin-bottom: 16px !important; /* Space before thumbnails */
+  }
+  
   .manipulator-wrapper :global(.image-3d-container) {
     position: absolute !important;
     top: 0 !important;
@@ -529,16 +536,17 @@
     height: 100% !important;
   }
   
-  /* Ensure instructions don't block interaction */
-  .instructions {
-    pointer-events: none !important;
-    z-index: 10 !important;
+  /* Thumbnails - Horizontal scroll at BOTTOM */
+  .sidebar {
+    max-height: 140px !important;
+    min-height: 140px !important;
+    overflow: hidden !important;
+    order: 2; /* Force to bottom */
   }
   
-  /* Fix sidebar scroll on mobile */
-  .sidebar {
-    max-height: 180px !important;
-    overflow: visible !important;
+  .sidebar h2 {
+    font-size: 0.9rem !important;
+    margin-bottom: 8px !important;
   }
   
   .artwork-list {
@@ -546,33 +554,93 @@
     flex-direction: row !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    gap: 8px !important;
+    gap: 12px !important;
     padding: 8px 0 !important;
     -webkit-overflow-scrolling: touch !important;
   }
   
+  /* Thumbnail cards - Better styling */
   .artwork-item {
-    min-width: 100px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
     flex: 0 0 auto !important;
     flex-direction: column !important;
     padding: 8px !important;
+    gap: 6px !important;
+    background: white !important;
+  }
+  
+  /* REMOVE blue border, use subtle shadow instead */
+  .artwork-item.active {
+    border-color: transparent !important;
+    background: white !important;
+    box-shadow: 0 0 0 3px #3b82f6, 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    transform: scale(1.05) !important;
+  }
+  
+  .artwork-item:hover {
+    border-color: transparent !important;
   }
   
   .artwork-item img {
-    width: 80px !important;
-    height: 80px !important;
+    width: 74px !important;
+    height: 74px !important;
+    border-radius: 6px !important;
   }
   
   .artwork-info {
     text-align: center !important;
+    width: 100% !important;
   }
   
   .artwork-title {
-    font-size: 11px !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
   
   .artwork-meta {
-    font-size: 10px !important;
+    font-size: 9px !important;
+  }
+  
+  .featured-badge {
+    position: absolute !important;
+    top: 4px !important;
+    right: 4px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Hide artwork details on mobile to save space */
+  .artwork-details {
+    display: none !important;
+  }
+  
+  /* Instructions - smaller on mobile */
+  .instructions {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    bottom: 8px !important;
+  }
+  
+  /* Controls more compact */
+  .controls {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  
+  .filter-group {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  
+  .filter-group select {
+    font-size: 13px !important;
+    padding: 6px 10px !important;
   }
 }
 

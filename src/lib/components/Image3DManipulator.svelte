@@ -1,3 +1,6 @@
+
+</style>
+
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -16,6 +19,8 @@
   let scale = $state({ x: 1, y: 1, z: 1 });
   let isDragging = $state(false);
   let previousMousePosition = { x: 0, y: 0 };
+  let lastTouchDistance = $state(0);
+  let isPinching = $state(false);
   
   let transform = $derived({
     rotation,
@@ -23,34 +28,36 @@
     scale
   });
   
-function initializeScene() {
-  if (!THREE) return;
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf0f0f0);
-
-  camera = new THREE.PerspectiveCamera(
-    75,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 5;
-
-  renderer = new THREE.WebGLRenderer({ 
-    antialias: window.innerWidth > 768,
-    powerPreference: "high-performance"
-  });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-  container.appendChild(renderer.domElement);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
-
-  const gridHelper = new THREE.GridHelper(10, 10, 0xcccccc, 0xe0e0e0);
-  scene.add(gridHelper);
-}
-
+  function initializeScene() {
+    if (!THREE) return;
+    
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf0f0f0);
+    
+    camera = new THREE.PerspectiveCamera(
+      75,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 5;
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+    
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+    
+    const gridHelper = new THREE.GridHelper(10, 10, 0xcccccc, 0xe0e0e0);
+    scene.add(gridHelper);
+  }
+  
   function loadTexture(url) {
     if (!THREE) return;
     
@@ -58,11 +65,8 @@ function initializeScene() {
     textureLoader.load(
       url,
       (texture) => {
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.needsUpdate = true;
         const geometry = new THREE.PlaneGeometry(3, 3 * texture.image.height / texture.image.width);
-        const material = new THREE.MeshBasicMaterial({
+        const material = new THREE.MeshStandardMaterial({
           map: texture,
           side: THREE.DoubleSide
         });
@@ -144,11 +148,44 @@ function initializeScene() {
     if (event.touches.length === 1) {
       event.preventDefault();
       isDragging = true;
+      isPinching = false;
       previousMousePosition = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    } else if (event.touches.length === 2) {
+      event.preventDefault();
+      isDragging = false;
+      isPinching = true;
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
     }
   }
   
   function onTouchMove(event) {
+    // Pinch-to-zoom with two fingers
+    if (isPinching && event.touches.length === 2) {
+      event.preventDefault();
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (lastTouchDistance > 0) {
+        const zoomFactor = distance / lastTouchDistance;
+        scale = {
+          x: scale.x * zoomFactor,
+          y: scale.y * zoomFactor,
+          z: scale.z
+        };
+        
+        if (imageMesh) {
+          imageMesh.scale.set(scale.x, scale.y, scale.z);
+        }
+      }
+      
+      lastTouchDistance = distance;
+      return;
+    }
+    
+    // Single finger rotation
     if (!isDragging || event.touches.length !== 1 || !imageMesh) return;
     event.preventDefault();
     
@@ -171,6 +208,8 @@ function initializeScene() {
   
   function onTouchEnd() {
     isDragging = false;
+    isPinching = false;
+    lastTouchDistance = 0;
   }
   
   function onWindowResize() {
@@ -233,25 +272,15 @@ function initializeScene() {
     animate();
     setupEventListeners();
   });
-
-onDestroy(() => {
-  if (browser && window) {
-    window.removeEventListener('resize', onWindowResize);
-  }
-  if (renderer) {
-    // FULL texture cleanup to fix immutable warnings
-    if (imageMesh && imageMesh.material) {
-      if (imageMesh.material.map) {
-        imageMesh.material.map.dispose();
-      }
-      imageMesh.material.dispose();
+  
+  onDestroy(() => {
+    if (browser && window) {
+      window.removeEventListener('resize', onWindowResize);
     }
-    if (imageMesh && imageMesh.geometry) {
-      imageMesh.geometry.dispose();
+    if (renderer) {
+      renderer.dispose();
     }
-    renderer.dispose();
-  }
-});
+  });
   
   let methods = {
     get transform() {
@@ -292,10 +321,8 @@ onDestroy(() => {
     width: 100% !important;
     height: 100% !important;
     touch-action: none;
-  }
-
-:global(canvas) {
     position: relative !important;
     z-index: 1 !important;
   }
+
 </style>
