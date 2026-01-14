@@ -114,6 +114,10 @@
   "pages.tools.wallpapersultrawide": "Ultrawide",
   "pages.tools.wallpapersdownload": "Download",
   "pages.tools.wallpapersselectsize": "Select Wallpaper Size",
+
+  "pages.tools.art3dTitle": "3D Art Viewer",
+  "pages.tools.art3dDescription": "Interactive 3D gallery with rotation, zoom & filtering",
+
   "sketchbook.prompt": "Illustration, Illusion, Improvisation",
   "tags.mood.melancholic": "Melancholic",
   "tags.mood.vibrant": "Vibrant",

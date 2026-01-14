@@ -35,7 +35,7 @@
   
   let imageUrl = $derived(
     selectedArtwork && selectedArtwork.imageId
-      ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${selectedArtwork.imageId}/public`
+      ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${selectedArtwork.imageId}/gallery`
       : ''
   );
   
@@ -198,8 +198,10 @@
     <div class="manipulator-container">
       {#if selectedArtwork}
         <div class="manipulator-wrapper">
+           {#key imageUrl}
           <svelte:component this={Image3DManipulator} {imageUrl} />
-          
+            {/key}
+
           <div class="instructions">
             <p>{$t('3dart_instructions')}</p>
           </div>

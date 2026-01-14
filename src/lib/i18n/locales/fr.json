@@ -116,6 +116,10 @@
   "pages.tools.wallpapersultrawide": "Ultra-large",
   "pages.tools.wallpapersdownload": "Télécharger",
   "pages.tools.wallpapersselectsize": "Sélectionner la Taille du Fond d'Écran",
+
+  "pages.tools.art3dTitle": "Visionneuse 3D d'Art",
+  "pages.tools.art3dDescription": "Galerie 3D interactive avec rotation, zoom et filtres",
+
   "sketchbook.prompt": "Un dessin chaque jour. Une histoire chaque semaine.",
   "tags.mood.melancholic": "Mélancolique",
   "tags.mood.vibrant": "Énergique",

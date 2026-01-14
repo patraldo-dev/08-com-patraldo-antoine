@@ -39,6 +39,14 @@
     <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
   </a>
 
+<!-- 3D Art Viewer - LIVE -->
+<a href="/tools/3d-art" class="tool-card available">
+  <div class="tool-icon">🖼️✨</div>
+  <h3>{$t('pages.tools.art3dTitle')}</h3>
+  <p>{$t('pages.tools.art3dDescription')}</p>
+  <span class="status-badge live">{$t('pages.tools.statusAvailable')}</span>
+</a>
+
     <!-- Avatar Creator - Coming Soon -->
     <div class="tool-card coming-soon">
       <div class="tool-icon">👤</div>
