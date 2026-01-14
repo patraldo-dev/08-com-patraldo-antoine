@@ -489,159 +489,162 @@
     color: #9ca3af;
   }
 
+  /* Tablet */
   @media (max-width: 1024px) {
     .main-content {
       grid-template-columns: 1fr;
     }
-
     .sidebar {
       max-height: 300px;
     }
-
     .artwork-list {
       flex-direction: row;
       overflow-x: auto;
       overflow-y: visible;
     }
-
     .artwork-item {
       min-width: 250px;
     }
   }
 
-/* MOBILE FIXES - Replace your mobile CSS with this */
+  /* Mobile - SINGLE CLEAN MEDIA QUERY */
+  @media (max-width: 768px) {
+    .page {
+      padding: 12px;
+      gap: 12px;
+    }
 
-@media (max-width: 768px) {
-  /* Main layout: thumbnails BELOW canvas */
-  .main-content {
-    display: flex;
-    flex-direction: column-reverse; /* Thumbnails go to bottom */
-    gap: 16px;
-  }
-  
-  /* 3D Canvas - Full width, good height */
-  .manipulator-wrapper {
-    min-height: 450px !important;
-    height: 65vh !important;
-    width: 100% !important;
-    position: relative !important;
-    margin-bottom: 16px !important; /* Space before thumbnails */
-  }
-  
-  .manipulator-wrapper :global(.image-3d-container) {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
-  /* Thumbnails - Horizontal scroll at BOTTOM */
-  .sidebar {
-    max-height: 140px !important;
-    min-height: 140px !important;
-    overflow: hidden !important;
-    order: 2; /* Force to bottom */
-  }
-  
-  .sidebar h2 {
-    font-size: 0.9rem !important;
-    margin-bottom: 8px !important;
-  }
-  
-  .artwork-list {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    gap: 12px !important;
-    padding: 8px 0 !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  
-  /* Thumbnail cards - Better styling */
-  .artwork-item {
-    min-width: 90px !important;
-    max-width: 90px !important;
-    flex: 0 0 auto !important;
-    flex-direction: column !important;
-    padding: 8px !important;
-    gap: 6px !important;
-    background: white !important;
-  }
-  
-  /* REMOVE blue border, use subtle shadow instead */
-  .artwork-item.active {
-    border-color: transparent !important;
-    background: white !important;
-    box-shadow: 0 0 0 3px #3b82f6, 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-    transform: scale(1.05) !important;
-  }
-  
-  .artwork-item:hover {
-    border-color: transparent !important;
-  }
-  
-  .artwork-item img {
-    width: 74px !important;
-    height: 74px !important;
-    border-radius: 6px !important;
-  }
-  
-  .artwork-info {
-    text-align: center !important;
-    width: 100% !important;
-  }
-  
-  .artwork-title {
-    font-size: 10px !important;
-    line-height: 1.2 !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-  }
-  
-  .artwork-meta {
-    font-size: 9px !important;
-  }
-  
-  .featured-badge {
-    position: absolute !important;
-    top: 4px !important;
-    right: 4px !important;
-    font-size: 14px !important;
-  }
-  
-  /* Hide artwork details on mobile to save space */
-  .artwork-details {
-    display: none !important;
-  }
-  
-  /* Instructions - smaller on mobile */
-  .instructions {
-    font-size: 12px !important;
-    padding: 6px 12px !important;
-    bottom: 8px !important;
-  }
-  
-  /* Controls more compact */
-  .controls {
-    flex-direction: column !important;
-    gap: 8px !important;
-    padding: 12px !important;
-  }
-  
-  .filter-group {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 8px !important;
-  }
-  
-  .filter-group select {
-    font-size: 13px !important;
-    padding: 6px 10px !important;
-  }
-}
+    header h1 {
+      font-size: 1.5rem;
+    }
 
+    .controls {
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .filter-group {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .filter-group select {
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+
+    /* Canvas on TOP, Thumbnails on BOTTOM */
+    .main-content {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+
+    .manipulator-wrapper {
+      min-height: 450px !important;
+      height: 65vh !important;
+      width: 100% !important;
+      position: relative !important;
+      margin-bottom: 16px !important;
+    }
+
+    .manipulator-wrapper :global(.image-3d-container) {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Thumbnails - STABLE ON BOTTOM */
+    .sidebar {
+      z-index: 100 !important;
+      position: relative !important;
+      background: white !important;
+      border-radius: 12px !important;
+      max-height: 160px !important;
+      min-height: 140px !important;
+      padding: 12px !important;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem !important;
+      margin-bottom: 8px !important;
+    }
+
+    .artwork-list {
+      display: flex !important;
+      flex-direction: row !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      gap: 12px !important;
+      padding: 8px 0 !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    .artwork-item {
+      min-width: 90px !important;
+      max-width: 90px !important;
+      flex: 0 0 auto !important;
+      flex-direction: column !important;
+      padding: 8px !important;
+      gap: 6px !important;
+      background: white !important;
+    }
+
+    .artwork-item.active {
+      border-color: transparent !important;
+      background: white !important;
+      box-shadow: 0 0 0 3px #3b82f6, 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .artwork-item:hover {
+      border-color: transparent !important;
+    }
+
+    .artwork-item img {
+      width: 74px !important;
+      height: 74px !important;
+      border-radius: 6px !important;
+    }
+
+    .artwork-info {
+      text-align: center !important;
+      width: 100% !important;
+    }
+
+    .artwork-title {
+      font-size: 10px !important;
+      line-height: 1.2 !important;
+      display: -webkit-box !important;
+      -webkit-line-clamp: 2 !important;
+      -webkit-box-orient: vertical !important;
+      overflow: hidden !important;
+    }
+
+    .artwork-meta {
+      font-size: 9px !important;
+    }
+
+    .featured-badge {
+      position: absolute !important;
+      top: 4px !important;
+      right: 4px !important;
+      font-size: 14px !important;
+    }
+
+    .artwork-details {
+      display: none !important;
+    }
+
+    .instructions {
+      font-size: 12px !important;
+      padding: 6px 12px !important;
+      bottom: 8px !important;
+    }
+  }
 </style>
+
