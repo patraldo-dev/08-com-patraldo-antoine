@@ -10,6 +10,7 @@
   let renderer;
   let imageMesh;
   let THREE;
+  let resizeObserver;
   
   let rotation = $state({ x: 0, y: 0, z: 0 });
   let position = $state({ x: 0, y: 0, z: 0 });
@@ -52,6 +53,13 @@
   
   function loadTexture(url) {
     if (!THREE) return;
+    
+    // Clear previous mesh
+    if (imageMesh) {
+      scene.remove(imageMesh);
+      imageMesh.geometry?.dispose();
+      imageMesh.material?.dispose();
+    }
     
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(
@@ -153,7 +161,6 @@
   }
   
   function onTouchMove(event) {
-    // Pinch-to-zoom with two fingers
     if (isPinching && event.touches.length === 2) {
       event.preventDefault();
       const dx = event.touches[0].clientX - event.touches[1].clientX;
@@ -177,7 +184,6 @@
       return;
     }
     
-    // Single finger rotation
     if (!isDragging || event.touches.length !== 1 || !imageMesh) return;
     event.preventDefault();
     
@@ -204,12 +210,20 @@
     lastTouchDistance = 0;
   }
   
+  // FIXED: Prevents slider jumping
   function onWindowResize() {
-    if (!camera || !renderer || !container) return;
+    if (!camera || !renderer || !container || container.clientWidth === 0) return;
     
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    const width = container.clientWidth;
+    const height = container.clientHeight || 400;
+    const currentSize = renderer.getSize(new THREE.Vector2());
+    
+    // Only resize if dimensions actually changed (prevents loops)
+    if (Math.abs(width - currentSize.x) > 1 || Math.abs(height - currentSize.y) > 1) {
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
   }
   
   function animate() {
@@ -256,18 +270,28 @@
   onMount(async () => {
     if (!browser) return;
     
-    // Dynamically import Three.js only on the client
     THREE = await import('three');
     
     initializeScene();
     loadTexture(imageUrl);
-    animate();
     setupEventListeners();
+    animate();
+    
+    // FIXED: ResizeObserver with throttling prevents slider jumping
+    let resizeTimeout;
+    resizeObserver = new ResizeObserver(() => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(onWindowResize, 100);
+    });
+    resizeObserver.observe(container);
   });
   
   onDestroy(() => {
     if (browser && window) {
       window.removeEventListener('resize', onWindowResize);
+    }
+    if (resizeObserver) {
+      resizeObserver.disconnect();
     }
     if (renderer) {
       renderer.dispose();
@@ -299,6 +323,13 @@
     height: 100%;
     position: relative;
     overflow: hidden;
+    min-height: 400px; /* Prevents collapse */
+  }
+  
+  @media (max-width: 768px) {
+    .image-3d-container {
+      min-height: 300px;
+    }
   }
   
   .loading {
@@ -306,6 +337,7 @@
     align-items: center;
     justify-content: center;
     background: #f0f0f0;
+    min-height: 400px;
   }
   
   :global(canvas) {
@@ -313,5 +345,8 @@
     width: 100% !important;
     height: 100% !important;
     touch-action: none;
+    position: relative !important;
+    z-index: 1 !important;
   }
 </style>
+
