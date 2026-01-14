@@ -509,9 +509,47 @@
     }
   }
 
-  @media (max-width: 768px) {
-    header h1 {
-      font-size: 1.5rem;
-    }
+@media (max-width: 768px) {
+  /* Header */
+  header h1 {
+    font-size: 1.5rem;
   }
+  
+  /* Stack layout vertically */
+  .main-content {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  /* Sidebar BELOW 3D viewer */
+  .sidebar {
+    max-height: none !important;
+    order: 2;
+  }
+  
+  /* 3D viewer takes priority */
+  .manipulator-wrapper {
+    min-height: 60vh !important;
+    order: 1;
+  }
+  
+  /* Horizontal thumbnail scroll */
+  .artwork-list {
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+  
+  .artwork-item {
+    min-width: 160px;
+    flex: 0 0 auto;
+  }
+  
+  /* Controls stack */
+  .controls {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
 </style>
