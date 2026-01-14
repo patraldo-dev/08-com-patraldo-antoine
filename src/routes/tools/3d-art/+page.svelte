@@ -520,32 +520,53 @@
     font-size: 1.5rem;
   }
   
+  /* SIMPLIFIED: Just make it vertical stack */
   .main-content {
-    grid-template-columns: 1fr;  /* No !important */
+    display: flex;
+    flex-direction: column;
     gap: 16px;
   }
   
-  .sidebar {
-    max-height: none;
-    order: 2;  /* Thumbnails below */
+  /* 3D viewer first, full width */
+  .manipulator-container {
+    order: -1;  /* Force to top */
   }
   
-  .manipulator-wrapper {
-    min-height: 50vh;  /* Smaller */
-    order: 1;
+  /* Make thumbnails ALWAYS visible */
+  .sidebar {
+    max-height: 220px !important;
+    overflow: hidden;
   }
   
   .artwork-list {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
     padding: 8px 0;
+    gap: 8px;
   }
   
   .artwork-item {
-    min-width: 140px;
-    flex: 0 0 auto;
+    min-width: 120px !important;
+    flex: 0 0 auto !important;
+    padding: 8px !important;
+  }
+  
+  .artwork-item img {
+    width: 60px !important;
+    height: 60px !important;
   }
 }
+
+/* MOBILE EMERGENCY FIX */
+@media (max-width: 768px) {
+  .sidebar {
+    display: block !important;
+    background: red !important;  /* Makes it visible */
+    min-height: 200px !important;
+  }
+}
+
 
 </style>
