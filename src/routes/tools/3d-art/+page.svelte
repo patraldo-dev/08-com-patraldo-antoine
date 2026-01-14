@@ -568,5 +568,10 @@
   }
 }
 
+.sidebar { z-index: 10; }
+
+@media (max-width: 768px) { .sidebar { z-index: 20 !important; background: white !important; } }
+
+
 
 </style>

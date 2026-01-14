@@ -293,4 +293,9 @@ onDestroy(() => {
     height: 100% !important;
     touch-action: none;
   }
+
+:global(canvas) {
+    position: relative !important;
+    z-index: 1 !important;
+  }
 </style>
