@@ -7,12 +7,10 @@
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
   let isMenuOpen = $state(false);
-  
-  // Get current route to determine navigation behavior
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
-  // NEW: Accept isAdmin prop passed from layout
+  // CORRECT: Accept isAdmin prop from layout
   export let isAdmin = false;
   
   function toggleMenu(event) {
@@ -38,12 +36,9 @@
   function handleLinkClick(event, href) {
     closeMenu();
     
-    // Hash links (anchors) - only work on home page
     if (href.startsWith('#')) {
       event.preventDefault();
-      
       if (isOnHomePage) {
-        // We're on home page - just scroll
         setTimeout(() => {
           const target = document.querySelector(href);
           if (target) {
@@ -52,20 +47,16 @@
           }
         }, 100);
       } else {
-        // We're on another page - navigate to home then scroll
         goto('/' + href);
       }
       return;
     }
     
-    // Internal routes (like /stories, /collection)
     if (href.startsWith('/')) {
       event.preventDefault();
       goto(href);
       return;
     }
-    
-    // External links work normally (no preventDefault)
   }
   
   function handleOutsideClick(event) {
@@ -114,7 +105,7 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- NEW: Admin Link (Desktop) -->
+    <!-- NEW: Admin Link -->
     {#if isAdmin}
       <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
         🔧 Admin
@@ -153,7 +144,7 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- NEW: Admin Link (Mobile) -->
+    <!-- NEW: Admin Link -->
     {#if isAdmin}
       <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
         🔧 Admin
@@ -221,7 +212,7 @@
   
   /* NEW: Admin Link Styling */
   .admin-link {
-    color: #2c5e3d !important; /* Force the green color */
+    color: #2c5e3d !important;
     font-weight: 500;
   }
   

@@ -9,27 +9,30 @@
   import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
   import { browser } from '$app/environment';
   
-  // NEW: Capture data from server (isAdmin comes from here)
-  let { data } = $props();
+  // Capture data from server with safe defaults
+  let { data = {} } = $props();
+  
+  // Safely extract isAdmin with fallback
+  $: isAdmin = data?.isAdmin ?? false;
   
   // Check if current page needs full-height layout (no top margin)
   $: isFullHeightPage = $page.url.pathname === '/about';
   
   // Initialize locale on client
   onMount(() => {
-    //1. Check localStorage for preferred language
+    // 1. Check localStorage for preferred language
     let lang = localStorage.getItem('preferredLanguage');
     
-    //2. Default to Spanish if none set
+    // 2. Default to Spanish if none set
     if (!lang || !['es', 'en', 'fr'].includes(lang)) {
       lang = 'es';
       localStorage.setItem('preferredLanguage', lang);
     }
     
-    //3. Set the locale (instant, no loading needed!)
+    // 3. Set the locale (instant, no loading needed!)
     setLocale(lang);
     
-    //4. Suppress Cloudflare Stream beacon errors (browser only)
+    // 4. Suppress Cloudflare Stream beacon errors (browser only)
     if (browser) {
       const originalError = console.error;
       console.error = function(...args) {
@@ -50,7 +53,7 @@
       }, true);
     }
     
-    //5. Save locale changes to localStorage
+    // 5. Save locale changes to localStorage
     const unsubscribeLocale = locale.subscribe((newLang) => {
       if (newLang && ['es', 'en', 'fr'].includes(newLang)) {
         localStorage.setItem('preferredLanguage', newLang);
@@ -65,8 +68,7 @@
 </script>
 
 <div class="app">
-  <!-- UPDATED: Pass isAdmin to Navigation -->
-  <Navigation isAdmin={data.isAdmin} />
+  <Navigation {isAdmin} />
   
   <main class:full-height={isFullHeightPage}>
     <slot />
@@ -75,9 +77,9 @@
   <footer>
     <p>&copy; 2025 Antoine Patraldo. All rights reserved.</p>
   </footer>
-
-<NLWebSearch />
-<AIArtAssistant />
+  
+  <NLWebSearch />
+  <AIArtAssistant />
 </div>
 
 <style>
