@@ -5,21 +5,27 @@ export async function load({ request, platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
 
-  // 1. CHECK IF ADMIN
+  // --- ADMIN CHECK FOR THIS PAGE ---
   const url = new URL(request.url);
   let isAdmin = false;
   
   if (url.hostname === 'antoine.patraldo.com') {
-    // Check for Cloudflare Access header
     const cfJwt = request.headers.get('cf-access-jwt-assertion');
     isAdmin = !!cfJwt;
   } 
-  // Allow admin access in dev/preview
+  // Preview/Dev
   else if (url.hostname === 'localhost' || url.hostname.endsWith('.workers.dev')) {
     isAdmin = true; 
   }
+  // ---------------------------------------
 
+  console.log("=== STORIES DEBUG ===");
+  console.log("dbStories exists:", !!dbStories);
+  console.log("dbArtworks exists:", !!dbArtworks);
+  console.log("Is Admin:", isAdmin);
+  
   if (!dbStories || !dbArtworks) {
+    console.log("Stories Index: Database bindings missing.");
     return { stories: [], isAdmin };
   }
   
@@ -27,8 +33,7 @@ export async function load({ request, platform }) {
     let allStories = [];
     let usedArtworkIds = new Set();
     
-    //1. FETCH FULL STORIES (From stories_db)
-    // We fetch stories and their linked artwork_id
+    //1. FETCH FULL STORIES
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
         s.id as story_id,
@@ -41,8 +46,9 @@ export async function load({ request, platform }) {
       ORDER BY s.created_at DESC
     `).all();
     
-    // 2. FETCH ARTWORKS (From ARTWORKS_DB)
-    // We fetch ALL artworks that are story_enabled
+    console.log("Full stories query result:", newStoriesResult.results?.length || 0, "rows");
+    
+    //2. FETCH ARTWORKS
     const artworksResult = await dbArtworks.prepare(`
       SELECT 
         id, 
@@ -57,19 +63,18 @@ export async function load({ request, platform }) {
       ORDER BY created_at DESC
     `).all();
     
+    console.log("Artworks query result:", artworksResult.results?.length || 0, "rows");
     
-    // Create a map of artworks for easy lookup
     const artworksMap = new Map();
     artworksResult.results.forEach(art => {
       artworksMap.set(art.id, art);
     });
     
-    // 3. CREATE FULL STORY OBJECTS
+    //3. CREATE FULL STORY OBJECTS
     const newStories = newStoriesResult.results.map(row => {
       const artwork = artworksMap.get(row.artwork_id);
       
       if (artwork) {
-        // Mark this artwork as "used" so we don't list it as an intro story later
         usedArtworkIds.add(row.artwork_id);
       }
       
@@ -90,14 +95,13 @@ export async function load({ request, platform }) {
     
     allStories = [...allStories, ...newStories];
     
-    // 4. CREATE INTRO STORY OBJECTS
-    // These are artworks that have story_enabled=1 but were NOT linked to a story
+    //4. CREATE INTRO STORY OBJECTS
     const introStories = artworksResult.results
-      .filter(art => !usedArtworkIds.has(art.id)) // Filter out the ones already used
+      .filter(art => !usedArtworkIds.has(art.id)) 
       .map(row => ({
         id: row.id,
         title: row.display_name || row.title,
-        slug: null, // No full page
+        slug: null, 
         description: row.story_intro || '',
         story_intro: row.story_intro || '',
         year: row.year,
@@ -111,8 +115,10 @@ export async function load({ request, platform }) {
     
     allStories = [...allStories, ...introStories];
     
-    // 5. SORT ALL TOGETHER
+    //5. SORT
     allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
     
     return { stories: allStories, isAdmin };
   } catch (e) {

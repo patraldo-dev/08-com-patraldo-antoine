@@ -3,49 +3,17 @@
   import { t } from '$lib/i18n';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
   import { goto } from '$app/navigation';
-  import { onMount, onDestroy } from 'svelte';
-  import { afterNavigate } from '$app/navigation';
   
+  // Ensure you are receiving isAdmin
   let { data } = $props();
   const { stories, isAdmin } = data;
-  
-  // Function to ensure scrolling is enabled
-  function enableScrolling() {
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.height = '';
-    document.body.style.width = '';
-    document.body.style.top = '';
-    document.documentElement.style.overflow = '';
-    
-    // Remove any classes that might disable scrolling
-    document.body.classList.remove('modal-open', 'no-scroll');
-  }
-  
-  // Fix scroll restoration on mount
-  onMount(() => {
-    enableScrolling();
-  });
-  
-  // Reset scroll behavior when navigating back to this page
-  afterNavigate(() => {
-    enableScrolling();
-  });
-  
-  // Cleanup on destroy
-  onDestroy(() => {
-    enableScrolling();
-  });
   
   function openStory(story) {
     console.log('Opening story:', story);
     
-    // Logic: Does this story have a full page?
     if (story.slug) {
-      // Yes: Go to the full story page
       goto(`/stories/${story.slug}/chapter-1`);
     } else {
-      // No: It's an intro story. Go to the modal
       goto(`/#artwork-${story.id}`);
     }
   }
@@ -55,15 +23,6 @@
       return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${story.thumbnailId}/gallery`;
     }
     return story.thumbnailUrl;
-  }
-  
-  function handleAdminClick(event, story) {
-    event.stopPropagation(); // Prevent opening the story
-    const slug = (story.display_name || story.title)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-    goto(`/admin/stories/create?artwork_id=${story.id}&title=${slug}`);
   }
 </script>
 
@@ -115,16 +74,19 @@
             {#if story.year}
               <span class="year">{story.year}</span>
             {/if}
-            
-            {#if isAdmin && story.type === 'intro'}
-              <button 
+          </div>
+
+          <!-- NEW: ADMIN WRITE BUTTON -->
+          {#if isAdmin && story.type === 'intro'}
+            <div class="admin-actions">
+              <a 
+                href="/admin/stories/create?artwork_id={story.id}&title={story.display_name || story.title}" 
                 class="btn-admin-edit"
-                on:click={(e) => handleAdminClick(e, story)}
               >
                 ✍️ Write Full Script
-              </button>
-            {/if}
-          </div>
+              </a>
+            </div>
+          {/if}
         </article>
       {/each}
     {/if}
@@ -191,6 +153,7 @@
     aspect-ratio: 4/3;
     overflow: hidden;
     background: #f5f5f5;
+    pointer-events: none;
   }
   
   .story-image img {
@@ -198,6 +161,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    pointer-events: none;
   }
   
   .story-card:hover .story-image img {
@@ -262,25 +226,28 @@
     font-style: italic;
   }
   
+  /* ADMIN BUTTON STYLES */
+  .admin-actions {
+    padding: 0 2rem 1rem;
+    text-align: center;
+  }
+  
   .btn-admin-edit {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
+    display: inline-block;
     background: #2c5e3d;
     color: white;
-    border: none;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Georgia', serif;
     font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-block;
+    transition: background 0.2s;
   }
   
   .btn-admin-edit:hover {
-    background: #1f4229;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(44, 94, 61, 0.3);
+    background: #234a31;
   }
-  
+
   .no-stories {
     grid-column: 1 / -1;
     text-align: center;
@@ -326,4 +293,8 @@
       font-size: 2rem;
     }
   }
+
+.stories-page .hero-content h1 {
+  color: #2c5e3d;
+}
 </style>
