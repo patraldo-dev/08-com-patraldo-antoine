@@ -1,7 +1,35 @@
 <script>
   import { enhance } from '$app/forms';
+  import { page } from '$app/stores';
   
-  let { data, form } = $props();
+  let { data } = $props();
+
+  // 1. Initialize local state from URL params (Initial Load)
+  const params = $page.url.searchParams;
+  
+  // Helper to generate slug
+  const generateSlug = (text) => {
+    if (!text) return '';
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  // 2. Define reactive form state
+  // We check 'data.form' first (if a previous submission failed with an error)
+  // Otherwise, we check URL params (from your Bash script)
+  let formState = $state({
+    title: data.form?.title || params.get('title') || '',
+    slug: data.form?.slug || generateSlug(params.get('title')),
+    chapterTitle: data.form?.chapterTitle || 'Chapter 1',
+    artId: data.form?.artworkId || params.get('artwork_id') || '',
+    content: data.form?.content || ''
+  });
+
+  // Update slug automatically when title changes (only if user hasn't manually edited it yet)
+  $effect(() => {
+    if (!data.form?.slug && !params.get('title')) {
+       formState.slug = generateSlug(formState.title);
+    }
+  });
 </script>
 
 <div class="admin-container">
@@ -11,28 +39,28 @@
     <!-- Sidebar / Meta Data -->
     <div class="meta-panel">
       <form method="POST" use:enhance class="story-form">
-        {#if form?.error}
-          <p class="error">{form.error}</p>
+        {#if data.form?.error}
+          <p class="error">{data.form.error}</p>
         {/if}
 
         <div class="form-group">
           <label for="title">Story Title</label>
-          <input type="text" name="title" id="title" value={form?.title || ''} required />
+          <input type="text" name="title" id="title" bind:value={formState.title} required />
         </div>
 
         <div class="form-group">
           <label for="slug">URL Slug (e.g. my-first-story)</label>
-          <input type="text" name="slug" id="slug" value={form?.slug || ''} required />
+          <input type="text" name="slug" id="slug" bind:value={formState.slug} required />
         </div>
 
         <div class="form-group">
           <label for="chapterTitle">Chapter / Script Title</label>
-          <input type="text" name="chapterTitle" id="chapterTitle" value="Chapter 1" />
+          <input type="text" name="chapterTitle" id="chapterTitle" bind:value={formState.chapterTitle} />
         </div>
 
         <div class="form-group">
           <label for="artworkId">Link to Artwork ID (Optional)</label>
-          <input type="number" name="artworkId" id="artworkId" placeholder="e.g. 21" />
+          <input type="number" name="artworkId" id="artworkId" bind:value={formState.artId} placeholder="e.g. 21" />
           <small>If this is a script for a specific image, enter the ID here.</small>
         </div>
 
@@ -49,7 +77,7 @@
           id="content" 
           rows="20" 
           class="markdown-editor"
-          bind:value={form?.content}
+          bind:value={formState.content}
         ></textarea>
       </div>
     </div>
