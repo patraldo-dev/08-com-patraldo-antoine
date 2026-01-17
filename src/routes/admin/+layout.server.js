@@ -1,29 +1,21 @@
-// src/routes/admin/+layout.server.js
-//export async function load() {
-  // Cloudflare Access handles auth - if request reaches here, user is authenticated
- // return {
-  //  authenticated: true
-  //};
-//}
-
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ request }) {
-  // Check for the Cloudflare Access JWT assertion header
-  // If this header is missing, it means the request didn't go through CF Access
-  // (or someone is bypassing it)
+export async function load({ request, cookies }) {
+  // 1. Check the Header (Best for Production Custom Domain)
   const cfJwt = request.headers.get('cf-access-jwt-assertion');
+  
+  // 2. Check the Cookie (Best for Preview URL and Local Dev)
+  // Cloudflare Access sets a cookie named 'CF_Authorization' when you log in.
+  const cfCookie = cookies.get('CF_Authorization');
 
-  if (!cfJwt) {
-    // Log this for security auditing
-    console.warn('Unauthorized access attempt to Admin route (Missing CF Access Header)');
-    
-    // Redirect to home or login, though technically they shouldn't reach here
-    // if your CF Access policy is set correctly.
+  // If we don't have either, the user is definitely not authenticated
+  if (!cfJwt && !cfCookie) {
+    // In a real app, you might want to throw a 403 Unauthorized.
+    // But to be safe/consistent with your current setup, we redirect home.
     throw redirect(307, '/');
   }
 
-  // If we get here, Cloudflare Access has validated the user
+  // If we have one of them, they are good to go.
   return {
     authenticated: true
   };
