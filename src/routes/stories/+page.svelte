@@ -62,7 +62,7 @@
               loading="lazy"
             />
             <div class="story-overlay">
-              <span class="read-story">{$t('pages.stories.readStory')}→</span>
+              <span class="read-story">{$t('pages.stories.readStory')} →</span>
             </div>
           </div>
           
@@ -70,7 +70,7 @@
             <h2>{story.display_name || story.title}</h2>
             {#if story.story_intro}
               <p class="intro">{story.story_intro}</p>
-            {:else}
+            {:else if story.description}
               <p class="description">{story.description}</p>
             {/if}
             {#if story.year}
@@ -89,13 +89,13 @@
     background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
   }
   
-  .hero {
+  .hero-simple {
     padding: 6rem 2rem 4rem;
     text-align: center;
     background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
   }
   
-  .hero h1 {
+  .hero-content h1 {
     font-family: 'Georgia', serif;
     font-size: 3.5rem;
     font-weight: 300;
@@ -143,7 +143,6 @@
     aspect-ratio: 4/3;
     overflow: hidden;
     background: #f5f5f5;
-    pointer-events: none;
   }
   
   .story-image img {
@@ -151,7 +150,6 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
-    pointer-events: none;
   }
   
   .story-card:hover .story-image img {
@@ -171,7 +169,7 @@
     padding: 2rem;
     opacity: 0;
     transition: opacity 0.3s ease;
-    pointer-events: none; /* ADD THIS - allows clicks to pass through */
+    pointer-events: none;
   }
   
   .story-card:hover .story-overlay {
@@ -229,7 +227,7 @@
   }
   
   @media (max-width: 768px) {
-    .hero h1 {
+    .hero-content h1 {
       font-size: 2.5rem;
     }
     
@@ -253,17 +251,12 @@
   }
   
   @media (max-width: 480px) {
-    .hero {
+    .hero-simple {
       padding: 4rem 1rem 3rem;
     }
     
-    .hero h1 {
+    .hero-content h1 {
       font-size: 2rem;
     }
   }
-
-.stories-page .hero-content h1 {
-  color: #2c5e3d;
-}
-
 </style>

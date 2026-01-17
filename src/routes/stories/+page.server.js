@@ -4,45 +4,34 @@ import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 export async function load({ platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
-
+  
   if (!dbStories || !dbArtworks) {
+    console.log("Stories Index: Database bindings missing.");
     return { stories: [] };
   }
-
+  
   try {
     let allStories = [];
-
-    // 1. FETCH FULL STORIES (From Admin Panel / stories_db)
-    // These have a slug and link to a full page
+    let usedArtworkIds = new Set();
+    
+    // 1. FETCH FULL STORIES (From stories_db)
+    // We fetch stories and their linked artwork_id
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
-        s.id as id,
-        s.title as title,
-        s.slug as slug,
-        s.description as description,
-        a.image_id,
-        a.year,
-        s.created_at as created_at
+        s.id as story_id,
+        s.title as story_title,
+        s.slug as story_slug,
+        s.description as story_description,
+        s.created_at as story_created_at,
+        sc.artwork_id
       FROM stories s
       LEFT JOIN story_chapters sc ON s.id = sc.story_id AND sc.order_index = 1
-      LEFT JOIN artworks a ON sc.artwork_id = a.id
       ORDER BY s.created_at DESC
     `).all();
-
-    // Transform new stories
-    const newStories = newStoriesResult.results.map(row => ({
-      ...row,
-      type: 'full', // Flag to distinguish later
-      thumbnailUrl: row.image_id 
-        ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${row.image_id}/gallery`
-        : '/placeholder.png'
-    }));
-
-    allStories = [...allStories, ...newStories];
-
-    // 2. FETCH INTRO STORIES (From Bash Script / artworks table)
-    // These have no slug, so they link to the Modal
-    const introStoriesResult = await dbArtworks.prepare(`
+    
+    // 2. FETCH ARTWORKS (From ARTWORKS_DB)
+    // We fetch ALL artworks that are story_enabled
+    const artworksResult = await dbArtworks.prepare(`
       SELECT 
         id, 
         title, 
@@ -55,27 +44,66 @@ export async function load({ platform }) {
       WHERE story_enabled = 1
       ORDER BY created_at DESC
     `).all();
-
-    // Transform intro stories
-    const introStories = introStoriesResult.results.map(row => ({
-      ...row,
-      title: row.display_name || row.title, // Use display name for card
-      slug: null, // NULL means no full page exists
-      description: row.story_intro || row.description,
-      type: 'intro', // Flag to distinguish later
-      thumbnailUrl: row.image_id
-        ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${row.image_id}/gallery`
-        : '/placeholder.png'
-    }));
-
+    
+    // Create a map of artworks for easy lookup
+    const artworksMap = new Map();
+    artworksResult.results.forEach(art => {
+      artworksMap.set(art.id, art);
+    });
+    
+    // 3. CREATE FULL STORY OBJECTS
+    const newStories = newStoriesResult.results.map(row => {
+      const artwork = artworksMap.get(row.artwork_id);
+      
+      if (artwork) {
+        // Mark this artwork as "used" so we don't list it as an intro story later
+        usedArtworkIds.add(row.artwork_id);
+      }
+      
+      return {
+        id: row.story_id,
+        title: row.story_title,
+        slug: row.story_slug,
+        description: row.story_description,
+        year: artwork?.year || null,
+        display_name: artwork?.display_name || row.story_title,
+        thumbnailUrl: artwork?.image_id
+          ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${artwork.image_id}/gallery`
+          : '/placeholder.png',
+        type: 'full',
+        created_at: row.story_created_at
+      };
+    });
+    
+    allStories = [...allStories, ...newStories];
+    
+    // 4. CREATE INTRO STORY OBJECTS
+    // These are artworks that have story_enabled=1 but were NOT linked to a story
+    const introStories = artworksResult.results
+      .filter(art => !usedArtworkIds.has(art.id)) // Filter out the ones already used
+      .map(row => ({
+        id: row.id,
+        title: row.display_name || row.title,
+        slug: null, // No full page
+        description: row.story_intro || '',
+        story_intro: row.story_intro || '',
+        year: row.year,
+        display_name: row.display_name,
+        thumbnailUrl: row.image_id
+          ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${row.image_id}/gallery`
+          : '/placeholder.png',
+        type: 'intro',
+        created_at: row.created_at
+      }));
+    
     allStories = [...allStories, ...introStories];
-
-    // 3. SORT ALL TOGETHER
-    // Sort by creation date so newest appears first
+    
+    // 5. SORT ALL TOGETHER
     allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
+    
+    console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
+    
     return { stories: allStories };
-
   } catch (e) {
     console.error("Error loading combined stories:", e);
     return { stories: [] };
