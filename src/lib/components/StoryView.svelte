@@ -5,10 +5,12 @@
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
+  import { goto } from '$app/navigation';
 
   const dispatch = createEventDispatcher();
   
   export let artwork;
+  export let isAdmin = false;
   
   let isLoading = true;
   let imageError = false;
@@ -102,6 +104,16 @@
   $: hasStoryContent = storyContent.length > 0;
   
   $: hasVideo = !!(artwork.video_id || artwork.videoId);
+
+function goToWriteScript() {
+    // Create a simple slug from the artwork title for the URL
+    const slug = (artwork.title || artwork.display_name)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+      
+    goto(`/admin/stories/create?artwork_id=${artwork.id}&title=${slug}`);
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
