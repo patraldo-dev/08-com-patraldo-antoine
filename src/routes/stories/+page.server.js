@@ -5,48 +5,79 @@ export async function load({ platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
 
-  // If stories_db is missing, return empty (Preview env issue)
-  if (!dbStories) {
+  if (!dbStories || !dbArtworks) {
     return { stories: [] };
   }
 
   try {
-    // 1. Query STORIES DB
-    // We join 'stories' with 'story_chapters' and 'artworks'
-    // We assume the first chapter (order_index=1) holds the link to the artwork
-    const result = await dbStories.prepare(`
+    let allStories = [];
+
+    // 1. FETCH FULL STORIES (From Admin Panel / stories_db)
+    // These have a slug and link to a full page
+    const newStoriesResult = await dbStories.prepare(`
       SELECT 
-        s.id as story_id,
-        s.title as story_title,
-        s.slug as story_slug,
-        s.description as story_description,
-        a.id as artwork_id,
-        a.display_name,
+        s.id as id,
+        s.title as title,
+        s.slug as slug,
+        s.description as description,
         a.image_id,
-        a.year
+        a.year,
+        s.created_at as created_at
       FROM stories s
       LEFT JOIN story_chapters sc ON s.id = sc.story_id AND sc.order_index = 1
       LEFT JOIN artworks a ON sc.artwork_id = a.id
       ORDER BY s.created_at DESC
     `).all();
 
-    // 2. Transform data for the Component
-    const stories = result.results.map(row => ({
-      id: row.story_id,
-      title: row.story_title,  // Use Story Title
-      slug: row.story_slug,
-      description: row.story_description,
-      year: row.year,
-      // Fallbacks if no artwork is linked yet
-      display_name: row.display_name || row.story_title,
-      thumbnailId: row.image_id || null,
-      story_intro: row.story_description 
+    // Transform new stories
+    const newStories = newStoriesResult.results.map(row => ({
+      ...row,
+      type: 'full', // Flag to distinguish later
+      thumbnailUrl: row.image_id 
+        ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${row.image_id}/gallery`
+        : '/placeholder.png'
     }));
 
-    return { stories };
+    allStories = [...allStories, ...newStories];
+
+    // 2. FETCH INTRO STORIES (From Bash Script / artworks table)
+    // These have no slug, so they link to the Modal
+    const introStoriesResult = await dbArtworks.prepare(`
+      SELECT 
+        id, 
+        title, 
+        display_name, 
+        image_id, 
+        story_intro, 
+        year, 
+        created_at
+      FROM artworks
+      WHERE story_enabled = 1
+      ORDER BY created_at DESC
+    `).all();
+
+    // Transform intro stories
+    const introStories = introStoriesResult.results.map(row => ({
+      ...row,
+      title: row.display_name || row.title, // Use display name for card
+      slug: null, // NULL means no full page exists
+      description: row.story_intro || row.description,
+      type: 'intro', // Flag to distinguish later
+      thumbnailUrl: row.image_id
+        ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${row.image_id}/gallery`
+        : '/placeholder.png'
+    }));
+
+    allStories = [...allStories, ...introStories];
+
+    // 3. SORT ALL TOGETHER
+    // Sort by creation date so newest appears first
+    allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    return { stories: allStories };
 
   } catch (e) {
-    console.error("Error loading stories index:", e);
+    console.error("Error loading combined stories:", e);
     return { stories: [] };
   }
 }

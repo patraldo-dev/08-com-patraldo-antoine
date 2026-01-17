@@ -7,10 +7,17 @@
   let { data } = $props();
   const { stories } = data;
   
-    function openStory(story) {
-    // We go to /stories/slug/chapter-1
+  function openStory(story) {
     console.log('Opening story:', story);
-    goto(`/stories/${story.slug}/chapter-1`);
+    
+    // Logic: Does this story have a full page?
+    if (story.slug) {
+      // Yes: Go to the full story page
+      goto(`/stories/${story.slug}/chapter-1`);
+    } else {
+      // No: It's an intro story. Go to the modal
+      goto(`/#artwork-${story.id}`);
+    }
   }
   
   function getImageUrl(story) {
