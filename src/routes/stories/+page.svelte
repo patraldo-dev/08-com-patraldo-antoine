@@ -5,7 +5,7 @@
   import { goto } from '$app/navigation';
   
   let { data } = $props();
-  const { stories } = data;
+  const { stories, isAdmin } = data;
   
   function openStory(story) {
     console.log('Opening story:', story);
