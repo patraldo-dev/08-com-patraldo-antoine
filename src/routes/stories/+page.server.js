@@ -1,17 +1,19 @@
+// src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
 export async function load({ platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
 
-  if (!dbStories || !dbArtworks) {
+  // If stories_db is missing, return empty (Preview env issue)
+  if (!dbStories) {
     return { stories: [] };
   }
 
   try {
-    // We query the STORIES table, but join it with chapters and artworks
-    // to get the cover image (artwork.image_id) for the card display.
-    // We assume the first chapter (order_index=1) has the cover art.
+    // 1. Query STORIES DB
+    // We join 'stories' with 'story_chapters' and 'artworks'
+    // We assume the first chapter (order_index=1) holds the link to the artwork
     const result = await dbStories.prepare(`
       SELECT 
         s.id as story_id,
@@ -28,16 +30,17 @@ export async function load({ platform }) {
       ORDER BY s.created_at DESC
     `).all();
 
+    // 2. Transform data for the Component
     const stories = result.results.map(row => ({
       id: row.story_id,
-      title: row.story_title, // Use Story Title
+      title: row.story_title,  // Use Story Title
       slug: row.story_slug,
       description: row.story_description,
       year: row.year,
       // Fallbacks if no artwork is linked yet
       display_name: row.display_name || row.story_title,
       thumbnailId: row.image_id || null,
-      story_intro: row.story_description // Use description as intro for the card
+      story_intro: row.story_description 
     }));
 
     return { stories };
