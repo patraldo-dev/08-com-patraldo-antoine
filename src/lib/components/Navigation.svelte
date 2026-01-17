@@ -12,6 +12,9 @@
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
+  // NEW: Accept isAdmin prop passed from layout
+  export let isAdmin = false;
+  
   function toggleMenu(event) {
     if (event) {
       event.preventDefault();
@@ -110,6 +113,14 @@
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    
+    <!-- NEW: Admin Link (Desktop) -->
+    {#if isAdmin}
+      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
+        🔧 Admin
+      </a>
+    {/if}
+    
     <LanguageSwitcherUniversal/>
   </div>
   
@@ -141,6 +152,14 @@
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    
+    <!-- NEW: Admin Link (Mobile) -->
+    {#if isAdmin}
+      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
+        🔧 Admin
+      </a>
+    {/if}
+    
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -198,6 +217,12 @@
   
   .nav-links a:hover {
     opacity: 0.6;
+  }
+  
+  /* NEW: Admin Link Styling */
+  .admin-link {
+    color: #2c5e3d !important; /* Force the green color */
+    font-weight: 500;
   }
   
   .menu-button {

@@ -1,12 +1,14 @@
 // src/routes/+layout.server.js
-import { redirect } from '@sveltejs/kit'; // Import redirect if needed elsewhere
+import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load({ request, cookies }) {
+  // --- 1. EXISTING LANGUAGE LOGIC (Unchanged) ---
+  
   // Get language from cookie
   let preferredLanguage = cookies.get('preferredLanguage');
 
-  // If no cookie exists, set it to the default (es) and send it back
+  // If no cookie exists, set it to default (es) and send it back
   if (!preferredLanguage) {
     preferredLanguage = 'es';
     // Set the cookie for future requests
@@ -26,5 +28,27 @@ export async function load({ request, cookies }) {
     preferredLanguage = 'es'; // Fallback if cookie value is invalid
   }
 
-  return { preferredLanguage };
+  // --- 2. NEW ADMIN LOGIC (Added) ---
+  
+  const url = new URL(request.url);
+  let isAdmin = false;
+
+  // Check if we are on Production
+  if (url.hostname === 'antoine.patraldo.com') {
+    // Check for Cloudflare Access JWT header
+    const cfJwt = request.headers.get('cf-access-jwt-assertion');
+    isAdmin = !!cfJwt;
+  } 
+  // Check if we are in Development or Preview
+  else if (url.hostname === 'localhost' || url.hostname.endsWith('.workers.dev')) {
+    isAdmin = true; 
+  }
+
+  // --- 3. RETURN DATA ---
+  
+  // Return both language AND admin status
+  return { 
+    preferredLanguage, 
+    isAdmin 
+  };
 }
