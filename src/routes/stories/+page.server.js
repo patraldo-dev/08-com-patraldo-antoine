@@ -5,6 +5,10 @@ export async function load({ platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
   
+  console.log("=== STORIES DEBUG ===");
+  console.log("dbStories exists:", !!dbStories);
+  console.log("dbArtworks exists:", !!dbArtworks);
+  
   if (!dbStories || !dbArtworks) {
     console.log("Stories Index: Database bindings missing.");
     return { stories: [] };
@@ -21,13 +25,14 @@ export async function load({ platform }) {
         s.id as story_id,
         s.title as story_title,
         s.slug as story_slug,
-        s.description as story_description,
         s.created_at as story_created_at,
         sc.artwork_id
       FROM stories s
       LEFT JOIN story_chapters sc ON s.id = sc.story_id AND sc.order_index = 1
       ORDER BY s.created_at DESC
     `).all();
+    
+    console.log("Full stories query result:", newStoriesResult.results?.length || 0, "rows");
     
     // 2. FETCH ARTWORKS (From ARTWORKS_DB)
     // We fetch ALL artworks that are story_enabled
@@ -44,6 +49,9 @@ export async function load({ platform }) {
       WHERE story_enabled = 1
       ORDER BY created_at DESC
     `).all();
+    
+    console.log("Artworks query result:", artworksResult.results?.length || 0, "rows");
+    console.log("First artwork sample:", artworksResult.results?.[0]);
     
     // Create a map of artworks for easy lookup
     const artworksMap = new Map();
@@ -64,7 +72,7 @@ export async function load({ platform }) {
         id: row.story_id,
         title: row.story_title,
         slug: row.story_slug,
-        description: row.story_description,
+        description: artwork?.story_intro || '',
         year: artwork?.year || null,
         display_name: artwork?.display_name || row.story_title,
         thumbnailUrl: artwork?.image_id
