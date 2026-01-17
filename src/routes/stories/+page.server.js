@@ -19,13 +19,7 @@ export async function load({ request, platform }) {
     isAdmin = true; 
   }
 
-  console.log("=== STORIES DEBUG ===");
-  console.log("dbStories exists:", !!dbStories);
-  console.log("dbArtworks exists:", !!dbArtworks);
-  console.log("Is Admin:", isAdmin);
-  
   if (!dbStories || !dbArtworks) {
-    console.log("Stories Index: Database bindings missing.");
     return { stories: [], isAdmin };
   }
   
@@ -47,8 +41,6 @@ export async function load({ request, platform }) {
       ORDER BY s.created_at DESC
     `).all();
     
-    console.log("Full stories query result:", newStoriesResult.results?.length || 0, "rows");
-    
     // 2. FETCH ARTWORKS (From ARTWORKS_DB)
     // We fetch ALL artworks that are story_enabled
     const artworksResult = await dbArtworks.prepare(`
@@ -65,8 +57,6 @@ export async function load({ request, platform }) {
       ORDER BY created_at DESC
     `).all();
     
-    console.log("Artworks query result:", artworksResult.results?.length || 0, "rows");
-    console.log("First artwork sample:", artworksResult.results?.[0]);
     
     // Create a map of artworks for easy lookup
     const artworksMap = new Map();
@@ -123,8 +113,6 @@ export async function load({ request, platform }) {
     
     // 5. SORT ALL TOGETHER
     allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    
-    console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
     
     return { stories: allStories, isAdmin };
   } catch (e) {
