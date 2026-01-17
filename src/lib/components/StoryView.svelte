@@ -1,12 +1,13 @@
 <!-- src/lib/components/StoryView.svelte -->
 <script>
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
   import { goto } from '$app/navigation';
-
+  import { beforeNavigate } from '$app/navigation';
+  
   const dispatch = createEventDispatcher();
   
   export let artwork;
@@ -24,14 +25,22 @@
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
   
- function handleClose() {
-  // Restore scrolling BEFORE dispatching close
-  if (typeof document !== 'undefined') {
-    document.body.style.overflow = '';
+  // Function to restore scrolling
+  function restoreScrolling() {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.height = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    }
   }
-  dispatch('close');
-} 
-
+  
+  function handleClose() {
+    restoreScrolling();
+    dispatch('close');
+  } 
+  
   function openVideoDetail() {
     showVideoDetail = true;
   }
@@ -50,6 +59,11 @@
     }
   }
   
+  // Intercept navigation to restore scrolling
+  beforeNavigate(() => {
+    restoreScrolling();
+  });
+  
   onMount(async () => {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = 'hidden';
@@ -59,12 +73,11 @@
     if (artwork.story_enabled) {
       await fetchStoryContent();
     }
-    
-    return () => {
-      if (typeof document !== 'undefined') {
-        document.body.style.overflow = '';
-      }
-    };
+  });
+  
+  // Always restore scrolling when component is destroyed
+  onDestroy(() => {
+    restoreScrolling();
   });
   
   async function fetchStoryContent() {
@@ -83,29 +96,29 @@
   $: heroImageUrl = artwork.type === 'still' && artwork.image_id
     ? createImageUrl(artwork.image_id, 'desktop')
     : null;
-
+    
   $: colorPaletteImageUrl = (() => {
-  // For still images, use image_id
-  if (artwork.image_id) {
-    return createImageUrl(artwork.image_id, 'desktop');
-  }
-  
-  // For animations, use thumbnailId (same as Sketchbook)
-  if (artwork.thumbnailId) {
-    return createImageUrl(artwork.thumbnailId, 'desktop');
-  }
-  
-  // Fallback
-  return artwork.imageUrl || null;
-})(); 
+    // For still images, use image_id
+    if (artwork.image_id) {
+      return createImageUrl(artwork.image_id, 'desktop');
+    }
+    
+    // For animations, use thumbnailId (same as Sketchbook)
+    if (artwork.thumbnailId) {
+      return createImageUrl(artwork.thumbnailId, 'desktop');
+    }
+    
+    // Fallback
+    return artwork.imageUrl || null;
+  })(); 
     
   $: parallaxOffset = scrollY * 0.3;
   
   $: hasStoryContent = storyContent.length > 0;
   
   $: hasVideo = !!(artwork.video_id || artwork.videoId);
-
-function goToWriteScript() {
+  
+  function goToWriteScript() {
     // Create a simple slug from the artwork title for the URL
     const slug = (artwork.title || artwork.display_name)
       .toLowerCase()
@@ -218,16 +231,15 @@ function goToWriteScript() {
           </div>
         </InkReveal>
         
-<InkReveal delay={600}>
-  {#if colorPaletteImageUrl}
-    <ColorPalette 
-      imageUrl={colorPaletteImageUrl} 
-      artworkTitle={artwork.display_name || artwork.title}
-    />
-  {/if}
-</InkReveal>
-
-
+        <InkReveal delay={600}>
+          {#if colorPaletteImageUrl}
+            <ColorPalette 
+              imageUrl={colorPaletteImageUrl} 
+              artworkTitle={artwork.display_name || artwork.title}
+            />
+          {/if}
+        </InkReveal>
+        
         <!-- Story Intro (if exists) -->
         {#if artwork.story_intro}
           <InkReveal delay={800}>
