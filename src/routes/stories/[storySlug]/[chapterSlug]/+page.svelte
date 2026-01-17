@@ -54,7 +54,7 @@
           {#if item.content_type === 'heading'}
             <h2>{item.content_text}</h2>
           
-          {:else if item.content_type === 'text'}
+          {:else if item.content_type === 'text' || item.content_type === 'text/markdown'}
             <div class="paragraph">
               <!-- We use white-space: pre-wrap for Markdown paragraphs -->
               {item.content_text}
