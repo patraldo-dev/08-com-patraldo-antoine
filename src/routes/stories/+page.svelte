@@ -3,9 +3,39 @@
   import { t } from '$lib/i18n';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
   import { goto } from '$app/navigation';
+  import { onMount, onDestroy } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
   
   let { data } = $props();
   const { stories, isAdmin } = data;
+  
+  // Function to ensure scrolling is enabled
+  function enableScrolling() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.height = '';
+    document.body.style.width = '';
+    document.body.style.top = '';
+    document.documentElement.style.overflow = '';
+    
+    // Remove any classes that might disable scrolling
+    document.body.classList.remove('modal-open', 'no-scroll');
+  }
+  
+  // Fix scroll restoration on mount
+  onMount(() => {
+    enableScrolling();
+  });
+  
+  // Reset scroll behavior when navigating back to this page
+  afterNavigate(() => {
+    enableScrolling();
+  });
+  
+  // Cleanup on destroy
+  onDestroy(() => {
+    enableScrolling();
+  });
   
   function openStory(story) {
     console.log('Opening story:', story);
@@ -25,6 +55,15 @@
       return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${story.thumbnailId}/gallery`;
     }
     return story.thumbnailUrl;
+  }
+  
+  function handleAdminClick(event, story) {
+    event.stopPropagation(); // Prevent opening the story
+    const slug = (story.display_name || story.title)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    goto(`/admin/stories/create?artwork_id=${story.id}&title=${slug}`);
   }
 </script>
 
@@ -76,17 +115,16 @@
             {#if story.year}
               <span class="year">{story.year}</span>
             {/if}
-          </div>
-{#if isAdmin && story.type === 'intro'}
-            <div class="admin-actions">
-              <a 
-                href="/admin/stories/create?artwork_id={story.id}&title={story.display_name || story.title}" 
+            
+            {#if isAdmin && story.type === 'intro'}
+              <button 
                 class="btn-admin-edit"
+                on:click={(e) => handleAdminClick(e, story)}
               >
                 ✍️ Write Full Script
-              </a>
-            </div>
-          {/if}
+              </button>
+            {/if}
+          </div>
         </article>
       {/each}
     {/if}
@@ -224,6 +262,25 @@
     font-style: italic;
   }
   
+  .btn-admin-edit {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #2c5e3d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+  }
+  
+  .btn-admin-edit:hover {
+    background: #1f4229;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(44, 94, 61, 0.3);
+  }
+  
   .no-stories {
     grid-column: 1 / -1;
     text-align: center;
@@ -268,26 +325,5 @@
     .hero-content h1 {
       font-size: 2rem;
     }
-  }
-
-  .admin-actions {
-    padding: 0 2rem 1rem;
-    text-align: center;
-  }
-  
-  .btn-admin-edit {
-    display: inline-block;
-    background: #2c5e3d;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    text-decoration: none;
-    font-family: 'Georgia', serif;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-  }
-  
-  .btn-admin-edit:hover {
-    background: #234a31;
   }
 </style>

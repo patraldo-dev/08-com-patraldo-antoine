@@ -1,25 +1,30 @@
 // src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
-export async function load({ request, platform }) {
+export async function load({ platform, cookies }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
-
-  // 1. CHECK IF ADMIN
-  const url = new URL(request.url);
+  
+  // Check admin authentication
+  const sessionToken = cookies.get('session_token');
   let isAdmin = false;
   
-  if (url.hostname === 'antoine.patraldo.com') {
-    // Check for Cloudflare Access header
-    const cfJwt = request.headers.get('cf-access-jwt-assertion');
-    isAdmin = !!cfJwt;
-  } 
-  // Allow admin access in dev/preview
-  else if (url.hostname === 'localhost' || url.hostname.endsWith('.workers.dev')) {
-    isAdmin = true; 
+  if (sessionToken && platform?.env?.SESSIONS_KV) {
+    try {
+      const sessionData = await platform.env.SESSIONS_KV.get(sessionToken, 'json');
+      isAdmin = sessionData?.isAdmin || false;
+    } catch (e) {
+      console.error('Error checking admin session:', e);
+    }
   }
-
+  
+  console.log("=== STORIES DEBUG ===");
+  console.log("dbStories exists:", !!dbStories);
+  console.log("dbArtworks exists:", !!dbArtworks);
+  console.log("isAdmin:", isAdmin);
+  
   if (!dbStories || !dbArtworks) {
+    console.log("Stories Index: Database bindings missing.");
     return { stories: [], isAdmin };
   }
   
@@ -27,7 +32,7 @@ export async function load({ request, platform }) {
     let allStories = [];
     let usedArtworkIds = new Set();
     
-    //1. FETCH FULL STORIES (From stories_db)
+    // 1. FETCH FULL STORIES (From stories_db)
     // We fetch stories and their linked artwork_id
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
@@ -40,6 +45,8 @@ export async function load({ request, platform }) {
       LEFT JOIN story_chapters sc ON s.id = sc.story_id AND sc.order_index = 1
       ORDER BY s.created_at DESC
     `).all();
+    
+    console.log("Full stories query result:", newStoriesResult.results?.length || 0, "rows");
     
     // 2. FETCH ARTWORKS (From ARTWORKS_DB)
     // We fetch ALL artworks that are story_enabled
@@ -57,6 +64,8 @@ export async function load({ request, platform }) {
       ORDER BY created_at DESC
     `).all();
     
+    console.log("Artworks query result:", artworksResult.results?.length || 0, "rows");
+    console.log("First artwork sample:", artworksResult.results?.[0]);
     
     // Create a map of artworks for easy lookup
     const artworksMap = new Map();
@@ -114,9 +123,11 @@ export async function load({ request, platform }) {
     // 5. SORT ALL TOGETHER
     allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
+    console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
+    
     return { stories: allStories, isAdmin };
   } catch (e) {
     console.error("Error loading combined stories:", e);
-    return { stories: [], isAdmin };
+    return { stories: [], isAdmin: false };
   }
 }
