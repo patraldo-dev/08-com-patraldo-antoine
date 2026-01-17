@@ -7,10 +7,10 @@
   let { data } = $props();
   const { stories } = data;
   
-  function openStory(story) {
+    function openStory(story) {
+    // We go to /stories/slug/chapter-1
     console.log('Opening story:', story);
-    goto(`/#artwork-${story.id}`);
-
+    goto(`/stories/${story.slug}/chapter-1`);
   }
   
   function getImageUrl(story) {
