@@ -1,24 +1,39 @@
 // src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
-export async function load({ platform }) {
+export async function load({ request, platform }) {
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
+
+  // 1. CHECK IF ADMIN
+  const url = new URL(request.url);
+  let isAdmin = false;
   
+  if (url.hostname === 'antoine.patraldo.com') {
+    // Check for Cloudflare Access header
+    const cfJwt = request.headers.get('cf-access-jwt-assertion');
+    isAdmin = !!cfJwt;
+  } 
+  // Allow admin access in dev/preview
+  else if (url.hostname === 'localhost' || url.hostname.endsWith('.workers.dev')) {
+    isAdmin = true; 
+  }
+
   console.log("=== STORIES DEBUG ===");
   console.log("dbStories exists:", !!dbStories);
   console.log("dbArtworks exists:", !!dbArtworks);
+  console.log("Is Admin:", isAdmin);
   
   if (!dbStories || !dbArtworks) {
     console.log("Stories Index: Database bindings missing.");
-    return { stories: [] };
+    return { stories: [], isAdmin };
   }
   
   try {
     let allStories = [];
     let usedArtworkIds = new Set();
     
-    // 1. FETCH FULL STORIES (From stories_db)
+    //1. FETCH FULL STORIES (From stories_db)
     // We fetch stories and their linked artwork_id
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
@@ -111,9 +126,9 @@ export async function load({ platform }) {
     
     console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
     
-    return { stories: allStories };
+    return { stories: allStories, isAdmin };
   } catch (e) {
     console.error("Error loading combined stories:", e);
-    return { stories: [] };
+    return { stories: [], isAdmin };
   }
 }

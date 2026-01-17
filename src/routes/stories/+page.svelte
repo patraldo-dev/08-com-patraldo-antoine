@@ -77,6 +77,16 @@
               <span class="year">{story.year}</span>
             {/if}
           </div>
+{#if isAdmin && story.type === 'intro'}
+            <div class="admin-actions">
+              <a 
+                href="/admin/stories/create?artwork_id={story.id}&title={story.display_name || story.title}" 
+                class="btn-admin-edit"
+              >
+                ✍️ Write Full Script
+              </a>
+            </div>
+          {/if}
         </article>
       {/each}
     {/if}
@@ -258,5 +268,26 @@
     .hero-content h1 {
       font-size: 2rem;
     }
+  }
+
+  .admin-actions {
+    padding: 0 2rem 1rem;
+    text-align: center;
+  }
+  
+  .btn-admin-edit {
+    display: inline-block;
+    background: #2c5e3d;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .btn-admin-edit:hover {
+    background: #234a31;
   }
 </style>
