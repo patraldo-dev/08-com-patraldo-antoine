@@ -4,7 +4,7 @@
   
   let { data } = $props();
 
-  // 1. Initialize local state from URL params (Initial Load)
+  // Initialize local state from URL params (Initial Load)
   const params = $page.url.searchParams;
   
   // Helper to generate slug
@@ -13,9 +13,7 @@
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
-  // 2. Define reactive form state
-  // We check 'data.form' first (if a previous submission failed with an error)
-  // Otherwise, we check URL params (from your Bash script)
+  // Define reactive form state
   let formState = $state({
     title: data.form?.title || params.get('title') || '',
     slug: data.form?.slug || generateSlug(params.get('title')),
@@ -24,7 +22,7 @@
     content: data.form?.content || ''
   });
 
-  // Update slug automatically when title changes (only if user hasn't manually edited it yet)
+  // Update slug automatically when title changes
   $effect(() => {
     if (!data.form?.slug && !params.get('title')) {
        formState.slug = generateSlug(formState.title);
@@ -35,37 +33,37 @@
 <div class="admin-container">
   <h1>Write a New Story / Script</h1>
   
-  <div class="writer-layout">
+  <!-- FIX: Move the <form> tag here to wrap BOTH panels -->
+  <form method="POST" use:enhance class="writer-layout">
+    
+    {#if data.form?.error}
+      <p class="error">{data.form.error}</p>
+    {/if}
+
     <!-- Sidebar / Meta Data -->
     <div class="meta-panel">
-      <form method="POST" use:enhance class="story-form">
-        {#if data.form?.error}
-          <p class="error">{data.form.error}</p>
-        {/if}
+      <div class="form-group">
+        <label for="title">Story Title</label>
+        <input type="text" name="title" id="title" bind:value={formState.title} required />
+      </div>
 
-        <div class="form-group">
-          <label for="title">Story Title</label>
-          <input type="text" name="title" id="title" bind:value={formState.title} required />
-        </div>
+      <div class="form-group">
+        <label for="slug">URL Slug (e.g. my-first-story)</label>
+        <input type="text" name="slug" id="slug" bind:value={formState.slug} required />
+      </div>
 
-        <div class="form-group">
-          <label for="slug">URL Slug (e.g. my-first-story)</label>
-          <input type="text" name="slug" id="slug" bind:value={formState.slug} required />
-        </div>
+      <div class="form-group">
+        <label for="chapterTitle">Chapter / Script Title</label>
+        <input type="text" name="chapterTitle" id="chapterTitle" bind:value={formState.chapterTitle} />
+      </div>
 
-        <div class="form-group">
-          <label for="chapterTitle">Chapter / Script Title</label>
-          <input type="text" name="chapterTitle" id="chapterTitle" bind:value={formState.chapterTitle} />
-        </div>
+      <div class="form-group">
+        <label for="artworkId">Link to Artwork ID (Optional)</label>
+        <input type="number" name="artworkId" id="artworkId" bind:value={formState.artId} placeholder="e.g. 21" />
+        <small>If this is a script for a specific image, enter the ID here.</small>
+      </div>
 
-        <div class="form-group">
-          <label for="artworkId">Link to Artwork ID (Optional)</label>
-          <input type="number" name="artworkId" id="artworkId" bind:value={formState.artId} placeholder="e.g. 21" />
-          <small>If this is a script for a specific image, enter the ID here.</small>
-        </div>
-
-        <button type="submit" class="btn-primary">Publish Story</button>
-      </form>
+      <button type="submit" class="btn-primary">Publish Story</button>
     </div>
 
     <!-- Main Writing Area -->
@@ -81,12 +79,20 @@
         ></textarea>
       </div>
     </div>
-  </div>
+
+  <!-- FIX: Close the form tag here -->
+  </form>
 </div>
 
 <style>
   .admin-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-  .writer-layout { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+  
+  /* Added display: block to the form so it fits the grid */
+  .writer-layout { 
+    display: grid; 
+    grid-template-columns: 300px 1fr; 
+    gap: 2rem; 
+  }
   
   @media (max-width: 768px) {
     .writer-layout { grid-template-columns: 1fr; }
