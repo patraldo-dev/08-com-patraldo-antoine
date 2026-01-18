@@ -60,13 +60,19 @@
                         "database_name": "stories-db",
                         "database_id": "95a9b887-d9d6-45ff-860d-1fe00f73ca0a",
                         "remote": true
-                }
+                },
+		{
+		        "binding": "DB_users",
+			"database_name": "subscribers-db2",
+			"database_id": "b6b5e993-f16e-4346-83b2-babfd327a023"
+		  }
         ],
-"env": {
-  "feature3d": {  
-    "name": "antoine-3dmanipulator"  // 20 chars ✅ Under 54
-  }
-}
+
+		"env": {
+		  "feature3d": {  
+		    "name": "antoine-3dmanipulator"  // 20 chars ✅ Under 54
+		  }
+		}
 
 }
 
