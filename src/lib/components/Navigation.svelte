@@ -113,11 +113,28 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Admin Link -->
-    {#if isAdmin}
-      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
-        🔧 Admin
+    <!-- LOGIN / ADMIN SECTION -->
+    {#if !isAdmin}
+      <a href="/login" onclick={(e) => handleLinkClick(e, '/login')} class="login-link">
+        {$t('common.login') || 'Login'}
       </a>
+    {:else}
+      <div class="admin-dropdown">
+        <span class="admin-link">
+          👤 {username || 'Admin'}
+        </span>
+        <div class="dropdown-menu">
+          <div class="dropdown-user-info">
+            <strong>{username || 'Administrator'}</strong>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
+          <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
+          <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-logout" onclick={handleLogout}>🚪 Logout</button>
+        </div>
+      </div>
     {/if}
     
     <LanguageSwitcherUniversal/>
@@ -152,11 +169,19 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Admin Link -->
-    {#if isAdmin}
-      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
-        🔧 Admin
+    <!-- LOGIN / ADMIN SECTION MOBILE -->
+    {#if !isAdmin}
+      <a href="/login" onclick={(e) => handleLinkClick(e, '/login')} class="mobile-login">
+        {$t('common.login') || 'Login'}
       </a>
+    {:else}
+      <div class="mobile-admin-section">
+        <div class="mobile-admin-header">🔧 Admin</div>
+        <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
+        <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
+        <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
+        <button class="mobile-logout" onclick={handleLogout}>🚪 Logout</button>
+      </div>
     {/if}
     
     <div class="mobile-lang-switcher">

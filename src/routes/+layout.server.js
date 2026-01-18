@@ -28,10 +28,12 @@ export async function load({ parent, request, cookies, url }) {
   // Use hooks.server.js result instead of re-checking CF Access
   const finalIsAdmin = isAdmin || false;
   
-  return { 
-    preferredLanguage, 
-    isAdmin: finalIsAdmin,
-    user  // Pass full user object from hooks
-  };
+return { 
+  preferredLanguage, 
+  isAdmin: finalIsAdmin,
+  user,
+  username: user?.username || null  // ← OR just username
+  
+};
 }
 
