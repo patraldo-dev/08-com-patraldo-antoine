@@ -1,39 +1,25 @@
 // src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
-export async function load({ request, platform }) {
+export async function load({ platform, event }) {
+  // 1. GET AUTH STATUS FROM HOOK (The Single Source of Truth)
+  // We don't check headers or cookies manually here.
+  const isAdmin = event.locals.user?.role === 'admin';
+
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
 
-  // --- ADMIN CHECK FOR THIS PAGE ---
-  const url = new URL(request.url);
-  let isAdmin = false;
-  
-  if (url.hostname === 'antoine.patraldo.com') {
-    const cfJwt = request.headers.get('cf-access-jwt-assertion');
-    isAdmin = !!cfJwt;
-  } 
-  // Preview/Dev
-  else if (url.hostname === 'localhost' || url.hostname.endsWith('.workers.dev')) {
-    isAdmin = true; 
-  }
-  // ---------------------------------------
-
-  console.log("=== STORIES DEBUG ===");
-  console.log("dbStories exists:", !!dbStories);
-  console.log("dbArtworks exists:", !!dbArtworks);
-  console.log("Is Admin:", isAdmin);
-  
   if (!dbStories || !dbArtworks) {
     console.log("Stories Index: Database bindings missing.");
     return { stories: [], isAdmin };
   }
-  
+
   try {
     let allStories = [];
     let usedArtworkIds = new Set();
     
-    //1. FETCH FULL STORIES
+    // 2. FETCH FULL STORIES
+    // ... (Keep your existing SQL logic exactly as is) ...
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
         s.id as story_id,
@@ -46,9 +32,7 @@ export async function load({ request, platform }) {
       ORDER BY s.created_at DESC
     `).all();
     
-    console.log("Full stories query result:", newStoriesResult.results?.length || 0, "rows");
-    
-    //2. FETCH ARTWORKS
+    // ... (Keep existing mapping logic) ...
     const artworksResult = await dbArtworks.prepare(`
       SELECT 
         id, 
@@ -63,21 +47,14 @@ export async function load({ request, platform }) {
       ORDER BY created_at DESC
     `).all();
     
-    console.log("Artworks query result:", artworksResult.results?.length || 0, "rows");
-    
     const artworksMap = new Map();
     artworksResult.results.forEach(art => {
       artworksMap.set(art.id, art);
     });
     
-    //3. CREATE FULL STORY OBJECTS
     const newStories = newStoriesResult.results.map(row => {
       const artwork = artworksMap.get(row.artwork_id);
-      
-      if (artwork) {
-        usedArtworkIds.add(row.artwork_id);
-      }
-      
+      if (artwork) usedArtworkIds.add(row.artwork_id);
       return {
         id: row.story_id,
         title: row.story_title,
@@ -92,16 +69,15 @@ export async function load({ request, platform }) {
         created_at: row.story_created_at
       };
     });
-    
+
     allStories = [...allStories, ...newStories];
-    
-    //4. CREATE INTRO STORY OBJECTS
+
     const introStories = artworksResult.results
       .filter(art => !usedArtworkIds.has(art.id)) 
       .map(row => ({
         id: row.id,
         title: row.display_name || row.title,
-        slug: null, 
+        slug: null,
         description: row.story_intro || '',
         story_intro: row.story_intro || '',
         year: row.year,
@@ -114,15 +90,14 @@ export async function load({ request, platform }) {
       }));
     
     allStories = [...allStories, ...introStories];
-    
-    //5. SORT
     allStories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
-    console.log(`Stories loaded: ${allStories.length} total (${newStories.length} full, ${introStories.length} intro)`);
+    console.log(`Stories loaded: ${allStories.length} total`);
     
+    // 3. RETURN DATA
     return { stories: allStories, isAdmin };
   } catch (e) {
     console.error("Error loading combined stories:", e);
-    return { stories: [], isAdmin };
+    return { stories: [], isAdmin: false };
   }
 }

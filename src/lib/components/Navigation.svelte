@@ -6,13 +6,23 @@
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
-  // FIXED: Use $state instead of let for reactive state in Runes
   let isMenuOpen = $state(false);
+  let isProfileOpen = $state(false); // NEW: Profile dropdown state
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
-  // FIXED: Use $props instead of export let
-  let { isAdmin = false } = $props();
+  // Accept both props
+  export let isAdmin = false;
+  export let username = null; // NEW: Username for dropdown
+  
+  // NEW: Logout function
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout failed:', e);
+    }
+  }
   
   function toggleMenu(event) {
     if (event) {
@@ -21,6 +31,7 @@
     }
     
     isMenuOpen = !isMenuOpen;
+    isProfileOpen = false; // Close profile when toggling main menu
     
     if (typeof document !== 'undefined') {
       document.body.style.overflow = isMenuOpen ? 'hidden' : '';
@@ -29,6 +40,7 @@
   
   function closeMenu() {
     isMenuOpen = false;
+    isProfileOpen = false;
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
     }
@@ -37,12 +49,11 @@
   function handleLinkClick(event, href) {
     closeMenu();
     
-    // Hash links (anchors) - only work on home page
+    // Hash links (anchors)
     if (href.startsWith('#')) {
       event.preventDefault();
       
       if (isOnHomePage) {
-        // We're on home page - just scroll
         setTimeout(() => {
           const target = document.querySelector(href);
           if (target) {
@@ -51,36 +62,36 @@
           }
         }, 100);
       } else {
-        // We're on another page - navigate to home then scroll
         goto('/' + href);
       }
       return;
     }
     
-    // Internal routes (like /stories, /collection)
+    // Internal routes
     if (href.startsWith('/')) {
       event.preventDefault();
       goto(href);
       return;
     }
-    
-    // External links work normally (no preventDefault)
   }
   
   function handleOutsideClick(event) {
-    if (!isMenuOpen) return;
+    if (!isMenuOpen && !isProfileOpen) return;
     
     const nav = event.target.closest('nav');
     const menuButton = event.target.closest('.menu-button');
+    const profileTrigger = event.target.closest('.profile-trigger');
     
-    if (!nav && !menuButton) {
+    // Close menus if clicking outside
+    if (!nav && !menuButton && !profileTrigger) {
       closeMenu();
     }
   }
   
   function handleKeydown(event) {
-    if (event.key === 'Escape' && isMenuOpen) {
-      closeMenu();
+    if (event.key === 'Escape') {
+      isProfileOpen = false;
+      if (isMenuOpen) closeMenu();
     }
   }
   
@@ -113,31 +124,33 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- LOGIN / ADMIN SECTION -->
-    {#if !isAdmin}
-      <a href="/login" onclick={(e) => handleLinkClick(e, '/login')} class="login-link">
-        {$t('common.login') || 'Login'}
+    <!-- NEW: Admin Link -->
+    {#if isAdmin}
+      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
+        🔧 Admin
       </a>
-    {:else}
-      <div class="admin-dropdown">
-        <span class="admin-link">
-          👤 {username || 'Admin'}
-        </span>
-        <div class="dropdown-menu">
-          <div class="dropdown-user-info">
-            <strong>{username || 'Administrator'}</strong>
-          </div>
-          <div class="dropdown-divider"></div>
-          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
-          <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
-          <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
-          <div class="dropdown-divider"></div>
-          <button class="dropdown-logout" onclick={handleLogout}>🚪 Logout</button>
-        </div>
-      </div>
     {/if}
     
     <LanguageSwitcherUniversal/>
+    
+    <!-- NEW: User Profile Dropdown (Desktop) -->
+    {#if isAdmin}
+      <div class="profile-container" on:mouseenter={() => isProfileOpen = true}>
+        <div class="profile-trigger">
+          <span class="profile-icon">o</span>
+          {#if isProfileOpen}
+            <div class="profile-dropdown" on:mouseleave={() => isProfileOpen = false}>
+              <div class="profile-info">
+                <span class="profile-name">{username || 'Admin'}</span>
+              </div>
+              <button class="logout-btn" on:click={handleLogout}>
+                {$t('common.navLogout')}
+              </button>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
   </div>
   
   <!-- Mobile/Tablet Menu Button -->
@@ -169,21 +182,19 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- LOGIN / ADMIN SECTION MOBILE -->
-    {#if !isAdmin}
-      <a href="/login" onclick={(e) => handleLinkClick(e, '/login')} class="mobile-login">
-        {$t('common.login') || 'Login'}
-      </a>
-    {:else}
-      <div class="mobile-admin-section">
-        <div class="mobile-admin-header">🔧 Admin</div>
-        <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
-        <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
-        <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
-        <button class="mobile-logout" onclick={handleLogout}>🚪 Logout</button>
+    <!-- NEW: Profile & Admin (Mobile) -->
+    {#if isAdmin}
+      <div class="mobile-profile-section">
+        <div class="mobile-profile-header">
+          <div class="mobile-avatar">o</div>
+          <span class="mobile-username">{username || 'Admin'}</span>
+        </div>
+        <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
+        <button class="mobile-logout" on:click={handleLogout}>{$t('common.navLogout')}</button>
       </div>
+      <div class="mobile-divider"></div>
     {/if}
-    
+
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -243,11 +254,91 @@
     opacity: 0.6;
   }
   
+  /* ADMIN LINK */
   .admin-link {
     color: #2c5e3d !important;
     font-weight: 500;
   }
   
+  /* PROFILE DROPDOWN (Desktop) */
+  .profile-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-trigger {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    font-weight: 700;
+    color: #2c5e3d;
+  }
+  
+  .profile-trigger:hover {
+    background: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .profile-icon {
+    font-size: 1.2rem;
+  line-height: 1;
+  }
+
+  .profile-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 200px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none; /* Prevent mouseleave from flickering when moving to links */
+  }
+
+  .profile-info {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .profile-name {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.9rem;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+
+  .logout-btn:hover {
+    background: #e53e3e;
+  }
+
   .menu-button {
     display: none;
     background: none;
@@ -352,6 +443,64 @@
     color: #2c5e3d;
   }
   
+  /* Mobile Profile Styles */
+  .mobile-profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem 1rem 0;
+    background: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .mobile-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .mobile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2c5e3d;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .mobile-username {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .mobile-link {
+    padding: 0.5rem 1rem;
+    color: #2c5e3d;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .mobile-divider {
+    height: 1px;
+    background: #eee;
+    margin: 0.5rem 0 0;
+  }
+
+  .mobile-logout {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
   .mobile-lang-switcher {
     position: absolute;
     top: 1.5rem;
@@ -384,16 +533,6 @@
     
     .menu-button {
       display: flex;
-    }
-  }
-  
-  @media (hover: none) and (pointer: coarse) {
-    .menu-button {
-      padding: 1rem;
-    }
-    
-    .mobile-menu a {
-      padding: 1rem 0;
     }
   }
 </style>

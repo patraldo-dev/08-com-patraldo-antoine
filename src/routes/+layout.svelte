@@ -11,6 +11,8 @@
   
   // Capture data from server with safe defaults
   let { data = {} } = $props();
+  const { isAdmin, username } = data;
+
   
   // FIXED: Use $derived instead of $: for reactivity in Runes mode
   let isAdmin = $derived(data?.isAdmin ?? false);

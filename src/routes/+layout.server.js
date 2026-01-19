@@ -1,13 +1,10 @@
 // src/routes/+layout.server.js
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ parent, request, cookies, url }) {
-  // Chain to hooks.server.js first (gets user/isAdmin)
-  const { user, isAdmin } = await parent();
-  
-  // --- 1. LANGUAGE LOGIC ---
+export async function load({ event, cookies }) {
+  // 1. LANGUAGE LOGIC (Keep this, it's fine)
   let preferredLanguage = cookies.get('preferredLanguage');
-  
+
   if (!preferredLanguage) {
     preferredLanguage = 'es';
     cookies.set('preferredLanguage', preferredLanguage, {
@@ -18,22 +15,21 @@ export async function load({ parent, request, cookies, url }) {
       sameSite: 'strict',
     });
   }
-  
+
   const validLocales = ['es', 'en', 'fr'];
   if (!validLocales.includes(preferredLanguage)) {
     preferredLanguage = 'es';
   }
-  
-  // --- 2. ADMIN from HOOKS (already validated) ---
-  // Use hooks.server.js result instead of re-checking CF Access
-  const finalIsAdmin = isAdmin || false;
-  
-return { 
-  preferredLanguage, 
-  isAdmin: finalIsAdmin,
-  user,
-  username: user?.username || null  // ← OR just username
-  
-};
-}
 
+  // 2. AUTH LOGIC (Delegated to hooks.server.js)
+  // We do not check cookies or headers here.
+  // We simply use the 'user' object injected by the hook.
+  const user = event.locals.user;
+  const isAdmin = user?.role === 'admin';
+
+  return { 
+    preferredLanguage, 
+    isAdmin,
+    username: user?.username
+  };
+}
