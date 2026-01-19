@@ -6,66 +6,45 @@
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
+  // Svelte 5 Runes: Use $state for local state
   let isMenuOpen = $state(false);
   let isProfileOpen = $state(false);
-  
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
-  // Accept both props from parent
+  // Accept Admin Props
   let { isAdmin, username } = $props();
 
-  function toggleMenu() {
-    isMenuOpen = !isMenuOpen;
-    isProfileOpen = false; // Close profile when toggling main menu
+  // NEW: Toggle Profile function
+  function toggleProfile() {
+    isProfileOpen = !isProfileOpen; // Toggle state
   }
 
+  // Existing functions (toggleMenu, closeMenu, etc...)
+  // ... (Keep your existing functions like toggleMenu, handleLinkClick, etc.) ...
+  
   function closeMenu() {
     isMenuOpen = false;
     isProfileOpen = false;
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
   }
   
-  function handleLinkClick(event, href) {
-    closeMenu();
+  function handleOutsideClick(event) {
+    const nav = event.target.closest('nav');
+    const menuButton = event.target.closest('.menu-button');
+    const profileContainer = event.target.closest('.profile-container');
     
-    // Hash links (anchors) - only work on home page
-    if (href.startsWith('#')) {
-      event.preventDefault();
-      
-      if (isOnHomePage) {
-        // We're on home page - just scroll
-        setTimeout(() => {
-          const target = document.querySelector(href);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            history.pushState(null, '', href);
-          }
-        }, 100);
-      } else {
-        // We're on another page - navigate to home then scroll
-        goto('/' + href);
-      }
-      return;
-    }
-    
-    // Internal routes (like /stories, /collection)
-    if (href.startsWith('/')) {
-      event.preventDefault();
-      goto(href);
-      return;
-    }
-    
-    // External links work normally (no preventDefault)
-  }
-  
-  async function handleLogout() {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      goto('/');
-    } catch (e) {
-      console.error('Logout failed:', e);
+    // If click happens outside nav, menu, AND profile dropdown, close everything
+    if (!nav && !menuButton && !profileContainer) {
+      isMenuOpen = false;
+      isProfileOpen = false;
     }
   }
+
+  // ... (Keep your existing functions like handleKeydown, handleLinkClick, etc.) ...
+
 </script>
 
 <nav>
@@ -83,30 +62,24 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Admin Link -->
-    {#if isAdmin}
-      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="admin-link">
-        🔧 Admin
-      </a>
-    {/if}
-    
-    <!-- User Profile Dropdown -->
+    <!-- NEW: User Profile Dropdown (Desktop) -->
     {#if isAdmin}
       <div class="profile-container">
-        <div class="profile-trigger" on:click={() => isProfileOpen = !isProfileOpen}>
-          <span class="profile-icon">o</span>
+        <!-- We use click to toggle, on:mouseenter is not allowed in Svelte 5 -->
+        <div class="profile-trigger" onclick={toggleProfile}>
+            <span class="profile-icon">o</span>
         </div>
         
         {#if isProfileOpen}
-          <div 
-            class="profile-dropdown" 
-            on:clickoutside 
-            on:mouseenter={(e) => { e.stopPropagation() } // Prevent bubbling to trigger handleLinkClick
-          >
+          <!-- We use on:clickoutside to close when clicking links inside the dropdown -->
+          <div class="profile-dropdown" on:clickoutside>
             <div class="profile-info">
               <span class="profile-name">{username || 'Admin'}</span>
             </div>
-            <button class="logout-btn" on:click={(e) => handleLogout()}>
+            <button class="logout-btn" on:click={(e) => { e.stopPropagation(); // Stop bubbling so we don't toggle profile when clicking logout
+  await fetch('/api/auth/logout', { method: 'POST' });
+              goto('/');
+            }}>
               {$t('common.navLogout')}
             </button>
           </div>
@@ -124,7 +97,7 @@
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
     aria-expanded={isMenuOpen}
     onclick={toggleMenu}
-    ontouchend={(e) => { e.preventDefault(); toggleMenu(); }}
+    ontouchend={(e) => { e.preventDefault(); toggleMenu(e); }}
     type="button"
   >
     <span class="menu-line"></span>
@@ -133,7 +106,7 @@
   
   <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
-    <div class="menu-overlay" on:click={closeMenu}></div>
+    <div class="menu-overlay" onclick={closeMenu}></div>
   {/if}
   
   <!-- Mobile Menu -->
@@ -143,10 +116,10 @@
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
     <a href="/cine" onclick={(e) => handleLinkClick(e, '/cine')}>{$t('common.navCine')}</a>
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
+    <a href="/collection" onclick={(e => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Admin & Profile (Mobile) -->
+    <!-- NEW: Admin & Profile (Mobile) -->
     {#if isAdmin}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
@@ -154,11 +127,11 @@
           <span class="mobile-username">{username || 'Admin'}</span>
         </div>
         <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
-        <button class="mobile-logout" on:click={(e) => handleLogout()}>{$t('common.navLogout')}</button>
+        <button class="mobile-logout" on:click={(e) => { e.stopPropagation(); await fetch('/api/auth/logout', { method: 'POST' }); goto('/admin'); } class="mobile-logout">{$t('common.navLogout')}</button>
       </div>
       <div class="mobile-divider"></div>
     {/if}
-    
+
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -223,7 +196,7 @@
     color: #2c5e3d !important;
     font-weight: 500;
   }
-
+  
   /* PROFILE DROPDOWN (Desktop) */
   .profile-container {
     position: relative;
@@ -242,19 +215,20 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
+    font-weight: 700;
+    color: #2c5e3d;
   }
 
   .profile-trigger:hover {
     background: #ffffff;
     transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
   .profile-icon {
     font-size: 1.2rem;
     line-height: 1;
-    font-weight: 700; /* Make the 'o' bold */
-    color: #2c5e3d;
   }
 
   .profile-dropdown {
@@ -265,23 +239,33 @@
     background: white;
     border: 1px solid #eee;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    pointer-events: auto; /* Important: Prevents clicks inside from bubbling to nav links */
-    animation: fadeIn 0.2s ease;
+    pointer-events: none; /* Prevents mouseleave from flickering */
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  /* Make the dropdown visible if active */
+  .profile-dropdown {
+    display: flex;
+    opacity: 0; 
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease 0.2s;
+    visibility: hidden;
+  }
+
+  .profile-dropdown.open {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
   }
 
   .profile-info {
     border-bottom: 1px solid #eee;
     padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
     text-align: center;
   }
 
@@ -411,11 +395,12 @@
     color: #2c5e3d;
   }
 
+  /* Mobile Profile Styles */
   .mobile-profile-section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 0 1rem 1rem 0;
+    padding: 1rem 1rem 0;
     background: #f9f9f9;
     border-radius: 8px;
   }
@@ -427,8 +412,8 @@
   }
 
   .mobile-avatar {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #2c5e3d;
     color: white;
@@ -448,15 +433,19 @@
     color: #2c5e3d;
     text-decoration: none;
     font-weight: 500;
-    padding: 0.5rem 1rem;
+    padding: 1rem 0;
     background: white;
     border-radius: 4px;
+  }
+
+  .mobile-link:hover {
+    background: #f5f5f5;
   }
 
   .mobile-divider {
     height: 1px;
     background: #eee;
-    margin: 0.5rem 0 0;
+    margin: 0.5rem 0;
   }
 
   .mobile-logout {
@@ -468,6 +457,7 @@
     font-weight: 500;
     text-align: center;
     margin-top: 0.5rem;
+    font-size: 0.9rem;
   }
 
   .mobile-lang-switcher {
@@ -475,7 +465,7 @@
     top: 1.5rem;
     right: 2rem;
   }
-  
+
   @media (max-width: 768px) {
     nav {
       padding: 1rem 1.5rem;
@@ -504,7 +494,7 @@
       display: flex;
     }
   }
-  
+
   @media (hover: none) and (pointer: coarse) {
     .menu-button {
       padding: 1rem;
