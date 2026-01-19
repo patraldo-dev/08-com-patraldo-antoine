@@ -9,16 +9,13 @@
   import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
   import { browser } from '$app/environment';
   
-  // Capture data from server with safe defaults
-  let { data = {} } = $props();
-  const { isAdmin, username } = data;
-
+  // Only destructure 'data'. DO NOT destructure 'isAdmin' here.
+  let { data } = $props();
   
-  // FIXED: Use $derived instead of $: for reactivity in Runes mode
+  // Reactive state for admin status
   let isAdmin = $derived(data?.isAdmin ?? false);
   
-  // Check if current page needs full-height layout (no top margin)
-  // FIXED: Also changed $: to $derived
+  // Reactive state for page layout
   let isFullHeightPage = $derived($page.url.pathname === '/about');
   
   // Initialize locale on client
