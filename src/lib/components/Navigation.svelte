@@ -6,46 +6,23 @@
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
-  // NEW Svelte 5 Syntax: Accept props from parent
-  let { isAdmin, username } = $props();
-
-  // NEW Svelte 5 Syntax: Reactive state
   let isMenuOpen = $state(false);
   let isProfileOpen = $state(false);
   
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
+  
+  // Accept both props from parent
+  let { isAdmin, username } = $props();
 
-  // NEW: Logout function
-  async function handleLogout() {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      goto('/');
-    } catch (e) {
-      console.error('Logout failed:', e);
-    }
-  }
-  
-  function toggleMenu(event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    
+  function toggleMenu() {
     isMenuOpen = !isMenuOpen;
-    isProfileOpen = false; // Close profile if toggling menu
-    
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    }
+    isProfileOpen = false; // Close profile when toggling main menu
   }
-  
+
   function closeMenu() {
     isMenuOpen = false;
     isProfileOpen = false;
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
-    }
   }
   
   function handleLinkClick(event, href) {
@@ -81,37 +58,14 @@
     // External links work normally (no preventDefault)
   }
   
-  function handleOutsideClick(event) {
-    if (!isMenuOpen && !isProfileOpen) return;
-    
-    const nav = event.target.closest('nav');
-    const menuButton = event.target.closest('.menu-button');
-    const profileTrigger = event.target.closest('.profile-trigger');
-    
-    // Close if clicking outside nav, button, or profile dropdown
-    if (!nav && !menuButton && !profileTrigger) {
-      closeMenu();
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      goto('/');
+    } catch (e) {
+      console.error('Logout failed:', e);
     }
   }
-  
-  function handleKeydown(event) {
-    if (event.key === 'Escape') {
-      closeMenu();
-    }
-  }
-  
-  onMount(() => {
-    document.addEventListener('click', handleOutsideClick, { passive: true });
-    document.addEventListener('keydown', handleKeydown);
-    
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.removeEventListener('keydown', handleKeydown);
-      if (typeof document !== 'undefined') {
-        document.body.style.overflow = '';
-      }
-    };
-  });
 </script>
 
 <nav>
@@ -136,26 +90,31 @@
       </a>
     {/if}
     
-    <LanguageSwitcherUniversal/>
-    
-    <!-- NEW: User Profile Dropdown (Desktop) -->
+    <!-- User Profile Dropdown -->
     {#if isAdmin}
-      <div class="profile-container" on:mouseenter={() => isProfileOpen = true}>
-        <div class="profile-trigger">
+      <div class="profile-container">
+        <div class="profile-trigger" on:click={() => isProfileOpen = !isProfileOpen}>
           <span class="profile-icon">o</span>
         </div>
+        
         {#if isProfileOpen}
-          <div class="profile-dropdown" on:mouseleave={() => isProfileOpen = false}>
+          <div 
+            class="profile-dropdown" 
+            on:clickoutside 
+            on:mouseenter={(e) => { e.stopPropagation() } // Prevent bubbling to trigger handleLinkClick
+          >
             <div class="profile-info">
               <span class="profile-name">{username || 'Admin'}</span>
             </div>
-            <button class="logout-btn" on:click={handleLogout}>
+            <button class="logout-btn" on:click={(e) => handleLogout()}>
               {$t('common.navLogout')}
             </button>
           </div>
         {/if}
       </div>
     {/if}
+    
+    <LanguageSwitcherUniversal/>
   </div>
   
   <!-- Mobile/Tablet Menu Button -->
@@ -165,7 +124,7 @@
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
     aria-expanded={isMenuOpen}
     onclick={toggleMenu}
-    ontouchend={(e) => { e.preventDefault(); toggleMenu(e); }}
+    ontouchend={(e) => { e.preventDefault(); toggleMenu(); }}
     type="button"
   >
     <span class="menu-line"></span>
@@ -174,7 +133,7 @@
   
   <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
-    <div class="menu-overlay" onclick={closeMenu}></div>
+    <div class="menu-overlay" on:click={closeMenu}></div>
   {/if}
   
   <!-- Mobile Menu -->
@@ -187,7 +146,7 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- NEW: Admin & Profile (Mobile) -->
+    <!-- Admin & Profile (Mobile) -->
     {#if isAdmin}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
@@ -195,7 +154,7 @@
           <span class="mobile-username">{username || 'Admin'}</span>
         </div>
         <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
-        <button class="mobile-logout" on:click={handleLogout}>{$t('common.navLogout')}</button>
+        <button class="mobile-logout" on:click={(e) => handleLogout()}>{$t('common.navLogout')}</button>
       </div>
       <div class="mobile-divider"></div>
     {/if}
@@ -259,13 +218,13 @@
     opacity: 0.6;
   }
 
-  /* Admin Link Styling */
+  /* ADMIN LINK */
   .admin-link {
     color: #2c5e3d !important;
     font-weight: 500;
   }
-  
-  /* Profile Dropdown (Desktop) */
+
+  /* PROFILE DROPDOWN (Desktop) */
   .profile-container {
     position: relative;
     display: flex;
@@ -283,20 +242,19 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-weight: 700;
-    color: #2c5e3d;
-    position: relative;
-    z-index: 10;
   }
 
   .profile-trigger:hover {
     background: #ffffff;
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .profile-icon {
     font-size: 1.2rem;
     line-height: 1;
+    font-weight: 700; /* Make the 'o' bold */
+    color: #2c5e3d;
   }
 
   .profile-dropdown {
@@ -307,18 +265,18 @@
     background: white;
     border: 1px solid #eee;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    pointer-events: none; /* Prevents mouseleave from firing when moving to links */
+    pointer-events: auto; /* Important: Prevents clicks inside from bubbling to nav links */
     animation: fadeIn 0.2s ease;
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .profile-info {
@@ -335,13 +293,13 @@
 
   .logout-btn {
     width: 100%;
-    padding: 0.4rem;
+    padding: 0.5rem 1rem;
     background: #ff6b6b;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     transition: background 0.2s;
   }
 
@@ -349,7 +307,6 @@
     background: #e53e3e;
   }
 
-  /* Mobile Styles */
   .menu-button {
     display: none;
     background: none;
@@ -403,10 +360,10 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: calc(var(--z-nav) + 1);
-    animation: fadeInOverlay 0.3s ease;
+    animation: fadeIn 0.3s ease;
   }
   
-  @keyframes fadeInOverlay {
+  @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
@@ -453,8 +410,7 @@
   .mobile-menu a:active {
     color: #2c5e3d;
   }
-  
-  /* Mobile Profile Section */
+
   .mobile-profile-section {
     display: flex;
     flex-direction: column;
@@ -462,7 +418,6 @@
     padding: 0 1rem 1rem 0;
     background: #f9f9f9;
     border-radius: 8px;
-    margin-bottom: 1rem;
   }
 
   .mobile-profile-header {
@@ -481,7 +436,7 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
 
   .mobile-username {
@@ -493,7 +448,7 @@
     color: #2c5e3d;
     text-decoration: none;
     font-weight: 500;
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
     background: white;
     border-radius: 4px;
   }
@@ -501,9 +456,9 @@
   .mobile-divider {
     height: 1px;
     background: #eee;
-    margin: 0.5rem 0;
+    margin: 0.5rem 0 0;
   }
-  
+
   .mobile-logout {
     background: #ff6b6b;
     color: white;
@@ -512,8 +467,9 @@
     border-radius: 4px;
     font-weight: 500;
     text-align: center;
+    margin-top: 0.5rem;
   }
-  
+
   .mobile-lang-switcher {
     position: absolute;
     top: 1.5rem;
