@@ -1,12 +1,11 @@
 <!-- src/lib/components/Navigation.svelte -->
 <script>
-  import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
 
-  // Svelte 5 Runes: Use $state for local state
+  // Svelte 5 Runes
   let isMenuOpen = $state(false);
   let isProfileOpen = $state(false);
   let currentPath = $derived($page.url.pathname);
@@ -15,14 +14,21 @@
   // Accept Admin Props
   let { isAdmin, username } = $props();
 
-  // NEW: Toggle Profile function
+  // Toggle Profile function
   function toggleProfile() {
-    isProfileOpen = !isProfileOpen; // Toggle state
+    isProfileOpen = !isProfileOpen;
   }
 
-  // Existing functions (toggleMenu, closeMenu, etc...)
-  // ... (Keep your existing functions like toggleMenu, handleLinkClick, etc.) ...
-  
+  // Toggle Menu function
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+    isProfileOpen = false;
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    }
+  }
+
+  // Close Menu function
   function closeMenu() {
     isMenuOpen = false;
     isProfileOpen = false;
@@ -30,21 +36,82 @@
       document.body.style.overflow = '';
     }
   }
-  
+
+  // Handle link click with Svelte 5 syntax
+  function handleLinkClick(e, target) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeMenu();
+    
+    if (target.startsWith('#') && isOnHomePage) {
+      // For hash links on home page
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      goto(target);
+    }
+  }
+
+  // Handle outside click
   function handleOutsideClick(event) {
     const nav = event.target.closest('nav');
     const menuButton = event.target.closest('.menu-button');
     const profileContainer = event.target.closest('.profile-container');
     
-    // If click happens outside nav, menu, AND profile dropdown, close everything
     if (!nav && !menuButton && !profileContainer) {
       isMenuOpen = false;
       isProfileOpen = false;
     }
   }
 
-  // ... (Keep your existing functions like handleKeydown, handleLinkClick, etc.) ...
+  // Async logout function for desktop
+  async function handleLogoutDesktop(e) {
+    e.stopPropagation();
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      closeMenu();
+      goto('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
 
+  // Async logout function for mobile
+  async function handleLogoutMobile(e) {
+    e.stopPropagation();
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      closeMenu();
+      goto('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
+
+  // Handle keydown for accessibility
+  function handleKeydown(e) {
+    if (e.key === 'Escape') {
+      closeMenu();
+    }
+  }
+
+  // Add event listeners
+  if (typeof document !== 'undefined') {
+    $effect(() => {
+      const handleClick = (e) => handleOutsideClick(e);
+      const handleKey = (e) => handleKeydown(e);
+      
+      document.addEventListener('click', handleClick);
+      document.addEventListener('keydown', handleKey);
+      
+      return () => {
+        document.removeEventListener('click', handleClick);
+        document.removeEventListener('keydown', handleKey);
+      };
+    });
+  }
 </script>
 
 <nav>
@@ -62,24 +129,19 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- NEW: User Profile Dropdown (Desktop) -->
+    <!-- User Profile Dropdown (Desktop) -->
     {#if isAdmin}
       <div class="profile-container">
-        <!-- We use click to toggle, on:mouseenter is not allowed in Svelte 5 -->
         <div class="profile-trigger" onclick={toggleProfile}>
-            <span class="profile-icon">o</span>
+          <span class="profile-icon">o</span>
         </div>
         
         {#if isProfileOpen}
-          <!-- We use on:clickoutside to close when clicking links inside the dropdown -->
-          <div class="profile-dropdown" on:clickoutside>
+          <div class="profile-dropdown">
             <div class="profile-info">
               <span class="profile-name">{username || 'Admin'}</span>
             </div>
-            <button class="logout-btn" on:click={(e) => { e.stopPropagation(); // Stop bubbling so we don't toggle profile when clicking logout
-  await fetch('/api/auth/logout', { method: 'POST' });
-              goto('/');
-            }}>
+            <button class="logout-btn" onclick={handleLogoutDesktop}>
               {$t('common.navLogout')}
             </button>
           </div>
@@ -116,10 +178,10 @@
     <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
     <a href="/cine" onclick={(e) => handleLinkClick(e, '/cine')}>{$t('common.navCine')}</a>
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
+    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- NEW: Admin & Profile (Mobile) -->
+    <!-- Admin & Profile (Mobile) -->
     {#if isAdmin}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
@@ -127,7 +189,7 @@
           <span class="mobile-username">{username || 'Admin'}</span>
         </div>
         <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
-        <button class="mobile-logout" on:click={(e) => { e.stopPropagation(); await fetch('/api/auth/logout', { method: 'POST' }); goto('/admin'); } class="mobile-logout">{$t('common.navLogout')}</button>
+        <button class="mobile-logout" onclick={handleLogoutMobile}>{$t('common.navLogout')}</button>
       </div>
       <div class="mobile-divider"></div>
     {/if}
