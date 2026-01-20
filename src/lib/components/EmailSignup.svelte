@@ -3,14 +3,17 @@
   let isSubmitting = false;
   let message = '';
   let messageType = '';
+  let messageKey = '';
+  let verificationUrl = '';
   
   async function handleSubmit() {
     if (!email) return;
     
     isSubmitting = true;
-    message = '';
+    messageKey = '';
     messageType = '';
-    
+    verificationUrl = '';
+
     try {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
@@ -23,26 +26,28 @@
       const result = await response.json();
 
 if (response.ok) {
-  if (result.status === 'confirmed') {
-    message = $t('common.alreadyConfirmed');
-    messageType = 'success';
-  } else {
-    message = `${$t('common.verifyEmail')} ${window.location.origin}/verify?token=${result.token}`;
-    messageType = 'success';
-    email = '';
+        if (result.status === 'confirmed') {
+          messageKey = 'common.alreadyConfirmed';
+        } else {
+          messageKey = 'common.verifyEmail';
+          verificationUrl = `${window.location.origin}/verify?token=${result.token}`;
         }
+        messageType = 'success';
+        email = '';
       } else {
-        message = result.message || 'Algo salió mal. Por favor, intente de nuevo.';
+        messageKey = 'common.subscribeError';
         messageType = 'error';
       }
     } catch (error) {
-      message = 'Error de conexión. Por favor, intente de nuevo.';
+      messageKey = 'common.connectionError';
       messageType = 'error';
     }
     
     isSubmitting = false;
   }
 </script>
+
+
 <form on:submit|preventDefault={handleSubmit} class="signup-form">
   <div class="input-group">
     <input
@@ -57,13 +62,20 @@ if (response.ok) {
       {isSubmitting ? 'Joining...' : '¡Unamos!'}
     </button>
   </div>
+
+{#if messageKey}
+  <div class="message {messageType}" role="alert">
+    {#if verificationUrl}
+      <p>{$t(messageKey)} <a href={verificationUrl}>{$t('common.verifyLink')}</a></p>
+    {:else}
+      {$t(messageKey)}
+    {/if}
+  </div>
+{/if}
   
-  {#if message}
-    <div class="message {messageType}" role="alert">
-      {message}
-    </div>
-  {/if}
 </form>
+
+
 <style>
   .signup-form {
     max-width: 400px;
