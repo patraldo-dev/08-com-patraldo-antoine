@@ -1,7 +1,7 @@
 // src/routes/+layout.server.js
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ locals, cookies }) {  // ✅ Use 'locals' directly, not 'event'
+export async function load({ locals, cookies }) {
   // 1. LANGUAGE LOGIC (Keep this, it's fine)
   let preferredLanguage = cookies.get('preferredLanguage');
   if (!preferredLanguage) {
@@ -21,14 +21,12 @@ export async function load({ locals, cookies }) {  // ✅ Use 'locals' directly,
   }
 
   // 2. AUTH LOGIC (Delegated to hooks.server.js)
-  // We do not check cookies or headers here.
-  // We simply use the 'user' object injected by the hook.
-  const user = locals.user;  // ✅ Access locals directly
+  const user = locals.user;
   const isAdmin = user?.role === 'admin';
 
   return { 
     preferredLanguage, 
     isAdmin,
-    username: user?.username
+    username: user?.username || null  // ✅ Ensure it's null, not undefined
   };
 }

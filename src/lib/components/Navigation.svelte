@@ -14,6 +14,9 @@
   // Accept Admin Props - SVELTE 5 SYNTAX
   let { isAdmin = false, username = null } = $props();
   
+  // Derive if user is authenticated
+  let isAuthenticated = $derived(!!username);
+  
   // Toggle Profile function
   function toggleProfile() {
     isProfileOpen = !isProfileOpen;
@@ -66,25 +69,15 @@
     }
   }
   
-  // Async logout function for desktop
-  async function handleLogoutDesktop(e) {
+  // Async logout function
+  async function handleLogout(e) {
     e.stopPropagation();
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       closeMenu();
       goto('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  }
-  
-  // Async logout function for mobile
-  async function handleLogoutMobile(e) {
-    e.stopPropagation();
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      closeMenu();
-      goto('/');
+      // Force reload to update auth state
+      setTimeout(() => window.location.reload(), 100);
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -129,8 +122,17 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- User Profile Dropdown (Desktop) -->
-    {#if isAdmin}
+    <LanguageSwitcherUniversal/>
+    
+    <!-- Show Login button if NOT authenticated -->
+    {#if !isAuthenticated}
+      <a href="/login" class="login-btn" onclick={(e) => handleLinkClick(e, '/login')}>
+        Login
+      </a>
+    {/if}
+    
+    <!-- Show Profile if authenticated -->
+    {#if isAuthenticated}
       <div class="profile-container">
         <div class="profile-trigger" onclick={toggleProfile}>
           <span class="profile-icon">^<br>o</span>
@@ -139,20 +141,20 @@
         {#if isProfileOpen}
           <div class="profile-dropdown">
             <div class="profile-info">
-              <span class="profile-name">{username || 'Admin'}</span>
+              <span class="profile-name">{username}</span>
             </div>
-            <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
-              Dashboard
-            </a>
-            <button class="logout-btn" onclick={handleLogoutDesktop}>
-              {$t('common.navLogout')}
+            {#if isAdmin}
+              <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
+                Dashboard
+              </a>
+            {/if}
+            <button class="logout-btn" onclick={handleLogout}>
+              Logout
             </button>
           </div>
         {/if}
       </div>
     {/if}
-    
-    <LanguageSwitcherUniversal/>
   </div>
   
   <!-- Mobile/Tablet Menu Button -->
@@ -184,18 +186,28 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Admin & Profile (Mobile) -->
-    {#if isAdmin}
+    <!-- Show Login button in mobile menu if NOT authenticated -->
+    {#if !isAuthenticated}
+      <a href="/login" class="mobile-login-btn" onclick={(e) => handleLinkClick(e, '/login')}>
+        Login
+      </a>
+    {/if}
+    
+    <!-- Show Profile in mobile menu if authenticated -->
+    {#if isAuthenticated}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
           <div class="mobile-avatar">^<br>o</div>
-          <span class="mobile-username">{username || 'Admin'}</span>
+          <span class="mobile-username">{username}</span>
         </div>
-        <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
-        <button class="mobile-logout" onclick={handleLogoutMobile}>{$t('common.navLogout')}</button>
+        {#if isAdmin}
+          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
+        {/if}
+        <button class="mobile-logout" onclick={handleLogout}>Logout</button>
       </div>
       <div class="mobile-divider"></div>
     {/if}
+    
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -253,6 +265,24 @@
   
   .nav-links a:hover {
     opacity: 0.6;
+  }
+  
+  /* Login Button Styles */
+  .login-btn {
+    padding: 0.5rem 1.5rem;
+    background: #2c5e3d;
+    color: white !important;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .login-btn:hover {
+    background: #1e4029;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.3);
+    opacity: 1 !important;
   }
   
   /* Profile Container & Trigger */
@@ -453,6 +483,21 @@
   .mobile-menu a:hover,
   .mobile-menu a:active {
     color: #2c5e3d;
+  }
+  
+  .mobile-login-btn {
+    padding: 1rem !important;
+    background: #2c5e3d !important;
+    color: white !important;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500 !important;
+    border: none !important;
+  }
+  
+  .mobile-login-btn:hover {
+    background: #1e4029 !important;
+    color: white !important;
   }
   
   /* Mobile Profile */
