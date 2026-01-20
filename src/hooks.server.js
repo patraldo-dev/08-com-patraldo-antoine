@@ -1,5 +1,4 @@
 // src/hooks.server.js
-
 const SESSION_EXPIRES_IN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 async function validateSession(db, sessionId) {
@@ -68,6 +67,8 @@ export async function handle({ event, resolve }) {
     event.locals.user = null;
     event.locals.isAdmin = false;
     
+    console.log('🔍 [Auth Debug] Starting auth check');
+    
     // Try to get DB binding
     const db = event.platform?.env?.DB_users;
     
@@ -78,14 +79,18 @@ export async function handle({ event, resolve }) {
         if (event.platform?.env) {
             console.error('Available bindings:', Object.keys(event.platform.env));
         }
-        // Return early but allow the app to continue
         return resolve(event);
     }
+    
+    console.log('✅ DB_users binding found');
     
     try {
         // Method 1: Check Cloudflare Access (for /admin routes)
         const cfAccessEmail = event.request.headers.get('cf-access-authenticated-user-email');
         const cfAccessJWT = event.request.headers.get('cf-access-jwt-assertion');
+        
+        console.log('🔐 CF Access Email:', cfAccessEmail);
+        console.log('🔐 CF Access JWT:', cfAccessJWT ? 'present' : 'none');
         
         if (cfAccessEmail || cfAccessJWT) {
             let email = cfAccessEmail;
@@ -111,7 +116,7 @@ export async function handle({ event, resolve }) {
                     const user = results[0];
                     event.locals.user = user;
                     event.locals.isAdmin = user.role === 'admin';
-                    console.log('[Auth] CF Access - User:', user.username, 'Admin:', event.locals.isAdmin);
+                    console.log('✅ [CF Access] User authenticated:', user.username, 'Admin:', event.locals.isAdmin);
                 }
             }
         }
@@ -119,6 +124,7 @@ export async function handle({ event, resolve }) {
         // Method 2: Check session cookie (for all pages)
         if (!event.locals.user) {
             const sessionId = event.cookies.get('session');
+            console.log('🍪 Session cookie:', sessionId ? 'present' : 'none');
             
             if (sessionId) {
                 const session = await validateSession(db, sessionId);
@@ -136,20 +142,23 @@ export async function handle({ event, resolve }) {
                         event.locals.isAdmin = user.role === 'admin';
                         event.locals.session = session;
                         
-                        console.log('[Auth] Session - User:', user.username, 'Admin:', event.locals.isAdmin);
+                        console.log('✅ [Session] User authenticated:', user.username, 'Admin:', event.locals.isAdmin);
                     } else {
-                        // User deleted - invalidate session
+                        console.log('⚠️ Session valid but user not found');
                         await db.prepare('DELETE FROM user_session WHERE id = ?').bind(sessionId).run();
                         deleteSessionCookie(event.cookies);
                     }
                 } else {
+                    console.log('⚠️ Session invalid or expired');
                     deleteSessionCookie(event.cookies);
                 }
             }
         }
+        
+        console.log('📊 Final auth state - User:', event.locals.user?.username || 'none', 'Admin:', event.locals.isAdmin);
+        
     } catch (error) {
-        console.error('Error in auth handle:', error);
-        // Don't let auth errors break the entire app
+        console.error('❌ Error in auth handle:', error);
     }
     
     const response = await resolve(event);

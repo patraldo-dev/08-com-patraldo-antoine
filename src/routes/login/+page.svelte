@@ -1,4 +1,4 @@
-<!-- src/routes/admin/login/+page.svelte -->
+<!-- src/routes/login/+page.svelte -->
 <script>
   import { goto } from '$app/navigation';
   
@@ -26,7 +26,15 @@
       const result = await response.json();
       
       if (response.ok) {
-        goto('/admin');
+        // Redirect based on user role
+        if (result.user?.role === 'admin') {
+          goto('/admin');
+        } else {
+          goto('/'); // Regular users go to homepage
+        }
+        
+        // Force reload to update auth state
+        setTimeout(() => window.location.reload(), 100);
       } else {
         error = result.error || 'Invalid credentials';
       }
@@ -40,13 +48,13 @@
 </script>
 
 <svelte:head>
-  <title>Admin Login | Antoine Patraldo</title>
+  <title>Login | Antoine Patraldo</title>
 </svelte:head>
 
 <div class="login-page">
   <div class="login-card">
-    <h1>Admin Login</h1>
-    <p class="subtitle">Sign in to access the admin dashboard</p>
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Sign in to your account</p>
     
     {#if error}
       <div class="error-message">{error}</div>
@@ -85,7 +93,7 @@
     </form>
     
     <div class="login-footer">
-      <p>Don't have an account? <a href="/admin/signup">Sign up</a></p>
+      <p>Don't have an account? <a href="/signup">Sign up</a></p>
       <a href="/">← Back to Gallery</a>
     </div>
   </div>
