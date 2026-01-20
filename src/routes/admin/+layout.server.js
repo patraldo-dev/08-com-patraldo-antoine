@@ -1,10 +1,10 @@
 // src/routes/admin/+layout.server.js
 import { error, redirect } from '@sveltejs/kit';
 
-export async function load({ event }) {
+export async function load({ locals }) {  // ✅ Use 'locals' directly
   // We rely ENTIRELY on hooks.server.js
-  // If event.locals.user is missing or not admin, the hook failed or removed them.
-  const user = event.locals.user;
+  // If locals.user is missing or not admin, the hook failed or removed them.
+  const user = locals.user;  // ✅ Access locals directly
   const isAdmin = user?.role === 'admin';
 
   if (!user || !isAdmin) {
