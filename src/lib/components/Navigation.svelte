@@ -4,21 +4,21 @@
   import { page } from '$app/stores';
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
-
+  
   // Svelte 5 Runes
   let isMenuOpen = $state(false);
   let isProfileOpen = $state(false);
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
-  // Accept Admin Props
-  let { isAdmin, username } = $props();
-
+  // Accept Admin Props - SVELTE 5 SYNTAX
+  let { isAdmin = false, username = null } = $props();
+  
   // Toggle Profile function
   function toggleProfile() {
     isProfileOpen = !isProfileOpen;
   }
-
+  
   // Toggle Menu function
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
@@ -27,7 +27,7 @@
       document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     }
   }
-
+  
   // Close Menu function
   function closeMenu() {
     isMenuOpen = false;
@@ -36,7 +36,7 @@
       document.body.style.overflow = '';
     }
   }
-
+  
   // Handle link click with Svelte 5 syntax
   function handleLinkClick(e, target) {
     e.preventDefault();
@@ -53,7 +53,7 @@
       goto(target);
     }
   }
-
+  
   // Handle outside click
   function handleOutsideClick(event) {
     const nav = event.target.closest('nav');
@@ -65,7 +65,7 @@
       isProfileOpen = false;
     }
   }
-
+  
   // Async logout function for desktop
   async function handleLogoutDesktop(e) {
     e.stopPropagation();
@@ -77,7 +77,7 @@
       console.error('Logout failed:', error);
     }
   }
-
+  
   // Async logout function for mobile
   async function handleLogoutMobile(e) {
     e.stopPropagation();
@@ -89,14 +89,14 @@
       console.error('Logout failed:', error);
     }
   }
-
+  
   // Handle keydown for accessibility
   function handleKeydown(e) {
     if (e.key === 'Escape') {
       closeMenu();
     }
   }
-
+  
   // Add event listeners
   if (typeof document !== 'undefined') {
     $effect(() => {
@@ -133,7 +133,7 @@
     {#if isAdmin}
       <div class="profile-container">
         <div class="profile-trigger" onclick={toggleProfile}>
-          <span class="profile-icon">o</span>
+          <span class="profile-icon">^<br>o</span>
         </div>
         
         {#if isProfileOpen}
@@ -141,6 +141,9 @@
             <div class="profile-info">
               <span class="profile-name">{username || 'Admin'}</span>
             </div>
+            <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
+              Dashboard
+            </a>
             <button class="logout-btn" onclick={handleLogoutDesktop}>
               {$t('common.navLogout')}
             </button>
@@ -185,7 +188,7 @@
     {#if isAdmin}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
-          <div class="mobile-avatar">o</div>
+          <div class="mobile-avatar">^<br>o</div>
           <span class="mobile-username">{username || 'Admin'}</span>
         </div>
         <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
@@ -193,7 +196,6 @@
       </div>
       <div class="mobile-divider"></div>
     {/if}
-
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
     </div>
@@ -252,107 +254,103 @@
   .nav-links a:hover {
     opacity: 0.6;
   }
-
-  /* ADMIN LINK */
-  .admin-link {
-    color: #2c5e3d !important;
-    font-weight: 500;
-  }
   
-  /* PROFILE DROPDOWN (Desktop) */
+  /* Profile Container & Trigger */
   .profile-container {
     position: relative;
-    display: flex;
-    align-items: center;
   }
-
+  
   .profile-trigger {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    border: 2px solid #2c5e3d;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     position: relative;
-    font-weight: 700;
-    color: #2c5e3d;
   }
-
+  
   .profile-trigger:hover {
-    background: #ffffff;
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
   }
-
+  
   .profile-icon {
-    font-size: 1.2rem;
-    line-height: 1;
+    font-size: 0.9rem;
+    line-height: 0.6;
+    color: #2c5e3d;
+    font-weight: bold;
+    text-align: center;
   }
-
+  
+  /* Profile Dropdown */
   .profile-dropdown {
     position: absolute;
     top: 110%;
     right: 0;
-    width: 200px;
+    width: 220px;
     background: white;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    pointer-events: none; /* Prevents mouseleave from flickering */
+    gap: 0.75rem;
+    z-index: 1000;
   }
-
-  /* Make the dropdown visible if active */
-  .profile-dropdown {
-    display: flex;
-    opacity: 0; 
-    transform: translateY(-10px);
-    transition: opacity 0.2s ease 0.2s;
-    visibility: hidden;
-  }
-
-  .profile-dropdown.open {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-  }
-
+  
   .profile-info {
     border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
     text-align: center;
   }
-
+  
   .profile-name {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c5e3d;
+    font-size: 1rem;
   }
-
+  
+  .profile-dropdown a {
+    padding: 0.5rem;
+    text-align: center;
+    color: #2c5e3d;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  
+  .profile-dropdown a:hover {
+    background: #f0f0f0;
+    opacity: 1;
+  }
+  
   .logout-btn {
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem;
     background: #ff6b6b;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s;
   }
-
+  
   .logout-btn:hover {
     background: #e53e3e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
   }
-
+  
+  /* Mobile Styles */
   .menu-button {
     display: none;
     background: none;
@@ -456,26 +454,26 @@
   .mobile-menu a:active {
     color: #2c5e3d;
   }
-
-  /* Mobile Profile Styles */
+  
+  /* Mobile Profile */
   .mobile-profile-section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem 1rem 0;
+    padding: 1rem;
     background: #f9f9f9;
     border-radius: 8px;
   }
-
+  
   .mobile-profile-header {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
+  
   .mobile-avatar {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: #2c5e3d;
     color: white;
@@ -483,51 +481,53 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 0.85rem;
+    line-height: 0.6;
+    text-align: center;
   }
-
+  
   .mobile-username {
-    font-weight: 500;
-    color: #333;
-  }
-
-  .mobile-link {
+    font-weight: 600;
     color: #2c5e3d;
+  }
+  
+  .mobile-link {
+    padding: 0.75rem 1rem !important;
+    color: #2c5e3d !important;
     text-decoration: none;
-    font-weight: 500;
-    padding: 1rem 0;
+    font-weight: 500 !important;
     background: white;
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0 !important;
   }
-
-  .mobile-link:hover {
-    background: #f5f5f5;
-  }
-
+  
   .mobile-divider {
     height: 1px;
     background: #eee;
     margin: 0.5rem 0;
   }
-
+  
   .mobile-logout {
     background: #ff6b6b;
     color: white;
     border: none;
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: 6px;
     font-weight: 500;
-    text-align: center;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
   }
-
+  
+  .mobile-logout:hover {
+    background: #e53e3e;
+  }
+  
   .mobile-lang-switcher {
     position: absolute;
     top: 1.5rem;
     right: 2rem;
   }
-
+  
   @media (max-width: 768px) {
     nav {
       padding: 1rem 1.5rem;
@@ -554,16 +554,6 @@
     
     .menu-button {
       display: flex;
-    }
-  }
-
-  @media (hover: none) and (pointer: coarse) {
-    .menu-button {
-      padding: 1rem;
-    }
-    
-    .mobile-menu a {
-      padding: 1rem 0;
     }
   }
 </style>
