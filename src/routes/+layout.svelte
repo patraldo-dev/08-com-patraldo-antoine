@@ -12,9 +12,16 @@
   // Only destructure 'data'. DO NOT destructure 'isAdmin' here.
   let { data } = $props();
   
-  // Reactive state for admin status
+  // Reactive state for admin status and username
   let isAdmin = $derived(data?.isAdmin ?? false);
   let username = $derived(data?.username ?? null);
+  
+  // DEBUG: Log the values
+  $effect(() => {
+    if (browser) {
+      console.log('🔍 Layout Debug - isAdmin:', isAdmin, 'username:', username, 'data:', data);
+    }
+  });
   
   // Reactive state for page layout
   let isFullHeightPage = $derived($page.url.pathname === '/about');
@@ -70,7 +77,6 @@
 
 <div class="app">
   <Navigation {isAdmin} {username} />  
-
   <main class:full-height={isFullHeightPage}>
     <slot />
   </main>
@@ -78,11 +84,11 @@
   <footer>
     <p>&copy; 2026 Antoine Patraldo. All rights reserved.</p>
   </footer>
-
 <NLWebSearch />
 <AIArtAssistant />
 </div>
 
+<!-- Keep all your existing styles -->
 <style>
   .app {
     min-height: 100vh;

@@ -1,25 +1,24 @@
 // src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
-export async function load({ platform, event }) {
+export async function load({ platform, locals }) {  // ✅ Changed from 'event' to 'locals'
   // 1. GET AUTH STATUS FROM HOOK (The Single Source of Truth)
   // We don't check headers or cookies manually here.
-  const isAdmin = event.locals.user?.role === 'admin';
-
+  const isAdmin = locals.user?.role === 'admin';  // ✅ Use locals directly
+  
   const dbStories = platform?.env?.stories_db;
   const dbArtworks = platform?.env?.ARTWORKS_DB;
-
+  
   if (!dbStories || !dbArtworks) {
     console.log("Stories Index: Database bindings missing.");
     return { stories: [], isAdmin };
   }
-
+  
   try {
     let allStories = [];
     let usedArtworkIds = new Set();
     
     // 2. FETCH FULL STORIES
-    // ... (Keep your existing SQL logic exactly as is) ...
     const newStoriesResult = await dbStories.prepare(`
       SELECT 
         s.id as story_id,
@@ -32,7 +31,6 @@ export async function load({ platform, event }) {
       ORDER BY s.created_at DESC
     `).all();
     
-    // ... (Keep existing mapping logic) ...
     const artworksResult = await dbArtworks.prepare(`
       SELECT 
         id, 
@@ -69,9 +67,9 @@ export async function load({ platform, event }) {
         created_at: row.story_created_at
       };
     });
-
+    
     allStories = [...allStories, ...newStories];
-
+    
     const introStories = artworksResult.results
       .filter(art => !usedArtworkIds.has(art.id)) 
       .map(row => ({
