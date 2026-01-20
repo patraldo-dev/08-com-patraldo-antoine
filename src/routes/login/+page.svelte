@@ -97,7 +97,7 @@
       </div>
       
       <button type="submit" class="btn-login" disabled={isLoading}>
-        {isLoading ? $t('auth.login.signingIn') : $t('auth.login.signInButton')}
+        {isLoading ? $t('auth.login.signingIn') : {$t('auth.login.signInButton')}
       </button>
     </form>
     
