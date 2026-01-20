@@ -14,6 +14,7 @@
   
   // Reactive state for admin status
   let isAdmin = $derived(data?.isAdmin ?? false);
+  let username = $derived(data?.username ?? null);
   
   // Reactive state for page layout
   let isFullHeightPage = $derived($page.url.pathname === '/about');
@@ -68,7 +69,7 @@
 </script>
 
 <div class="app">
-  <Navigation {isAdmin} />  
+  <Navigation {isAdmin} {username} />  
 
   <main class:full-height={isFullHeightPage}>
     <slot />
