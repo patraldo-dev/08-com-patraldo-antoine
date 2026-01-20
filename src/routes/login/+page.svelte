@@ -1,6 +1,6 @@
 <!-- src/routes/login/+page.svelte -->
 <script>
-  import { goto } from '$app/navigation';
+  import { t } from '$lib/i18n';
   import { page } from '$app/stores';
   
   let identifier = '';
@@ -9,19 +9,18 @@
   let success = '';
   let isLoading = false;
   
-  // Check for verification status in URL
   $: {
     const verified = $page.url.searchParams.get('verified');
     if (verified === 'success') {
-      success = 'Email verified successfully! You can now log in.';
+      success = $t('auth.login.emailVerified');
     } else if (verified === 'already') {
-      success = 'Your email is already verified. You can log in.';
+      success = $t('auth.login.alreadyVerified');
     }
   }
   
   async function handleLogin() {
     if (!identifier || !password) {
-      error = 'Please enter your email or username and password';
+      error = $t('auth.login.enterCredentials');
       return;
     }
     
@@ -39,21 +38,14 @@
       const result = await response.json();
       
       if (response.ok) {
-        // Redirect based on user role
-        if (result.user?.role === 'admin') {
-          goto('/admin');
-        } else {
-          goto('/');
-        }
-        
-        // Force reload to update auth state
-        setTimeout(() => window.location.reload(), 100);
+        const destination = result.user?.role === 'admin' ? '/admin' : '/';
+        window.location.href = destination;
       } else {
-        error = result.error || 'Invalid credentials';
+        error = result.error || $t('auth.login.invalidCredentials');
       }
     } catch (err) {
       console.error('Login error:', err);
-      error = 'Network error. Please try again.';
+      error = $t('auth.login.networkError');
     } finally {
       isLoading = false;
     }
@@ -61,13 +53,13 @@
 </script>
 
 <svelte:head>
-  <title>Login | Antoine Patraldo</title>
+  <title>{$t('auth.login.title')} | Antoine Patraldo</title>
 </svelte:head>
 
 <div class="login-page">
   <div class="login-card">
-    <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to your account</p>
+    <h1>{$t('auth.login.title')}</h1>
+    <p class="subtitle">{$t('auth.login.subtitle')}</p>
     
     {#if success}
       <div class="success-message">{success}</div>
@@ -79,12 +71,12 @@
     
     <form on:submit|preventDefault={handleLogin}>
       <div class="form-group">
-        <label for="identifier">Email or Username</label>
+        <label for="identifier">{$t('auth.login.emailOrUsername')}</label>
         <input
           id="identifier"
           type="text"
           bind:value={identifier}
-          placeholder="your@email.com or username"
+          placeholder={$t('auth.login.emailPlaceholder')}
           required
           autocomplete="username"
           disabled={isLoading}
@@ -92,12 +84,12 @@
       </div>
       
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">{$t('auth.login.password')}</label>
         <input
           id="password"
           type="password"
           bind:value={password}
-          placeholder="••••••••"
+          placeholder={$t('auth.login.passwordPlaceholder')}
           required
           autocomplete="current-password"
           disabled={isLoading}
@@ -105,13 +97,13 @@
       </div>
       
       <button type="submit" class="btn-login" disabled={isLoading}>
-        {isLoading ? 'Signing in...' : 'Sign In'}
+        {isLoading ? $t('auth.login.signingIn') : $t('auth.login.signInButton')}
       </button>
     </form>
     
     <div class="login-footer">
-      <p>Don't have an account? <a href="/signup">Sign up</a></p>
-      <a href="/">← Back to Gallery</a>
+      <p>{$t('auth.login.noAccount')} <a href="/signup">{$t('auth.login.signUpLink')}</a></p>
+      <a href="/">{$t('auth.login.backToGallery')}</a>
     </div>
   </div>
 </div>

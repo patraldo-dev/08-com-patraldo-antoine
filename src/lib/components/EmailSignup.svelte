@@ -1,4 +1,6 @@
 <script>
+import { t } from '$lib/i18n'
+
   let email = '';
   let isSubmitting = false;
   let message = '';

@@ -16,8 +16,50 @@
   "common.dashboard": "Dashboard",
   "common.alreadyConfirmed": "You're already registered, thank you!",
   "common.verifyEmail": "Check your email and click verify:",
+  "common.verifyLink": "Verify",
   "common.navWork": "Drawings",
   "common.navAbout": "Acerca",
+  "common.adminDashboard": "Admin Dashboard",
+  "common.subscribeError": "Something went wrong. Please try again.",
+  "common.connectionError": "Connection error. Please try again.",
+  
+  "auth.login.title": "Welcome Back",
+  "auth.login.subtitle": "Sign in to your account",
+  "auth.login.emailOrUsername": "Email or Username",
+  "auth.login.emailPlaceholder": "your@email.com or username",
+  "auth.login.password": "Password",
+  "auth.login.passwordPlaceholder": "••••••••",
+  "auth.login.signInButton": "Sign In",
+  "auth.login.signingIn": "Signing in...",
+  "auth.login.noAccount": "Don't have an account?",
+  "auth.login.signUpLink": "Sign up",
+  "auth.login.backToGallery": "← Back to Gallery",
+  "auth.login.enterCredentials": "Please enter your email or username and password",
+  "auth.login.invalidCredentials": "Invalid credentials",
+  "auth.login.networkError": "Network error. Please try again.",
+  "auth.login.emailVerified": "Email verified successfully! You can now log in.",
+  "auth.login.alreadyVerified": "Your email is already verified. You can log in.",
+  
+  "auth.signup.title": "Create Account",
+  "auth.signup.subtitle": "Join the Antoine Patraldo community",
+  "auth.signup.username": "Username",
+  "auth.signup.usernamePlaceholder": "Choose a username",
+  "auth.signup.email": "Email",
+  "auth.signup.emailPlaceholder": "your@email.com",
+  "auth.signup.password": "Password",
+  "auth.signup.passwordPlaceholder": "Create a password (min 8 characters)",
+  "auth.signup.confirmPassword": "Confirm Password",
+  "auth.signup.confirmPasswordPlaceholder": "Repeat your password",
+  "auth.signup.signUpButton": "Sign Up",
+  "auth.signup.signingUp": "Creating account...",
+  "auth.signup.alreadyHaveAccount": "Already have an account?",
+  "auth.signup.loginLink": "Log in",
+  "auth.signup.backToGallery": "← Back to Gallery",
+  "auth.signup.success": "Account created! Please check your email to verify your address.",
+  "auth.signup.passwordsMismatch": "Passwords do not match",
+  "auth.signup.signupFailed": "Signup failed. Please try again.",
+  "auth.signup.networkError": "Network error. Please try again.",
+  
   "pages.home.herosubtitle": "Illustration * Illusion * Improvisation",
   "pages.home.metadescription": "Where spontaneous art meets innovative animation—a collaboration bringing colored pencil drawings to life through open-source AI tools and creative storytelling.",
   "pages.home.metatitle": "Antoine Patraldo - Interactive Stories",
@@ -28,6 +70,7 @@
   "pages.home.clicktolearnmore": "Click to learn more",
   "pages.home.signuptitle": "Stay Updated",
   "pages.home.signupdescription": "Receive new stories and sketches",
+  
   "pages.stories.metatitle": "Stories — Antoine Patraldo",
   "pages.stories.metadescription": "Weekly illustrated stories from the sketchbook.",
   "pages.stories.title": "Stories",
@@ -35,6 +78,7 @@
   "pages.stories.intro": "Each story begins with a single drawing...",
   "pages.stories.nostories": "No stories available yet. Check back soon!",
   "pages.stories.readstory": "Read Story",
+  
   "pages.collection.metatitle": "My Collection — Antoine Patraldo",
   "pages.collection.metadescription": "A curated archive of artworks and experiments.",
   "pages.collection.title": "My Collection",
@@ -69,6 +113,7 @@
   "pages.collection.emptytitle": "No artworks found",
   "pages.collection.emptymessage": "Start exploring the gallery!",
   "pages.collection.emptycta": "Go to Gallery",
+  
   "pages.tools.metatitle": "Creative Tools",
   "pages.tools.metadescription": "Free tools for designers and artists inspired by Antoine Patraldo's work",
   "pages.tools.title": "Creative Tools",
@@ -121,11 +166,16 @@
   "pages.tools.wallpapersultrawide": "Ultrawide",
   "pages.tools.wallpapersdownload": "Download",
   "pages.tools.wallpapersselectsize": "Select Wallpaper Size",
-
   "pages.tools.art3dTitle": "3D Art Viewer",
   "pages.tools.art3dDescription": "Interactive 3D gallery with rotation, zoom & filtering",
-
+  "pages.tools.stickersTitle": "Printable Stickers",
+  "pages.tools.stickersDescription": "Create custom sticker sheets from your favorite artworks—ready to print at home or professionally.",
+  
   "sketchbook.prompt": "Illustration, Illusion, Improvisation",
+  "sketchbook.spread": "Spread",
+  "sketchbook.of": "of",
+  "sketchbook.page": "Page",
+  
   "tags.mood.melancholic": "Melancholic",
   "tags.mood.vibrant": "Vibrant",
   "tags.mood.surreal": "Surreal",
@@ -137,9 +187,7 @@
   "tags.filter.title": "Filter by mood",
   "tags.filter.all": "All artworks",
   "tags.filter.prompt": "How are you feeling today?",
-  "sketchbook.spread": "Spread",
-  "sketchbook.of": "of",
-  "sketchbook.page": "Page",
+  
   "subscription.validEmailRequired": "Valid email is required",
   "subscription.processingFailed": "Could not process subscription",
   "subscription.invalidToken": "Invalid verification token",
@@ -148,6 +196,12 @@
   "subscription.alreadyRegistered": "Already registered, thank you!",
   "subscription.checkEmail": "Please check your email to confirm your subscription.",
   "subscription.emailFailed": "Subscription registered, but we couldn't send the confirmation email.",
+  "subscription.confirmedTitle": "Subscription Confirmed!",
+  "subscription.confirmedDescription": "Your subscription to Antoine Patraldo's art updates has been confirmed.",
+  "subscription.confirmedMessage1": "Thank you for subscribing to updates about my work.",
+  "subscription.confirmedMessage2": "You'll receive occasional emails about new artworks, exhibitions, and studio news.",
+  "subscription.backToGallery": "Back to Gallery",
+  
   "email.subject": "Confirm your subscription to Antoine Patraldo",
   "email.verificationTitle": "Confirm subscription",
   "email.confirmSubscription": "Confirm your subscription",
@@ -157,11 +211,7 @@
   "email.linkExpires": "This link will expire in 24 hours.",
   "email.copyright": "© 2025 Antoine Patraldo. All rights reserved.",
   "email.ignoreIfNotRequested": "If you didn't subscribe to these updates, you can ignore this email.",
-  "subscription.confirmedTitle": "Subscription Confirmed!",
-  "subscription.confirmedDescription": "Your subscription to Antoine Patraldo's art updates has been confirmed.",
-  "subscription.confirmedMessage1": "Thank you for subscribing to updates about my work.",
-  "subscription.confirmedMessage2": "You'll receive occasional emails about new artworks, exhibitions, and studio news.",
-  "subscription.backToGallery": "Back to Gallery",
+  
   "cine.hero.channelName": "Home Movie Channel",
   "cine.hero.watchAgain": "Watch Again",
   "cine.hero.duration": "Duration",
@@ -184,6 +234,7 @@
   "cine.gallery.noVideos": "No movies available yet.",
   "cine.gallery.views": "{count} views",
   "cine.gallery.minutes": "{minutes} min",
+  
   "search.title": "Search Artworks",
   "search.placeholder": "Ask about artworks, techniques, stories...",
   "search.openLabel": "Open AI search",
@@ -192,8 +243,7 @@
   "search.loading": "Loading search...",
   "search.toOpen": "to open",
   "search.toClose": "to close",
-  "pages.tools.stickersTitle": "Printable Stickers",
-  "pages.tools.stickersDescription": "Create custom sticker sheets from your favorite artworks—ready to print at home or professionally.",
+  
   "sticker.title": "Printable Stickers",
   "sticker.description": "Select your favorite artworks to create a custom sticker sheet. Download the PNG and print at home or through a professional service.",
   "sticker.noArtworks": "No artworks available.",
@@ -205,6 +255,7 @@
   "sticker.formatPng": "PNG",
   "sticker.formatPdf": "PDF",
   "sticker.formatLabel": "Format",
+  
   "assistant.title": "Ask Antoine",
   "assistant.openLabel": "Open AI assistant",
   "assistant.closeLabel": "Close assistant",
@@ -220,6 +271,7 @@
   "assistant.suggested.technique": "What technique did you use?",
   "assistant.suggested.process": "What's your creative process?",
   "assistant.suggested.similar": "Show me similar works",
+  
   "about.modal.closeLabel": "Close about",
   "about.modal.videoPrefix": "The Project",
   "about.modal.defaultVideoTitle": "About the Project - Creative Collaboration",
@@ -236,7 +288,8 @@
   "about.modal.coloredPencils": "Colored Pencils",
   "about.modal.connectTitle": "About the Studio",
   "about.modal.connectDescription": "¡Pinche Poutine! Digital is at the forefront of creative web development and innovative animation projects. We pioneer accessible creativity through open-source tools and cutting-edge techniques.",
-"3dart_title": "3D Artwork Manipulator",
+  
+  "3dart_title": "3D Artwork Manipulator",
   "3dart_description": "Select an artwork and manipulate it in 3D space",
   "3dart_artworks": "Artworks",
   "3dart_noArtworks": "No artworks match the current filters.",
@@ -268,6 +321,4 @@
   "3dart_type_mixed": "Mixed Media",
   "3dart_tag_featured": "Featured",
   "3dart_tag_cinematic": "Cinematic"
-
 }
-

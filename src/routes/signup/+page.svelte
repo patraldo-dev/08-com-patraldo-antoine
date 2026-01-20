@@ -1,5 +1,6 @@
 <!-- src/routes/signup/+page.svelte -->
 <script>
+    import { t } from '$lib/i18n';
     import { goto } from '$app/navigation';
     
     let username = '';
@@ -12,7 +13,7 @@
     
     async function handleSignup() {
         if (password !== confirmPassword) {
-            error = 'Passwords do not match';
+            error = $t('auth.signup.passwordsMismatch');
             return;
         }
         
@@ -30,22 +31,21 @@
             const result = await response.json();
             
             if (response.ok) {
-                success = 'Account created! Please check your email to verify your address.';
+                success = $t('auth.signup.success');
                 username = '';
                 email = '';
                 password = '';
                 confirmPassword = '';
                 
-                // Redirect to login after 3 seconds
                 setTimeout(() => {
                     goto('/login');
                 }, 3000);
             } else {
-                error = result.error || 'Signup failed. Please try again.';
+                error = result.error || $t('auth.signup.signupFailed');
             }
         } catch (err) {
             console.error('Signup error:', err);
-            error = 'Network error. Please try again.';
+            error = $t('auth.signup.networkError');
         } finally {
             isLoading = false;
         }
@@ -53,13 +53,13 @@
 </script>
 
 <svelte:head>
-    <title>Sign Up | Antoine Patraldo</title>
+    <title>{$t('auth.signup.title')} | Antoine Patraldo</title>
 </svelte:head>
 
 <div class="signup-page">
     <div class="signup-card">
-        <h1>Create Account</h1>
-        <p class="subtitle">Join the Antoine Patraldo community</p>
+        <h1>{$t('auth.signup.title')}</h1>
+        <p class="subtitle">{$t('auth.signup.subtitle')}</p>
         
         {#if success}
             <div class="success-message">{success}</div>
@@ -71,13 +71,13 @@
         
         <form on:submit|preventDefault={handleSignup}>
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">{$t('auth.signup.username')}</label>
                 <input
                     id="username"
                     bind:value={username}
                     type="text"
                     required
-                    placeholder="Choose a username"
+                    placeholder={$t('auth.signup.usernamePlaceholder')}
                     minlength="3"
                     maxlength="32"
                     disabled={isLoading}
@@ -86,25 +86,25 @@
             </div>
             
             <div class="form-group">
-                <label for="email">Email</label>
+                <label for="email">{$t('auth.signup.email')}</label>
                 <input
                     id="email"
                     bind:value={email}
                     type="email"
                     required
-                    placeholder="your@email.com"
+                    placeholder={$t('auth.signup.emailPlaceholder')}
                     disabled={isLoading}
                     autocomplete="email"
                 />
             </div>
             
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">{$t('auth.signup.password')}</label>
                 <input
                     id="password"
                     bind:value={password}
                     type="password"
-                    placeholder="Create a password (min 8 characters)"
+                    placeholder={$t('auth.signup.passwordPlaceholder')}
                     required
                     minlength="8"
                     autocomplete="new-password"
@@ -113,12 +113,12 @@
             </div>
             
             <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
+                <label for="confirmPassword">{$t('auth.signup.confirmPassword')}</label>
                 <input
                     id="confirmPassword"
                     bind:value={confirmPassword}
                     type="password"
-                    placeholder="Repeat your password"
+                    placeholder={$t('auth.signup.confirmPasswordPlaceholder')}
                     required
                     autocomplete="new-password"
                     disabled={isLoading}
@@ -126,13 +126,13 @@
             </div>
             
             <button type="submit" disabled={isLoading}>
-                {isLoading ? 'Creating account...' : 'Sign Up'}
+                {isLoading ? $t('auth.signup.signingUp') : $t('auth.signup.signUpButton')}
             </button>
         </form>
         
         <div class="footer-links">
-            <p>Already have an account? <a href="/login">Log in</a></p>
-            <a href="/">← Back to Gallery</a>
+            <p>{$t('auth.signup.alreadyHaveAccount')} <a href="/login">{$t('auth.signup.loginLink')}</a></p>
+            <a href="/">{$t('auth.signup.backToGallery')}</a>
         </div>
     </div>
 </div>
