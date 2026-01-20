@@ -9,18 +9,16 @@
   let success = '';
   let isLoading = false;
   
-  $: {
-    const verified = $page.url.searchParams.get('verified');
+  const verified = $page.url.searchParams.get('verified');
     if (verified === 'success') {
-      success = $t('auth.login.emailVerified');
+      success = t('auth.login.emailVerified'); // No $ prefix
     } else if (verified === 'already') {
-      success = $t('auth.login.alreadyVerified');
+      success = t('auth.login.alreadyVerified');
     }
-  }
-  
+
   async function handleLogin() {
     if (!identifier || !password) {
-      error = $t('auth.login.enterCredentials');
+      error = t('auth.login.enterCredentials');
       return;
     }
     
@@ -41,11 +39,11 @@
         const destination = result.user?.role === 'admin' ? '/admin' : '/';
         window.location.href = destination;
       } else {
-        error = result.error || $t('auth.login.invalidCredentials');
+        error = result.error || t('auth.login.invalidCredentials');
       }
     } catch (err) {
       console.error('Login error:', err);
-      error = $t('auth.login.networkError');
+      error = t('auth.login.networkError');
     } finally {
       isLoading = false;
     }
@@ -97,7 +95,7 @@
       </div>
       
       <button type="submit" class="btn-login" disabled={isLoading}>
-        {isLoading ? $t('auth.login.signingIn') : {$t('auth.login.signInButton')}
+        {isLoading ? $t('auth.login.signingIn') : $t('auth.login.signInButton')}
       </button>
     </form>
     
