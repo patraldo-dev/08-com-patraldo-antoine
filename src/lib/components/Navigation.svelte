@@ -130,33 +130,43 @@
         Login
       </a>
     {/if}
+
+<div class="profile-container">
+  {#if !isAuthenticated}
+    <!-- Not logged in - show login icon -->
+    <a href="/login" class="profile-trigger" onclick={(e) => handleLinkClick(e, '/login')}>
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
+        <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
+      </svg>
+    </a>
+  {:else}
+    <!-- Logged in - show profile icon with dropdown -->
+    <div class="profile-trigger" onclick={toggleProfile}>
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#2c5e3d"/>
+        <path fill="white" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
+      </svg>
+    </div>
     
-    <!-- Show Profile if authenticated -->
-    {#if isAuthenticated}
-      <div class="profile-container">
-        <div class="profile-trigger" onclick={toggleProfile}>
-          <span class="profile-icon">^<br>o</span>
+    {#if isProfileOpen}
+      <div class="profile-dropdown">
+        <div class="profile-info">
+          <span class="profile-name">{username}</span>
         </div>
-        
-        {#if isProfileOpen}
-          <div class="profile-dropdown">
-            <div class="profile-info">
-              <span class="profile-name">{username}</span>
-            </div>
-            {#if isAdmin}
-              <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
-                Dashboard
-              </a>
-            {/if}
-            <button class="logout-btn" onclick={handleLogout}>
-              Logout
-            </button>
-          </div>
+        {#if isAdmin}
+          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
+            Dashboard
+          </a>
         {/if}
+        <button class="logout-btn" onclick={handleLogout}>
+          Logout
+        </button>
       </div>
     {/if}
-  </div>
-  
+  {/if}
+</div>
+    
   <!-- Mobile/Tablet Menu Button -->
   <button 
     class="menu-button" 
@@ -186,12 +196,15 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-    <!-- Show Login button in mobile menu if NOT authenticated -->
-    {#if !isAuthenticated}
-      <a href="/login" class="mobile-login-btn" onclick={(e) => handleLinkClick(e, '/login')}>
-        Login
-      </a>
-    {/if}
+{#if !isAuthenticated}
+  <a href="/login" class="mobile-login-link" onclick={(e) => handleLinkClick(e, '/login')}>
+    <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 0.5rem;">
+      <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
+      <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
+    </svg>
+    Login
+  </a>
+{/if}
     
     <!-- Show Profile in mobile menu if authenticated -->
     {#if isAuthenticated}
@@ -289,34 +302,25 @@
   .profile-container {
     position: relative;
   }
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.profile-trigger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
+}
+
+.profile-trigger svg {
+  display: block;
+}
   
-  .profile-trigger {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-    border: 2px solid #2c5e3d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .profile-trigger:hover {
-    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
-  }
-  
-  .profile-icon {
-    font-size: 0.9rem;
-    line-height: 0.6;
-    color: #2c5e3d;
-    font-weight: bold;
-    text-align: center;
-  }
   
   /* Profile Dropdown */
   .profile-dropdown {
@@ -484,6 +488,16 @@
   .mobile-menu a:active {
     color: #2c5e3d;
   }
+
+.mobile-login-link {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0.75rem 1rem !important;
+  color: #2c5e3d !important;
+  font-weight: 500 !important;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
   
   .mobile-login-btn {
     padding: 1rem !important;
