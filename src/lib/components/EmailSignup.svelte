@@ -21,16 +21,15 @@
       });
       
       const result = await response.json();
-      
-      if (response.ok) {
-        // This is the key change - check the status field
-        if (result.status === 'confirmed') {
-          message = '¡Ya está registrado, gracias!';
-          messageType = 'success';
-        } else {
-          message = 'Por favor, verifique su correo electrónico para confirmar su suscripción.';
-          messageType = 'success';
-          email = '';
+
+if (response.ok) {
+  if (result.status === 'confirmed') {
+    message = $t('common.alreadyConfirmed');
+    messageType = 'success';
+  } else {
+    message = `${$t('common.verifyEmail')} ${window.location.origin}/verify?token=${result.token}`;
+    messageType = 'success';
+    email = '';
         }
       } else {
         message = result.message || 'Algo salió mal. Por favor, intente de nuevo.';

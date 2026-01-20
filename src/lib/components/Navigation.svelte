@@ -11,18 +11,17 @@
   let currentPath = $derived($page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
   
-  // Accept Admin Props - SVELTE 5 SYNTAX
+  // Accept props
   let { isAdmin = false, username = null } = $props();
   
-  // Derive if user is authenticated
+  // Derive authenticated state
   let isAuthenticated = $derived(!!username);
   
-  // Toggle Profile function
+  // Toggle functions
   function toggleProfile() {
     isProfileOpen = !isProfileOpen;
   }
   
-  // Toggle Menu function
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     isProfileOpen = false;
@@ -31,7 +30,6 @@
     }
   }
   
-  // Close Menu function
   function closeMenu() {
     isMenuOpen = false;
     isProfileOpen = false;
@@ -40,14 +38,12 @@
     }
   }
   
-  // Handle link click with Svelte 5 syntax
   function handleLinkClick(e, target) {
     e.preventDefault();
     e.stopPropagation();
     closeMenu();
     
     if (target.startsWith('#') && isOnHomePage) {
-      // For hash links on home page
       const element = document.querySelector(target);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -57,7 +53,6 @@
     }
   }
   
-  // Handle outside click
   function handleOutsideClick(event) {
     const nav = event.target.closest('nav');
     const menuButton = event.target.closest('.menu-button');
@@ -69,28 +64,25 @@
     }
   }
   
-  // Async logout function
   async function handleLogout(e) {
     e.stopPropagation();
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       closeMenu();
       goto('/');
-      // Force reload to update auth state
       setTimeout(() => window.location.reload(), 100);
     } catch (error) {
       console.error('Logout failed:', error);
     }
   }
   
-  // Handle keydown for accessibility
   function handleKeydown(e) {
     if (e.key === 'Escape') {
       closeMenu();
     }
   }
   
-  // Add event listeners
+  // Event listeners
   if (typeof document !== 'undefined') {
     $effect(() => {
       const handleClick = (e) => handleOutsideClick(e);
@@ -124,57 +116,58 @@
     
     <LanguageSwitcherUniversal/>
     
-    <!-- Show Login button if NOT authenticated -->
-    {#if !isAuthenticated}
-      <a href="/login" class="login-btn" onclick={(e) => handleLinkClick(e, '/login')}>
-        Login
-      </a>
-    {/if}
-
-<div class="profile-container">
-  {#if !isAuthenticated}
-    <!-- Not logged in - show login icon -->
-    <a href="/login" class="profile-trigger" onclick={(e) => handleLinkClick(e, '/login')}>
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
-        <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
-      </svg>
-    </a>
-  {:else}
-    <!-- Logged in - show profile icon with dropdown -->
-    <div class="profile-trigger" onclick={toggleProfile}>
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="18" cy="18" r="18" fill="#2c5e3d"/>
-        <path fill="white" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
-      </svg>
-    </div>
-    
-    {#if isProfileOpen}
-      <div class="profile-dropdown">
-        <div class="profile-info">
-          <span class="profile-name">{username}</span>
+    <!-- UNIFIED Profile/Login Container (Desktop & Mobile) -->
+    <div class="profile-container">
+      {#if !isAuthenticated}
+        <!-- Login SVG (Desktop + Mobile) -->
+        <a 
+          href="/login" 
+          class="profile-trigger login-svg" 
+          onclick={(e) => handleLinkClick(e, '/login')}
+          title={$t('common.login')}
+        >
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
+            <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"/>
+          </svg>
+        </a>
+      {:else}
+        <!-- Profile SVG + Dropdown -->
+        <div class="profile-trigger" onclick={toggleProfile} title={username}>
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="18" fill="#2c5e3d"/>
+            <path fill="white" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"/>
+          </svg>
         </div>
-        {#if isAdmin}
-          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>
-            Dashboard
-          </a>
+        
+        {#if isProfileOpen}
+          <div class="profile-dropdown">
+            <div class="profile-info">
+              <span class="profile-name">{username}</span>
+            </div>
+            {#if isAdmin}
+              <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} title={$t('common.adminDashboard')}>
+                {$t('common.dashboard')}
+              </a>
+            {/if}
+            <button class="logout-btn" onclick={handleLogout} title={$t('common.logout')}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 0.5rem;">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m0 0L9 7m0-3l3 3m6.447 2.472A6.5 6.5 0 0 1 19 12a6.5 6.5 0 0 1-7.553 6.472M13 13a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {$t('common.logout')}
+            </button>
+          </div>
         {/if}
-        <button class="logout-btn" onclick={handleLogout}>
-          Logout
-        </button>
-      </div>
-    {/if}
-  {/if}
-</div>
-    
-  <!-- Mobile/Tablet Menu Button -->
+      {/if}
+    </div>
+  </div>
+  
+  <!-- Mobile Menu Button -->
   <button 
     class="menu-button" 
     class:open={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-    aria-expanded={isMenuOpen}
     onclick={toggleMenu}
-    ontouchend={(e) => { e.preventDefault(); toggleMenu(e); }}
     type="button"
   >
     <span class="menu-line"></span>
@@ -196,17 +189,6 @@
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
     
-{#if !isAuthenticated}
-  <a href="/login" class="mobile-login-link" onclick={(e) => handleLinkClick(e, '/login')}>
-    <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 0.5rem;">
-      <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
-      <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"></path>
-    </svg>
-    Login
-  </a>
-{/if}
-    
-    <!-- Show Profile in mobile menu if authenticated -->
     {#if isAuthenticated}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
@@ -214,9 +196,11 @@
           <span class="mobile-username">{username}</span>
         </div>
         {#if isAdmin}
-          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">Dashboard</a>
+          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">
+            {$t('common.dashboard')}
+          </a>
         {/if}
-        <button class="mobile-logout" onclick={handleLogout}>Logout</button>
+        <button class="mobile-logout" onclick={handleLogout}>{$t('common.logout')}</button>
       </div>
       <div class="mobile-divider"></div>
     {/if}
@@ -244,16 +228,8 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   }
   
-  .logo-link {
-    text-decoration: none;
-    color: inherit;
-    z-index: 2;
-  }
-  
-  .logo-link:hover h1 {
-    opacity: 0.8;
-  }
-  
+  .logo-link { text-decoration: none; color: inherit; z-index: 2; }
+  .logo-link:hover h1 { opacity: 0.8; }
   h1 {
     font-size: 1.5rem;
     font-weight: 300;
@@ -276,51 +252,31 @@
     cursor: pointer;
   }
   
-  .nav-links a:hover {
-    opacity: 0.6;
-  }
+  .nav-links a:hover { opacity: 0.6; }
   
-  /* Login Button Styles */
-  .login-btn {
-    padding: 0.5rem 1.5rem;
-    background: #2c5e3d;
-    color: white !important;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
+  /* Profile Container */
+  .profile-container { position: relative; }
+  
+  .profile-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 50%;
   }
   
-  .login-btn:hover {
-    background: #1e4029;
-    transform: translateY(-1px);
+  .profile-trigger:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
+  }
+  
+  .profile-trigger svg { display: block; }
+  
+  /* Login SVG specific */
+  .login-svg:hover {
     box-shadow: 0 4px 12px rgba(44, 94, 61, 0.3);
-    opacity: 1 !important;
   }
-  
-  /* Profile Container & Trigger */
-  .profile-container {
-    position: relative;
-  }
-
-.profile-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 50%;
-}
-
-.profile-trigger:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
-}
-
-.profile-trigger svg {
-  display: block;
-}
-  
   
   /* Profile Dropdown */
   .profile-dropdown {
@@ -360,10 +316,7 @@
     transition: background 0.2s;
   }
   
-  .profile-dropdown a:hover {
-    background: #f0f0f0;
-    opacity: 1;
-  }
+  .profile-dropdown a:hover { background: #f0f0f0; }
   
   .logout-btn {
     width: 100%;
@@ -376,6 +329,10 @@
     font-size: 0.95rem;
     font-weight: 500;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
   
   .logout-btn:hover {
@@ -384,7 +341,7 @@
     box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
   }
   
-  /* Mobile Styles */
+  /* Mobile Styles - ALL SAME AS BEFORE */
   .menu-button {
     display: none;
     background: none;
@@ -399,8 +356,6 @@
     box-sizing: border-box;
     position: relative;
     z-index: calc(var(--z-nav) + 2);
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
   }
   
   .menu-line {
@@ -412,13 +367,8 @@
     left: 12px;
   }
   
-  .menu-line:first-child {
-    top: 16px;
-  }
-  
-  .menu-line:last-child {
-    bottom: 16px;
-  }
+  .menu-line:first-child { top: 16px; }
+  .menu-line:last-child { bottom: 16px; }
   
   .menu-button.open .menu-line:first-child {
     transform: rotate(45deg);
@@ -463,12 +413,9 @@
     transition: transform 0.3s ease;
     overflow-y: auto;
     z-index: calc(var(--z-nav) + 2);
-    -webkit-overflow-scrolling: touch;
   }
   
-  .mobile-menu.open {
-    transform: translateX(0);
-  }
+  .mobile-menu.open { transform: translateX(0); }
   
   .mobile-menu a {
     text-decoration: none;
@@ -485,36 +432,8 @@
   }
   
   .mobile-menu a:hover,
-  .mobile-menu a:active {
-    color: #2c5e3d;
-  }
-
-.mobile-login-link {
-  display: flex !important;
-  align-items: center !important;
-  padding: 0.75rem 1rem !important;
-  color: #2c5e3d !important;
-  font-weight: 500 !important;
-  background: #f5f5f5;
-  border-radius: 6px;
-}
+  .mobile-menu a:active { color: #2c5e3d; }
   
-  .mobile-login-btn {
-    padding: 1rem !important;
-    background: #2c5e3d !important;
-    color: white !important;
-    border-radius: 6px;
-    text-align: center;
-    font-weight: 500 !important;
-    border: none !important;
-  }
-  
-  .mobile-login-btn:hover {
-    background: #1e4029 !important;
-    color: white !important;
-  }
-  
-  /* Mobile Profile */
   .mobile-profile-section {
     display: flex;
     flex-direction: column;
@@ -545,19 +464,16 @@
     text-align: center;
   }
   
-  .mobile-username {
-    font-weight: 600;
-    color: #2c5e3d;
-  }
+  .mobile-username { font-weight: 600; color: #2c5e3d; }
   
   .mobile-link {
-    padding: 0.75rem 1rem !important;
-    color: #2c5e3d !important;
+    padding: 0.75rem 1rem;
+    color: #2c5e3d;
     text-decoration: none;
-    font-weight: 500 !important;
+    font-weight: 500;
     background: white;
     border-radius: 6px;
-    border: 1px solid #e0e0e0 !important;
+    border: 1px solid #e0e0e0;
   }
   
   .mobile-divider {
@@ -577,9 +493,7 @@
     transition: all 0.2s;
   }
   
-  .mobile-logout:hover {
-    background: #e53e3e;
-  }
+  .mobile-logout:hover { background: #e53e3e; }
   
   .mobile-lang-switcher {
     position: absolute;
@@ -587,32 +501,17 @@
     right: 2rem;
   }
   
+  /* Responsive */
   @media (max-width: 768px) {
-    nav {
-      padding: 1rem 1.5rem;
-      height: 70px;
-    }
-    
-    h1 {
-      font-size: 1.2rem;
-    }
-    
-    .desktop-menu {
-      display: none;
-    }
-    
-    .menu-button {
-      display: flex;
-    }
+    nav { padding: 1rem 1.5rem; height: 70px; }
+    h1 { font-size: 1.2rem; }
+    .desktop-menu { display: none; }
+    .menu-button { display: flex; }
   }
   
   @media (min-width: 769px) and (max-width: 1024px) {
-    .desktop-menu {
-      display: none;
-    }
-    
-    .menu-button {
-      display: flex;
-    }
+    .desktop-menu { display: none; }
+    .menu-button { display: flex; }
   }
 </style>
+
