@@ -1,10 +1,10 @@
 // src/routes/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
 /**
  * Shuffle array using seeded random
  * @param {Array} array - Array to shuffle
- * @param {number} seed - Seed for consistent shuffling (defaults to today's date)
+ * @param {number} seed - Seed for consistent shuffling
  * @returns {Array} Shuffled array
  */
 function shuffleArray(array, seed = null) {
@@ -30,15 +30,11 @@ function shuffleArray(array, seed = null) {
 
 export async function load({ platform }) {
   try {
-    const db = platform?.env?.ARTWORKS_DB;
+    const dbArtworks = platform?.env?.ARTWORKS_DB;
+    const dbStories = platform?.env?.stories_db;
     
-    if (!db) {
-      console.warn('DB not available');
-      return { artworks: [], videos: [] };
-    }
-
-    // Query artworks with story fields
-    const result = await db
+    // 1. FETCH ARTWORKS (From antoine-artworks)
+    const result = await dbArtworks
       .prepare(`
         SELECT 
           id,
@@ -52,14 +48,17 @@ export async function load({ platform }) {
           year,
           featured,
           published,
+          order_index,
           story_enabled,
           story_intro,
-          order_index
+          created_at
         FROM artworks
         WHERE published = 1
         ORDER BY order_index DESC, year DESC
       `)
       .all();
+
+    console.log(`Loaded ${result.results?.length || 0} artworks`);
 
     // Transform to match component expectations
     const artworks = result.results.map(artwork => {
@@ -75,7 +74,6 @@ export async function load({ platform }) {
         description: artwork.description,
         type: artwork.type,
         thumbnailId: artwork.image_id,
-        thumbnailUrl: thumbnailUrl,
         videoId: artwork.video_id,
         video_id: artwork.video_id,
         image_id: artwork.image_id,
@@ -93,10 +91,10 @@ export async function load({ platform }) {
     // Filter artworks that have videos
     const videos = shuffledArtworks.filter(artwork => artwork.video_id);
     
-    // Shuffle videos with daily seed (using same seed for consistency)
+    // Shuffle videos with daily seed
     const shuffledVideos = shuffleArray(videos);
     
-    console.log(`Loaded ${shuffledArtworks.length} artworks (${shuffledArtworks.filter(a => a.story_enabled).length} with stories) - shuffled for today`);
+    console.log(`Loaded ${shuffledArtworks.length} artworks (${shuffledArtworks.filter(a => a.story_enabled).length} with stories)`);
     console.log(`Loaded ${shuffledVideos.length} videos for daily rotation`);
     
     return { 
@@ -105,7 +103,7 @@ export async function load({ platform }) {
     };
     
   } catch (error) {
-    console.error('Error loading artworks:', error);
+    console.error('Error loading page data:', error);
     return { artworks: [], videos: [] };
   }
 }
