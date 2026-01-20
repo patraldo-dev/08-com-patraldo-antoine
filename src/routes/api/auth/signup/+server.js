@@ -32,28 +32,52 @@ export async function POST({ request, platform }) {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(userId, username, email, passwordHash, 'user', emailVerificationToken, now, now).run();
     
-    // TODO: Send verification email using Mailgun
-    // For now, we'll auto-verify for simplicity
-    // Uncomment when Mailgun is set up:
-    /*
+    // Send verification email using Mailgun
     try {
-        const confirmUrl = `https://antoine.patraldo.com/confirm?token=${encodeURIComponent(emailVerificationToken)}`;
-        await sendMailgunEmail({
-            to: email,
-            subject: 'Verify Your Email - Antoine Patraldo',
-            html: `
-                <h2>Welcome!</h2>
-                <p>Click the link below to verify your email:</p>
-                <a href="${confirmUrl}">Verify Email</a>
-            `
-        }, {
-            MAILGUN_API_KEY: platform.env.MAILGUN_API_KEY,
-            MAILGUN_DOMAIN: platform.env.MAILGUN_DOMAIN
-        });
+        const confirmUrl = `https://antoine.patraldo.com/auth/verify-email?token=${encodeURIComponent(emailVerificationToken)}`;
+        
+        const mailgunDomain = platform.env.MAILGUN_DOMAIN || 'patraldo.com';
+        const mailgunApiKey = platform.env.MAILGUN_API_KEY;
+        
+        if (mailgunApiKey) {
+            const formData = new FormData();
+            formData.append('from', `Antoine Patraldo <noreply@${mailgunDomain}>`);
+            formData.append('to', email);
+            formData.append('subject', 'Verify Your Email - Antoine Patraldo');
+            formData.append('html', `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #2c5e3d;">Welcome to Antoine Patraldo!</h2>
+                    <p>Thank you for creating an account. Please verify your email address by clicking the button below:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${confirmUrl}" style="display: inline-block; padding: 12px 30px; background: #2c5e3d; color: white; text-decoration: none; border-radius: 6px;">Verify Email</a>
+                    </div>
+                    <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+                    <p style="color: #2c5e3d; word-break: break-all;">${confirmUrl}</p>
+                    <p style="color: #999; font-size: 12px; margin-top: 30px;">If you didn't create this account, you can safely ignore this email.</p>
+                </div>
+            `);
+            
+            const response = await fetch(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${btoa(`api:${mailgunApiKey}`)}`
+                },
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Mailgun error:', errorText);
+            } else {
+                console.log('Verification email sent successfully to:', email);
+            }
+        } else {
+            console.warn('Mailgun API key not configured - email not sent');
+        }
     } catch (err) {
         console.error('Failed to send verification email:', err);
+        // Don't fail signup if email fails
     }
-    */
     
     return json({ success: true });
 }

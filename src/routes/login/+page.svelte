@@ -1,11 +1,23 @@
 <!-- src/routes/login/+page.svelte -->
 <script>
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   
   let identifier = '';
   let password = '';
   let error = '';
+  let success = '';
   let isLoading = false;
+  
+  // Check for verification status in URL
+  $: {
+    const verified = $page.url.searchParams.get('verified');
+    if (verified === 'success') {
+      success = 'Email verified successfully! You can now log in.';
+    } else if (verified === 'already') {
+      success = 'Your email is already verified. You can log in.';
+    }
+  }
   
   async function handleLogin() {
     if (!identifier || !password) {
@@ -15,6 +27,7 @@
     
     isLoading = true;
     error = '';
+    success = '';
     
     try {
       const response = await fetch('/api/auth/login', {
@@ -30,7 +43,7 @@
         if (result.user?.role === 'admin') {
           goto('/admin');
         } else {
-          goto('/'); // Regular users go to homepage
+          goto('/');
         }
         
         // Force reload to update auth state
@@ -55,6 +68,10 @@
   <div class="login-card">
     <h1>Welcome Back</h1>
     <p class="subtitle">Sign in to your account</p>
+    
+    {#if success}
+      <div class="success-message">{success}</div>
+    {/if}
     
     {#if error}
       <div class="error-message">{error}</div>
@@ -130,6 +147,16 @@
     text-align: center;
     color: #666;
     margin: 0 0 2rem;
+  }
+  
+  .success-message {
+    background: #e8f5e9;
+    color: #2c5e3d;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #c8e6c9;
+    text-align: center;
   }
   
   .error-message {
