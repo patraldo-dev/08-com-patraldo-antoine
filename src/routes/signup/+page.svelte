@@ -126,7 +126,7 @@
             </div>
             
             <button type="submit" disabled={isLoading}>
-                {isLoading ? $t('auth.signup.signingUp') : $t('auth.signup.signUpButton')}
+                {isLoading ? $t('auth.signup.signingUp') : {$t('auth.signup.signUpButton')}
             </button>
         </form>
         
