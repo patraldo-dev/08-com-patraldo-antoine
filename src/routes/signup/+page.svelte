@@ -13,7 +13,7 @@
     
     async function handleSignup() {
         if (password !== confirmPassword) {
-            error = auth.signup.passwordsMismatch;
+            error = t('auth.signup.passwordsMismatch');  // ✅ Add t() and quotes
             return;
         }
         
@@ -31,7 +31,7 @@
             const result = await response.json();
             
             if (response.ok) {
-                success = auth.signup.success;
+                success = t('auth.signup.success');  // ✅ Add t() and quotes
                 username = '';
                 email = '';
                 password = '';
@@ -41,11 +41,11 @@
                     goto('/login');
                 }, 3000);
             } else {
-                error = result.error || auth.signup.signupFailed;
+                error = result.error || t('auth.signup.signupFailed');  // ✅ Add t() and quotes
             }
         } catch (err) {
             console.error('Signup error:', err);
-            error = auth.signup.networkError;
+            error = t('auth.signup.networkError');  // ✅ Add t() and quotes
         } finally {
             isLoading = false;
         }
@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-    <title>{$t(auth.signup.title)} | Antoine Patraldo</title>
+    <title>{$t('auth.signup.title')} | Antoine Patraldo</title>
 </svelte:head>
 
 <div class="signup-page">
@@ -126,7 +126,7 @@
             </div>
             
             <button type="submit" disabled={isLoading}>
-                {isLoading ? auth.signup.signingUp : $t('auth.signup.signUpButton')}
+                {isLoading ? $t('auth.signup.signingUp') : $t('auth.signup.signUpButton')}
             </button>
         </form>
         
