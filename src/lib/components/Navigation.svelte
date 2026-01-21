@@ -138,6 +138,18 @@
     
     <!-- Hash link -->
     <a href="/#contact" onclick={(e) => handleHashLink(e, '#contact')}>{$t('common.navContact')}</a>
+
+<!-- Admin Dropdown - DESKTOP -->
+{#if isAdmin}
+  <div class="admin-dropdown">
+    <span class="admin-link">🔧 Admin</span>
+    <div class="dropdown-menu">
+      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
+      <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
+      <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
+    </div>
+  </div>
+{/if}
     
     <LanguageSwitcherUniversal/>
     
