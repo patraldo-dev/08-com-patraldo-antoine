@@ -113,7 +113,19 @@
     <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
     <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
-    
+
+<!-- Admin Dropdown - DESKTOP -->
+{#if isAdmin}
+  <div class="admin-dropdown">
+    <span class="admin-link">🔧 Admin</span>
+    <div class="dropdown-menu">
+      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
+      <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
+      <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
+    </div>
+  </div>
+{/if}
+
     <LanguageSwitcherUniversal/>
     
     <!-- UNIFIED Profile/Login Container (Desktop & Mobile) -->
@@ -513,5 +525,26 @@
     .desktop-menu { display: none; }
     .menu-button { display: flex; }
   }
+
+.admin-dropdown { position: relative; }
+.admin-link { 
+  cursor: pointer; 
+  padding: 0.5rem 1rem; 
+  border-radius: 6px; 
+  transition: background 0.2s;
+}
+.admin-link:hover { background: #f0f0f0; }
+.dropdown-menu {
+  position: absolute; top: calc(100% + 0.5rem); right: 0;
+  background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 0.5rem 0; min-width: 200px; display: none;
+}
+.admin-dropdown:hover .dropdown-menu { display: block; }
+.dropdown-menu a {
+  display: block; padding: 0.75rem 1.25rem; color: #4a4a3c;
+  text-decoration: none; font-size: 0.95rem;
+}
+.dropdown-menu a:hover { background: #f8f7f4; color: #2c5e3d; }
+
 </style>
 
