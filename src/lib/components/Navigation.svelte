@@ -21,7 +21,27 @@
   function toggleProfile() {
     isProfileOpen = !isProfileOpen;
   }
+
+ // Handler for hash links only
+  function handleHashLink(e, hash) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeMenu();
+    
+    if (isOnHomePage) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      goto('/' + hash);
+    }
+  }
   
+  // Handler for regular links - just close menu
+  function handleRegularLink() {
+    closeMenu();
+  } 
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     isProfileOpen = false;
@@ -100,51 +120,37 @@
 </script>
 
 <nav>
-  <a href="/" class="logo-link" onclick={(e) => handleLinkClick(e, '/')}>
+  <a href="/" class="logo-link">
     <h1>ANTOINE PATRALDO</h1>
   </a>
   
   <!-- Desktop Menu -->
   <div class="nav-links desktop-menu">
-    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
-    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
-    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/cine" onclick={(e) => handleLinkClick(e, '/cine')}>{$t('common.navCine')}</a>
-    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
-    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
-
-<!-- Admin Dropdown - DESKTOP -->
-{#if isAdmin}
-  <div class="admin-dropdown">
-    <span class="admin-link">🔧 Admin</span>
-    <div class="dropdown-menu">
-      <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
-      <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
-      <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
-    </div>
-  </div>
-{/if}
-
+    <!-- Hash links use handleHashLink -->
+    <a href="/#work" onclick={(e) => handleHashLink(e, '#work')}>{$t('common.navWork')}</a>
+    <a href="/#about" onclick={(e) => handleHashLink(e, '#about')}>{$t('common.navAbout')}</a>
+    
+    <!-- Regular links just close menu on click -->
+    <a href="/stories" onclick={handleRegularLink}>{$t('common.navStories')}</a>
+    <a href="/cine" onclick={handleRegularLink}>{$t('common.navCine')}</a>
+    <a href="/tools" onclick={handleRegularLink}>{$t('common.navTools')}</a>
+    <a href="/collection" onclick={handleRegularLink}>{$t('common.navCollection')}</a>
+    
+    <!-- Hash link -->
+    <a href="/#contact" onclick={(e) => handleHashLink(e, '#contact')}>{$t('common.navContact')}</a>
+    
     <LanguageSwitcherUniversal/>
     
-    <!-- UNIFIED Profile/Login Container (Desktop & Mobile) -->
+    <!-- Profile/Login container stays the same -->
     <div class="profile-container">
       {#if !isAuthenticated}
-        <!-- Login SVG (Desktop + Mobile) -->
-        <a 
-          href="/login" 
-          class="profile-trigger login-svg" 
-          onclick={(e) => handleLinkClick(e, '/login')}
-          title={$t('common.login')}
-        >
+        <a href="/login" class="profile-trigger login-svg" onclick={handleRegularLink} title={$t('common.login')}>
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <circle cx="18" cy="18" r="18" fill="#f5f5f5"/>
             <path fill="#2c5e3d" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"/>
           </svg>
         </a>
       {:else}
-        <!-- Profile SVG + Dropdown -->
         <div class="profile-trigger" onclick={toggleProfile} title={username}>
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <circle cx="18" cy="18" r="18" fill="#2c5e3d"/>
@@ -158,11 +164,11 @@
               <span class="profile-name">{username}</span>
             </div>
             {#if isAdmin}
-              <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} title={$t('common.adminDashboard')}>
+              <a href="/admin/analytics" onclick={handleRegularLink}>
                 {$t('common.dashboard')}
               </a>
             {/if}
-            <button class="logout-btn" onclick={handleLogout} title={$t('common.logout')}>
+            <button class="logout-btn" onclick={handleLogout}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 0.5rem;">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m0 0L9 7m0-3l3 3m6.447 2.472A6.5 6.5 0 0 1 19 12a6.5 6.5 0 0 1-7.553 6.472M13 13a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -174,32 +180,29 @@
     </div>
   </div>
   
-  <!-- Mobile Menu Button -->
-  <button 
-    class="menu-button" 
-    class:open={isMenuOpen}
-    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-    onclick={toggleMenu}
-    type="button"
-  >
+  <!-- Mobile menu - same pattern -->
+  <button class="menu-button" class:open={isMenuOpen} onclick={toggleMenu} type="button">
     <span class="menu-line"></span>
     <span class="menu-line"></span>
   </button>
   
-  <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
     <div class="menu-overlay" onclick={closeMenu}></div>
   {/if}
   
-  <!-- Mobile Menu -->
   <div class="mobile-menu" class:open={isMenuOpen}>
-    <a href="/#work" onclick={(e) => handleLinkClick(e, '#work')}>{$t('common.navWork')}</a>
-    <a href="/#about" onclick={(e) => handleLinkClick(e, '#about')}>{$t('common.navAbout')}</a>
-    <a href="/stories" onclick={(e) => handleLinkClick(e, '/stories')}>{$t('common.navStories')}</a>
-    <a href="/cine" onclick={(e) => handleLinkClick(e, '/cine')}>{$t('common.navCine')}</a>
-    <a href="/tools" onclick={(e) => handleLinkClick(e, '/tools')}>{$t('common.navTools')}</a>
-    <a href="/collection" onclick={(e) => handleLinkClick(e, '/collection')}>{$t('common.navCollection')}</a>
-    <a href="/#contact" onclick={(e) => handleLinkClick(e, '#contact')}>{$t('common.navContact')}</a>
+    <!-- Hash links -->
+    <a href="/#work" onclick={(e) => handleHashLink(e, '#work')}>{$t('common.navWork')}</a>
+    <a href="/#about" onclick={(e) => handleHashLink(e, '#about')}>{$t('common.navAbout')}</a>
+    
+    <!-- Regular links -->
+    <a href="/stories" onclick={handleRegularLink}>{$t('common.navStories')}</a>
+    <a href="/cine" onclick={handleRegularLink}>{$t('common.navCine')}</a>
+    <a href="/tools" onclick={handleRegularLink}>{$t('common.navTools')}</a>
+    <a href="/collection" onclick={handleRegularLink}>{$t('common.navCollection')}</a>
+    
+    <!-- Hash link -->
+    <a href="/#contact" onclick={(e) => handleHashLink(e, '#contact')}>{$t('common.navContact')}</a>
     
     {#if isAuthenticated}
       <div class="mobile-profile-section">
@@ -208,7 +211,7 @@
           <span class="mobile-username">{username}</span>
         </div>
         {#if isAdmin}
-          <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')} class="mobile-link">
+          <a href="/admin/analytics" onclick={handleRegularLink} class="mobile-link">
             {$t('common.dashboard')}
           </a>
         {/if}
