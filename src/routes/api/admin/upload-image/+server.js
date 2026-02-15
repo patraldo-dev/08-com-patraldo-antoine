@@ -19,22 +19,29 @@ export async function POST({ request, platform, locals }) {
     const apiToken = platform.env.CLOUDFLARE_API_TOKEN;
     const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
 
-    // Prepare form data for Cloudflare API
-    const cloudflareFormData = new FormData();
-    cloudflareFormData.append('file', file);
+    if (!apiToken) {
+      throw error(500, 'Cloudflare API token not configured');
+    }
 
-    // Upload image to Cloudflare
+    if (!accountId) {
+      throw error(500, 'Cloudflare Account ID not configured');
+    }
+
+    // For Cloudflare Workers, we need to send the file directly in the body
+    // Cloudflare Images API v1 accepts the raw file in the request body
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiToken}`,
+        // Don't set Content-Type header, let it be set automatically with boundary
       },
-      body: cloudflareFormData
+      body: file
     });
 
     const data = await response.json();
 
     if (!data.success) {
+      console.error('Cloudflare API error:', data.errors);
       const errorMessage = data.errors?.[0]?.message || 'Upload failed';
       throw error(500, errorMessage);
     }
