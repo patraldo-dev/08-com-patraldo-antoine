@@ -25,10 +25,10 @@
   let description = $state('');
   let year = $state(new Date().getFullYear());
   let artworkType = $state('still');
-  let featured = $state(false);
+  let featured = $state(true);
   let published = $state(true);
   let orderIndex = $state(999);
-  let storyEnabled = $state(false);
+  let storyEnabled = $state(true);
   let storyIntro = $state('');
   
   let createStory = $state(false);
@@ -228,10 +228,10 @@
     description = '';
     year = new Date().getFullYear();
     artworkType = 'still';
-    featured = false;
+    featured = true;
     published = true;
     orderIndex = 999;
-    storyEnabled = false;
+    storyEnabled = true;
     storyIntro = '';
     createStory = false;
     storyTitle = '';
