@@ -60,21 +60,29 @@ export async function POST({ request, platform, locals }) {
         INSERT INTO stories (title, slug, created_at, updated_at)
         VALUES (?, ?, datetime('now'), datetime('now'))
       `).bind(artwork.story_title, artwork.story_slug).run();
-      
+
       if (!storyResult.success) {
         throw error(500, 'Artwork saved but failed to create story');
       }
-      
+
       const insertedStory = await storiesDb.prepare(`
         SELECT id FROM stories WHERE slug = ? ORDER BY id DESC LIMIT 1
       `).bind(artwork.story_slug).first();
-      
+
       storyId = insertedStory.id;
-      
+
       await storiesDb.prepare(`
         INSERT INTO story_chapters (story_id, artwork_id, order_index)
         VALUES (?, ?, 1)
       `).bind(storyId, insertedArtwork.id).run();
+      
+      // Also create initial story content based on the artwork
+      if (artwork.story_intro) {
+        await artworksDb.prepare(`
+          INSERT INTO story_content (artwork_id, content_type, content_text, order_index)
+          VALUES (?, ?, ?, 1)
+        `).bind(insertedArtwork.id, 'text', artwork.story_intro).run();
+      }
     }
     
     return json({
