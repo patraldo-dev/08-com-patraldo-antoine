@@ -19,9 +19,6 @@
   }
   
   function getImageUrl(story) {
-    if (story.thumbnailId) {
-      return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${story.thumbnailId}/gallery`;
-    }
     return story.thumbnailUrl;
   }
 </script>
