@@ -31,15 +31,17 @@ export async function POST({ request, platform, locals }) {
 
     console.log('Attempting to upload image to Cloudflare...', { accountId: accountId.substring(0, 8) + '...' }); // Log partial ID for debugging
     
-    // For Cloudflare Workers, we need to send the file directly in the body
-    // Cloudflare Images API v1 accepts the raw file in the request body
+    // Create form data to send to Cloudflare API
+    const cloudflareFormData = new FormData();
+    cloudflareFormData.append('file', file);
+
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiToken}`,
         // Don't set Content-Type header, let it be set automatically with boundary
       },
-      body: file
+      body: cloudflareFormData
     });
 
     console.log('Cloudflare API response status:', response.status);
