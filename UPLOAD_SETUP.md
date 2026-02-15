@@ -20,8 +20,20 @@ wrangler secret put CLOUDFLARE_ACCOUNT_ID
 ### Required API Token Permissions
 
 Your Cloudflare API token needs the following permissions:
-- Account > Cloudflare Images > Edit
-- Account > Cloudflare Images > Read
+- Account Resources: All Cloudflare Accounts (or specific account)
+- Zone Resources: All zones (or specific zone if needed)
+- Account Settings: None required
+- Products:
+  - Cloudflare Images: Edit (includes read permissions)
+
+### Creating an API Token
+
+1. Go to your Cloudflare dashboard
+2. Navigate to "My Profile" > "API Tokens"
+3. Click "Create Token"
+4. Use the "Edit Cloudflare Images" template or create a custom token with:
+   - Permission: Account / Cloudflare Images / Edit
+   - Resource: Account / Include / Specific Account / [Your Account ID]
 
 ## Database Schema
 
