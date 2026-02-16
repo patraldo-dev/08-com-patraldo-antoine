@@ -54,7 +54,7 @@
 
       <div class="form-group">
         <label for="chapterTitle">Chapter / Script Title</label>
-        <input type="text" name="chapterTitle" id="chapterTitle" bind:value={formState.chapterTitle} />
+        <input type="text" name="chapterTitle" id="chapterTitle" bind:value={formState.chapterTitle} placeholder="Default: Chapter 1" />
       </div>
 
       <div class="form-group">

@@ -72,9 +72,9 @@ export async function POST({ request, platform, locals }) {
       storyId = insertedStory.id;
 
       await storiesDb.prepare(`
-        INSERT INTO story_chapters (story_id, artwork_id, order_index)
-        VALUES (?, ?, 1)
-      `).bind(storyId, insertedArtwork.id).run();
+        INSERT INTO story_chapters (story_id, artwork_id, title, slug, order_index, created_at, updated_at)
+        VALUES (?, ?, ?, ?, 1, datetime('now'), datetime('now'))
+      `).bind(storyId, insertedArtwork.id, 'Chapter 1', 'chapter-1').run();
       
       // Also create initial story content based on the artwork
       if (artwork.story_intro) {
