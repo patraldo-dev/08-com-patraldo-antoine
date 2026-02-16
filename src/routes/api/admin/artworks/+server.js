@@ -81,7 +81,7 @@ export async function POST({ request, platform, locals }) {
         await artworksDb.prepare(`
           INSERT INTO story_content (artwork_id, content_type, content_text, order_index)
           VALUES (?, ?, ?, 1)
-        `).bind(insertedArtwork.id, 'text', artwork.story_intro).run();
+        `).bind(insertedArtwork.id, 'text/markdown', artwork.story_intro).run();
       }
     }
     
