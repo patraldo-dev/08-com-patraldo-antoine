@@ -184,11 +184,19 @@ $effect(() => {
 
   <!-- 3D Showcase Section (Middle) -->
   {#if data?.artworks?.length > 0}
-    <Artwork3DShowcase artworks={data.artworks} />
+    <section class="showcase-label-section">
+      <div class="showcase-label">
+        <h2>{$t('pages.home.explore3D')}</h2>
+      </div>
+      <Artwork3DShowcase artworks={data.artworks} />
+    </section>
   {/if}
 
   <!-- Sketchbook Section (Third) -->
   <section id="work" class="sketchbook-section">
+    <div class="section-label">
+      <h2>{$t('pages.home.sketchbook')}</h2>
+    </div>
     {#if data?.artworks?.length > 0}
       <Sketchbook
         artworks={data.artworks}
@@ -232,17 +240,38 @@ $effect(() => {
     font-family: 'Georgia', serif;
     font-size: 3rem;
     font-weight: 100;
-    margin: 0 0 1.5rem;
+    margin: 0 0 0.5rem;
     letter-spacing: 2px;
     color: #2c5e3d;
     line-height: 1.2;
   }
-  
+
   .subtitle {
     font-size: 1.2rem;
     font-weight: 300;
     color: #4a4a3c;
     font-style: italic;
+    margin: 0;
+  }
+
+  /* Section Labels */
+  .showcase-label-section {
+    padding: 0 2rem 2rem;
+    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+  }
+
+  .showcase-label,
+  .section-label {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .showcase-label h2,
+  .section-label h2 {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #2c5e3d;
     margin: 0;
   }
   
