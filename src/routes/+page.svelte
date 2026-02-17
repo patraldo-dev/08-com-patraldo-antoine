@@ -2,6 +2,7 @@
   import Sketchbook from '$lib/components/Sketchbook.svelte';
   import StoryView from '$lib/components/StoryView.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
+  import Artwork3DShowcase from '$lib/components/Artwork3DShowcase.svelte';
   import { t, locale } from '$lib/i18n';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -151,6 +152,11 @@ $effect(() => {
       </div>
     {/if}
   </section>
+
+  <!-- 3D Showcase Section -->
+  {#if data?.artworks?.length > 0}
+    <Artwork3DShowcase artworks={data.artworks} />
+  {/if}
 {/if}
 
 <!-- About Section -->
