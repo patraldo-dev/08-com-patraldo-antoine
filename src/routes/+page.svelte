@@ -133,14 +133,8 @@ $effect(() => {
     on:close={handleCloseStory}
   />
 {:else}
-  <!-- Hero Section -->
-  <section class="hero-simple">
-    <div class="hero-content">
-      <h1>{$t('pages.home.heroTitle')}</h1>
-      <p class="subtitle">{$t('pages.home.heroSubtitle')}</p>
-    </div>
-  </section>
-
+  <!-- Hero Section - Removed, name is in page title -->
+  
   <!-- About Section - Video Only -->
   <section id="about" class="about-section">
     <div class="about-video-full">

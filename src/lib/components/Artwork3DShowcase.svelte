@@ -104,6 +104,7 @@
           <p>🖱️ {$t('3dart_dragRotate')}</p>
           <p>🔍 {$t('3dart_scrollZoom')}</p>
           <p>✋ {$t('3dart_pan')}</p>
+          <p class="mobile-hint">{$t('3dart_mobileHint')}</p>
         </div>
       {:else}
         <div class="no-artwork">
