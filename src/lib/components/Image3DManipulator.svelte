@@ -1,9 +1,9 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  
+
   let { imageUrl } = $props();
-  
+
   let container;
   let scene;
   let camera;
@@ -11,7 +11,7 @@
   let imageMesh;
   let THREE;
   let resizeObserver;
-  
+
   let rotation = $state({ x: 0, y: 0, z: 0 });
   let position = $state({ x: 0, y: 0, z: 0 });
   let scale = $state({ x: 1, y: 1, z: 1 });
@@ -19,11 +19,17 @@
   let previousMousePosition = { x: 0, y: 0 };
   let lastTouchDistance = $state(0);
   let isPinching = $state(false);
-  
+
   let transform = $derived({
     rotation,
     position,
     scale
+  });
+
+  // Watch for imageUrl changes and reload texture
+  $effect(() => {
+    if (!THREE || !imageUrl || !scene) return;
+    loadTexture(imageUrl);
   });
   
   function initializeScene() {

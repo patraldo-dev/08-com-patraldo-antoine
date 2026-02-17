@@ -47,10 +47,14 @@
   <div class="showcase-container">
     <!-- Artwork Selector -->
     <div class="artwork-selector">
+      <button class="nav-btn first" onclick={() => selectArtwork(artworks[0], 0)} aria-label="First artwork">
+        ⏮
+      </button>
+
       <button class="nav-btn prev" onclick={prevArtwork} aria-label="Previous artwork">
         ←
       </button>
-      
+
       <div class="thumbnail-strip">
         {#each artworks as artwork, i (artwork.id)}
           <button
@@ -65,6 +69,10 @@
 
       <button class="nav-btn next" onclick={nextArtwork} aria-label="Next artwork">
         →
+      </button>
+
+      <button class="nav-btn last" onclick={() => selectArtwork(artworks[artworks.length - 1], artworks.length - 1)} aria-label="Last artwork">
+        ⏭
       </button>
     </div>
 
