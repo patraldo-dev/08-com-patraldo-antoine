@@ -37,7 +37,7 @@
     position: relative;
     width: 100%;
     height: 100vh;
-    margin-top: 80px;
+    margin-top: 100px;
     overflow: hidden;
     background: #000;
   }
