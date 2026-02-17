@@ -411,15 +411,16 @@ $effect(() => {
     }
     
     .sketchbook-section {
-      padding: 2rem 0;
+      padding: 1rem 0;
+      min-height: auto;
     }
-    
+
     .about-content h3 {
       font-size: 1.75rem;
     }
-    
+
     .about-section {
-      padding: 3rem 1rem;
+      padding: 2rem 1rem;
     }
   }
 
