@@ -138,7 +138,53 @@ $effect(() => {
     </div>
   </section>
 
-  <!-- Sketchbook Section -->
+  <!-- About Section (First) -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-content">
+        <h3>{$t('pages.home.aboutTitle')}</h3>
+        <div class="about-text">
+          <p>{$t('pages.home.aboutP1')}</p>
+          <p>{$t('pages.home.aboutP2')}</p>
+        </div>
+      </div>
+
+      <div class="about-video">
+        <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
+          {#if dailyVideo}
+            <!-- DYNAMIC IFRAME USING dailyVideo -->
+            <iframe
+              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+              title={dailyVideo.title || "Featured Video"}
+            ></iframe>
+          {:else}
+            <!-- Fallback to original hardcoded video if no dailyVideo -->
+            <iframe
+              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+              title="About Antoine - Creative Journey"
+            ></iframe>
+          {/if}
+          <div class="click-overlay"></div>
+          <div class="video-overlay">
+            <span>{$t('pages.home.clickToLearnMore')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D Showcase Section (Middle) -->
+  {#if data?.artworks?.length > 0}
+    <Artwork3DShowcase artworks={data.artworks} />
+  {/if}
+
+  <!-- Sketchbook Section (Third) -->
   <section id="work" class="sketchbook-section">
     {#if data?.artworks?.length > 0}
       <Sketchbook
@@ -152,53 +198,7 @@ $effect(() => {
       </div>
     {/if}
   </section>
-
-  <!-- 3D Showcase Section -->
-  {#if data?.artworks?.length > 0}
-    <Artwork3DShowcase artworks={data.artworks} />
-  {/if}
 {/if}
-
-<!-- About Section -->
-<section id="about" class="about-section">
-  <div class="about-container">
-    <div class="about-content">
-      <h3>{$t('pages.home.aboutTitle')}</h3>
-      <div class="about-text">
-        <p>{$t('pages.home.aboutP1')}</p>
-        <p>{$t('pages.home.aboutP2')}</p>
-      </div>
-    </div>
-    
-    <div class="about-video">
-      <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
-        {#if dailyVideo}
-          <!-- DYNAMIC IFRAME USING dailyVideo -->
-          <iframe
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            title={dailyVideo.title || "Featured Video"}
-          ></iframe>
-        {:else}
-          <!-- Fallback to original hardcoded video if no dailyVideo -->
-          <iframe
-            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-            title="About Antoine - Creative Journey"
-          ></iframe>
-        {/if}
-        <div class="click-overlay"></div>
-        <div class="video-overlay">
-          <span>{$t('pages.home.clickToLearnMore')}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 
   <!-- Email Signup Section -->
