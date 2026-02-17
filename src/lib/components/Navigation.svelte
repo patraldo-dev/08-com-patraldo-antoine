@@ -41,7 +41,7 @@
           if (element) {
             // Scroll with offset to account for fixed navigation
             const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - 100;
+            const offsetPosition = elementPosition + window.pageYOffset - 80;
             window.scrollTo({
               top: offsetPosition,
               behavior: 'smooth'
