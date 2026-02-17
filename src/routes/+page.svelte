@@ -269,39 +269,39 @@ $effect(() => {
   
   /* About Section - Enhanced with Video */
   .about-section {
-    padding: 6rem 2rem;
+    padding: 3rem 2rem;
     background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
   }
-  
+
   .about-container {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 2rem;
     align-items: center;
   }
-  
+
   .about-content {
     /* Remove old max-width since we're using grid now */
   }
-  
+
   .about-content h3 {
     font-family: 'Georgia', serif;
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #2c5e3d;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-weight: 300;
     line-height: 1.2;
     text-align: left; /* Override center alignment */
   }
-  
+
   .about-text p {
     font-family: 'Georgia', serif;
-    font-size: 1.1rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.6;
     color: #4a4a3c;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
   
   .about-video {
