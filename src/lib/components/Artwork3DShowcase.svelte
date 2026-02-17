@@ -9,6 +9,12 @@
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
 
+  let imageUrl = $derived(
+    selectedArtwork && selectedArtwork.image_id
+      ? `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${selectedArtwork.image_id}/gallery`
+      : ''
+  );
+
   function selectArtwork(artwork, index) {
     selectedArtwork = artwork;
     selectedIndex = index;
