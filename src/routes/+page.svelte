@@ -38,23 +38,26 @@ $effect(() => {
 
 $effect(() => {
   if (data.videos.length > 0 && !dailyVideo) {
-    // Your existing daily selection logic
-    dailyVideo = data.videos[0]; // or use seeded random
-    
-    // Set up midnight reset
+    // Hourly rotation: seed random with current hour (0-23)
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0); // Next midnight
-    
-    const msUntilMidnight = tomorrow - now;
-    
-    const midnightTimeout = setTimeout(() => {
+    const hour = now.getHours();
+    const seed = hour / 24; // 0 to 1
+    const videoIndex = Math.floor(seed * data.videos.length);
+    dailyVideo = data.videos[videoIndex];
+
+    // Set up hourly reset (at the top of next hour)
+    const nextHour = new Date(now);
+    nextHour.setHours(nextHour.getHours() + 1);
+    nextHour.setMinutes(0, 0, 0); // Top of next hour
+
+    const msUntilNextHour = nextHour - now;
+
+    const hourTimeout = setTimeout(() => {
       dailyVideo = null; // This will trigger re-selection
-      console.log('Midnight - resetting daily video');
-    }, msUntilMidnight);
-    
-    return () => clearTimeout(midnightTimeout);
+      console.log('Top of hour - rotating video');
+    }, msUntilNextHour);
+
+    return () => clearTimeout(hourTimeout);
   }
 });
 
