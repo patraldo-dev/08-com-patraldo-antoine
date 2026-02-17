@@ -28,7 +28,11 @@
 
   // Watch for imageUrl changes and reload texture
   $effect(() => {
-    if (!THREE || !imageUrl || !scene) return;
+    if (!THREE || !imageUrl || !scene) {
+      console.log('3D Effect skipped:', { hasTHREE: !!THREE, hasImageUrl: !!imageUrl, hasScene: !!scene });
+      return;
+    }
+    console.log('3D Effect: Loading new texture', imageUrl);
     loadTexture(imageUrl);
   });
   
@@ -59,18 +63,21 @@
   
   function loadTexture(url) {
     if (!THREE) return;
-    
+
+    console.log('loadTexture called with:', url);
+
     // Clear previous mesh
     if (imageMesh) {
       scene.remove(imageMesh);
       imageMesh.geometry?.dispose();
       imageMesh.material?.dispose();
     }
-    
+
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(
       url,
       (texture) => {
+        console.log('Texture loaded successfully', texture.image);
         const geometry = new THREE.PlaneGeometry(3, 3 * texture.image.height / texture.image.width);
         const material = new THREE.MeshBasicMaterial({
           map: texture,

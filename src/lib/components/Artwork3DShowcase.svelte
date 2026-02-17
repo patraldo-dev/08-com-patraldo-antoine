@@ -8,6 +8,7 @@
 
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
+  let thumbnailStrip;
 
   let imageUrl = $derived(
     selectedArtwork && selectedArtwork.image_id
@@ -18,6 +19,16 @@
   function selectArtwork(artwork, index) {
     selectedArtwork = artwork;
     selectedIndex = index;
+    
+    // Scroll thumbnail strip to keep active thumbnail visible
+    setTimeout(() => {
+      if (thumbnailStrip) {
+        const activeThumbnail = thumbnailStrip.querySelector('.thumbnail.active');
+        if (activeThumbnail) {
+          activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    }, 50);
   }
 
   function nextArtwork() {
@@ -55,7 +66,7 @@
         ←
       </button>
 
-      <div class="thumbnail-strip">
+      <div class="thumbnail-strip" bind:this={thumbnailStrip}>
         {#each artworks as artwork, i (artwork.id)}
           <button
             class="thumbnail {selectedArtwork?.id === artwork.id ? 'active' : ''}"
