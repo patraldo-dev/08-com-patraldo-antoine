@@ -31,7 +31,7 @@
     if (isOnHomePage) {
       const element = document.querySelector(hash);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
       // Navigate to home page with hash, then scroll to element
@@ -39,9 +39,15 @@
         setTimeout(() => {
           const element = document.querySelector(hash);
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            // Scroll with offset to account for fixed navigation
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - 100;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
           }
-        }, 100);
+        }, 150);
       });
     }
   }

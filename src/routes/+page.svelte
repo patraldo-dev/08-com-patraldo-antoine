@@ -256,8 +256,6 @@ $effect(() => {
   .section-label {
     text-align: center;
     margin-bottom: 1rem;
-    padding-top: 100px;
-    scroll-margin-top: 100px;
   }
 
   .showcase-label h2,
@@ -273,7 +271,6 @@ $effect(() => {
     padding: 4rem 0;
     background: linear-gradient(180deg, #edebe8 0%, #fafafa 100%);
     min-height: 70vh;
-    scroll-margin-top: 100px;
   }
   
   .no-data-message {
@@ -294,8 +291,6 @@ $effect(() => {
   /* About Section - Video Full Width */
   .about-section {
     padding: 2rem 2rem;
-    padding-top: 100px;
-    scroll-margin-top: 100px;
     background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
   }
 
