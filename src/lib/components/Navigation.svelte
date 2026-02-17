@@ -27,14 +27,22 @@
     e.preventDefault();
     e.stopPropagation();
     closeMenu();
-    
+
     if (isOnHomePage) {
       const element = document.querySelector(hash);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      goto('/' + hash);
+      // Navigate to home page with hash, then scroll to element
+      goto('/' + hash).then(() => {
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      });
     }
   }
   

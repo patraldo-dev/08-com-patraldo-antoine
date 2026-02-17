@@ -3,8 +3,7 @@
   import { t } from '$lib/i18n';
   import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
   import HeroOverlay from '$lib/components/cine/HeroOverlay.svelte';
-  import Navigation from '$lib/components/Navigation.svelte';
-  
+
   let { data } = $props();
 </script>
 
@@ -22,16 +21,13 @@
   </div>
 {:else}
   <div class="cine-page">
-    <!-- Use your existing Navigation component -->
-    <Navigation />
-    
-    <VideoPlayer 
+    <VideoPlayer
       videoId={data.film.stream_video_id}
       customerCode={data.customerCode}
       autoplay={true}
       muted={false}
     />
-    
+
     <HeroOverlay film={data.film} />
   </div>
 {/if}
@@ -41,6 +37,7 @@
     position: relative;
     width: 100%;
     height: 100vh;
+    margin-top: 80px;
     overflow: hidden;
     background: #000;
   }
