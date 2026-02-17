@@ -21,17 +21,26 @@
 $effect(() => {
   if (browser) {
     const updateModalState = () => {
+      const wasOpen = showAboutDetail;
       showAboutDetail = window.location.hash === '#about-detail';
+      
+      // Restore scroll when modal closes
+      if (wasOpen && !showAboutDetail) {
+        document.body.style.overflow = '';
+      }
     };
-    
+
     updateModalState(); // Initial check
-    
+
     const handleHashChange = () => {
       updateModalState();
     };
-    
+
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      document.body.style.overflow = '';
+    };
   }
 });
 
