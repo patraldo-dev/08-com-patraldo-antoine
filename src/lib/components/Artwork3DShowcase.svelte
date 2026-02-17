@@ -50,11 +50,6 @@
 </script>
 
 <section class="showcase-3d-section">
-  <div class="showcase-header">
-    <h2>{$t('pages.home.explore3D')}</h2>
-    <p class="subtitle">{$t('pages.home.explore3DSubtitle')}</p>
-  </div>
-
   <div class="showcase-container">
     <!-- Artwork Selector -->
     <div class="artwork-selector">
