@@ -36,7 +36,7 @@
   }
 </script>
 
-<section class="3d-showcase-section">
+<section class="showcase-3d-section">
   <div class="showcase-header">
     <h2>{$t('pages.home.explore3D')}</h2>
     <p class="subtitle">{$t('pages.home.explore3DSubtitle')}</p>
@@ -95,7 +95,7 @@
 </section>
 
 <style>
-  .3d-showcase-section {
+  .showcase-3d-section {
     padding: 4rem 2rem;
     background: linear-gradient(180deg, #f5f5f5 0%, #fafafa 100%);
   }
@@ -259,7 +259,7 @@
   }
 
   @media (max-width: 768px) {
-    .3d-showcase-section {
+    .showcase-3d-section {
       padding: 3rem 1rem;
     }
 
