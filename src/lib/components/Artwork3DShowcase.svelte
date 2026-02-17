@@ -9,10 +9,6 @@
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
 
-  $: if (artworks && artworks.length > 0 && !selectedArtwork) {
-    selectedArtwork = artworks[0];
-  }
-
   function selectArtwork(artwork, index) {
     selectedArtwork = artwork;
     selectedIndex = index;
