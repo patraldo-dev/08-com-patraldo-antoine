@@ -37,14 +37,13 @@
     position: relative;
     width: 100%;
     height: 100vh;
-    margin-top: 80px;
     overflow: hidden;
     background: #000;
   }
 
   .language-switcher {
     position: fixed;
-    top: 6rem;
+    top: 2rem;
     right: 2rem;
     z-index: 1000;
   }

@@ -116,6 +116,8 @@
     );
     transition: opacity 0.6s ease-out;
     opacity: 1;
+    padding-top: 80px;
+    box-sizing: border-box;
   }
   
   .hero-overlay.hidden {
@@ -127,7 +129,7 @@
   
   .brand {
     position: absolute;
-    top: 6rem;
+    top: 2rem;
     left: 2rem;
   }
   
