@@ -96,43 +96,58 @@
   
   function setupEventListeners() {
     if (!renderer) return;
-    
+
     const canvas = renderer.domElement;
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('wheel', onMouseWheel);
     canvas.addEventListener('mouseleave', onMouseUp);
-    
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault()); // Prevent right-click menu
+
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
-    
+
     window.addEventListener('resize', onWindowResize);
   }
   
   function onMouseDown(event) {
     isDragging = true;
     previousMousePosition = { x: event.clientX, y: event.clientY };
+    
+    // Check if right-click for panning
+    if (event.button === 2) {
+      event.preventDefault();
+    }
   }
-  
+
   function onMouseMove(event) {
     if (!isDragging || !imageMesh) return;
-    
+
     const deltaX = event.clientX - previousMousePosition.x;
     const deltaY = event.clientY - previousMousePosition.y;
-    
-    rotation = { 
-      x: rotation.x + deltaY * 0.01,
-      y: rotation.y + deltaX * 0.01,
-      z: rotation.z
-    };
-    
-    if (imageMesh) {
+
+    // Right-click for panning, left-click for rotation
+    if (event.buttons === 2) {
+      // Pan mode
+      position = {
+        x: position.x + deltaX * 0.01,
+        y: position.y - deltaY * 0.01,
+        z: position.z
+      };
+      imageMesh.position.set(position.x, position.y, position.z);
+    } else {
+      // Rotate mode (default)
+      rotation = {
+        x: rotation.x + deltaY * 0.01,
+        y: rotation.y + deltaX * 0.01,
+        z: rotation.z
+      };
       imageMesh.rotation.x = rotation.x;
       imageMesh.rotation.y = rotation.y;
     }
-    
+
     previousMousePosition = { x: event.clientX, y: event.clientY };
   }
   
