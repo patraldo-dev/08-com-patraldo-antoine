@@ -95,8 +95,9 @@ $effect(() => {
   }
 
   function closeAboutDetail() {
-    showAboutDetail = false;  // Add this to actually close the modal
+    showAboutDetail = false;
     window.location.hash = '';
+    document.body.style.overflow = '';
   }
 
   function handleSelectArtwork(event) {
