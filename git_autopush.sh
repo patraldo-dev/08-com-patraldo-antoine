@@ -11,6 +11,10 @@ COMMIT_MESSAGE="$1"
 # Get current branch name
 CURRENT_BRANCH=$(git branch --show-current)
 
+# Pull latest changes first (handles Cloudflare auto-commits)
+echo "Pulling latest changes from $CURRENT_BRANCH..."
+git pull origin "$CURRENT_BRANCH" --rebase
+
 # Add all changes (excluding generated files)
 git add . ':!scripts/generated-routes.json' ':!.svelte-kit/'
 
@@ -20,10 +24,6 @@ if git diff --staged --quiet; then
 else
   git commit -m "$COMMIT_MESSAGE"
 fi
-
-# Pull latest changes first (handles Cloudflare auto-commits)
-echo "Pulling latest changes from $CURRENT_BRANCH..."
-git pull origin "$CURRENT_BRANCH" --rebase
 
 # Push to current branch
 echo "Pushing to origin/$CURRENT_BRANCH..."
