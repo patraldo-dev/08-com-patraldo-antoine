@@ -18,8 +18,8 @@
     : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false`
   );
   
-  let videoTitle = $derived(dailyVideo 
-    ? `${$t('about.modal.videoPrefix')} - ${dailyVideo.title}` 
+  let videoTitle = $derived(dailyVideo
+    ? `${$t('about.modal.videoPrefix')} - ${dailyVideo.display_name || dailyVideo.title}`
     : $t('about.modal.defaultVideoTitle')
   );
   
@@ -56,7 +56,7 @@
               <span class="badge-icon">✨</span>
               <div class="badge-content">
                 <span class="badge-label">{$t('about.modal.todaysFeatured')}</span>
-                <span class="badge-title">{dailyVideo.title}</span>
+                <span class="badge-title">{dailyVideo.display_name || dailyVideo.title}</span>
               </div>
             </div>
           {/if}
