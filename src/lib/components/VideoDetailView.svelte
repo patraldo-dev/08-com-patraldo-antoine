@@ -32,7 +32,7 @@
   <div class="video-container">
     {#if hasVideo}
       <iframe
-        title="Video: {artwork.title}"
+        title="Video: {artwork.display_name || artwork.title}"
         src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{videoId}/iframe?autoplay=true"
         allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowfullscreen
@@ -48,7 +48,7 @@
   </div>
   
   <div class="video-info">
-    <h2>{artwork.title}</h2>
+    <h2>{artwork.display_name || artwork.title}</h2>
     {#if artwork.description}
       <p class="description">{artwork.description}</p>
     {/if}

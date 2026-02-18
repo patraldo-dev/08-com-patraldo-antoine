@@ -182,7 +182,7 @@
               loading="lazy"
             />
             <div class="artwork-info">
-              <span class="artwork-title">{artwork.title}</span>
+              <span class="artwork-title">{artwork.display_name || artwork.title}</span>
               <span class="artwork-meta">
                 {typeLabel(artwork.type)} • {artwork.year}
               </span>
@@ -208,7 +208,7 @@
         </div>
 
         <aside class="artwork-details">
-          <h2>{selectedArtwork.title}</h2>
+          <h2>{selectedArtwork.display_name || selectedArtwork.title}</h2>
           <p class="artwork-year">{selectedArtwork.year}</p>
           <p class="artwork-description">{selectedArtwork.description}</p>
           

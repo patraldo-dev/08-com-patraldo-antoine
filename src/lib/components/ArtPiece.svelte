@@ -101,7 +101,7 @@
   </div>
 
   <div class="info">
-    <h4>{artwork.title}</h4>
+    <h4>{artwork.display_name || artwork.title}</h4>
     <p>{artwork.description}</p>
     <span class="type-badge {artwork.type}">
       {#if artwork.type === 'still'}

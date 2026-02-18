@@ -59,30 +59,30 @@
   function toggleAssistant(artwork = null) {
     isOpen = !isOpen;
     currentArtwork = artwork;
-    
+
     if (isOpen && messages.length === 0) {
       // Welcome message
       messages = [{
         role: 'assistant',
-        content: currentArtwork 
-          ? $t('assistant.welcomeArtwork', { title: currentArtwork.title })
+        content: currentArtwork
+          ? $t('assistant.welcomeArtwork', { title: currentArtwork.display_name || currentArtwork.title })
           : $t('assistant.welcomeGeneral')
       }];
     }
   }
-  
+
   function handleKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-  
+
   function clearConversation() {
     messages = [{
       role: 'assistant',
-      content: currentArtwork 
-        ? $t('assistant.welcomeArtwork', { title: currentArtwork.title })
+      content: currentArtwork
+        ? $t('assistant.welcomeArtwork', { title: currentArtwork.display_name || currentArtwork.title })
         : $t('assistant.welcomeGeneral')
     }];
   }
@@ -113,7 +113,7 @@
         <div class="header-content">
           <h2>{$t('assistant.title')}</h2>
           {#if currentArtwork}
-            <p class="context-info">{$t('assistant.discussing')}: <strong>{currentArtwork.title}</strong></p>
+            <p class="context-info">{$t('assistant.discussing')}: <strong>{currentArtwork.display_name || currentArtwork.title}</strong></p>
           {/if}
         </div>
         <div class="header-actions">
