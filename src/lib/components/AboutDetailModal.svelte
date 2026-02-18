@@ -70,12 +70,6 @@
               title={videoTitle}
             ></iframe>
           </div>
-          
-          {#if dailyVideo && dailyVideo.description}
-            <div class="video-description">
-              <p>{dailyVideo.description}</p>
-            </div>
-          {/if}
         </section>
 
         <!-- The Project -->
@@ -243,21 +237,7 @@
     height: 100%;
     border: none;
   }
-  
-  .video-description {
-    margin-top: 1rem;
-    padding: 1rem 1.25rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 3px solid #1a1a1a;
-  }
-  
-  .video-description p {
-    margin: 0;
-    line-height: 1.6;
-    color: #333;
-  }
-  
+
   /* Bio Section */
   .bio-section h2 {
     font-size: 2rem;
