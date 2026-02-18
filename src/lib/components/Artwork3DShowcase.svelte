@@ -50,21 +50,18 @@
 </script>
 
 <section class="showcase-3d-section">
-  <div class="showcase-header">
-    <h2>{$t('pages.home.explore3D')}</h2>
-    <p class="subtitle">{$t('pages.home.explore3DSubtitle')}</p>
-  </div>
-
   <div class="showcase-container">
     <!-- Artwork Selector -->
     <div class="artwork-selector">
-      <button class="nav-btn first" onclick={() => selectArtwork(artworks[0], 0)} aria-label="First artwork">
-        ⏮
-      </button>
+      <div class="nav-buttons">
+        <button class="nav-btn first" onclick={() => selectArtwork(artworks[0], 0)} aria-label="First artwork">
+          ⏮
+        </button>
 
-      <button class="nav-btn prev" onclick={prevArtwork} aria-label="Previous artwork">
-        ←
-      </button>
+        <button class="nav-btn prev" onclick={prevArtwork} aria-label="Previous artwork">
+          ←
+        </button>
+      </div>
 
       <div class="thumbnail-strip" bind:this={thumbnailStrip}>
         {#each artworks as artwork, i (artwork.id)}
@@ -78,13 +75,15 @@
         {/each}
       </div>
 
-      <button class="nav-btn next" onclick={nextArtwork} aria-label="Next artwork">
-        →
-      </button>
+      <div class="nav-buttons">
+        <button class="nav-btn next" onclick={nextArtwork} aria-label="Next artwork">
+          →
+        </button>
 
-      <button class="nav-btn last" onclick={() => selectArtwork(artworks[artworks.length - 1], artworks.length - 1)} aria-label="Last artwork">
-        ⏭
-      </button>
+        <button class="nav-btn last" onclick={() => selectArtwork(artworks[artworks.length - 1], artworks.length - 1)} aria-label="Last artwork">
+          ⏭
+        </button>
+      </div>
     </div>
 
     <!-- 3D Viewer -->
@@ -105,6 +104,7 @@
           <p>🖱️ {$t('3dart_dragRotate')}</p>
           <p>🔍 {$t('3dart_scrollZoom')}</p>
           <p>✋ {$t('3dart_pan')}</p>
+          <p class="mobile-hint">{$t('3dart_mobileHint')}</p>
         </div>
       {:else}
         <div class="no-artwork">
@@ -150,6 +150,12 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 2rem;
+  }
+
+  .nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .nav-btn {
@@ -281,15 +287,20 @@
 
   @media (max-width: 768px) {
     .showcase-3d-section {
-      padding: 3rem 1rem;
+      padding: 2rem 1rem;
     }
 
     .showcase-header h2 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
     }
 
     .artwork-selector {
       flex-direction: column;
+    }
+
+    .nav-buttons {
+      flex-direction: row;
+      justify-content: center;
     }
 
     .nav-btn {

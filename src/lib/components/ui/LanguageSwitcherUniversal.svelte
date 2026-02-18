@@ -14,12 +14,18 @@
   async function switchLanguage(newLocale) {
 
     if (!browser) return;
-    
+
+    // Clear any open modals/hashes before switching
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      document.body.style.overflow = '';
+    }
+
     // Set the new locale
     locale.set(newLocale);
     localStorage.setItem('preferredLanguage', newLocale);
     document.cookie = `preferredLanguage=${newLocale}; path=/; max-age=31536000`;
-    
+
     // Navigate to the same page in the new language
     const currentPath = $page.url.pathname;
     await goto(currentPath);

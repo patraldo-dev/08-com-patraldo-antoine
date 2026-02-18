@@ -96,43 +96,58 @@
   
   function setupEventListeners() {
     if (!renderer) return;
-    
+
     const canvas = renderer.domElement;
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('wheel', onMouseWheel);
     canvas.addEventListener('mouseleave', onMouseUp);
-    
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault()); // Prevent right-click menu
+
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
-    
+
     window.addEventListener('resize', onWindowResize);
   }
   
   function onMouseDown(event) {
     isDragging = true;
     previousMousePosition = { x: event.clientX, y: event.clientY };
+    
+    // Check if right-click for panning
+    if (event.button === 2) {
+      event.preventDefault();
+    }
   }
-  
+
   function onMouseMove(event) {
     if (!isDragging || !imageMesh) return;
-    
+
     const deltaX = event.clientX - previousMousePosition.x;
     const deltaY = event.clientY - previousMousePosition.y;
-    
-    rotation = { 
-      x: rotation.x + deltaY * 0.01,
-      y: rotation.y + deltaX * 0.01,
-      z: rotation.z
-    };
-    
-    if (imageMesh) {
+
+    // Right-click for panning, left-click for rotation
+    if (event.buttons === 2) {
+      // Pan mode
+      position = {
+        x: position.x + deltaX * 0.01,
+        y: position.y - deltaY * 0.01,
+        z: position.z
+      };
+      imageMesh.position.set(position.x, position.y, position.z);
+    } else {
+      // Rotate mode (default)
+      rotation = {
+        x: rotation.x + deltaY * 0.01,
+        y: rotation.y + deltaX * 0.01,
+        z: rotation.z
+      };
       imageMesh.rotation.x = rotation.x;
       imageMesh.rotation.y = rotation.y;
     }
-    
+
     previousMousePosition = { x: event.clientX, y: event.clientY };
   }
   
@@ -170,16 +185,25 @@
       const dx = event.touches[0].clientX - event.touches[1].clientX;
       const dy = event.touches[0].clientY - event.touches[1].clientY;
       lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Store center point for two-finger pan
+      previousMousePosition = {
+        x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+        y: (event.touches[0].clientY + event.touches[1].clientY) / 2
+      };
     }
   }
-  
+
   function onTouchMove(event) {
-    if (isPinching && event.touches.length === 2) {
+    if (!imageMesh) return;
+
+    if (event.touches.length === 2 && isPinching) {
       event.preventDefault();
       const dx = event.touches[0].clientX - event.touches[1].clientX;
       const dy = event.touches[0].clientY - event.touches[1].clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
       
+      // Two-finger pinch = zoom
       if (lastTouchDistance > 0) {
         const zoomFactor = distance / lastTouchDistance;
         scale = {
@@ -187,33 +211,44 @@
           y: scale.y * zoomFactor,
           z: scale.z
         };
-        
-        if (imageMesh) {
-          imageMesh.scale.set(scale.x, scale.y, scale.z);
-        }
+        imageMesh.scale.set(scale.x, scale.y, scale.z);
       }
-      
       lastTouchDistance = distance;
+      
+      // Two-finger drag = pan
+      const centerX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
+      const centerY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
+      const deltaX = centerX - previousMousePosition.x;
+      const deltaY = centerY - previousMousePosition.y;
+      
+      position = {
+        x: position.x + deltaX * 0.01,
+        y: position.y - deltaY * 0.01,
+        z: position.z
+      };
+      imageMesh.position.set(position.x, position.y, position.z);
+      
+      previousMousePosition = { x: centerX, y: centerY };
       return;
     }
-    
+
     if (!isDragging || event.touches.length !== 1 || !imageMesh) return;
     event.preventDefault();
-    
+
     const deltaX = event.touches[0].clientX - previousMousePosition.x;
     const deltaY = event.touches[0].clientY - previousMousePosition.y;
-    
-    rotation = { 
+
+    rotation = {
       x: rotation.x + deltaY * 0.01,
       y: rotation.y + deltaX * 0.01,
       z: rotation.z
     };
-    
+
     if (imageMesh) {
       imageMesh.rotation.x = rotation.x;
       imageMesh.rotation.y = rotation.y;
     }
-    
+
     previousMousePosition = { x: event.touches[0].clientX, y: event.touches[0].clientY };
   }
   

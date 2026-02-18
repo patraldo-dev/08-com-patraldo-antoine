@@ -21,17 +21,26 @@
 $effect(() => {
   if (browser) {
     const updateModalState = () => {
+      const wasOpen = showAboutDetail;
       showAboutDetail = window.location.hash === '#about-detail';
+      
+      // Restore scroll when modal closes
+      if (wasOpen && !showAboutDetail) {
+        document.body.style.overflow = '';
+      }
     };
-    
+
     updateModalState(); // Initial check
-    
+
     const handleHashChange = () => {
       updateModalState();
     };
-    
+
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      document.body.style.overflow = '';
+    };
   }
 });
 
@@ -95,8 +104,9 @@ $effect(() => {
   }
 
   function closeAboutDetail() {
-    showAboutDetail = false;  // Add this to actually close the modal
+    showAboutDetail = false;
     window.location.hash = '';
+    document.body.style.overflow = '';
   }
 
   function handleSelectArtwork(event) {
@@ -133,62 +143,52 @@ $effect(() => {
     on:close={handleCloseStory}
   />
 {:else}
-  <!-- Hero Section -->
-  <section class="hero-simple">
-    <div class="hero-content">
-      <h1>{$t('pages.home.heroTitle')}</h1>
-      <p class="subtitle">{$t('pages.home.heroSubtitle')}</p>
-    </div>
-  </section>
-
-  <!-- About Section (First) -->
+  <!-- Hero Section - Removed, name is in page title -->
+  
+  <!-- About Section - Video Only -->
   <section id="about" class="about-section">
-    <div class="about-container">
-      <div class="about-content">
-        <h3>{$t('pages.home.aboutTitle')}</h3>
-        <div class="about-text">
-          <p>{$t('pages.home.aboutP1')}</p>
-          <p>{$t('pages.home.aboutP2')}</p>
-        </div>
-      </div>
-
-      <div class="about-video">
-        <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
-          {#if dailyVideo}
-            <!-- DYNAMIC IFRAME USING dailyVideo -->
-            <iframe
-              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-              title={dailyVideo.title || "Featured Video"}
-            ></iframe>
-          {:else}
-            <!-- Fallback to original hardcoded video if no dailyVideo -->
-            <iframe
-              src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-              title="About Antoine - Creative Journey"
-            ></iframe>
-          {/if}
-          <div class="click-overlay"></div>
-          <div class="video-overlay">
-            <span>{$t('pages.home.clickToLearnMore')}</span>
-          </div>
+    <div class="about-video-full">
+      <div class="video-wrapper" onclick={openAboutDetail} role="button" tabindex="0">
+        {#if dailyVideo}
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{dailyVideo.video_id}/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title={dailyVideo.title || "Featured Video"}
+          ></iframe>
+        {:else}
+          <iframe
+            src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?muted=true&loop=true&autoplay=true&controls=false"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            title="About Antoine - Creative Journey"
+          ></iframe>
+        {/if}
+        <div class="click-overlay"></div>
+        <div class="video-overlay">
+          <span>{$t('pages.home.clickToLearnMore')}</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 3D Showcase Section (Middle) -->
+  <!-- 3D Showcase Section -->
   {#if data?.artworks?.length > 0}
-    <Artwork3DShowcase artworks={data.artworks} />
+    <section class="showcase-label-section">
+      <div class="showcase-label">
+        <h2>{$t('pages.home.explore3D')}</h2>
+      </div>
+      <Artwork3DShowcase artworks={data.artworks} />
+    </section>
   {/if}
 
-  <!-- Sketchbook Section (Third) -->
+  <!-- Sketchbook Section -->
   <section id="work" class="sketchbook-section">
+    <div class="section-label">
+      <h2>{$t('pages.home.sketchbook')}</h2>
+    </div>
     {#if data?.artworks?.length > 0}
       <Sketchbook
         artworks={data.artworks}
@@ -232,17 +232,38 @@ $effect(() => {
     font-family: 'Georgia', serif;
     font-size: 3rem;
     font-weight: 100;
-    margin: 0 0 1.5rem;
+    margin: 0 0 0.5rem;
     letter-spacing: 2px;
     color: #2c5e3d;
     line-height: 1.2;
   }
-  
+
   .subtitle {
     font-size: 1.2rem;
     font-weight: 300;
     color: #4a4a3c;
     font-style: italic;
+    margin: 0;
+  }
+
+  /* Section Labels */
+  .showcase-label-section {
+    padding: 0 2rem 2rem;
+    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+  }
+
+  .showcase-label,
+  .section-label {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .showcase-label h2,
+  .section-label h2 {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #2c5e3d;
     margin: 0;
   }
   
@@ -267,47 +288,17 @@ $effect(() => {
     margin-bottom: 1rem;
   }
   
-  /* About Section - Enhanced with Video */
+  /* About Section - Video Full Width */
   .about-section {
-    padding: 6rem 2rem;
+    padding: 2rem 2rem;
     background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
   }
-  
-  .about-container {
-    max-width: 1200px;
+
+  .about-video-full {
+    max-width: 900px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
   }
-  
-  .about-content {
-    /* Remove old max-width since we're using grid now */
-  }
-  
-  .about-content h3 {
-    font-family: 'Georgia', serif;
-    font-size: 2.5rem;
-    color: #2c5e3d;
-    margin-bottom: 2rem;
-    font-weight: 300;
-    line-height: 1.2;
-    text-align: left; /* Override center alignment */
-  }
-  
-  .about-text p {
-    font-family: 'Georgia', serif;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #4a4a3c;
-    margin-bottom: 1.5rem;
-  }
-  
-  .about-video {
-    position: relative;
-  }
-  
+
   .video-wrapper {
     position: relative;
     width: 100%;
@@ -410,26 +401,26 @@ $effect(() => {
       min-height: 50vh;
       padding: 3rem 1rem;
     }
-    
+
     .hero-content h1 {
       font-size: 2rem;
     }
-    
+
     .subtitle {
       font-size: 1rem;
     }
-    
+
     .sketchbook-section {
       padding: 1rem 0;
       min-height: auto;
     }
 
-    .about-content h3 {
-      font-size: 1.75rem;
-    }
-
     .about-section {
       padding: 2rem 1rem;
+    }
+
+    .about-video-full {
+      max-width: 100%;
     }
   }
 

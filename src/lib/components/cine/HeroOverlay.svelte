@@ -127,7 +127,7 @@
   
   .brand {
     position: absolute;
-    top: 2rem;
+    top: 5rem;
     left: 2rem;
   }
   

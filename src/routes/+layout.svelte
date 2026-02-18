@@ -30,16 +30,16 @@
   onMount(() => {
     //1. Check localStorage for preferred language
     let lang = localStorage.getItem('preferredLanguage');
-    
+
     //2. Default to Spanish if none set
     if (!lang || !['es', 'en', 'fr'].includes(lang)) {
       lang = 'es';
       localStorage.setItem('preferredLanguage', lang);
     }
-    
+
     //3. Set the locale (instant, no loading needed!)
     setLocale(lang);
-    
+
     //4. Suppress Cloudflare Stream beacon errors (browser only)
     if (browser) {
       const originalError = console.error;
@@ -50,27 +50,37 @@
         }
         originalError.apply(console, args);
       };
-      
+
       window.addEventListener('error', (event) => {
-        if (event.target && event.target.src && 
+        if (event.target && event.target.src &&
             event.target.src.includes('cloudflarestream.com/cdn-cgi/beacon/media')) {
           event.preventDefault();
           event.stopPropagation();
           return false;
         }
       }, true);
+      
+      // Force restore scroll on mount
+      document.body.style.overflow = '';
     }
-    
+
     //5. Save locale changes to localStorage
     const unsubscribeLocale = locale.subscribe((newLang) => {
       if (newLang && ['es', 'en', 'fr'].includes(newLang)) {
         localStorage.setItem('preferredLanguage', newLang);
+        // Restore scroll when locale changes
+        setTimeout(() => {
+          document.body.style.overflow = '';
+        }, 100);
       }
     });
-    
+
     // Cleanup on unmount
     return () => {
       unsubscribeLocale();
+      if (browser) {
+        document.body.style.overflow = '';
+      }
     };
   });
 </script>

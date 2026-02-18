@@ -27,21 +27,35 @@
     e.preventDefault();
     e.stopPropagation();
     closeMenu();
-    
+
     if (isOnHomePage) {
       const element = document.querySelector(hash);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
-      goto('/' + hash);
+      // Navigate to home page with hash, then scroll to element
+      goto('/' + hash).then(() => {
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            // Scroll with offset to account for fixed navigation
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - 80;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        }, 150);
+      });
     }
   }
   
   // Handler for regular links - just close menu
   function handleRegularLink() {
     closeMenu();
-  } 
+  }
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     isProfileOpen = false;
@@ -49,7 +63,7 @@
       document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     }
   }
-  
+
   function closeMenu() {
     isMenuOpen = false;
     isProfileOpen = false;
@@ -57,6 +71,21 @@
       document.body.style.overflow = '';
     }
   }
+
+  // Ensure scroll is restored on navigation or language switch
+  $effect(() => {
+    // Force restore scroll when locale or page changes
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      // Cleanup: always restore scroll when component unmounts
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+      }
+    };
+  });
   
   function handleLinkClick(e, target) {
     e.preventDefault();

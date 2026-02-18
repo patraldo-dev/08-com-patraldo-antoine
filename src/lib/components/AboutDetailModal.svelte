@@ -25,15 +25,15 @@
   
   $effect(() => {
     if (open) {
+      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleKeydown);
-      
+
       return () => {
-        document.body.style.overflow = '';
+        document.body.style.overflow = originalOverflow || '';
+        document.body.style.removeProperty('overflow');
         document.removeEventListener('keydown', handleKeydown);
       };
-    } else {
-      document.body.style.overflow = '';
     }
   });
 </script>
