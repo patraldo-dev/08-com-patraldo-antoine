@@ -90,7 +90,7 @@
     <div class="viewer-container">
       {#if selectedArtwork}
         <div class="viewer-header">
-          <h3>{selectedArtwork.title}</h3>
+          <h3>{selectedArtwork.display_name || selectedArtwork.title}</h3>
           {#if selectedArtwork.year}
             <span class="year">{selectedArtwork.year}</span>
           {/if}
