@@ -5,7 +5,7 @@ export async function POST({ request, platform }) {
     const { imageId } = await request.json();
     
     // Get secrets from platform.env
-    const apiToken = platform.env.CLOUDFLARE_API_TOKEN;
+    const apiToken = (await platform.env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
     const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
     
     // Check the image status with Cloudflare
