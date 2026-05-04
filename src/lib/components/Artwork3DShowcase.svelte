@@ -104,13 +104,6 @@
           {:else if arStatus === 'teaser'}
             <span class="ar-btn teaser">👤 AR</span>
           {/if}
-          {#if selectedArtwork.video_id}
-            {#if arStatus === 'supported'}
-              <a class="ar-btn video" href="/ar/video/{selectedArtwork.video_id}" rel="prefetch">👁️ AR Video</a>
-            {:else if arStatus === 'teaser'}
-              <span class="ar-btn video teaser">👁️ AR</span>
-            {/if}
-          {/if}
         </div>
         
         <div class="manipulator-wrapper">
