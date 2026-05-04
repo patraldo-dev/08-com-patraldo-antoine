@@ -475,11 +475,6 @@
 {#if browser}
   <div class="image-3d-wrapper">
     <div class="image-3d-container" bind:this={container}></div>
-    {#if supportsAR && !arActive}
-      <button class="ar-button" onclick={startAR}>
-        🥽 Ver en AR
-      </button>
-    {/if}
   </div>
 {:else}
   <div class="image-3d-container loading">
