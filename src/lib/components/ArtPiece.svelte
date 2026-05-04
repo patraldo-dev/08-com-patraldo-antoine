@@ -1,10 +1,15 @@
 <script>
   export let artwork;
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
-  import ArtworkAR from './ArtworkAR.svelte';
 
   let showFullSize = false;
   let showAR = false;
+  let ArtworkAR;
+  async function openAR(e) {
+    e.stopPropagation();
+    if (!ArtworkAR) ArtworkAR = (await import('./ArtworkAR.svelte')).default;
+    showAR = true;
+  }
   let isLoading = true;
   let imageError = false;
 
@@ -116,7 +121,7 @@
     </span>
     {#if artwork.type === 'still'}
       <span class="click-hint">Click to view full size</span>
-      <button class="ar-badge" on:click={(e) => { e.stopPropagation(); showAR = true; }}>
+      <button class="ar-badge" on:click={openAR}>
         👤 Ver en AR
       </button>
     {/if}
@@ -167,8 +172,8 @@
   </div>
 {/if}
 
-{#if showAR}
-  <ArtworkAR
+{#if showAR && ArtworkAR}
+  <svelte:component this={ArtworkAR}
     imageUrl={artwork.imageUrl || createImageUrl(artwork.thumbnailId, 'desktop')}
     title={artwork.title}
     onClose={() => (showAR = false)}

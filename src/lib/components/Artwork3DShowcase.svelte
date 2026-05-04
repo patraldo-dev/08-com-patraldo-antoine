@@ -2,7 +2,6 @@
 <script>
   import { t } from '$lib/i18n';
   import Image3DManipulator from './Image3DManipulator.svelte';
-  import ArtworkAR from './ArtworkAR.svelte';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
   let { artworks } = $props();
@@ -10,6 +9,11 @@
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
   let showAR = $state(false);
+  let ArtworkAR;
+  async function openAR() {
+    if (!ArtworkAR) ArtworkAR = (await import('./ArtworkAR.svelte')).default;
+    showAR = true;
+  }
   let thumbnailStrip;
 
   let imageUrl = $derived(
@@ -96,7 +100,7 @@
           {#if selectedArtwork.year}
             <span class="year">{selectedArtwork.year}</span>
           {/if}
-          <button class="ar-btn" onclick={() => (showAR = true)}>👤 Ver en AR</button>
+          <button class="ar-btn" onclick={openAR}>👤 Ver en AR</button>
         </div>
         
         <div class="manipulator-wrapper">
@@ -118,8 +122,8 @@
   </div>
 </section>
 
-{#if showAR && selectedArtwork}
-  <ArtworkAR
+{#if showAR && selectedArtwork && ArtworkAR}
+  <svelte:component this={ArtworkAR}
     imageUrl={imageUrl}
     title={selectedArtwork.display_name || selectedArtwork.title}
     artworks={artworks.map(a => ({...a, imageUrl: getImageUrl(a)}))}
