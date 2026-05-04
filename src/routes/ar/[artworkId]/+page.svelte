@@ -3,6 +3,7 @@
   export const ssr = false;
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
 
