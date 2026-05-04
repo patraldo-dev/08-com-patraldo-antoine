@@ -38,7 +38,10 @@ async function initializeSearch() {
   if (!browser) return;
   
   try {
-    const { NLWebDropdownChat } = await import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js');
+    const { NLWebDropdownChat } = await Promise.race([
+      import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js'),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+ ]);
     await new Promise(resolve => setTimeout(resolve, 100));
     
     chatInstance = new NLWebDropdownChat({
