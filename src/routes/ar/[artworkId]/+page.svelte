@@ -9,7 +9,7 @@
   const { params } = $props();
 
   let imageUrl = $derived(
-    `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${params.artworkId}/public`
+    `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${params.artworkId}/gallery`
   );
 
   let status = $state('loading'); // loading | ready | unsupported | error
