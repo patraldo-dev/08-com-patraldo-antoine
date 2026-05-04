@@ -206,21 +206,19 @@
     <button class="launch-btn" onclick={launchAR}>
       👁️ Launch AR View
     </button>
-    <button class="back-btn" onclick={() => goto('/')}>
-      ← Back
-    </button>
+    <a href="/" class="back-link">← Back</a>
   </div>
 {:else if status === 'unsupported'}
   <div class="ar-page">
     <h2>AR Not Supported</h2>
     <p>Your device doesn't support WebXR AR. Try on a mobile device with AR capabilities.</p>
-    <button onclick={() => goto('/')}>← Back</button>
+    <a href="/" class="back-link">← Back</a>
   </div>
 {:else if status === 'error'}
   <div class="ar-page">
     <h2>AR Error</h2>
     <p>{errorMsg}</p>
-    <button onclick={() => goto('/')}>← Back</button>
+    <a href="/" class="back-link">← Back</a>
   </div>
 {/if}
 
@@ -286,7 +284,7 @@
     opacity: 0.9;
   }
 
-  .back-btn, .ar-page button:not(.launch-btn) {
+  .back-link, .ar-page a:not(.launch-btn) {
     background: transparent;
     color: #666;
     border: 1px solid #ddd;
@@ -296,7 +294,7 @@
     cursor: pointer;
   }
 
-  .back-btn:hover, .ar-page button:not(.launch-btn):hover {
+  .back-link:hover, .ar-page a:not(.launch-btn):hover {
     background: #f5f5f5;
   }
 </style>
