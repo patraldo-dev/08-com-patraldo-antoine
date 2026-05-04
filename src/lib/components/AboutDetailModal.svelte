@@ -76,10 +76,11 @@
               loading="lazy"
               title={videoTitle}
             ></iframe>
-            <a href="/ar/video/{dailyVideoId}" class="ar-video-float" target="_blank">👁️ AR</a>
-          {:else if arStatus === 'teaser'}
-            <span class="ar-video-float teaser">👁️ AR</span>
-          {/if}
+            {#if arStatus === 'supported'}
+              <a href="/ar/video/{dailyVideoId}" class="ar-video-float" target="_blank">👁️ AR</a>
+            {:else if arStatus === 'teaser'}
+              <span class="ar-video-float teaser">👁️ AR</span>
+            {/if}
           </div>
         </section>
 
