@@ -175,57 +175,95 @@
 
     // --- UI: close button + mode buttons after placing ---
     const uiContainer = document.createElement('div');
-    uiContainer.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:10000;display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px;pointer-events:none;';
+    uiContainer.id = 'ar-ui';
+    uiContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;';
     document.body.appendChild(uiContainer);
 
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;pointer-events:auto;';
+    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10001;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;pointer-events:auto;';
     closeBtn.onclick = () => session.end();
-    document.body.appendChild(closeBtn);
+    uiContainer.appendChild(closeBtn);
+
+    const hintEl = document.createElement('div');
+    hintEl.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;text-align:center;pointer-events:none;max-width:90%;';
+    uiContainer.appendChild(hintEl);
 
     const controlsBar = document.createElement('div');
-    controlsBar.style.cssText = 'display:none;flex-direction:row;gap:8px;pointer-events:auto;';
+    controlsBar.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:10px;pointer-events:auto;z-index:10001;';
     uiContainer.appendChild(controlsBar);
 
+    const btnStyle = 'background:rgba(0,0,0,0.75);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:14px 20px;border-radius:12px;font-size:15px;cursor:pointer;';
+
     const wallBtn = document.createElement('button');
-    wallBtn.style.cssText = 'background:rgba(0,0,0,0.7);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;';
+    wallBtn.style.cssText = btnStyle;
     wallBtn.textContent = '🧱 Wall';
     wallBtn.onclick = () => {
       mesh.rotation.set(0, mesh.rotation.y, 0);
-      isWallMode = true;
+      currentMode = 'wall';
+      highlightBtn();
+      hintEl.textContent = 'Drag to rotate on wall · Pinch to resize';
     };
     controlsBar.appendChild(wallBtn);
 
+    const galleryBtn = document.createElement('button');
+    galleryBtn.style.cssText = btnStyle;
+    galleryBtn.textContent = '🖼️ Gallery';
+    galleryBtn.onclick = () => {
+      mesh.rotation.set(0, 0, 0);
+      currentMode = 'gallery';
+      highlightBtn();
+      hintEl.textContent = 'Drag left/right to rotate · Pinch to resize';
+    };
+    controlsBar.appendChild(galleryBtn);
+
     const floorBtn = document.createElement('button');
-    floorBtn.style.cssText = wallBtn.style.cssText;
+    floorBtn.style.cssText = btnStyle;
     floorBtn.textContent = '📏 Floor';
     floorBtn.onclick = () => {
       mesh.rotation.set(-Math.PI / 2, mesh.rotation.y, 0);
-      isWallMode = false;
+      currentMode = 'floor';
+      highlightBtn();
+      hintEl.textContent = 'Drag to rotate on floor · Pinch to resize';
     };
     controlsBar.appendChild(floorBtn);
 
     const resetBtn = document.createElement('button');
-    resetBtn.style.cssText = wallBtn.style.cssText;
+    resetBtn.style.cssText = btnStyle;
     resetBtn.textContent = '🔄 Reset';
     resetBtn.onclick = () => {
       placed = false;
       mesh.visible = false;
       mesh.scale.set(1, 1, 1);
-      isWallMode = false;
+      mesh.matrixAutoUpdate = false;
+      currentMode = null;
       reticle.visible = true;
       updateUI();
     };
     controlsBar.appendChild(resetBtn);
 
+    const allBtns = [wallBtn, galleryBtn, floorBtn, resetBtn];
+    function highlightBtn() {
+      allBtns.forEach((b, i) => {
+        b.style.borderColor = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
+      });
+    }
+
+    let currentMode = null;
     function updateUI() {
       closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
       controlsBar.style.display = placed ? 'flex' : 'none';
+      if (placed && !currentMode) {
+        currentMode = 'wall';
+        hintEl.textContent = 'Drag to rotate · Pinch to resize';
+      }
+      if (!placed) {
+        hintEl.textContent = 'Point at a surface and tap to place';
+      }
+      highlightBtn();
     }
     updateUI();
 
     // --- Touch manipulation after placing ---
-    let isWallMode = false;
     let touchStartX = 0, touchStartY = 0, touchStartRotY = 0, touchStartRotX = 0;
     let initialPinchDist = 0, initialScale = 1;
 
@@ -246,23 +284,24 @@
 
     renderer.domElement.addEventListener('touchmove', (e) => {
       if (!placed) return;
+      e.preventDefault();
       if (e.touches.length === 1) {
-        const dx = e.touches[0].clientX - touchStartX;
-        const dy = e.touches[0].clientY - touchStartY;
-        if (isWallMode) {
-          // On wall: rotate Y (left/right)
-          mesh.rotation.y = touchStartRotY + dx * 0.01;
-        } else {
-          // On floor: rotate Y + tilt X
-          mesh.rotation.y = touchStartRotY + dx * 0.01;
-          mesh.rotation.x = touchStartRotX + dy * 0.01;
+        const dx = (e.touches[0].clientX - touchStartX) * 0.01;
+        const dy = (e.touches[0].clientY - touchStartY) * 0.01;
+        if (currentMode === 'wall') {
+          mesh.rotation.y = touchStartRotY + dx;
+        } else if (currentMode === 'gallery') {
+          mesh.rotation.y = touchStartRotY + dx;
+        } else if (currentMode === 'floor') {
+          mesh.rotation.y = touchStartRotY + dx;
+          mesh.rotation.x = touchStartRotX + dy;
         }
       } else if (e.touches.length === 2) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const scale = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
-        mesh.scale.set(scale, scale, scale);
+        const s = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
+        mesh.scale.set(s, s, s);
       }
     });
 
@@ -270,6 +309,7 @@
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
       closeBtn.remove();
+      uiContainer.remove();
       renderer.dispose();
       document.body.style.overflow = '';
       document.body.style.position = '';
