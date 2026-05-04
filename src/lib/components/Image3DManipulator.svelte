@@ -318,12 +318,20 @@
   onMount(async () => {
     if (!browser) return;
     
-    THREE = await import('three');
-    
-    initializeScene();
-    loadTexture(imageUrl);
-    setupEventListeners();
-    animate();
+    try {
+      console.log('[3D] Loading Three.js...');
+      THREE = await import('three');
+      console.log('[3D] Three.js loaded:', !!THREE);
+      initializeScene();
+      console.log('[3D] Scene initialized:', !!scene);
+      loadTexture(imageUrl);
+      console.log('[3D] Texture loading for:', imageUrl);
+      setupEventListeners();
+      animate();
+      console.log('[3D] Animation started');
+    } catch (e) {
+      console.error('[3D] Setup failed:', e);
+    }
     
     // FIXED: ResizeObserver with throttling prevents slider jumping
     let resizeTimeout;
