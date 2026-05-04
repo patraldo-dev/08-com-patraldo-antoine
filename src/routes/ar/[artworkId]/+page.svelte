@@ -380,46 +380,89 @@
     }
     updateUI();
 
-    // --- Touch manipulation after placing (on overlay, not canvas) ---
-    let touchStartX = 0, touchStartY = 0, touchStartRotY = 0, touchStartRotX = 0;
-    let initialPinchDist = 0, initialScale = 1;
+    // --- Touch manipulation (same pattern as Image3DManipulator) ---
+    let isDragging = false, isPinching = false;
+    let touchStartX = 0, touchStartY = 0;
+    let touchStartRotX = 0, touchStartRotY = 0, touchStartRotZ = 0;
+    let touchStartPosX = 0, touchStartPosY = 0;
+    let lastPinchDist = 0;
+    let lastPinchCenter = { x: 0, y: 0 };
     const activeMesh = () => isTileMode ? tileMesh : mesh;
 
     touchOverlay.addEventListener('touchstart', (e) => {
-      // Show controls briefly on touch
-      if (placed && uiContainer.style.opacity !== '1') {
-        showControls();
-      }
+      if (placed && uiContainer.style.opacity !== '1') showControls();
+
       if (e.touches.length === 1) {
+        e.preventDefault();
+        isDragging = true;
+        isPinching = false;
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
-        touchStartRotY = activeMesh().rotation.y;
         touchStartRotX = activeMesh().rotation.x;
+        touchStartRotY = activeMesh().rotation.y;
+        touchStartRotZ = activeMesh().rotation.z;
+        touchStartPosX = activeMesh().position.x;
+        touchStartPosY = activeMesh().position.y;
       } else if (e.touches.length === 2) {
+        e.preventDefault();
+        isDragging = false;
+        isPinching = true;
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
-        initialPinchDist = Math.sqrt(dx * dx + dy * dy);
-        initialScale = activeMesh().scale.x;
+        lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+        lastPinchCenter = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
       }
-    }, { passive: true });
+    }, { passive: false });
 
     touchOverlay.addEventListener('touchmove', (e) => {
+      if (!placed) return;
       e.preventDefault();
-      if (e.touches.length === 1) {
-        const dx = (e.touches[0].clientX - touchStartX) * 0.01;
-        const dy = (e.touches[0].clientY - touchStartY) * 0.01;
-        activeMesh().rotation.y = touchStartRotY + dx;
-        if (currentMode === 'floor') {
-          activeMesh().rotation.x = touchStartRotX + dy;
-        }
-      } else if (e.touches.length === 2) {
+      const m = activeMesh();
+
+      if (e.touches.length === 2 && isPinching) {
+        // Pinch = zoom
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const s = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
-        activeMesh().scale.set(s, s, s);
+        if (lastPinchDist > 0) {
+          const factor = dist / lastPinchDist;
+          m.scale.multiplyScalar(factor);
+          // Clamp
+          const s = Math.max(0.05, Math.min(5, m.scale.x));
+          m.scale.set(s, s, s);
+        }
+        lastPinchDist = dist;
+
+        // Two-finger drag = pan
+        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const pdx = cx - lastPinchCenter.x;
+        const pdy = cy - lastPinchCenter.y;
+        m.position.x = m.position.x + pdx * 0.002;
+        m.position.y = m.position.y - pdy * 0.002;
+        lastPinchCenter = { x: cx, y: cy };
+        return;
       }
+
+      if (!isDragging || e.touches.length !== 1) return;
+
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+
+      // 1 finger: rotate X + Y
+      m.rotation.x = touchStartRotX + dy * 0.01;
+      m.rotation.y = touchStartRotY + dx * 0.01;
+      m.rotation.z = touchStartRotZ;
     }, { passive: false });
+
+    touchOverlay.addEventListener('touchend', () => {
+      isDragging = false;
+      isPinching = false;
+      lastPinchDist = 0;
+    });
 
     const cleanup = () => {
       renderer.setAnimationLoop(null);
