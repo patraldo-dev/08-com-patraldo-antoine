@@ -11,7 +11,6 @@
   let imageMesh;
   let THREE;
   let resizeObserver;
-  let loadError = $state(false);
 
   let rotation = $state({ x: 0, y: 0, z: 0 });
   let position = $state({ x: 0, y: 0, z: 0 });
@@ -319,17 +318,12 @@
   onMount(async () => {
     if (!browser) return;
     
-    try {
-      THREE = await import('three');
-      initializeScene();
-      loadTexture(imageUrl);
-      setupEventListeners();
-      animate();
-    } catch (e) {
-      console.error('Three.js load failed:', e);
-      loadError = true;
-      return;
-    }
+    THREE = await import('three');
+    
+    initializeScene();
+    loadTexture(imageUrl);
+    setupEventListeners();
+    animate();
     
     // FIXED: ResizeObserver with throttling prevents slider jumping
     let resizeTimeout;
@@ -364,14 +358,7 @@
 </script>
 
 {#if browser}
-  {#if loadError}
-    <div class="image-3d-container error-state">
-      <p>⚠️ Error cargando visor 3D</p>
-      <button onclick={() => location.reload()}>Reintentar</button>
-    </div>
-  {:else}
-    <div class="image-3d-container" bind:this={container}></div>
-  {/if}
+  <div class="image-3d-container" bind:this={container}></div>
 {:else}
   <div class="image-3d-container loading">
     <p>Loading 3D viewer...</p>
@@ -399,25 +386,6 @@
     justify-content: center;
     background: #f0f0f0;
     min-height: 400px;
-  }
-
-  .error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #f0f0f0;
-    min-height: 400px;
-    color: #666;
-    gap: 0.5rem;
-  }
-  .error-state button {
-    background: #c9a87c;
-    border: none;
-    color: #1a1a1a;
-    padding: 0.4rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
   }
   
   :global(canvas) {
