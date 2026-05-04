@@ -2,87 +2,76 @@
  * For more details on how to configure Wrangler, refer to:
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
-
 {
-        "$schema": "node_modules/wrangler/config-schema.json",
-        "name": "08-com-patraldo-antoine",
-        "main": ".svelte-kit/cloudflare/_worker.js",
-        "r2_buckets": [
-                {
-                        "binding": "ANTOINEART",
-                        "bucket_name": "antoine-patraldo"
-                }
-        ],
-        "compatibility_date": "2025-08-10",
-        "compatibility_flags": [
-                "nodejs_compat"
-        ],
-
-        "secrets_store_secrets": [
-	  {
-	    "binding": "CLOUDFLARE_API_TOKEN",
-	    "store_id": "1da7c182b2d345e9bc6a8f83421d23a7",
-	    "secret_name": "CLOUDFLARE_API_TOKEN"
-	  }
-	], 
-
-        "ai": {
-            "binding": "AI"
-        },
-        "assets": {
-                "binding": "ASSETS",
-                "directory": ".svelte-kit/cloudflare"
-        },
-        "observability": {
-                "enabled": false,
-                "head_sampling_rate": 1,
-                "logs": {
-                        "enabled": true,
-                        "head_sampling_rate": 1,
-                        "persist": true,
-                        "invocation_logs": true
-                },
-                "traces": {
-                        "enabled": true,
-                        "persist": true,
-                        "head_sampling_rate": 1
-                }
-        },
-        "vars": {
-                "MAILGUN_DOMAIN": "patraldo.com",
-                "CLOUDFLARE_STREAM_CUSTOMER_CODE": "9kroafxwku5qm6fx",
-                "CLOUDFLARE_IMAGES_ACCOUNT_HASH": "4bRSwPonOXfEIBVZiDXg0w"
-        },
-        "d1_databases": [
-                {
-                        "binding": "DB",
-                        "database_name": "artist-portfolio-db",
-                        "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
-                },
-                {
-                        "binding": "ARTWORKS_DB",
-                        "database_name": "antoine-artworks",
-                        "database_id": "3598ab99-fd4f-410d-a6bc-55e4958dc158"
-                },
-                {
-                        "binding": "stories_db",
-                        "database_name": "stories-db",
-                        "database_id": "95a9b887-d9d6-45ff-860d-1fe00f73ca0a",
-                        "remote": true
-                },
-		{
-		        "binding": "DB_users",
-			"database_name": "subscribers-db2",
-			"database_id": "b6b5e993-f16e-4346-83b2-babfd327a023"
-		  }
-        ],
-
-		"env": {
-		  "feature3d": {  
-		    "name": "antoine-3dmanipulator"  // 20 chars ✅ Under 54
-		  }
-		}
-
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "08-com-patraldo-antoine",
+  "main": ".svelte-kit/cloudflare/_worker.js",
+  "compatibility_date": "2025-08-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "limits": {
+    "cpu_ms": 200
+  },
+  "r2_buckets": [
+    {
+      "binding": "ANTOINEART",
+      "bucket_name": "antoine-patraldo"
+    }
+  ],
+  "secrets_store_secrets": [
+    {
+      "binding": "CLOUDFLARE_API_TOKEN",
+      "store_id": "1da7c182b2d345e9bc6a8f83421d23a7",
+      "secret_name": "CLOUDFLARE_API_TOKEN"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".svelte-kit/cloudflare"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "artist-portfolio-db",
+      "database_id": "090e618d-c684-4a7c-ba44-18f440d36e96"
+    },
+    {
+      "binding": "ARTWORKS_DB",
+      "database_name": "antoine-artworks",
+      "database_id": "3598ab99-fd4f-410d-a6bc-55e4958dc158"
+    },
+    {
+      "binding": "stories_db",
+      "database_name": "stories-db",
+      "database_id": "95a9b887-d9d6-45ff-860d-1fe00f73ca0a",
+      "remote": true
+    },
+    {
+      "binding": "DB_users",
+      "database_name": "subscribers-db2",
+      "database_id": "b6b5e993-f16e-4346-83b2-babfd327a023"
+    }
+  ],
+  "vars": {
+    "MAILGUN_DOMAIN": "patraldo.com",
+    "CLOUDFLARE_STREAM_CUSTOMER_CODE": "9kroafxwku5qm6fx",
+    "CLOUDFLARE_IMAGES_ACCOUNT_HASH": "4bRSwPonOXfEIBVZiDXg0w"
+  }
 }
 
 
