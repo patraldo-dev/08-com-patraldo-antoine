@@ -112,6 +112,7 @@
     tileMesh.visible = false;
     scene.add(tileMesh);
     let isTileMode = false;
+    let isTattooMode = false;
 
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
@@ -202,15 +203,15 @@
       }
     });
 
-    // Touch overlay — sits ABOVE canvas so WebXR doesn't steal gestures
+    // Touch overlay — sits above canvas, BELOW UI controls
     const touchOverlay = document.createElement('div');
-    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10002;display:none;';
+    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;display:none;';
     document.body.appendChild(touchOverlay);
 
     // --- UI: close button + mode buttons after placing ---
     const uiContainer = document.createElement('div');
     uiContainer.id = 'ar-ui';
-    uiContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;';
+    uiContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;transition:opacity 0.5s;';
     document.body.appendChild(uiContainer);
 
     const closeBtn = document.createElement('button');
@@ -219,12 +220,35 @@
     uiContainer.appendChild(closeBtn);
 
     const hintEl = document.createElement('div');
-    hintEl.style.cssText = 'position:fixed;top:calc(env(safe-area-inset-top, 20px) + 50px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;pointer-events:none;max-width:85%;white-space:nowrap;';
+    hintEl.style.cssText = 'position:fixed;top:calc(env(safe-area-inset-top, 20px) + 50px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;pointer-events:none;max-width:85%;white-space:nowrap;transition:opacity 0.5s;';
     uiContainer.appendChild(hintEl);
 
     const controlsBar = document.createElement('div');
-    controlsBar.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 20px);left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;pointer-events:auto;z-index:10001;flex-wrap:wrap;justify-content:center;max-width:95vw;';
+    controlsBar.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 20px);left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;pointer-events:auto;z-index:10001;flex-wrap:wrap;justify-content:center;max-width:95vw;transition:opacity 0.5s;';
     uiContainer.appendChild(controlsBar);
+
+    // Semi-transparent trigger button (always visible after placing)
+    const triggerBtn = document.createElement('button');
+    triggerBtn.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 30px);right:20px;z-index:10001;width:50px;height:50px;border-radius:50%;background:rgba(44,94,61,0.4);color:rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.2);font-size:22px;cursor:pointer;display:none;pointer-events:auto;transition:opacity 0.3s;';
+    triggerBtn.textContent = '⚙';
+    triggerBtn.onclick = () => showControls();
+    uiContainer.appendChild(triggerBtn);
+
+    let hideTimer = null;
+    function showControls() {
+      uiContainer.style.opacity = '1';
+      hintEl.style.opacity = '1';
+      controlsBar.style.opacity = '1';
+      triggerBtn.style.display = 'none';
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(hideControls, 4000);
+    }
+    function hideControls() {
+      uiContainer.style.opacity = '0.3';
+      hintEl.style.opacity = '0';
+      controlsBar.style.opacity = '0';
+      triggerBtn.style.display = 'block';
+    }
 
     const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
 
@@ -266,6 +290,7 @@
     tileBtn.textContent = '🔲 Tiles';
     tileBtn.onclick = () => {
       isTileMode = !isTileMode;
+      isTattooMode = false;
       if (isTileMode) {
         tileMesh.position.copy(mesh.position);
         tileMesh.quaternion.copy(mesh.quaternion);
@@ -280,8 +305,29 @@
         tileMesh.visible = false;
       }
       highlightBtn();
+      showControls();
     };
     controlsBar.appendChild(tileBtn);
+
+    const tattooBtn = document.createElement('button');
+    tattooBtn.style.cssText = btnStyle;
+    tattooBtn.textContent = '💅 Tattoo';
+    tattooBtn.onclick = () => {
+      isTattooMode = !isTattooMode;
+      isTileMode = false;
+      if (isTattooMode) {
+        // Tattoo: close-up, semi-transparent, skin-like blend
+        mesh.material.opacity = 0.75;
+        mesh.material.transparent = true;
+        mesh.visible = true;
+        tileMesh.visible = false;
+      } else {
+        mesh.material.opacity = 1;
+      }
+      highlightBtn();
+      showControls();
+    };
+    controlsBar.appendChild(tattooBtn);
 
     const resetBtn = document.createElement('button');
     resetBtn.style.cssText = btnStyle;
@@ -291,19 +337,22 @@
       mesh.visible = false;
       tileMesh.visible = false;
       isTileMode = false;
+      isTattooMode = false;
+      mesh.material.opacity = 1;
       mesh.scale.set(1, 1, 1);
       tileMesh.scale.set(1, 1, 1);
       mesh.matrixAutoUpdate = false;
       currentMode = null;
       reticle.visible = true;
+      clearTimeout(hideTimer);
       updateUI();
     };
     controlsBar.appendChild(resetBtn);
 
-    const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, resetBtn];
+    const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, tattooBtn, resetBtn];
     function highlightBtn() {
       allBtns.forEach((b, i) => {
-        const active = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') || (i === 3 && isTileMode);
+        const active = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') || (i === 3 && isTileMode) || (i === 4 && isTattooMode);
         b.style.borderColor = active ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
         b.style.background = active ? 'rgba(44,94,61,0.8)' : 'rgba(0,0,0,0.8)';
       });
@@ -314,9 +363,15 @@
       closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
       controlsBar.style.display = placed ? 'flex' : 'none';
       touchOverlay.style.display = placed ? 'block' : 'none';
+      triggerBtn.style.display = 'none';
+      uiContainer.style.opacity = '1';
+      hintEl.style.opacity = '1';
+      controlsBar.style.opacity = '1';
       if (placed && !currentMode) {
         currentMode = 'wall';
         hintEl.textContent = 'Drag to rotate · Pinch to resize';
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(hideControls, 4000);
       }
       if (!placed) {
         hintEl.textContent = 'Point at a surface and tap to place';
@@ -331,6 +386,10 @@
     const activeMesh = () => isTileMode ? tileMesh : mesh;
 
     touchOverlay.addEventListener('touchstart', (e) => {
+      // Show controls briefly on touch
+      if (placed && uiContainer.style.opacity !== '1') {
+        showControls();
+      }
       if (e.touches.length === 1) {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
