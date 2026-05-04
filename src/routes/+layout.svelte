@@ -5,7 +5,6 @@
   import { page } from '$app/stores';
   import { locale, setLocale } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
-  // NLWebSearch disabled - worker down
   import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
   import { browser } from '$app/environment';
   
@@ -94,7 +93,6 @@
   <footer>
     <p>&copy; 2026 Antoine Patraldo. All rights reserved.</p>
   </footer>
-<!-- NLWebSearch disabled -->
 <AIArtAssistant />
 </div>
 
