@@ -93,11 +93,19 @@
     const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
 
     // local-floor with fallback to local
+    // Try local-floor, local, then fall back to viewer for hit test poses
     let localSpace;
-    try {
-      localSpace = await session.requestReferenceSpace('local-floor');
-    } catch {
-      localSpace = await session.requestReferenceSpace('local');
+    for (const type of ['local-floor', 'local', 'viewer']) {
+      try {
+        localSpace = await session.requestReferenceSpace(type);
+        console.log('[AR] Using reference space:', type);
+        break;
+      } catch (e) {
+        console.warn('[AR] Reference space', type, 'not supported:', e.message);
+      }
+    }
+    if (!localSpace) {
+      throw new Error('No supported reference space available on this device');
     }
 
     await renderer.xr.setSession(session);
