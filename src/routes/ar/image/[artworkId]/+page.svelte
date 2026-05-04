@@ -8,7 +8,10 @@
 
   const { params } = $props();
 
-  let imageUrl = $derived(
+  let previewUrl = $derived(
+    `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${params.artworkId}/thumbnail`
+  );
+  let textureUrl = $derived(
     `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${params.artworkId}/gallery`
   );
 
@@ -91,7 +94,7 @@
     scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
     const textureLoader = new THREE.TextureLoader();
-    const texture = await new Promise((res, rej) => textureLoader.load(imageUrl, res, undefined, rej));
+    const texture = await new Promise((res, rej) => textureLoader.load(textureUrl, res, undefined, rej));
     texture.colorSpace = THREE.SRGBColorSpace;
     const aspect = texture.image.height / texture.image.width;
     const geo = new THREE.PlaneGeometry(0.5, 0.5 * aspect);
@@ -578,7 +581,7 @@
 {:else if status === 'ready'}
   <div class="ar-page">
     <div class="ar-preview">
-      <img src={imageUrl} alt="Artwork" />
+      <img src={previewUrl} alt="Artwork" />
     </div>
     <button class="launch-btn" onclick={launchAR}>
       👁️ Launch AR View
