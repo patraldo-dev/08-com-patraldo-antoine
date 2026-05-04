@@ -103,15 +103,17 @@
     // Use HLS streaming via hls.js (Chrome can't play .m3u8 natively)
     const streamUrl = videoInfo.streamUrl || `https://customer-${videoInfo.customerCode}/cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
 
-    // Try native HLS (Safari) first, fallback to hls.js
+    // Try native HLS (Safari) first, fallback to hls.js (loaded via <svelte:head>)
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamUrl;
-    } else {
-      const HLS = (await import('https://esm.sh/hls.js@1')).default;
-      const hls = new HLS({ enableWorker: true, lowLatencyMode: true });
-      hls.loadSource(streamUrl);
+    } else if (window.Hls && window.Hls.isSupported()) {
+      const hls = new window.Hls({ enableWorker: true, lowLatencyMode: true });
       hls.attachMedia(video);
-      hls.on(HLS.Events.MANIFEST_PARSED, () => video.play());
+      hls.on(window.Hls.Events.MEDIA_ATTACHED, () => {
+        hls.loadSource(streamUrl);
+      });
+    } else {
+      throw new Error('HLS not supported on this device');
     }
 
     // Wait for video to be ready
@@ -473,6 +475,7 @@
 
 <svelte:head>
   <title>AR Video — Antoine Patraldo</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </svelte:head>
 
 {#if status === 'ar-active'}
