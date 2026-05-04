@@ -1,5 +1,6 @@
 <!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
 <script>
+  export const ssr = false;
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
