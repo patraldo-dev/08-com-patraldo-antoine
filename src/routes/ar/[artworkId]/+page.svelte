@@ -181,6 +181,11 @@
       renderer.domElement.remove();
       closeBtn.remove();
       renderer.dispose();
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
     };
     session.addEventListener('end', () => {
       cleanup();
