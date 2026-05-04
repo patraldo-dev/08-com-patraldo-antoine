@@ -308,15 +308,22 @@
       closeBtn.remove();
       uiContainer.remove();
       renderer.dispose();
+      // Full body reset — WebGL canvas can leak styles
+      document.body.style.cssText = '';
+      document.documentElement.style.cssText = '';
+      document.body.style.touchAction = '';
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.height = '';
+      // Remove any leftover AR elements
+      document.querySelectorAll('#ar-ui, [style*="z-index:9999"]').forEach(el => el.remove());
+      // Force full page reload to reset all state
+      window.location.replace('/');
     };
     session.addEventListener('end', () => {
       cleanup();
-      goto('/');
     });
   }
 </script>
