@@ -140,7 +140,7 @@ $effect(() => {
 {#if selectedArtwork}
   <StoryView
     artwork={selectedArtwork}
-    on:close={handleCloseStory}
+    onclose={handleCloseStory}
   />
 {:else}
   <!-- Hero Section - Removed, name is in page title -->

@@ -1,31 +1,44 @@
 <!-- src/lib/components/StoryView.svelte -->
 <script>
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
   import ColorPalette from '$lib/components/ColorPalette.svelte';  
-  import { goto } from '$app/navigation';
-  import { beforeNavigate } from '$app/navigation';
+  import { goto, beforeNavigate } from '$app/navigation';
   
-  const dispatch = createEventDispatcher();
+  let { artwork, isAdmin = false, onclose } = $props();
   
-  export let artwork;
-  export let isAdmin = false;
-  
-  let isLoading = true;
-  let imageError = false;
-  let scrollY = 0;
+  let isLoading = $state(true);
+  let imageError = $state(false);
+  let scrollY = $state(0);
   let contentEl;
-  let storyContent = [];
-  let showVideoDetail = false;
+  let storyContent = $state([]);
+  let showVideoDetail = $state(false);
+  
+  let heroImageUrl = $derived(
+    artwork.type === 'still' && artwork.image_id
+      ? createImageUrl(artwork.image_id, 'desktop')
+      : null
+  );
+  
+  let colorPaletteImageUrl = $derived(
+    artwork.image_id
+      ? createImageUrl(artwork.image_id, 'desktop')
+      : artwork.thumbnailId
+        ? createImageUrl(artwork.thumbnailId, 'desktop')
+        : artwork.imageUrl || null
+  );
+  
+  let parallaxOffset = $derived(scrollY * 0.3);
+  let hasStoryContent = $derived(storyContent.length > 0);
+  let hasVideo = $derived(!!(artwork.video_id || artwork.videoId));
   
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
     return variant ? `${baseUrl}/${variant}` : baseUrl;
   }
   
-  // Function to restore scrolling
   function restoreScrolling() {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
@@ -38,7 +51,7 @@
   
   function handleClose() {
     restoreScrolling();
-    dispatch('close');
+    onclose?.();
   } 
   
   function openVideoDetail() {
@@ -59,30 +72,27 @@
     }
   }
   
-  // Intercept navigation to restore scrolling
   beforeNavigate(() => {
     restoreScrolling();
   });
   
   onMount(async () => {
+    window.addEventListener('keydown', handleKeydown);
     if (typeof document !== 'undefined') {
       document.body.style.overflow = 'hidden';
     }
-    
-    // Fetch story content if story is enabled
     if (artwork.story_enabled) {
       await fetchStoryContent();
     }
+    return () => window.removeEventListener('keydown', handleKeydown);
   });
   
-  // Always restore scrolling when component is destroyed
   onDestroy(() => {
     restoreScrolling();
   });
   
   async function fetchStoryContent() {
     try {
-      // Fetch from your API endpoint
       const response = await fetch(`/api/story/${artwork.id}`);
       if (response.ok) {
         const data = await response.json();
@@ -93,43 +103,14 @@
     }
   }
   
-  $: heroImageUrl = artwork.type === 'still' && artwork.image_id
-    ? createImageUrl(artwork.image_id, 'desktop')
-    : null;
-    
-  $: colorPaletteImageUrl = (() => {
-    // For still images, use image_id
-    if (artwork.image_id) {
-      return createImageUrl(artwork.image_id, 'desktop');
-    }
-    
-    // For animations, use thumbnailId (same as Sketchbook)
-    if (artwork.thumbnailId) {
-      return createImageUrl(artwork.thumbnailId, 'desktop');
-    }
-    
-    // Fallback
-    return artwork.imageUrl || null;
-  })(); 
-    
-  $: parallaxOffset = scrollY * 0.3;
-  
-  $: hasStoryContent = storyContent.length > 0;
-  
-  $: hasVideo = !!(artwork.video_id || artwork.videoId);
-  
   function goToWriteScript() {
-    // Create a simple slug from the artwork title for the URL
     const slug = (artwork.title || artwork.display_name)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
-      
     goto(`/admin/stories/create?artwork_id=${artwork.id}&title=${slug}`);
   }
 </script>
-
-<svelte:window on:keydown={handleKeydown} />
 
 {#if showVideoDetail}
   <VideoDetailView 
@@ -138,7 +119,7 @@
   />
 {:else}
   <div class="story-view">
-    <button class="close-btn" on:click={handleClose} aria-label="Close story">
+    <button class="close-btn" onclick={handleClose} aria-label="Close story">
       <span class="close-icon">←</span>
       <span class="close-text">Back to sketchbook</span>
     </button>
@@ -146,17 +127,17 @@
     <div 
       class="story-content" 
       bind:this={contentEl} 
-      on:scroll={(e) => scrollY = e.target.scrollTop}
+      onscroll={(e) => scrollY = e.target.scrollTop}
     >
       <!-- Hero Section -->
       <div 
         class="hero-section" 
         class:clickable={hasVideo && artwork.type === 'still'}
         style="transform: translateY({parallaxOffset}px)"
-        on:click={hasVideo && artwork.type === 'still' ? openVideoDetail : null}
+        onclick={hasVideo && artwork.type === 'still' ? openVideoDetail : undefined}
         role={hasVideo && artwork.type === 'still' ? "button" : undefined}
         tabindex={hasVideo && artwork.type === 'still' ? "0" : undefined}
-        on:keydown={hasVideo && artwork.type === 'still' ? (e) => e.key === 'Enter' && openVideoDetail() : null}
+        onkeydown={hasVideo && artwork.type === 'still' ? (e) => e.key === 'Enter' && openVideoDetail() : undefined}
       >
         {#if artwork.type === 'animation' && artwork.video_id}
           <div class="video-container">
@@ -176,7 +157,7 @@
           {#if imageError}
             <div class="error-message">
               <p>Failed to load image</p>
-              <button class="retry-btn" on:click={() => { isLoading = true; imageError = false; }}>
+              <button class="retry-btn" onclick={() => { isLoading = true; imageError = false; }}>
                 Try Again
               </button>
             </div>
@@ -185,8 +166,8 @@
               src={heroImageUrl}
               alt={artwork.display_name || artwork.title}
               class:loading={isLoading}
-              on:load={() => isLoading = false}
-              on:error={() => {
+              onload={() => isLoading = false}
+              onerror={() => {
                 isLoading = false;
                 imageError = true;
               }}

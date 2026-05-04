@@ -111,7 +111,7 @@
 {#if selectedImage}
   <StoryView 
     artwork={selectedImage}
-    on:close={goBackToSketchbook}
+    onclose={goBackToSketchbook}
   />
 {:else}
   <div class="sketchbook-container">
