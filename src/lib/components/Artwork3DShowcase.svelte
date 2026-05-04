@@ -94,7 +94,7 @@
           {#if selectedArtwork.year}
             <span class="year">{selectedArtwork.year}</span>
           {/if}
-          <button class="ar-btn" onclick={openAR}>👤 Ver en AR</button>
+          <a class="ar-btn" href="/ar/{selectedArtwork.image_id}" target="_blank">👤 Ver en AR</a>
         </div>
         
         <div class="manipulator-wrapper">
