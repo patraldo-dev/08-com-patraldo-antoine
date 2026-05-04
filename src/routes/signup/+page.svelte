@@ -69,7 +69,7 @@
             <div class="error-message">{error}</div>
         {/if}
         
-        <form on:submit|preventDefault={handleSignup}>
+        <form onsubmit={(e) => { e.preventDefault(); handleSignup(); }}>
             <div class="form-group">
                 <label for="username">{$t('auth.signup.username')}</label>
                 <input

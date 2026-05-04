@@ -4,7 +4,7 @@
   import { locale, t } from '$lib/i18n';
   import StoryView from './StoryView.svelte';
   
-  export let artworks = [];
+  let { artworks = [] } = $props();
   
   let currentSpread = 0; // Track spreads (pairs) instead of individual pages
   let selectedImage = null;
@@ -79,13 +79,13 @@
   });
   
   // Calculate which artworks to show
-  $: leftIndex = currentSpread * 2;
-  $: rightIndex = currentSpread * 2 + 1;
-  $: leftArtwork = artworks[leftIndex] || null;
-  $: rightArtwork = artworks[rightIndex] || null;
-  $: totalSpreads = Math.ceil(artworks.length / 2);
+  let leftIndex = $derived(currentSpread * 2);
+  let rightIndex = $derived(currentSpread * 2 + 1);
+  let leftArtwork = $derived(artworks[leftIndex] || null);
+  let rightArtwork = $derived(artworks[rightIndex] || null);
+  let totalSpreads = $derived(Math.ceil(artworks.length / 2));
   
-  $: promptText = getPromptText($locale);
+  let promptText = $derived(getPromptText($locale));
   function getPromptText(currentLocale) {
     const prompts = {
       'es': 'Un dibujo cada día. Una historia cada semana.',
@@ -119,7 +119,7 @@
       <!-- Left page -->
       <div class="page-left" class:flipping={flipDirection === 'backward'}>
         {#if leftArtwork}
-          <div class="art-thumbnail" on:click={(e) => selectImage(e, leftArtwork)}>
+          <div class="art-thumbnail" onclick={(e) => selectImage(e, leftArtwork)}>
             <img
               src={getImageSource(leftArtwork)}
               alt={leftArtwork.display_name || leftArtwork.title}
@@ -137,7 +137,7 @@
       <!-- Right page -->
       <div class="page-right" class:flipping={flipDirection === 'forward'}>
         {#if rightArtwork}
-          <div class="art-thumbnail" on:click={(e) => selectImage(e, rightArtwork)}>
+          <div class="art-thumbnail" onclick={(e) => selectImage(e, rightArtwork)}>
             <img
               src={getImageSource(rightArtwork)}
               alt={rightArtwork.display_name || rightArtwork.title}
@@ -152,13 +152,13 @@
       
       <!-- Navigation -->
       {#if currentSpread > 0}
-        <button class="nav-arrow prev" on:click={prevSpread} aria-label="Previous spread">
+        <button class="nav-arrow prev" onclick={prevSpread} aria-label="Previous spread">
           ‹
         </button>
       {/if}
       
       {#if currentSpread < totalSpreads - 1}
-        <button class="nav-arrow next" on:click={nextSpread} aria-label="Next spread">
+        <button class="nav-arrow next" onclick={nextSpread} aria-label="Next spread">
           ›
         </button>
       {/if}

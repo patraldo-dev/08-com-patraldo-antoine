@@ -6,8 +6,7 @@
    * Simple scroll-based reveal animation
    * Use delay prop to stagger multiple elements
    */
-  export let delay = 0;
-  export let threshold = 0.1; // How much of element must be visible to trigger
+  let { delay = 0, threshold = 0.1 } = $props();
   
   let element;
   let isVisible = false;

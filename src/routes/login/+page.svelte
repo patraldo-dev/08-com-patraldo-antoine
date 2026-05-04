@@ -67,7 +67,7 @@
       <div class="error-message">{error}</div>
     {/if}
     
-    <form on:submit|preventDefault={handleLogin}>
+    <form onsubmit={(e) => { e.preventDefault(); handleLogin(); }}>
       <div class="form-group">
         <label for="identifier">{$t('auth.login.emailOrUsername')}</label>
         <input

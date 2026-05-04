@@ -45,8 +45,8 @@
       {#each stories as story}
         <article
           class="story-card"
-          on:click={() => openStory(story)}
-          on:keydown={(e) => e.key === 'Enter' && openStory(story)}
+          onclick={() => openStory(story)}
+          onkeydown={(e) => e.key === 'Enter' && openStory(story)}
           role="button"
           tabindex="0"
         >

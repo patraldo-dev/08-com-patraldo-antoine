@@ -1,9 +1,5 @@
 <!-- src/lib/components/ui/InkReveal.svelte -->
 <script>
-  import { createEventDispatcher } from 'svelte';
-  
-  const dispatch = createEventDispatcher();
-  
   /**
    * InkReveal: Animated text that appears and disappears in sync with hero video
    */
@@ -12,6 +8,7 @@
     fadeInAt = 0,
     fadeOutAt = 15,
     isScroll = false,
+    onclick = () => {},
     ...restProps
   } = $props();
   
@@ -26,7 +23,7 @@
     style:animation-delay={fadeInDelay}
     role="button"
     tabindex="0"
-    onclick={() => dispatch('click')}
+    onclick={onclick}
     onkeydown={(e) => e.key === 'Enter' && dispatch('click')}
     {...restProps}
   >

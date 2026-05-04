@@ -50,7 +50,7 @@ if (response.ok) {
 </script>
 
 
-<form on:submit|preventDefault={handleSubmit} class="signup-form">
+<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="signup-form">
   <div class="input-group">
     <input
       type="email"

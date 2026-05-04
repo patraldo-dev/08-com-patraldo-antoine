@@ -94,6 +94,12 @@ async function initializeSearch() {
     }
   }
   
+  $effect(() => {
+    const handler = (event) => handleKeydown(event);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  });
+
   function handleKeydown(event) {
     // CMD+K or CTRL+K to open search
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
@@ -107,7 +113,7 @@ async function initializeSearch() {
   }
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+
 
 <!-- Floating Search Button -->
 <button 

@@ -58,7 +58,7 @@
             <div class="success-message">{success}</div>
         {/if}
         
-        <form on:submit|preventDefault={handleSignup}>
+        <form onsubmit={(e) => { e.preventDefault(); handleSignup(); }}>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input

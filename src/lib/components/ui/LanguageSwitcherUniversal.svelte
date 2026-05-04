@@ -37,7 +37,7 @@
     {#each languages as language}
       <button
         class="lang-btn {language.code === $locale ? 'active' : ''}"
-        on:click|preventDefault={() => switchLanguage(language.code)}
+        onclick={(e) => { e.preventDefault(); switchLanguage(language.code); }}
         aria-label="{language.name}"
         title="{language.name}"
       >
@@ -50,7 +50,7 @@
     {#each languages as language}
       <button
         class="lang-btn {language.code === $locale ? 'active' : ''}"
-        on:click|preventDefault={() => switchLanguage(language.code)}
+        onclick={(e) => { e.preventDefault(); switchLanguage(language.code); }}
         aria-label="{language.name}"
         title="{language.name}"
       >
