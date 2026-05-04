@@ -85,6 +85,7 @@
 
     const textureLoader = new THREE.TextureLoader();
     const texture = await new Promise((res, rej) => textureLoader.load(imageUrl, res, undefined, rej));
+    texture.colorSpace = THREE.SRGBColorSpace;
     const aspect = texture.image.height / texture.image.width;
     const geo = new THREE.PlaneGeometry(0.5, 0.5 * aspect);
     const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true });
@@ -92,6 +93,18 @@
     mesh.matrixAutoUpdate = false;
     mesh.visible = false;
     scene.add(mesh);
+
+    // Tile mesh — hidden by default, uses repeating texture
+    const tileTex = texture.clone();
+    tileTex.wrapS = THREE.RepeatWrapping;
+    tileTex.wrapT = THREE.RepeatWrapping;
+    tileTex.repeat.set(3, 3);
+    const tileGeo = new THREE.PlaneGeometry(2, 2 * aspect);
+    const tileMat = new THREE.MeshBasicMaterial({ map: tileTex, side: THREE.DoubleSide });
+    const tileMesh = new THREE.Mesh(tileGeo, tileMat);
+    tileMesh.visible = false;
+    scene.add(tileMesh);
+    let isTileMode = false;
 
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
@@ -162,7 +175,6 @@
     session.addEventListener('select', () => {
       if (!placed && lastHitPose) {
         placed = true;
-        // Store placement as position + quaternion for manipulation
         const m = new THREE.Matrix4().fromArray(lastHitPose.transform.matrix);
         mesh.position.setFromMatrixPosition(m);
         mesh.quaternion.setFromRotationMatrix(m);
@@ -172,6 +184,11 @@
         updateUI();
       }
     });
+
+    // Touch overlay — sits ABOVE canvas so WebXR doesn't steal gestures
+    const touchOverlay = document.createElement('div');
+    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10002;display:none;';
+    document.body.appendChild(touchOverlay);
 
     // --- UI: close button + mode buttons after placing ---
     const uiContainer = document.createElement('div');
@@ -227,13 +244,38 @@
     };
     controlsBar.appendChild(floorBtn);
 
+    const tileBtn = document.createElement('button');
+    tileBtn.style.cssText = btnStyle;
+    tileBtn.textContent = '🔲 Tiles';
+    tileBtn.onclick = () => {
+      isTileMode = !isTileMode;
+      if (isTileMode) {
+        tileMesh.position.copy(mesh.position);
+        tileMesh.quaternion.copy(mesh.quaternion);
+        tileMesh.scale.copy(mesh.scale);
+        tileMesh.visible = true;
+        mesh.visible = false;
+      } else {
+        mesh.position.copy(tileMesh.position);
+        mesh.quaternion.copy(tileMesh.quaternion);
+        mesh.scale.copy(tileMesh.scale);
+        mesh.visible = true;
+        tileMesh.visible = false;
+      }
+      highlightBtn();
+    };
+    controlsBar.appendChild(tileBtn);
+
     const resetBtn = document.createElement('button');
     resetBtn.style.cssText = btnStyle;
     resetBtn.textContent = '🔄 Reset';
     resetBtn.onclick = () => {
       placed = false;
       mesh.visible = false;
+      tileMesh.visible = false;
+      isTileMode = false;
       mesh.scale.set(1, 1, 1);
+      tileMesh.scale.set(1, 1, 1);
       mesh.matrixAutoUpdate = false;
       currentMode = null;
       reticle.visible = true;
@@ -241,10 +283,12 @@
     };
     controlsBar.appendChild(resetBtn);
 
-    const allBtns = [wallBtn, galleryBtn, floorBtn, resetBtn];
+    const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, resetBtn];
     function highlightBtn() {
       allBtns.forEach((b, i) => {
-        b.style.borderColor = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
+        const active = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') || (i === 3 && isTileMode);
+        b.style.borderColor = active ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
+        b.style.background = active ? 'rgba(44,94,61,0.8)' : 'rgba(0,0,0,0.8)';
       });
     }
 
@@ -252,6 +296,7 @@
     function updateUI() {
       closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
       controlsBar.style.display = placed ? 'flex' : 'none';
+      touchOverlay.style.display = placed ? 'block' : 'none';
       if (placed && !currentMode) {
         currentMode = 'wall';
         hintEl.textContent = 'Drag to rotate · Pinch to resize';
@@ -263,42 +308,40 @@
     }
     updateUI();
 
-    // --- Touch manipulation after placing ---
+    // --- Touch manipulation after placing (on overlay, not canvas) ---
     let touchStartX = 0, touchStartY = 0, touchStartRotY = 0, touchStartRotX = 0;
     let initialPinchDist = 0, initialScale = 1;
+    const activeMesh = () => isTileMode ? tileMesh : mesh;
 
-    renderer.domElement.addEventListener('touchstart', (e) => {
-      if (!placed) return;
+    touchOverlay.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
-        touchStartRotY = mesh.rotation.y;
-        touchStartRotX = mesh.rotation.x;
+        touchStartRotY = activeMesh().rotation.y;
+        touchStartRotX = activeMesh().rotation.x;
       } else if (e.touches.length === 2) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         initialPinchDist = Math.sqrt(dx * dx + dy * dy);
-        initialScale = mesh.scale.x;
+        initialScale = activeMesh().scale.x;
       }
     }, { passive: true });
 
-    renderer.domElement.addEventListener('touchmove', (e) => {
-      if (!placed) return;
+    touchOverlay.addEventListener('touchmove', (e) => {
+      e.preventDefault();
       if (e.touches.length === 1) {
-        e.preventDefault();
         const dx = (e.touches[0].clientX - touchStartX) * 0.01;
         const dy = (e.touches[0].clientY - touchStartY) * 0.01;
-        mesh.rotation.y = touchStartRotY + dx;
+        activeMesh().rotation.y = touchStartRotY + dx;
         if (currentMode === 'floor') {
-          mesh.rotation.x = touchStartRotX + dy;
+          activeMesh().rotation.x = touchStartRotX + dy;
         }
       } else if (e.touches.length === 2) {
-        e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const s = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
-        mesh.scale.set(s, s, s);
+        activeMesh().scale.set(s, s, s);
       }
     }, { passive: false });
 
@@ -319,6 +362,7 @@
       document.body.style.height = '';
       // Remove any leftover AR elements
       document.querySelectorAll('#ar-ui, [style*="z-index:9999"]').forEach(el => el.remove());
+      touchOverlay.remove();
       // Force full page reload to reset all state
       window.location.replace('/');
     };
