@@ -1,10 +1,14 @@
 <!-- src/lib/components/VideoDetailView.svelte -->
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { checkARSupport } from '$lib/ar-detect.js';
   
   const dispatch = createEventDispatcher();
   
   export let artwork;
+  let arStatus = 'hidden';
+
+  onMount(async () => { arStatus = await checkARSupport(); });
   
   function handleClose() {
     dispatch('close');
@@ -53,7 +57,11 @@
       <p class="description">{artwork.description}</p>
     {/if}
     {#if hasVideo}
-      <a href="/ar/video/{videoId}" class="ar-video-btn" target="_blank">👁️ Ver en AR</a>
+      {#if arStatus === 'supported'}
+        <a href="/ar/video/{videoId}" class="ar-video-btn" target="_blank">👁️ Ver en AR</a>
+      {:else if arStatus === 'teaser'}
+        <span class="ar-video-btn teaser">👁️ AR</span>
+      {/if}
     {/if}
   </div>
 </div>
@@ -192,6 +200,7 @@
     font-weight: 600;
   }
   .ar-video-btn:active { opacity: 0.8; }
+  .ar-video-btn.teaser { opacity: 0.4; pointer-events: none; }
   
   @media (max-width: 768px) {
     .close-btn {

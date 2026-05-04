@@ -1,7 +1,12 @@
 <script>
   import { t } from '$lib/i18n';
+  import { onMount } from 'svelte';
+  import { checkARSupport } from '$lib/ar-detect.js';
   
   let { open = false, onClose, dailyVideo } = $props();
+
+  let arStatus = $state('hidden');
+  onMount(async () => { arStatus = await checkARSupport(); });
   
   function handleKeydown(e) {
     if (e.key === 'Escape') {
@@ -72,6 +77,9 @@
               title={videoTitle}
             ></iframe>
             <a href="/ar/video/{dailyVideoId}" class="ar-video-float" target="_blank">👁️ AR</a>
+          {:else if arStatus === 'teaser'}
+            <span class="ar-video-float teaser">👁️ AR</span>
+          {/if}
           </div>
         </section>
 
@@ -255,6 +263,7 @@
     z-index: 10;
   }
   .ar-video-float:active { opacity: 0.8; }
+  .ar-video-float.teaser { opacity: 0.4; pointer-events: none; }
 
   /* Bio Section */
   .bio-section h2 {

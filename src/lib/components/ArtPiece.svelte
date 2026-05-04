@@ -1,12 +1,20 @@
 <script>
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+  import { checkARSupport } from '$lib/ar-detect.js';
 
   let { artwork } = $props();
+
+  let arStatus = $state('hidden'); // hidden | teaser | supported
 
   let showFullSize = $state(false);
   let isLoading = $state(true);
   let imageError = $state(false);
+
+  onMount(async () => {
+    arStatus = await checkARSupport();
+  });
 
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
@@ -115,15 +123,21 @@
         🎭 Animated
       {/if}
     </span>
-    {#if artwork.type === 'still'}
-      <span class="click-hint">Click to view full size</span>
+    {#if arStatus === 'supported'}
       <button class="ar-badge" onclick={(e) => { e.stopPropagation(); goto('/ar/image/' + encodeURIComponent(artwork.imageId)); }}>
         👤 Ver en AR
       </button>
-    {:else if artwork.type === 'animation' && artwork.videoId}
-      <button class="ar-badge video" onclick={(e) => { e.stopPropagation(); goto('/ar/video/' + encodeURIComponent(artwork.videoId)); }}>
-        👁️ Ver en AR
-      </button>
+    {:else if arStatus === 'teaser'}
+      <a class="ar-badge teaser" href="/ar/image/{artwork.imageId}" onclick={(e) => e.stopPropagation();}>👤 AR</a>
+    {/if}
+    {#if artwork.type === 'animation' && artwork.videoId}
+      {#if arStatus === 'supported'}
+        <button class="ar-badge video" onclick={(e) => { e.stopPropagation(); goto('/ar/video/' + encodeURIComponent(artwork.videoId)); }}>
+          👁️ Ver en AR
+        </button>
+      {:else if arStatus === 'teaser'}
+        <a class="ar-badge video teaser" href="/ar/video/{artwork.videoId}" onclick={(e) => e.stopPropagation();}>👁️ AR</a>
+      {/if}
     {/if}
   </div>
 </div>
@@ -366,6 +380,12 @@
     transition: transform 0.1s;
   }
   .ar-badge:hover { transform: scale(1.05); }
+  .ar-badge.teaser {
+    opacity: 0.5;
+    text-decoration: none;
+    cursor: default;
+  }
+  .ar-badge.teaser:hover { transform: none; }
 
   @media (max-width: 768px) {
     .modal-overlay { padding: 0; }

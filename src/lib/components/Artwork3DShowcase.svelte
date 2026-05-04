@@ -3,8 +3,13 @@
   import { t } from '$lib/i18n';
   import Image3DManipulator from './Image3DManipulator.svelte';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { onMount } from 'svelte';
+  import { checkARSupport } from '$lib/ar-detect.js';
 
   let { artworks } = $props();
+
+  let arStatus = $state('hidden');
+  onMount(async () => { arStatus = await checkARSupport(); });
 
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
@@ -94,9 +99,17 @@
           {#if selectedArtwork.year}
             <span class="year">{selectedArtwork.year}</span>
           {/if}
-          <a class="ar-btn" href="/ar/image/{selectedArtwork.image_id}" rel="prefetch">👤 Ver en AR</a>
+          {#if arStatus === 'supported'}
+            <a class="ar-btn" href="/ar/image/{selectedArtwork.image_id}" rel="prefetch">👤 Ver en AR</a>
+          {:else if arStatus === 'teaser'}
+            <span class="ar-btn teaser">👤 AR</span>
+          {/if}
           {#if selectedArtwork.video_id}
-            <a class="ar-btn video" href="/ar/video/{selectedArtwork.video_id}" rel="prefetch">👁️ AR Video</a>
+            {#if arStatus === 'supported'}
+              <a class="ar-btn video" href="/ar/video/{selectedArtwork.video_id}" rel="prefetch">👁️ AR Video</a>
+            {:else if arStatus === 'teaser'}
+              <span class="ar-btn video teaser">👁️ AR</span>
+            {/if}
           {/if}
         </div>
         
@@ -276,6 +289,8 @@
     transition: transform 0.1s;
   }
   .ar-btn:hover { transform: scale(1.05); }
+  .ar-btn.teaser { opacity: 0.4; pointer-events: none; }
+  .ar-btn.video.teaser { opacity: 0.4; pointer-events: none; }
 
   .manipulator-wrapper {
     height: 500px;
