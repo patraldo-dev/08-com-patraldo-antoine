@@ -180,19 +180,19 @@
     document.body.appendChild(uiContainer);
 
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10001;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;pointer-events:auto;';
+    closeBtn.style.cssText = 'position:fixed;top:env(safe-area-inset-top, 20px);right:20px;z-index:10001;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;pointer-events:auto;';
     closeBtn.onclick = () => session.end();
     uiContainer.appendChild(closeBtn);
 
     const hintEl = document.createElement('div');
-    hintEl.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;text-align:center;pointer-events:none;max-width:90%;';
+    hintEl.style.cssText = 'position:fixed;top:calc(env(safe-area-inset-top, 20px) + 50px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;pointer-events:none;max-width:85%;white-space:nowrap;';
     uiContainer.appendChild(hintEl);
 
     const controlsBar = document.createElement('div');
-    controlsBar.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:10px;pointer-events:auto;z-index:10001;';
+    controlsBar.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 20px);left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;pointer-events:auto;z-index:10001;flex-wrap:wrap;justify-content:center;max-width:95vw;';
     uiContainer.appendChild(controlsBar);
 
-    const btnStyle = 'background:rgba(0,0,0,0.75);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:14px 20px;border-radius:12px;font-size:15px;cursor:pointer;';
+    const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
 
     const wallBtn = document.createElement('button');
     wallBtn.style.cssText = btnStyle;
@@ -280,30 +280,27 @@
         initialPinchDist = Math.sqrt(dx * dx + dy * dy);
         initialScale = mesh.scale.x;
       }
-    });
+    }, { passive: true });
 
     renderer.domElement.addEventListener('touchmove', (e) => {
       if (!placed) return;
-      e.preventDefault();
       if (e.touches.length === 1) {
+        e.preventDefault();
         const dx = (e.touches[0].clientX - touchStartX) * 0.01;
         const dy = (e.touches[0].clientY - touchStartY) * 0.01;
-        if (currentMode === 'wall') {
-          mesh.rotation.y = touchStartRotY + dx;
-        } else if (currentMode === 'gallery') {
-          mesh.rotation.y = touchStartRotY + dx;
-        } else if (currentMode === 'floor') {
-          mesh.rotation.y = touchStartRotY + dx;
+        mesh.rotation.y = touchStartRotY + dx;
+        if (currentMode === 'floor') {
           mesh.rotation.x = touchStartRotX + dy;
         }
       } else if (e.touches.length === 2) {
+        e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const s = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
         mesh.scale.set(s, s, s);
       }
-    });
+    }, { passive: false });
 
     const cleanup = () => {
       renderer.setAnimationLoop(null);
