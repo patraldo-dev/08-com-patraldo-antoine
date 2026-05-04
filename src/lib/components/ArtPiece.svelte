@@ -117,8 +117,12 @@
     </span>
     {#if artwork.type === 'still'}
       <span class="click-hint">Click to view full size</span>
-      <button class="ar-badge" onclick={(e) => { e.stopPropagation(); goto('/ar?id=' + encodeURIComponent(artwork.id)); }}>
+      <button class="ar-badge" onclick={(e) => { e.stopPropagation(); goto('/ar/image/' + encodeURIComponent(artwork.imageId)); }}>
         👤 Ver en AR
+      </button>
+    {:else if artwork.type === 'animation' && artwork.videoId}
+      <button class="ar-badge video" onclick={(e) => { e.stopPropagation(); goto('/ar/video/' + encodeURIComponent(artwork.videoId)); }}>
+        👁️ Ver en AR
       </button>
     {/if}
   </div>
