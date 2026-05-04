@@ -52,6 +52,9 @@
     {#if artwork.description}
       <p class="description">{artwork.description}</p>
     {/if}
+    {#if hasVideo}
+      <a href="/ar/video/{videoId}" class="ar-video-btn" target="_blank">👁️ Ver en AR</a>
+    {/if}
   </div>
 </div>
 
@@ -176,6 +179,19 @@
     opacity: 0.9;
     margin: 0;
   }
+
+  .ar-video-btn {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(44,94,61,0.9);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .ar-video-btn:active { opacity: 0.8; }
   
   @media (max-width: 768px) {
     .close-btn {

@@ -13,6 +13,8 @@
     e.stopPropagation();
   }
   
+  let dailyVideoId = $derived(dailyVideo ? dailyVideo.video_id : 'fd7341d70b1a5517bb56a569d2a0cb38');
+
   let videoSrc = $derived(dailyVideo 
     ? `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${dailyVideo.video_id}/iframe?autoplay=true&controls=true&muted=false`
     : `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/fd7341d70b1a5517bb56a569d2a0cb38/iframe?autoplay=true&controls=true&muted=false`
@@ -69,6 +71,7 @@
               loading="lazy"
               title={videoTitle}
             ></iframe>
+            <a href="/ar/video/{dailyVideoId}" class="ar-video-float" target="_blank">👁️ AR</a>
           </div>
         </section>
 
@@ -237,6 +240,21 @@
     height: 100%;
     border: none;
   }
+
+  .ar-video-float {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 6px 14px;
+    background: rgba(44,94,61,0.9);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 10;
+  }
+  .ar-video-float:active { opacity: 0.8; }
 
   /* Bio Section */
   .bio-section h2 {

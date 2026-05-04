@@ -95,6 +95,9 @@
             <span class="year">{selectedArtwork.year}</span>
           {/if}
           <a class="ar-btn" href="/ar/image/{selectedArtwork.image_id}" rel="prefetch">👤 Ver en AR</a>
+          {#if selectedArtwork.video_id}
+            <a class="ar-btn video" href="/ar/video/{selectedArtwork.video_id}" rel="prefetch">👁️ AR Video</a>
+          {/if}
         </div>
         
         <div class="manipulator-wrapper">
