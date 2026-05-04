@@ -205,17 +205,17 @@
 
     // Touch overlay — sits above canvas, BELOW UI controls
     const touchOverlay = document.createElement('div');
-    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;display:none;';
+    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;display:none;';
     document.body.appendChild(touchOverlay);
 
     // --- UI: close button + mode buttons after placing ---
     const uiContainer = document.createElement('div');
     uiContainer.id = 'ar-ui';
-    uiContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;transition:opacity 0.5s;';
+    uiContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:10002;pointer-events:none;transition:opacity 0.5s;';
     document.body.appendChild(uiContainer);
 
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'position:fixed;top:env(safe-area-inset-top, 20px);right:20px;z-index:10001;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;pointer-events:auto;';
+    closeBtn.style.cssText = 'position:fixed;top:env(safe-area-inset-top, 20px);right:20px;z-index:10003;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;pointer-events:auto;';
     closeBtn.onclick = () => session.end();
     uiContainer.appendChild(closeBtn);
 
@@ -224,12 +224,12 @@
     uiContainer.appendChild(hintEl);
 
     const controlsBar = document.createElement('div');
-    controlsBar.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 20px);left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;pointer-events:auto;z-index:10001;flex-wrap:wrap;justify-content:center;max-width:95vw;transition:opacity 0.5s;';
+    controlsBar.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 20px);left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;pointer-events:auto;z-index:10003;flex-wrap:wrap;justify-content:center;max-width:95vw;transition:opacity 0.5s;';
     uiContainer.appendChild(controlsBar);
 
     // Semi-transparent trigger button (always visible after placing)
     const triggerBtn = document.createElement('button');
-    triggerBtn.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 30px);right:20px;z-index:10001;width:50px;height:50px;border-radius:50%;background:rgba(44,94,61,0.4);color:rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.2);font-size:22px;cursor:pointer;display:none;pointer-events:auto;transition:opacity 0.3s;';
+    triggerBtn.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 30px);right:20px;z-index:10003;width:50px;height:50px;border-radius:50%;background:rgba(44,94,61,0.4);color:rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.2);font-size:22px;cursor:pointer;display:none;pointer-events:auto;transition:opacity 0.3s;';
     triggerBtn.textContent = '⚙';
     triggerBtn.onclick = () => showControls();
     uiContainer.appendChild(triggerBtn);
