@@ -65,8 +65,7 @@
       // Start session
       const session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay', 'light-estimation'],
-        domOverlay: container ? { root: container } : undefined
+        optionalFeatures: ['light-estimation']
       });
 
       xrSession = session;
@@ -378,7 +377,7 @@
     width: 100vw;
     height: 100vh;
     z-index: 9999;
-    background: #000;
+    background: transparent;
   }
 
   .ar-splash {
