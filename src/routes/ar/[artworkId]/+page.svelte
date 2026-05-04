@@ -162,19 +162,109 @@
     session.addEventListener('select', () => {
       if (!placed && lastHitPose) {
         placed = true;
-        mesh.matrix.fromArray(lastHitPose.transform.matrix);
-        updateBtn();
+        // Store placement as position + quaternion for manipulation
+        const m = new THREE.Matrix4().fromArray(lastHitPose.transform.matrix);
+        mesh.position.setFromMatrixPosition(m);
+        mesh.quaternion.setFromRotationMatrix(m);
+        mesh.matrixAutoUpdate = true;
+        mesh.visible = true;
+        reticle.visible = false;
+        updateUI();
       }
     });
 
+    // --- UI: close button + mode buttons after placing ---
+    const uiContainer = document.createElement('div');
+    uiContainer.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:10000;display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px;pointer-events:none;';
+    document.body.appendChild(uiContainer);
+
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;';
-    function updateBtn() {
-      closeBtn.textContent = placed ? '✕ Cerrar AR' : 'Toca para colocar · ✕ Cerrar AR';
-    }
-    updateBtn();
+    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;pointer-events:auto;';
     closeBtn.onclick = () => session.end();
     document.body.appendChild(closeBtn);
+
+    const controlsBar = document.createElement('div');
+    controlsBar.style.cssText = 'display:none;flex-direction:row;gap:8px;pointer-events:auto;';
+    uiContainer.appendChild(controlsBar);
+
+    const wallBtn = document.createElement('button');
+    wallBtn.style.cssText = 'background:rgba(0,0,0,0.7);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;';
+    wallBtn.textContent = '🧱 Wall';
+    wallBtn.onclick = () => {
+      mesh.rotation.set(0, mesh.rotation.y, 0);
+      isWallMode = true;
+    };
+    controlsBar.appendChild(wallBtn);
+
+    const floorBtn = document.createElement('button');
+    floorBtn.style.cssText = wallBtn.style.cssText;
+    floorBtn.textContent = '📏 Floor';
+    floorBtn.onclick = () => {
+      mesh.rotation.set(-Math.PI / 2, mesh.rotation.y, 0);
+      isWallMode = false;
+    };
+    controlsBar.appendChild(floorBtn);
+
+    const resetBtn = document.createElement('button');
+    resetBtn.style.cssText = wallBtn.style.cssText;
+    resetBtn.textContent = '🔄 Reset';
+    resetBtn.onclick = () => {
+      placed = false;
+      mesh.visible = false;
+      mesh.scale.set(1, 1, 1);
+      isWallMode = false;
+      reticle.visible = true;
+      updateUI();
+    };
+    controlsBar.appendChild(resetBtn);
+
+    function updateUI() {
+      closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
+      controlsBar.style.display = placed ? 'flex' : 'none';
+    }
+    updateUI();
+
+    // --- Touch manipulation after placing ---
+    let isWallMode = false;
+    let touchStartX = 0, touchStartY = 0, touchStartRotY = 0, touchStartRotX = 0;
+    let initialPinchDist = 0, initialScale = 1;
+
+    renderer.domElement.addEventListener('touchstart', (e) => {
+      if (!placed) return;
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartRotY = mesh.rotation.y;
+        touchStartRotX = mesh.rotation.x;
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDist = Math.sqrt(dx * dx + dy * dy);
+        initialScale = mesh.scale.x;
+      }
+    });
+
+    renderer.domElement.addEventListener('touchmove', (e) => {
+      if (!placed) return;
+      if (e.touches.length === 1) {
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+        if (isWallMode) {
+          // On wall: rotate Y (left/right)
+          mesh.rotation.y = touchStartRotY + dx * 0.01;
+        } else {
+          // On floor: rotate Y + tilt X
+          mesh.rotation.y = touchStartRotY + dx * 0.01;
+          mesh.rotation.x = touchStartRotX + dy * 0.01;
+        }
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const scale = Math.max(0.1, Math.min(5, initialScale * (dist / initialPinchDist)));
+        mesh.scale.set(scale, scale, scale);
+      }
+    });
 
     const cleanup = () => {
       renderer.setAnimationLoop(null);
@@ -198,15 +288,12 @@
   <title>AR — Antoine Patraldo</title>
 </svelte:head>
 
-{#if status === 'loading' || status === 'ar-active'}
+{#if status === 'ar-active'}
+  <!-- AR canvas covers everything — show nothing from Svelte -->
+{:else if status === 'loading'}
   <div class="ar-page">
-    {#if status === 'ar-active'}
-      <div class="spinner"></div>
-      <p>🎨 AR session active — look for the ✕ button to close</p>
-    {:else}
-      <div class="spinner"></div>
-      <p>Loading AR...</p>
-    {/if}
+    <div class="spinner"></div>
+    <p>Loading AR...</p>
   </div>
 {:else if status === 'ready'}
   <div class="ar-page">
