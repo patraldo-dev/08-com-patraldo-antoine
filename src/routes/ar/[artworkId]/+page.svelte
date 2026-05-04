@@ -234,21 +234,52 @@
     triggerBtn.onclick = () => showControls();
     uiContainer.appendChild(triggerBtn);
 
-    let hideTimer = null;
-    function showControls() {
-      uiContainer.style.opacity = '1';
-      hintEl.style.opacity = '1';
-      controlsBar.style.opacity = '1';
-      triggerBtn.style.display = 'none';
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(hideControls, 4000);
+    // Opacity slider (right side, visible in tattoo mode)
+    const sliderContainer = document.createElement('div');
+    sliderContainer.style.cssText = 'position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:10003;display:none;flex-direction:column;align-items:center;gap:4px;pointer-events:auto;';
+    uiContainer.appendChild(sliderContainer);
+
+    const sliderLabel = document.createElement('span');
+    sliderLabel.style.cssText = 'color:rgba(255,255,255,0.7);font-size:11px;background:rgba(0,0,0,0.5);padding:2px 6px;border-radius:4px;';
+    sliderLabel.textContent = 'Opacity';
+    sliderContainer.appendChild(sliderLabel);
+
+    const opacitySlider = document.createElement('input');
+    opacitySlider.type = 'range';
+    opacitySlider.min = '0.1';
+    opacitySlider.max = '1';
+    opacitySlider.step = '0.05';
+    opacitySlider.value = '0.75';
+    opacitySlider.style.cssText = '-webkit-appearance:slider-vertical;width:30px;height:120px;writing-mode:bt-lr;-webkit-writing-mode:vertical-lr;accent-color:#2c5e3d;background:transparent;cursor:pointer;';
+    opacitySlider.addEventListener('input', (e) => {
+      mesh.material.opacity = parseFloat(e.target.value);
+      sliderLabel.textContent = Math.round(e.target.value * 100) + '%';
+    });
+    sliderContainer.appendChild(opacitySlider);
+
+    const origShowControls = showControls;
+    showControls = () => {
+      origShowControls();
+      sliderContainer.style.display = isTattooMode ? 'flex' : 'none';
+      sliderLabel.textContent = isTattooMode ? Math.round(mesh.material.opacity * 100) + '%' : 'Opacity';
+    };
+    function hideControlsAndSlider() {
+      hideControls();
+      if (isTattooMode) sliderContainer.style.display = 'flex'; // Keep slider visible
     }
-    function hideControls() {
-      uiContainer.style.opacity = '0.3';
-      hintEl.style.opacity = '0';
-      controlsBar.style.opacity = '0';
-      triggerBtn.style.display = 'block';
-    }
+    // Override hideControls to keep slider
+    const origHideControls = hideControls;
+    hideControls = () => {
+      origHideControls();
+      // slider stays visible in tattoo mode but fades
+      if (isTattooMode) sliderContainer.style.opacity = '0.4';
+    };
+    showControls = () => {
+      origShowControls();
+      sliderContainer.style.display = isTattooMode ? 'flex' : 'none';
+      sliderContainer.style.opacity = '1';
+      sliderLabel.textContent = Math.round(mesh.material.opacity * 100) + '%';
+    };
 
     const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
 
@@ -256,10 +287,17 @@
     wallBtn.style.cssText = btnStyle;
     wallBtn.textContent = '🧱 Wall';
     wallBtn.onclick = () => {
-      mesh.rotation.set(0, mesh.rotation.y, 0);
+      isTileMode = false;
+      isTattooMode = false;
+      mesh.material.opacity = 1;
+      mesh.material.transparent = false;
+      mesh.visible = true;
+      tileMesh.visible = false;
+      activeMesh().rotation.set(0, activeMesh().rotation.y, 0);
       currentMode = 'wall';
       highlightBtn();
-      hintEl.textContent = 'Drag to rotate on wall · Pinch to resize';
+      showControls();
+      hintEl.textContent = 'Drag to rotate · Pinch to resize · Two-finger twist to spin';
     };
     controlsBar.appendChild(wallBtn);
 
@@ -267,10 +305,17 @@
     galleryBtn.style.cssText = btnStyle;
     galleryBtn.textContent = '🖼️ Gallery';
     galleryBtn.onclick = () => {
-      mesh.rotation.set(0, 0, 0);
+      isTileMode = false;
+      isTattooMode = false;
+      mesh.material.opacity = 1;
+      mesh.material.transparent = false;
+      mesh.visible = true;
+      tileMesh.visible = false;
+      activeMesh().rotation.set(0, 0, 0);
       currentMode = 'gallery';
       highlightBtn();
-      hintEl.textContent = 'Drag left/right to rotate · Pinch to resize';
+      showControls();
+      hintEl.textContent = 'Drag to rotate · Pinch to resize';
     };
     controlsBar.appendChild(galleryBtn);
 
@@ -278,10 +323,17 @@
     floorBtn.style.cssText = btnStyle;
     floorBtn.textContent = '📏 Floor';
     floorBtn.onclick = () => {
-      mesh.rotation.set(-Math.PI / 2, mesh.rotation.y, 0);
+      isTileMode = false;
+      isTattooMode = false;
+      mesh.material.opacity = 1;
+      mesh.material.transparent = false;
+      mesh.visible = true;
+      tileMesh.visible = false;
+      activeMesh().rotation.set(-Math.PI / 2, activeMesh().rotation.y, 0);
       currentMode = 'floor';
       highlightBtn();
-      hintEl.textContent = 'Drag to rotate on floor · Pinch to resize';
+      showControls();
+      hintEl.textContent = 'Drag to rotate on floor · Two-finger twist to spin';
     };
     controlsBar.appendChild(floorBtn);
 
@@ -380,14 +432,19 @@
     }
     updateUI();
 
-    // --- Touch manipulation (same pattern as Image3DManipulator) ---
+    // --- Touch manipulation (same pattern as Image3DManipulator + twist for Z) ---
     let isDragging = false, isPinching = false;
     let touchStartX = 0, touchStartY = 0;
     let touchStartRotX = 0, touchStartRotY = 0, touchStartRotZ = 0;
     let touchStartPosX = 0, touchStartPosY = 0;
     let lastPinchDist = 0;
+    let lastPinchAngle = 0;
     let lastPinchCenter = { x: 0, y: 0 };
     const activeMesh = () => isTileMode ? tileMesh : mesh;
+
+    function angleBetweenTouches(t1, t2) {
+      return Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
+    }
 
     touchOverlay.addEventListener('touchstart', (e) => {
       if (placed && uiContainer.style.opacity !== '1') showControls();
@@ -410,6 +467,7 @@
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+        lastPinchAngle = angleBetweenTouches(e.touches[0], e.touches[1]);
         lastPinchCenter = {
           x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
           y: (e.touches[0].clientY + e.touches[1].clientY) / 2
@@ -423,18 +481,24 @@
       const m = activeMesh();
 
       if (e.touches.length === 2 && isPinching) {
-        // Pinch = zoom
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
+
+        // Pinch = zoom
         if (lastPinchDist > 0) {
           const factor = dist / lastPinchDist;
           m.scale.multiplyScalar(factor);
-          // Clamp
           const s = Math.max(0.05, Math.min(5, m.scale.x));
           m.scale.set(s, s, s);
         }
         lastPinchDist = dist;
+
+        // Twist = rotate Z (spin on surface)
+        const angleDelta = angle - lastPinchAngle;
+        m.rotation.z = m.rotation.z + angleDelta;
+        lastPinchAngle = angle;
 
         // Two-finger drag = pan
         const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
