@@ -66,7 +66,7 @@
       const session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ['dom-overlay', 'light-estimation'],
-        domOverlay: root ? { root } : undefined
+        domOverlay: container ? { root: container } : undefined
       });
 
       xrSession = session;
