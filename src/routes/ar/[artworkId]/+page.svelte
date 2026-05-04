@@ -1,7 +1,6 @@
 <!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
 <script>
   export const ssr = false;
-  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -15,6 +14,7 @@
 
   let status = $state('loading'); // loading | ready | unsupported | error
   let errorMsg = $state('');
+  let THREE = null;
 
   onMount(async () => {
     if (!browser || !navigator.xr) {
@@ -22,7 +22,6 @@
       return;
     }
 
-    let THREE;
     try {
       THREE = await import('three');
     } catch {
@@ -42,14 +41,20 @@
       return;
     }
 
+    status = 'ready';
+  });
+
+  // User gesture required to start AR session
+  async function launchAR() {
+    if (!THREE) return;
+    status = 'loading';
     try {
       await startAR(THREE);
-      status = 'ready';
     } catch (e) {
       errorMsg = e.message || 'AR failed to start';
       status = 'error';
     }
-  });
+  }
 
   async function startAR(THREE) {
     const session = await navigator.xr.requestSession('immersive-ar', {
@@ -70,7 +75,6 @@
     scene.add(new THREE.AmbientLight(0xffffff, 1.5));
     scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
-    // Load artwork texture
     const textureLoader = new THREE.TextureLoader();
     const texture = await new Promise((res, rej) => textureLoader.load(imageUrl, res, undefined, rej));
     const aspect = texture.image.height / texture.image.width;
@@ -81,7 +85,6 @@
     mesh.visible = false;
     scene.add(mesh);
 
-    // Hit test reticle
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
     const reticleMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
@@ -93,20 +96,18 @@
     const viewerSpace = await session.requestReferenceSpace('viewer');
     const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
 
-    // local-floor with fallback to local
-    // Try local-floor, local, then fall back to viewer for hit test poses
     let localSpace;
     for (const type of ['local-floor', 'local', 'viewer']) {
       try {
         localSpace = await session.requestReferenceSpace(type);
-        console.log('[AR] Using reference space:', type);
         break;
       } catch (e) {
-        console.warn('[AR] Reference space', type, 'not supported:', e.message);
+        console.warn('[AR] Reference space', type, 'not supported');
       }
     }
     if (!localSpace) {
-      throw new Error('No supported reference space available on this device');
+      await session.end();
+      throw new Error('No supported reference space on this device');
     }
 
     await renderer.xr.setSession(session);
@@ -114,7 +115,6 @@
     let placed = false;
     let lastHitPose = null;
 
-    // Animation loop — gets frame directly (not 'xr-frame' event)
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
       const results = frame.getHitTestResults(hitTestSource);
@@ -135,7 +135,6 @@
       renderer.render(scene, camera);
     });
 
-    // Tap to place
     session.addEventListener('select', () => {
       if (!placed && lastHitPose) {
         placed = true;
@@ -144,7 +143,6 @@
       }
     });
 
-    // Close button
     const closeBtn = document.createElement('button');
     closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;';
     function updateBtn() {
@@ -154,7 +152,6 @@
     closeBtn.onclick = () => session.end();
     document.body.appendChild(closeBtn);
 
-    // Cleanup
     const cleanup = () => {
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
@@ -173,18 +170,30 @@
 </svelte:head>
 
 {#if status === 'loading'}
-  <div class="ar-loading">
+  <div class="ar-page">
     <div class="spinner"></div>
-    <p>Initializing AR...</p>
+    <p>Loading AR...</p>
+  </div>
+{:else if status === 'ready'}
+  <div class="ar-page">
+    <div class="ar-preview">
+      <img src={imageUrl} alt="Artwork" />
+    </div>
+    <button class="launch-btn" onclick={launchAR}>
+      👁️ Launch AR View
+    </button>
+    <button class="back-btn" onclick={() => goto('/')}>
+      ← Back
+    </button>
   </div>
 {:else if status === 'unsupported'}
-  <div class="ar-message">
+  <div class="ar-page">
     <h2>AR Not Supported</h2>
     <p>Your device doesn't support WebXR AR. Try on a mobile device with AR capabilities.</p>
     <button onclick={() => goto('/')}>← Back</button>
   </div>
 {:else if status === 'error'}
-  <div class="ar-message">
+  <div class="ar-page">
     <h2>AR Error</h2>
     <p>{errorMsg}</p>
     <button onclick={() => goto('/')}>← Back</button>
@@ -192,7 +201,7 @@
 {/if}
 
 <style>
-  .ar-loading, .ar-message {
+  .ar-page {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -202,6 +211,13 @@
     padding: 2rem;
     font-family: 'Inter', sans-serif;
     color: #333;
+  }
+
+  .ar-preview img {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   }
 
   .spinner {
@@ -217,27 +233,46 @@
     to { transform: rotate(360deg); }
   }
 
-  .ar-message h2 {
+  .ar-page h2 {
     margin: 0;
     font-size: 1.5rem;
     color: #2c5e3d;
   }
 
-  .ar-message p {
+  .ar-page p {
     margin: 0;
     color: #666;
     text-align: center;
     max-width: 400px;
   }
 
-  .ar-message button {
-    margin-top: 1rem;
+  .launch-btn {
     background: #2c5e3d;
     color: white;
     border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(44, 94, 61, 0.3);
+  }
+
+  .launch-btn:hover {
+    opacity: 0.9;
+  }
+
+  .back-btn, .ar-page button:not(.launch-btn) {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
+  }
+
+  .back-btn:hover, .ar-page button:not(.launch-btn):hover {
+    background: #f5f5f5;
   }
 </style>
