@@ -1,8 +1,10 @@
 <script>
   export let artwork;
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+  import ArtworkAR from './ArtworkAR.svelte';
 
   let showFullSize = false;
+  let showAR = false;
   let isLoading = true;
   let imageError = false;
 
@@ -114,6 +116,9 @@
     </span>
     {#if artwork.type === 'still'}
       <span class="click-hint">Click to view full size</span>
+      <button class="ar-badge" on:click={(e) => { e.stopPropagation(); showAR = true; }}>
+        👤 Ver en AR
+      </button>
     {/if}
   </div>
 </div>
@@ -160,6 +165,14 @@
       </button>
     </div>
   </div>
+{/if}
+
+{#if showAR}
+  <ArtworkAR
+    imageUrl={artwork.imageUrl || createImageUrl(artwork.thumbnailId, 'desktop')}
+    title={artwork.title}
+    onClose={() => (showAR = false)}
+  />
 {/if}
 
 <style>
@@ -365,6 +378,21 @@
     color: #777;
     font-style: italic;
   }
+
+  .ar-badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #c9a87c;
+    color: #1a1a1a;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .ar-badge:hover { transform: scale(1.05); }
 
   @media (max-width: 768px) {
     .modal-overlay { padding: 0; }
