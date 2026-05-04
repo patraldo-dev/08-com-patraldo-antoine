@@ -1,17 +1,19 @@
 <!-- src/lib/components/VideoDetailView.svelte -->
 <script>
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { checkARSupport } from '$lib/ar-detect.js';
   
-  const dispatch = createEventDispatcher();
+  let { artwork, onclose } = $props();
   
-  export let artwork;
-  let arStatus = 'hidden';
+  let arStatus = $state('hidden');
+
+  let videoId = $derived(artwork.video_id || artwork.videoId);
+  let hasVideo = $derived(!!videoId);
 
   onMount(async () => { arStatus = await checkARSupport(); });
   
   function handleClose() {
-    dispatch('close');
+    onclose?.();
   }
   
   function handleKeydown(event) {
@@ -20,35 +22,38 @@
     }
   }
   
-  // Use video_id if it exists, otherwise fallback
-  $: videoId = artwork.video_id || artwork.videoId;
-  $: hasVideo = !!videoId;
+  onMount(() => {
+    window.addEventListener('keydown', handleKeydown);
+    return () => window.removeEventListener('keydown', handleKeydown);
+  });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+{#snippet videocontent()}
+  {#if hasVideo}
+    <iframe
+      title="Video: {artwork.display_name || artwork.title}"
+      src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{videoId}/iframe?autoplay=true"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen
+    ></iframe>
+  {:else}
+    <div class="no-video">
+      <p>No video available for this artwork</p>
+      <button class="back-btn" onclick={handleClose}>
+        Go Back
+      </button>
+    </div>
+  {/if}
+{/snippet}
 
 <div class="video-detail-view">
-  <button class="close-btn" on:click={handleClose} aria-label="Close video">
+  <button class="close-btn" onclick={handleClose} aria-label="Close video">
     <span class="close-icon">←</span>
     <span class="close-text">Back to story</span>
   </button>
   
   <div class="video-container">
-    {#if hasVideo}
-      <iframe
-        title="Video: {artwork.display_name || artwork.title}"
-        src="https://customer-9kroafxwku5qm6fx.cloudflarestream.com/{videoId}/iframe?autoplay=true"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-        allowfullscreen
-      ></iframe>
-    {:else}
-      <div class="no-video">
-        <p>No video available for this artwork</p>
-        <button class="back-btn" on:click={handleClose}>
-          Go Back
-        </button>
-      </div>
-    {/if}
+    {@render videocontent()}
   </div>
   
   <div class="video-info">

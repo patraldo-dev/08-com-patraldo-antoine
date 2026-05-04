@@ -134,7 +134,7 @@
 {#if showVideoDetail}
   <VideoDetailView 
     artwork={artwork}
-    on:close={closeVideoDetail}
+    onclose={closeVideoDetail}
   />
 {:else}
   <div class="story-view">
