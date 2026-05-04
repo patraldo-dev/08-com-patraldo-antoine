@@ -1,11 +1,12 @@
 <script>
-  export let artwork;
   import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
   import { goto } from '$app/navigation';
 
-  let showFullSize = false;
-  let isLoading = true;
-  let imageError = false;
+  let { artwork } = $props();
+
+  let showFullSize = $state(false);
+  let isLoading = $state(true);
+  let imageError = $state(false);
 
   function createImageUrl(imageId, variant = '') {
     const baseUrl = `https://${CUSTOM_DOMAIN}/cdn-cgi/imagedelivery/${CF_IMAGES_ACCOUNT_HASH}/${imageId}`;
@@ -50,19 +51,20 @@
     return createImageUrl(thumbnailId, variant);
   }
 
-  $: posterUrl = artwork.thumbnailUrl
-    ? artwork.thumbnailUrl.split('?')[0]
-    : artwork.thumbnailId
-      ? getThumbnailUrl(artwork.thumbnailId, 'thumbnail')
-      : createImageUrl('f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'thumbnail');
+  let posterUrl = $derived(
+    artwork.thumbnailUrl
+      ? artwork.thumbnailUrl.split('?')[0]
+      : artwork.thumbnailId
+        ? getThumbnailUrl(artwork.thumbnailId, 'thumbnail')
+        : createImageUrl('f8a136eb-363e-4a24-0f54-70bb4f4bf800', 'thumbnail')
+  );
 </script>
 
 <div class="art-piece">
   <div
-    class="media-container"
-    class:clickable={artwork.type === 'still'}
-    on:click={handleClick}
-    on:keydown={handleKeydown}
+    class="media-container {artwork.type === 'still' ? 'clickable' : ''}"
+    onclick={handleClick}
+    onkeydown={handleKeydown}
     role="button"
     tabindex="0"
     aria-label={artwork.type === 'still' ? `View ${artwork.title} full size` : artwork.title}
@@ -115,7 +117,7 @@
     </span>
     {#if artwork.type === 'still'}
       <span class="click-hint">Click to view full size</span>
-      <button class="ar-badge" on:click={() => goto('/ar?id=' + encodeURIComponent(artwork.id))}>
+      <button class="ar-badge" onclick={(e) => { e.stopPropagation(); goto('/ar?id=' + encodeURIComponent(artwork.id)); }}>
         👤 Ver en AR
       </button>
     {/if}
@@ -125,14 +127,14 @@
 {#if showFullSize}
   <div
     class="modal-overlay"
-    on:click={closeFullSize}
+    onclick={closeFullSize}
     role="dialog"
     aria-modal="true"
     aria-label="Full size image viewer"
     tabindex="0"
-    on:keydown={handleContentKeydown}
+    onkeydown={handleContentKeydown}
   >
-    <div class="modal-content" on:click|stopPropagation={() => {}}>
+    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
       {#if isLoading}
         <div class="loading">Loading full resolution...</div>
       {/if}
@@ -140,15 +142,15 @@
       {#if imageError}
         <div class="error-message">
           <p>Failed to load image</p>
-          <button class="retry-btn" on:click={handleClick}>Try Again</button>
+          <button class="retry-btn" onclick={handleClick}>Try Again</button>
         </div>
       {:else}
         <img
           src={createImageUrl(artwork.thumbnailId, 'desktop')}
           alt={artwork.title}
-          class:loading={isLoading}
-          on:load={() => (isLoading = false)}
-          on:error={() => {
+          class={isLoading ? 'loading' : ''}
+          onload={() => (isLoading = false)}
+          onerror={() => {
             isLoading = false;
             imageError = true;
           }}
@@ -157,7 +159,7 @@
 
       <button
         class="close-btn"
-        on:click={closeFullSize}
+        onclick={closeFullSize}
         aria-label="Close full size view"
       >
         <span class="close-icon">&times;</span>
@@ -166,7 +168,7 @@
   </div>
 {/if}
 
-</style>
+<style>
   .art-piece {
     border-radius: 8px;
     overflow: hidden;
@@ -215,7 +217,6 @@
     height: 100%;
   }
 
-  /* MODAL: z-index from app.css */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -227,14 +228,14 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    z-index: var(--z-modal); /* 1000 */
+    z-index: var(--z-modal);
   }
 
   .modal-content {
     position: relative;
     max-width: 100%;
     max-height: 90vh;
-    z-index: var(--z-modal-content); /* 1001 */
+    z-index: var(--z-modal-content);
   }
 
   .modal-content img {
@@ -252,89 +253,66 @@
 
   .close-btn {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.9);
+    top: -40px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
+    font-size: 1.5rem;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
   }
 
   .close-btn:hover {
-    background: white;
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .close-icon {
-    font-size: 2rem;
-    color: #333;
+    line-height: 1;
+    margin-top: -2px;
   }
 
-  .loading,
-  .error-message {
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .error-message {
     text-align: center;
-    padding: 1.5rem;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
+    padding: 2rem;
+    color: white;
   }
 
   .error-message p {
-    margin: 0 0 1rem;
+    margin-bottom: 1rem;
   }
 
   .retry-btn {
-    padding: 0.5rem 1rem;
-    background: #667eea;
-    color: white;
+    background: #c9a87c;
     border: none;
+    color: #1a1a1a;
+    padding: 0.5rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
   }
 
-  .retry-btn:hover {
-    background: #5a67d8;
-  }
-
-  .gif-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  .gif-thumbnail {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: blur(2px);
-    z-index: var(--z-content);      
-  }
-
-  .gif-animated {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    z-index: calc(var(--z-content) + 1); 
-  }
-
   .info {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .info h4 {
@@ -387,7 +365,7 @@
 
   @media (max-width: 768px) {
     .modal-overlay { padding: 0; }
-    .close-btn { width: 2.5rem; height: 2.5rem; top: 0.5rem; right: 0.5rem; }
+    .close-btn { width: 2.5rem; height: 2.5rem; top: -35px; right: 5px; }
     .close-icon { font-size: 1.5rem; }
     .modal-content img { max-height: 85vh; }
   }
