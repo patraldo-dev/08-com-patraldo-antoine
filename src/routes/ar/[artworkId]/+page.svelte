@@ -249,7 +249,7 @@
     opacitySlider.min = '0.1';
     opacitySlider.max = '1';
     opacitySlider.step = '0.05';
-    opacitySlider.value = '0.75';
+    opacitySlider.value = isTattooMode ? '0.75' : '1';
     opacitySlider.style.cssText = '-webkit-appearance:slider-vertical;width:30px;height:120px;writing-mode:bt-lr;-webkit-writing-mode:vertical-lr;accent-color:#2c5e3d;background:transparent;cursor:pointer;';
     opacitySlider.addEventListener('input', (e) => {
       mesh.material.opacity = parseFloat(e.target.value);
@@ -265,7 +265,7 @@
       triggerBtn.style.display = 'none';
       clearTimeout(hideTimer);
       hideTimer = setTimeout(hideControls, 4000);
-      sliderContainer.style.display = isTattooMode ? 'flex' : 'none';
+      sliderContainer.style.display = 'flex';
       sliderContainer.style.opacity = '1';
       sliderLabel.textContent = Math.round(mesh.material.opacity * 100) + '%';
     }
@@ -274,10 +274,8 @@
       hintEl.style.opacity = '0';
       controlsBar.style.opacity = '0';
       triggerBtn.style.display = 'block';
-      if (isTattooMode) {
-        sliderContainer.style.display = 'flex';
-        sliderContainer.style.opacity = '0.4';
-      }
+      sliderContainer.style.display = 'flex';
+      sliderContainer.style.opacity = '0.4';
     }
 
     const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
@@ -367,13 +365,14 @@
       isTattooMode = !isTattooMode;
       isTileMode = false;
       if (isTattooMode) {
-        // Tattoo: close-up, semi-transparent, skin-like blend
         mesh.material.opacity = 0.75;
         mesh.material.transparent = true;
         mesh.visible = true;
         tileMesh.visible = false;
+        opacitySlider.value = '0.75';
       } else {
         mesh.material.opacity = 1;
+        opacitySlider.value = '1';
       }
       highlightBtn();
       showControls();
