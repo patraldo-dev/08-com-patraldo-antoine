@@ -47,9 +47,9 @@
   // User gesture required to start AR session
   async function launchAR() {
     if (!THREE) return;
-    status = 'loading';
     try {
       await startAR(THREE);
+      status = 'ar-active';
     } catch (e) {
       console.error('[AR] Full error:', e);
       errorMsg = e.message || 'AR failed to start';
@@ -193,10 +193,15 @@
   <title>AR — Antoine Patraldo</title>
 </svelte:head>
 
-{#if status === 'loading'}
+{#if status === 'loading' || status === 'ar-active'}
   <div class="ar-page">
-    <div class="spinner"></div>
-    <p>Loading AR...</p>
+    {#if status === 'ar-active'}
+      <div class="spinner"></div>
+      <p>🎨 AR session active — look for the ✕ button to close</p>
+    {:else}
+      <div class="spinner"></div>
+      <p>Loading AR...</p>
+    {/if}
   </div>
 {:else if status === 'ready'}
   <div class="ar-page">
