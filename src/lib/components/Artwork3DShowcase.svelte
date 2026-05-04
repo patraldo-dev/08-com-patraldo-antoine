@@ -8,12 +8,6 @@
 
   let selectedArtwork = $state(artworks?.[0] || null);
   let selectedIndex = $state(0);
-  let showAR = $state(false);
-  let ArtworkAR;
-  async function openAR() {
-    if (!ArtworkAR) ArtworkAR = (await import('./ArtworkAR.svelte')).default;
-    showAR = true;
-  }
   let thumbnailStrip;
 
   let imageUrl = $derived(
@@ -121,15 +115,6 @@
     </div>
   </div>
 </section>
-
-{#if showAR && selectedArtwork && ArtworkAR}
-  <svelte:component this={ArtworkAR}
-    imageUrl={imageUrl}
-    title={selectedArtwork.display_name || selectedArtwork.title}
-    artworks={artworks.map(a => ({...a, imageUrl: getImageUrl(a)}))}
-    onClose={() => (showAR = false)}
-  />
-{/if}
 
 <style>
   .showcase-3d-section {
