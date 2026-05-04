@@ -51,15 +51,23 @@
     try {
       await startAR(THREE);
     } catch (e) {
+      console.error('[AR] Full error:', e);
       errorMsg = e.message || 'AR failed to start';
+      // Make it clearer what failed
+      if (e.message?.includes('hit-test')) {
+        errorMsg = 'Hit test not supported on this device. ' + e.message;
+      } else if (e.message?.includes('reference space')) {
+        errorMsg = 'Reference space not supported. ' + e.message;
+      } else if (e.message?.includes('not supported')) {
+        errorMsg = 'Feature not supported: ' + e.message;
+      }
       status = 'error';
     }
   }
 
   async function startAR(THREE) {
     const session = await navigator.xr.requestSession('immersive-ar', {
-      requiredFeatures: ['hit-test'],
-      optionalFeatures: ['dom-overlay', 'local-floor'],
+      optionalFeatures: ['hit-test', 'dom-overlay', 'local-floor'],
       domOverlay: { root: document.body }
     });
 
@@ -94,7 +102,14 @@
     scene.add(reticle);
 
     const viewerSpace = await session.requestReferenceSpace('viewer');
-    const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+
+    // Hit test is optional — may not be available on all devices
+    let hitTestSource = null;
+    try {
+      hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+    } catch (e) {
+      console.warn('[AR] Hit test not available, placing artwork in front of camera');
+    }
 
     let localSpace;
     for (const type of ['local-floor', 'local', 'viewer']) {
@@ -117,20 +132,29 @@
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
-      const results = frame.getHitTestResults(hitTestSource);
-      if (results.length > 0) {
-        const pose = results[0].getPose(localSpace);
-        if (pose) {
-          lastHitPose = pose;
-          reticle.visible = !placed;
-          reticle.matrix.fromArray(pose.transform.matrix);
-          if (!placed) {
+
+      if (hitTestSource) {
+        const results = frame.getHitTestResults(hitTestSource);
+        if (results.length > 0) {
+          const pose = results[0].getPose(localSpace);
+          if (pose) {
+            lastHitPose = pose;
+            reticle.visible = !placed;
+            reticle.matrix.fromArray(pose.transform.matrix);
+            if (!placed) {
+              mesh.visible = true;
+              mesh.matrix.fromArray(pose.transform.matrix);
+            }
+          }
+        } else if (!placed) {
+          reticle.visible = false;
+          // No hit — show mesh floating in front of camera
+          if (!mesh.visible) {
             mesh.visible = true;
-            mesh.matrix.fromArray(pose.transform.matrix);
+            mesh.position.set(0, 0, -1);
+            mesh.scale.set(0.5, 0.5, 0.5);
           }
         }
-      } else {
-        reticle.visible = false;
       }
       renderer.render(scene, camera);
     });
