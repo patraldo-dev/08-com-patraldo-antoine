@@ -315,6 +315,107 @@
     }
   }
   
+  let supportsAR = $state(false);
+  let arActive = $state(false);
+
+  async function startAR() {
+    if (!THREE || !navigator.xr) return;
+    try {
+      const session = await navigator.xr.requestSession('immersive-ar', {
+        requiredFeatures: ['hit-test'],
+        optionalFeatures: ['dom-overlay'],
+        domOverlay: { root: document.body }
+      });
+      arActive = true;
+
+      const arRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      arRenderer.setSize(window.innerWidth, window.innerHeight);
+      arRenderer.setPixelRatio(window.devicePixelRatio);
+      arRenderer.xr.enabled = true;
+      document.body.appendChild(arRenderer.domElement);
+      arRenderer.domElement.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;';
+
+      const arScene = new THREE.Scene();
+      const arCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      arScene.add(new THREE.AmbientLight(0xffffff, 1.5));
+      arScene.add(new THREE.DirectionalLight(0xffffff, 0.8));
+
+      // Load artwork as AR plane
+      const textureLoader = new THREE.TextureLoader();
+      const texture = await new Promise((res, rej) => textureLoader.load(imageUrl, res, undefined, rej));
+      const aspect = texture.image.height / texture.image.width;
+      const geo = new THREE.PlaneGeometry(0.5, 0.5 * aspect);
+      const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true });
+      const arMesh = new THREE.Mesh(geo, mat);
+      arScene.add(arMesh);
+
+      // Hit test reticle
+      const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
+      reticleGeo.rotateX(-Math.PI / 2);
+      const reticleMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
+      const reticle = new THREE.Mesh(reticleGeo, reticleMat);
+      reticle.matrixAutoUpdate = false;
+      reticle.visible = false;
+      arScene.add(reticle);
+
+      const viewerSpace = await session.requestReferenceSpace('viewer');
+      const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+      const localSpace = await session.requestReferenceSpace('local-floor');
+
+      arRenderer.xr.setReferenceSpace(localSpace);
+      arRenderer.xr.setSession(session);
+
+      let hitPose = null;
+      session.addEventListener('xr-frame', (event) => {
+        const frame = event.frame;
+        const results = frame.getHitTestResults(hitTestSource);
+        if (results.length > 0) {
+          const refSpace = arRenderer.xr.getReferenceSpace();
+          hitPose = results[0].getPose(refSpace);
+          reticle.visible = true;
+          reticle.matrix.fromArray(hitPose.transform.matrix);
+        } else {
+          reticle.visible = false;
+          hitPose = null;
+        }
+      });
+
+      arRenderer.setAnimationLoop(() => {
+        if (hitPose && !arMesh.userData.placed) {
+          arMesh.matrix.fromArray(hitPose.transform.matrix);
+          arMesh.userData.placed = true;
+        }
+        arRenderer.render(arScene, arCamera);
+      });
+
+      // Close button overlay
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '✕ Cerrar AR';
+      closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:16px;cursor:pointer;';
+      closeBtn.onclick = async () => {
+        await session.end();
+        arRenderer.domElement.remove();
+        closeBtn.remove();
+        arRenderer.dispose();
+        arActive = false;
+      };
+      document.body.appendChild(closeBtn);
+
+      session.addEventListener('end', () => {
+        arRenderer.setAnimationLoop(null);
+        arRenderer.domElement.remove();
+        closeBtn.remove();
+        arRenderer.dispose();
+        arActive = false;
+      });
+    } catch (e) {
+      console.error('[AR] Failed:', e);
+      arActive = false;
+      alert('No se pudo iniciar AR: ' + e.message);
+    }
+  }
+
   onMount(async () => {
     if (!browser) return;
     
@@ -329,6 +430,12 @@
       setupEventListeners();
       animate();
       console.log('[3D] Animation started');
+
+      // Check AR support
+      if (navigator.xr) {
+        supportsAR = await navigator.xr.isSessionSupported('immersive-ar');
+        console.log('[3D] AR support:', supportsAR);
+      }
     } catch (e) {
       console.error('[3D] Setup failed:', e);
     }
@@ -366,7 +473,14 @@
 </script>
 
 {#if browser}
-  <div class="image-3d-container" bind:this={container}></div>
+  <div class="image-3d-wrapper">
+    <div class="image-3d-container" bind:this={container}></div>
+    {#if supportsAR && !arActive}
+      <button class="ar-button" onclick={startAR}>
+        🥽 Ver en AR
+      </button>
+    {/if}
+  </div>
 {:else}
   <div class="image-3d-container loading">
     <p>Loading 3D viewer...</p>
@@ -396,6 +510,27 @@
     min-height: 400px;
   }
   
+  .image-3d-wrapper {
+    position: relative;
+  }
+
+  .ar-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: #c9a87c;
+    color: #09090b;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.2s;
+  }
+  .ar-button:hover { opacity: 0.85; }
+
   :global(canvas) {
     display: block;
     width: 100% !important;
