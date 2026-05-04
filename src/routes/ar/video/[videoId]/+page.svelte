@@ -100,18 +100,27 @@
     video.playsInline = true;
     video.preload = 'auto';
 
-    // Use MP4 direct URL for VideoTexture (HLS won't work with HTMLVideoElement easily)
-    const mp4Url = videoInfo.mp4Url || videoInfo.streamUrl;
-    video.src = mp4Url;
+    // Use HLS streaming via hls.js (Chrome can't play .m3u8 natively)
+    const streamUrl = videoInfo.streamUrl || `https://customer-${videoInfo.customerCode}/cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
+
+    // Try native HLS (Safari) first, fallback to hls.js
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+    } else {
+      const HLS = (await import('https://esm.sh/hls.js@1')).default;
+      const hls = new HLS({ enableWorker: true, lowLatencyMode: true });
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      hls.on(HLS.Events.MANIFEST_PARSED, () => video.play());
+    }
 
     // Wait for video to be ready
     await new Promise((res, rej) => {
       video.oncanplaythrough = res;
-      video.onerror = () => rej(new Error('Failed to load video'));
-      video.load();
+      video.onerror = () => rej(new Error('Failed to load video stream'));
     });
 
-    await video.play();
+    if (video.paused) await video.play();
 
     const texture = new THREE.VideoTexture(video);
     texture.colorSpace = THREE.SRGBColorSpace;

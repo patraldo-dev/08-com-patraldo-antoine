@@ -28,13 +28,11 @@ export async function GET({ params, platform }) {
       uid: video.uid,
       status: video.status,
       duration: video.duration,
-      // Use the Stream direct playback URL (HLS manifest or direct MP4)
-      // For VideoTexture we need direct MP4 - use the download URL or signed token
+      customerCode,
+      // HLS manifest URL for streaming (works with hls.js)
       streamUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/manifest/video.m3u8`,
-      // Direct MP4 for Three.js VideoTexture
-      mp4Url: mp4Url || `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/downloads/default.mp4`,
       thumbnail: video.thumbnail,
-      aspectRatio: video.meta?.aspect_ratio || video.aspectRatio
+      aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9'
     });
   } catch (e) {
     return json({ error: e.message }, { status: 500 });
