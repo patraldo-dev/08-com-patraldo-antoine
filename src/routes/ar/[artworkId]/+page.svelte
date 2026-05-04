@@ -257,29 +257,28 @@
     });
     sliderContainer.appendChild(opacitySlider);
 
-    const origShowControls = showControls;
-    showControls = () => {
-      origShowControls();
-      sliderContainer.style.display = isTattooMode ? 'flex' : 'none';
-      sliderLabel.textContent = isTattooMode ? Math.round(mesh.material.opacity * 100) + '%' : 'Opacity';
-    };
-    function hideControlsAndSlider() {
-      hideControls();
-      if (isTattooMode) sliderContainer.style.display = 'flex'; // Keep slider visible
-    }
-    // Override hideControls to keep slider
-    const origHideControls = hideControls;
-    hideControls = () => {
-      origHideControls();
-      // slider stays visible in tattoo mode but fades
-      if (isTattooMode) sliderContainer.style.opacity = '0.4';
-    };
-    showControls = () => {
-      origShowControls();
+    let hideTimer = null;
+    function showControls() {
+      uiContainer.style.opacity = '1';
+      hintEl.style.opacity = '1';
+      controlsBar.style.opacity = '1';
+      triggerBtn.style.display = 'none';
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(hideControls, 4000);
       sliderContainer.style.display = isTattooMode ? 'flex' : 'none';
       sliderContainer.style.opacity = '1';
       sliderLabel.textContent = Math.round(mesh.material.opacity * 100) + '%';
-    };
+    }
+    function hideControls() {
+      uiContainer.style.opacity = '0.3';
+      hintEl.style.opacity = '0';
+      controlsBar.style.opacity = '0';
+      triggerBtn.style.display = 'block';
+      if (isTattooMode) {
+        sliderContainer.style.display = 'flex';
+        sliderContainer.style.opacity = '0.4';
+      }
+    }
 
     const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
 
