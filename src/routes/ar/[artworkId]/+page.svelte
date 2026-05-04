@@ -78,6 +78,13 @@
     document.body.appendChild(renderer.domElement);
     renderer.domElement.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;';
 
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     scene.add(new THREE.AmbientLight(0xffffff, 1.5));
@@ -122,6 +129,16 @@
       hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
     } catch (e) {
       console.warn('[AR] Hit test not available, placing artwork in front of camera');
+    }
+
+    // Auto-place if no hit-test available
+    if (!hitTestSource) {
+      mesh.visible = true;
+      mesh.matrixAutoUpdate = true;
+      mesh.position.set(0, -0.5, -1.2);
+      placed = true;
+      reticle.visible = false;
+      updateUI();
     }
 
     let localSpace;
@@ -360,6 +377,17 @@
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.height = '';
+      // Dispose textures & geometries
+      texture.dispose();
+      tileTex.dispose();
+      geo.dispose();
+      tileGeo.dispose();
+      mat.dispose();
+      tileMat.dispose();
+      reticleGeo.dispose();
+      reticleMat.dispose();
+      // Remove event listeners
+      window.removeEventListener('resize', handleResize);
       // Remove any leftover AR elements
       document.querySelectorAll('#ar-ui, [style*="z-index:9999"]').forEach(el => el.remove());
       touchOverlay.remove();
