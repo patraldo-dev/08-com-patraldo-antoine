@@ -88,8 +88,9 @@
     video.playsInline = true;
     video.preload = 'auto';
 
-    // Use direct MP4 (most reliable for VideoTexture)
-    const videoUrl = videoInfo.videoUrl || videoInfo.streamUrl;
+    // Use our proxy — keeps token server-side, avoids CORS issues
+    const proxyBase = `/api/stream-proxy/${params.videoId}`;
+    const videoUrl = `${proxyBase}/downloads/default.mp4`;
     video.src = videoUrl;
     video.load();
 
