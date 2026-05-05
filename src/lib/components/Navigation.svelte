@@ -137,13 +137,16 @@
     $effect(() => {
       const handleClick = (e) => handleOutsideClick(e);
       const handleKey = (e) => handleKeydown(e);
+      const handleThemeToggle = () => closeMenu();
 
       document.addEventListener('click', handleClick);
       document.addEventListener('keydown', handleKey);
+      window.addEventListener('theme-toggled', handleThemeToggle);
 
       return () => {
         document.removeEventListener('click', handleClick);
         document.removeEventListener('keydown', handleKey);
+        window.removeEventListener('theme-toggled', handleThemeToggle);
       };
     });
   }

@@ -16,6 +16,7 @@
   function toggle() {
     isDark = !isDark;
     document.documentElement.classList.toggle('dark', isDark);
+    window.dispatchEvent(new CustomEvent('theme-toggled'));
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 </script>
