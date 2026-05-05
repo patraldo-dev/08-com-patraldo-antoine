@@ -379,7 +379,7 @@
   
   .debug-url {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--color-text-muted);
     word-break: break-all;
     max-width: 100%;
   }

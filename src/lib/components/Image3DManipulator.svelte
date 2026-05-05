@@ -501,7 +501,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f0f0f0;
+    background: var(--color-surface);
     min-height: 400px;
   }
   
