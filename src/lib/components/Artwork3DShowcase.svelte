@@ -195,7 +195,7 @@
     gap: 0.75rem;
     overflow-x: auto;
     flex: 1;
-    padding: 0.5rem 0.75rem 0.5rem 2rem;
+    padding: 0.5rem 0.75rem;
     scrollbar-width: thin;
     scrollbar-color: #2c5e3d #e0e0e0;
     scroll-snap-type: x proximity;
@@ -340,7 +340,9 @@
 
     .thumbnail-strip {
       width: 100%;
-      justify-content: center;
+      justify-content: flex-start;
+      padding: 0.5rem 1rem;
+      scroll-padding: 0 1rem;
     }
 
     .thumbnail {
