@@ -1,6 +1,5 @@
 <!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
 <script>
-  export const ssr = false;
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -106,6 +105,7 @@
 
     // Tile mesh — hidden by default, uses repeating texture
     const tileTex = texture.clone();
+    tileTex.needsUpdate = true;
     tileTex.wrapS = THREE.RepeatWrapping;
     tileTex.wrapT = THREE.RepeatWrapping;
     tileTex.repeat.set(3, 3);
@@ -126,6 +126,14 @@
     scene.add(reticle);
 
     const viewerSpace = await session.requestReferenceSpace('viewer');
+
+    // Hoist state variables (used in callbacks and UI below)
+    let placed = false;
+    let lastHitPose = null;
+    let currentMode = null;
+    let isTileMode = false;
+    let isTattooMode = false;
+    const activeMesh = () => isTileMode ? tileMesh : mesh;
 
     // Hit test is optional — may not be available on all devices
     let hitTestSource = null;
@@ -160,9 +168,6 @@
     }
 
     await renderer.xr.setSession(session);
-
-    let placed = false;
-    let lastHitPose = null;
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
@@ -441,7 +446,6 @@
     let lastPinchDist = 0;
     let lastPinchAngle = 0;
     let lastPinchCenter = { x: 0, y: 0 };
-    const activeMesh = () => isTileMode ? tileMesh : mesh;
 
     function angleBetweenTouches(t1, t2) {
       return Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
@@ -535,16 +539,11 @@
       closeBtn.remove();
       uiContainer.remove();
       renderer.dispose();
-      // Full body reset — WebGL canvas can leak styles
-      document.body.style.cssText = '';
+      // Clean only styles we may have set
+      ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
+        document.body.style.removeProperty(p);
+      });
       document.documentElement.style.cssText = '';
-      document.body.style.touchAction = '';
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      // Dispose textures & geometries
       texture.dispose();
       tileTex.dispose();
       geo.dispose();

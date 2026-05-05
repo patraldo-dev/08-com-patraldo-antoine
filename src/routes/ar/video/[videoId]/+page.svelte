@@ -1,6 +1,5 @@
 <!-- AR Video page — CF Stream videos as VideoTexture in WebXR -->
 <script>
-  export const ssr = false;
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
