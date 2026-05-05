@@ -1,11 +1,3 @@
-html.dark {
-  --color-bg: #0a0a0a;
-  --color-text: #e8e8e8;
-  --color-surface: #141417;
-  --color-border: #2a2a2e;
-  --color-nav-bg: rgba(14, 14, 17, 0.95);
-}
-
 /* ───────────────────────────────────────
    RESET + BASE STYLES
    ─────────────────────────────────────── */
@@ -21,10 +13,11 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
   font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Base spacing for fixed nav */
@@ -42,12 +35,19 @@ body main {
    DESIGN TOKENS
    ─────────────────────────────────────── */
 :root {
-  /* Color tokens */
-  --color-bg: #fafafa;
-  --color-text: #2a2a2a;
-  --color-surface: #ffffff;
-  --color-border: #e0e0e0;
-  --color-nav-bg: rgba(255, 255, 255, 0.95);
+  /* Color tokens — Light mode (Antoine warm editorial) */
+  --color-bg: #faf9f7;
+  --color-text: #1a1a1a;
+  --color-text-dim: #4a4a4a;
+  --color-text-muted: #8a8a8a;
+  --color-surface: #f0eeeb;
+  --color-surface-raised: #ffffff;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-nav-bg: rgba(250, 249, 247, 0.9);
+  --color-green: #2c5e3d;
+  --color-green-hover: #1f4229;
+  --color-gold: #c9a87c;
+  --color-gold-hover: #b8965f;
 
   /* Spacing */
   --space-xs: 0.5rem;
@@ -71,6 +71,22 @@ body main {
   /* Video hero z-index (for About page) */
   --z-hero-video: 1;
   --z-hero-overlay: 2;
+}
+
+/* Dark mode overrides */
+html.dark {
+  --color-bg: #09090b;
+  --color-text: #e4e4e7;
+  --color-text-dim: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-surface: #141417;
+  --color-surface-raised: #1c1c21;
+  --color-border: #27272a;
+  --color-nav-bg: rgba(9, 9, 11, 0.85);
+  --color-green: #4ade80;
+  --color-green-hover: #22c55e;
+  --color-gold: #c9a87c;
+  --color-gold-hover: #d4b98f;
 }
 
 /* ───────────────────────────────────────
@@ -197,14 +213,15 @@ body main {
   }
 }
 .hero-simple {
-  min-height: 0 !important; /* Remove min-height completely */
+  min-height: 0 !important;
   height: auto !important;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-  padding: 0.5rem 1rem 0.5rem !important; /* Equal tiny padding */
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
+  padding: 0.5rem 1rem 0.5rem !important;
   text-align: center;
+  transition: background 0.3s;
 }
 
 .hero-simple .hero-content {

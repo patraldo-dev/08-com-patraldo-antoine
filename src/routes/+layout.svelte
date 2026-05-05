@@ -117,8 +117,8 @@
     padding: 2rem 4rem;
     text-align: center;
     font-size: 0.9rem;
-    color: #666;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-border);
   }
   
   .loading-screen {

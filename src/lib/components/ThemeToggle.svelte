@@ -4,23 +4,18 @@
   let isDark = $state(false);
 
   onMount(() => {
-    // Check localStorage first, then OS preference
     const stored = localStorage.getItem('theme');
     if (stored === 'dark' || stored === 'light') {
       isDark = stored === 'dark';
     } else {
       isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-    applyTheme(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   });
-
-  function applyTheme(dark) {
-    document.documentElement.classList.toggle('dark', dark);
-  }
 
   function toggle() {
     isDark = !isDark;
-    applyTheme(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 </script>
@@ -48,8 +43,8 @@
 <style>
   .theme-toggle {
     background: none;
-    border: 1px solid var(--color-border, #e0e0e0);
-    color: var(--color-text, #2a2a2a);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
     width: 34px;
     height: 34px;
     border-radius: 50%;
@@ -62,7 +57,7 @@
   }
 
   .theme-toggle:hover {
-    background: var(--color-surface, #ffffff);
-    border-color: var(--color-text, #2a2a2a);
+    background: var(--color-surface);
+    border-color: var(--color-gold);
   }
 </style>
