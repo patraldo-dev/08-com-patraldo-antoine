@@ -190,10 +190,19 @@
     debugEl.style.cssText = 'position:fixed;top:70px;left:8px;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:12px;padding:10px;border-radius:6px;pointer-events:none;max-width:90vw;';
     document.body.appendChild(debugEl);
 
+    let isPlayRequested = false;
+
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
-      // WebXR pauses video — force play
-      if (video.paused) video.play().catch(() => {});
+      if (video.paused && !isPlayRequested) {
+        isPlayRequested = true;
+        video.play()
+          .then(() => { isPlayRequested = false; })
+          .catch((e) => {
+            console.warn('[AR] play() failed:', e);
+            isPlayRequested = false;
+          });
+      }
       debugEl.textContent = 'paused:' + video.paused + ' time:' + video.currentTime.toFixed(2) + ' ready:' + video.readyState + ' size:' + video.videoWidth + 'x' + video.videoHeight + ' tex:' + (texture.image ? 'yes' : 'no');
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
