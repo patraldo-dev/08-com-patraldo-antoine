@@ -114,8 +114,6 @@
     const tileMesh = new THREE.Mesh(tileGeo, tileMat);
     tileMesh.visible = false;
     scene.add(tileMesh);
-    let isTileMode = false;
-    let isTattooMode = false;
 
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
