@@ -1,6 +1,5 @@
 <!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
 <script>
-  import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
@@ -540,7 +539,6 @@
       ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
         document.body.style.removeProperty(p);
       });
-      document.documentElement.style.cssText = '';
       texture.dispose();
       tileTex.dispose();
       geo.dispose();

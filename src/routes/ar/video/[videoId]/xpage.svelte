@@ -16,7 +16,9 @@
       status = 'unsupported';
       return;
     }
+
     try {
+      // Fetch video info from API
       const res = await fetch(`/api/stream-video/${params.videoId}`);
       if (!res.ok) throw new Error('Video not found');
       videoInfo = await res.json();
@@ -26,6 +28,7 @@
       status = 'error';
       return;
     }
+
     try {
       THREE = await import('three');
     } catch {
@@ -33,13 +36,18 @@
       status = 'error';
       return;
     }
+
     try {
       const supported = await navigator.xr.isSessionSupported('immersive-ar');
-      if (!supported) { status = 'unsupported'; return; }
+      if (!supported) {
+        status = 'unsupported';
+        return;
+      }
     } catch {
       status = 'unsupported';
       return;
     }
+
     status = 'ready';
   });
 
@@ -83,41 +91,36 @@
     scene.add(new THREE.AmbientLight(0xffffff, 1.5));
     scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
-    // --- Video element ---
+    // --- Create video element for VideoTexture ---
     const video = document.createElement('video');
     video.crossOrigin = 'anonymous';
     video.loop = true;
-    video.muted = true; // required for autoplay in WebXR
+    video.muted = true; // Required for autoplay in WebXR
     video.playsInline = true;
     video.preload = 'auto';
 
-    // FIX: corrected stream URL (was missing dot before cloudflarestream.com)
-    const streamUrl = videoInfo.streamUrl ||
-      `https://customer-${videoInfo.customerCode}.cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
+    // Use HLS streaming via hls.js (Chrome can't play .m3u8 natively)
+    const streamUrl = videoInfo.streamUrl || `https://customer-${videoInfo.customerCode}/cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
 
-    // FIX: dynamic import hls.js only when needed (not on Safari which has native HLS)
-    // Pinned to a specific version to avoid silent breaking changes
+    // Try native HLS (Safari) first, fallback to hls.js (loaded via <svelte:head>)
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamUrl;
+    } else if (window.Hls && window.Hls.isSupported()) {
+      const hls = new window.Hls({ enableWorker: true, lowLatencyMode: true });
+      hls.attachMedia(video);
+      hls.on(window.Hls.Events.MEDIA_ATTACHED, () => {
+        hls.loadSource(streamUrl);
+      });
     } else {
-      try {
-        const { default: Hls } = await import('https://cdn.jsdelivr.net/npm/hls.js@1.5.13/+esm');
-        if (Hls.isSupported()) {
-          const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MEDIA_ATTACHED, () => hls.loadSource(streamUrl));
-        } else {
-          throw new Error('HLS not supported on this device');
-        }
-      } catch (e) {
-        throw new Error('Failed to load HLS player: ' + e.message);
-      }
+      throw new Error('HLS not supported on this device');
     }
 
+    // Wait for video to be ready
     await new Promise((res, rej) => {
       video.oncanplaythrough = res;
       video.onerror = () => rej(new Error('Failed to load video stream'));
     });
+
     if (video.paused) await video.play();
 
     const texture = new THREE.VideoTexture(video);
@@ -125,16 +128,16 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
 
-    // Height-to-width ratio for the plane geometry
-    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16')
-      ? 16 / 9    // portrait: taller than wide
+    // Use video aspect ratio or default 16:9
+    const aspect = (videoInfo.aspectRatio === '9:16')
+      ? 16 / 9
       : (videoInfo.aspectRatio === '4:3')
         ? 3 / 4
         : (videoInfo.aspectRatio === '1:1')
           ? 1
-          : 9 / 16; // default landscape 16:9
+          : 9 / 16; // default 16:9 portrait
 
-    const geo = new THREE.PlaneGeometry(0.5, 0.5 * heightToWidthRatio);
+    const geo = new THREE.PlaneGeometry(0.5, 0.5 * aspect);
     const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.matrixAutoUpdate = false;
@@ -151,12 +154,6 @@
     scene.add(reticle);
 
     const viewerSpace = await session.requestReferenceSpace('viewer');
-
-    // FIX: hoist all state variables before any callbacks reference them
-    let placed = false;
-    let lastHitPose = null;
-    let currentMode = null; // hoisted — was declared after highlightBtn
-    let hideTimer = null;   // hoisted — was declared after showControls
 
     let hitTestSource = null;
     try {
@@ -181,8 +178,13 @@
 
     await renderer.xr.setSession(session);
 
+    let placed = false;
+    let lastHitPose = null;
+
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
+      // VideoTexture updates automatically each frame
+
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
         if (results.length > 0) {
@@ -217,8 +219,7 @@
         mesh.matrixAutoUpdate = true;
         mesh.visible = true;
         reticle.visible = false;
-        // FIX: guard against double-play — video may already be playing
-        if (video.paused) video.play();
+        video.play();
         updateUI();
       }
     });
@@ -265,6 +266,7 @@
 
     const btnStyle = 'background:rgba(0,0,0,0.8);color:#fff;border:2px solid rgba(255,255,255,0.2);padding:12px 16px;border-radius:10px;font-size:14px;cursor:pointer;white-space:nowrap;';
 
+    // Play/Pause button (unique to video)
     const playPauseBtn = document.createElement('button');
     playPauseBtn.style.cssText = btnStyle;
     playPauseBtn.textContent = '⏸️ Pause';
@@ -318,7 +320,6 @@
     controlsBar.appendChild(resetBtn);
 
     const allBtns = [playPauseBtn, wallBtn, galleryBtn, resetBtn];
-
     function highlightBtn() {
       allBtns.forEach((b, i) => {
         const active = (i === 1 && currentMode === 'wall') || (i === 2 && currentMode === 'gallery');
@@ -327,6 +328,8 @@
       });
     }
 
+    let currentMode = null;
+    let hideTimer = null;
     function showControls() {
       uiContainer.style.opacity = '1';
       hintEl.style.opacity = '1';
@@ -335,14 +338,12 @@
       clearTimeout(hideTimer);
       hideTimer = setTimeout(hideControls, 4000);
     }
-
     function hideControls() {
       uiContainer.style.opacity = '0.3';
       hintEl.style.opacity = '0';
       controlsBar.style.opacity = '0';
       triggerBtn.style.display = 'block';
     }
-
     function updateUI() {
       closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
       controlsBar.style.display = placed ? 'flex' : 'none';
@@ -362,10 +363,9 @@
       }
       highlightBtn();
     }
-
     updateUI();
 
-    // --- Touch gestures ---
+    // --- Touch gestures (same as image AR) ---
     let isDragging = false, isPinching = false;
     let touchStartX = 0, touchStartY = 0;
     let touchStartRotX = 0, touchStartRotY = 0, touchStartRotZ = 0;
@@ -405,11 +405,13 @@
     touchOverlay.addEventListener('touchmove', (e) => {
       if (!placed) return;
       e.preventDefault();
+
       if (e.touches.length === 2 && isPinching) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
+
         if (lastPinchDist > 0) {
           const factor = dist / lastPinchDist;
           mesh.scale.multiplyScalar(factor);
@@ -417,8 +419,10 @@
           mesh.scale.set(s, s, s);
         }
         lastPinchDist = dist;
-        mesh.rotation.z += angle - lastPinchAngle;
+
+        mesh.rotation.z = mesh.rotation.z + (angle - lastPinchAngle);
         lastPinchAngle = angle;
+
         const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         mesh.position.x += (cx - lastPinchCenter.x) * 0.002;
@@ -426,6 +430,7 @@
         lastPinchCenter = { x: cx, y: cy };
         return;
       }
+
       if (!isDragging || e.touches.length !== 1) return;
       const dx = e.touches[0].clientX - touchStartX;
       const dy = e.touches[0].clientY - touchStartY;
@@ -440,12 +445,13 @@
       lastPinchDist = 0;
     });
 
-    // --- Cleanup ---
+    // Cleanup
     const cleanup = () => {
       video.pause();
       video.src = '';
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
+      closeBtn.remove();
       uiContainer.remove();
       touchOverlay.remove();
       renderer.dispose();
@@ -455,22 +461,20 @@
       reticleGeo.dispose();
       reticleMat.dispose();
       window.removeEventListener('resize', handleResize);
-      // FIX: surgical style reset — don't nuke all body styles
-      ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
-        document.body.style.removeProperty(p);
-      });
+      document.body.style.cssText = '';
       document.documentElement.style.cssText = '';
+      document.body.style.touchAction = '';
+      document.body.style.overflow = '';
       document.querySelectorAll('#ar-ui-video, [style*="z-index:9999"]').forEach(el => el.remove());
       window.location.replace('/');
     };
-
     session.addEventListener('end', () => cleanup());
   }
 </script>
 
 <svelte:head>
   <title>AR Video — Antoine Patraldo</title>
-  <!-- No hls.js script tag here — loaded dynamically only when needed -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </svelte:head>
 
 {#if status === 'ar-active'}
@@ -521,12 +525,14 @@
     font-family: 'Inter', sans-serif;
     color: #333;
   }
+
   .ar-preview img {
     max-width: 300px;
     max-height: 300px;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   }
+
   .video-placeholder {
     width: 200px;
     height: 200px;
@@ -537,11 +543,13 @@
     background: #f0f0f0;
     border-radius: 12px;
   }
+
   .video-label {
     margin: 0.5rem 0 0;
     color: #666;
     font-size: 0.9rem;
   }
+
   .spinner {
     width: 40px;
     height: 40px;
@@ -550,9 +558,14 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   .ar-page h2 { margin: 0; font-size: 1.5rem; color: #2c5e3d; }
   .ar-page p { margin: 0; color: #666; text-align: center; max-width: 400px; }
+
   .launch-btn {
     background: #2c5e3d;
     color: white;
@@ -564,7 +577,7 @@
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(44, 94, 61, 0.3);
   }
-  .launch-btn:hover { opacity: 0.9; }
+
   .back-link {
     background: transparent;
     color: #666;
@@ -575,5 +588,4 @@
     cursor: pointer;
     text-decoration: none;
   }
-  .back-link:hover { background: #f5f5f5; }
 </style>
