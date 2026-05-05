@@ -93,7 +93,7 @@
 
     // FIX: corrected stream URL (was missing dot before cloudflarestream.com)
     const streamUrl = videoInfo.streamUrl ||
-      `https://customer-${videoInfo.customerCode}.cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
+      `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
 
     // FIX: dynamic import hls.js only when needed (not on Safari which has native HLS)
     // Pinned to a specific version to avoid silent breaking changes
