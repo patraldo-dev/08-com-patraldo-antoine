@@ -5,17 +5,14 @@
 
   const { params } = $props();
 
-  let status = $state('loading'); // loading | ready | unsupported | error
+  let status = $state('loading');
   let errorMsg = $state('');
   let THREE = null;
   let videoInfo = null;
   let posterUrl = '';
 
   onMount(async () => {
-    if (!browser || !navigator.xr) {
-      status = 'unsupported';
-      return;
-    }
+    if (!browser || !navigator.xr) { status = 'unsupported'; return; }
     try {
       const res = await fetch(`/api/stream-video/${params.videoId}`);
       if (!res.ok) throw new Error('Video not found');
@@ -83,20 +80,21 @@
     scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
     // --- Video element ---
+    // FIX: attach to DOM — WebXR VideoTexture requires video to be in the document
     const video = document.createElement('video');
     video.loop = true;
-    video.muted = true; // required for autoplay in WebXR
+    video.muted = true;
     video.playsInline = true;
     video.preload = 'auto';
+    // Hidden but in DOM — required for WebXR VideoTexture to work
+    video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;';
+    document.body.appendChild(video);
 
-    // HLS is public on CF Stream — use directly with hls.js
     const streamUrl = videoInfo.streamUrl;
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Safari: native HLS
       video.src = streamUrl;
     } else {
-      // Chrome: use hls.js
       try {
         const { default: Hls } = await import('https://cdn.jsdelivr.net/npm/hls.js@1.5.13/+esm');
         if (Hls.isSupported()) {
@@ -108,34 +106,46 @@
         console.warn('[AR] hls.js failed to load');
       }
     }
+
     video.load();
 
-    // Wait for video to actually have decoded frames before creating texture
-    await new Promise((res) => {
-      if (video.readyState >= 3) { res(); return; } // HAVE_FUTURE_DATA
-      video.addEventListener('timeupdate', function handler() {
-        if (video.currentTime > 0) {
-          video.removeEventListener('timeupdate', handler);
-          res();
-        }
-      });
-      // Timeout fallback
-      setTimeout(res, 10000);
-    });
+    // Wait for video to be ready to play
+    await Promise.race([
+      new Promise((res) => {
+        if (video.readyState >= 3) { res(); return; }
+        video.addEventListener('canplay', res, { once: true });
+      }),
+      new Promise((res) => setTimeout(res, 8000))
+    ]);
 
+    // Start playback before creating texture
+    try { await video.play(); } catch (e) { console.warn('[AR] Initial play failed:', e); }
+
+    // Wait for actual frame data — currentTime must advance past 0
+    await Promise.race([
+      new Promise((res) => {
+        if (video.currentTime > 0) { res(); return; }
+        video.addEventListener('timeupdate', function handler() {
+          if (video.currentTime > 0) {
+            video.removeEventListener('timeupdate', handler);
+            res();
+          }
+        });
+      }),
+      new Promise((res) => setTimeout(res, 3000))
+    ]);
+
+    // NOW create texture — video has real decoded frame data
     const texture = new THREE.VideoTexture(video);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
 
-    // Height-to-width ratio for the plane geometry
-    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16')
-      ? 16 / 9    // portrait: taller than wide
-      : (videoInfo.aspectRatio === '4:3')
-        ? 3 / 4
-        : (videoInfo.aspectRatio === '1:1')
-          ? 1
-          : 9 / 16; // default landscape 16:9
+    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16') ? 16 / 9
+      : (videoInfo.aspectRatio === '4:3') ? 3 / 4
+      : (videoInfo.aspectRatio === '1:1') ? 1
+      : 9 / 16;
 
     const geo = new THREE.PlaneGeometry(0.5, 0.5 * heightToWidthRatio);
     const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
@@ -155,11 +165,11 @@
 
     const viewerSpace = await session.requestReferenceSpace('viewer');
 
-    // FIX: hoist all state variables before any callbacks reference them
+    // Hoist all state before callbacks
     let placed = false;
     let lastHitPose = null;
-    let currentMode = null; // hoisted — was declared after highlightBtn
-    let hideTimer = null;   // hoisted — was declared after showControls
+    let currentMode = null;
+    let hideTimer = null;
 
     let hitTestSource = null;
     try {
@@ -170,12 +180,8 @@
 
     let localSpace;
     for (const type of ['local-floor', 'local', 'viewer']) {
-      try {
-        localSpace = await session.requestReferenceSpace(type);
-        break;
-      } catch (e) {
-        console.warn('[AR] Reference space', type, 'not supported');
-      }
+      try { localSpace = await session.requestReferenceSpace(type); break; }
+      catch (e) { console.warn('[AR] Reference space', type, 'not supported'); }
     }
     if (!localSpace) {
       await session.end();
@@ -184,9 +190,8 @@
 
     await renderer.xr.setSession(session);
 
-    // On-screen debug overlay
+    // Debug overlay — remove after confirming texture works
     const debugEl = document.createElement('div');
-    debugEl.id = 'ar-debug';
     debugEl.style.cssText = 'position:fixed;top:70px;left:8px;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:12px;padding:10px;border-radius:6px;pointer-events:none;max-width:90vw;';
     document.body.appendChild(debugEl);
 
@@ -194,20 +199,22 @@
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
-      // Force texture update — required in WebXR context
-      if (texture && video && !video.paused) {
-        texture.needsUpdate = true;
-      }
+
+      // Keep video playing — WebXR compositor can pause it
       if (video.paused && !isPlayRequested) {
         isPlayRequested = true;
         video.play()
           .then(() => { isPlayRequested = false; })
-          .catch((e) => {
-            console.warn('[AR] play() failed:', e);
-            isPlayRequested = false;
-          });
+          .catch((e) => { console.warn('[AR] play() failed:', e); isPlayRequested = false; });
       }
-      debugEl.textContent = 'paused:' + video.paused + ' time:' + video.currentTime.toFixed(2) + ' ready:' + video.readyState + ' size:' + video.videoWidth + 'x' + video.videoHeight + ' tex:' + (texture.image ? 'yes' : 'no');
+
+      // Force texture update — required in WebXR context
+      if (!video.paused && video.readyState >= 2) {
+        texture.needsUpdate = true;
+      }
+
+      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight}`;
+
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
         if (results.length > 0) {
@@ -230,8 +237,7 @@
           }
         }
       }
-      // Force video texture update each frame
-      texture.needsUpdate = true;
+
       renderer.render(scene, camera);
     });
 
@@ -244,13 +250,11 @@
         mesh.matrixAutoUpdate = true;
         mesh.visible = true;
         reticle.visible = false;
-        // FIX: guard against double-play — video may already be playing
         if (video.paused) video.play();
         updateUI();
       }
     });
 
-    // Auto-place if no hit-test
     if (!hitTestSource) {
       mesh.visible = true;
       mesh.matrixAutoUpdate = true;
@@ -296,13 +300,8 @@
     playPauseBtn.style.cssText = btnStyle;
     playPauseBtn.textContent = '⏸️ Pause';
     playPauseBtn.onclick = () => {
-      if (video.paused) {
-        video.play();
-        playPauseBtn.textContent = '⏸️ Pause';
-      } else {
-        video.pause();
-        playPauseBtn.textContent = '▶️ Play';
-      }
+      if (video.paused) { video.play(); playPauseBtn.textContent = '⏸️ Pause'; }
+      else { video.pause(); playPauseBtn.textContent = '▶️ Play'; }
       showControls();
     };
     controlsBar.appendChild(playPauseBtn);
@@ -310,23 +309,13 @@
     const wallBtn = document.createElement('button');
     wallBtn.style.cssText = btnStyle;
     wallBtn.textContent = '🧱 Wall';
-    wallBtn.onclick = () => {
-      mesh.rotation.set(0, mesh.rotation.y, 0);
-      currentMode = 'wall';
-      highlightBtn();
-      showControls();
-    };
+    wallBtn.onclick = () => { mesh.rotation.set(0, mesh.rotation.y, 0); currentMode = 'wall'; highlightBtn(); showControls(); };
     controlsBar.appendChild(wallBtn);
 
     const galleryBtn = document.createElement('button');
     galleryBtn.style.cssText = btnStyle;
     galleryBtn.textContent = '🖼️ Gallery';
-    galleryBtn.onclick = () => {
-      mesh.rotation.set(0, 0, 0);
-      currentMode = 'gallery';
-      highlightBtn();
-      showControls();
-    };
+    galleryBtn.onclick = () => { mesh.rotation.set(0, 0, 0); currentMode = 'gallery'; highlightBtn(); showControls(); };
     controlsBar.appendChild(galleryBtn);
 
     const resetBtn = document.createElement('button');
@@ -384,9 +373,7 @@
         clearTimeout(hideTimer);
         hideTimer = setTimeout(hideControls, 4000);
       }
-      if (!placed) {
-        hintEl.textContent = 'Point at a surface and tap to place video';
-      }
+      if (!placed) hintEl.textContent = 'Point at a surface and tap to place video';
       highlightBtn();
     }
 
@@ -407,8 +394,7 @@
       if (placed && uiContainer.style.opacity !== '1') showControls();
       if (e.touches.length === 1) {
         e.preventDefault();
-        isDragging = true;
-        isPinching = false;
+        isDragging = true; isPinching = false;
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
         touchStartRotX = mesh.rotation.x;
@@ -416,8 +402,7 @@
         touchStartRotZ = mesh.rotation.z;
       } else if (e.touches.length === 2) {
         e.preventDefault();
-        isDragging = false;
-        isPinching = true;
+        isDragging = false; isPinching = true;
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         lastPinchDist = Math.sqrt(dx * dx + dy * dy);
@@ -471,6 +456,8 @@
     const cleanup = () => {
       video.pause();
       video.src = '';
+      video.remove(); // remove video element from DOM
+      debugEl.remove();
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
       uiContainer.remove();
@@ -482,7 +469,6 @@
       reticleGeo.dispose();
       reticleMat.dispose();
       window.removeEventListener('resize', handleResize);
-      // FIX: surgical style reset — don't nuke all body styles
       ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
         document.body.style.removeProperty(p);
       });
@@ -497,7 +483,6 @@
 
 <svelte:head>
   <title>AR Video — Antoine Patraldo</title>
-  <!-- No hls.js script tag here — loaded dynamically only when needed -->
 </svelte:head>
 
 {#if status === 'ar-active'}
@@ -564,11 +549,7 @@
     background: #f0f0f0;
     border-radius: 12px;
   }
-  .video-label {
-    margin: 0.5rem 0 0;
-    color: #666;
-    font-size: 0.9rem;
-  }
+  .video-label { margin: 0.5rem 0 0; color: #666; font-size: 0.9rem; }
   .spinner {
     width: 40px;
     height: 40px;
