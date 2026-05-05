@@ -81,6 +81,7 @@
 
     // --- Video element — hidden in DOM, required for WebXR ---
     const video = document.createElement('video');
+    video.crossOrigin = 'anonymous';
     video.loop = true;
     video.muted = true;
     video.playsInline = true;
@@ -243,7 +244,7 @@
         }
       }
 
-      renderer.render(scene, camera);
+      renderer.render(scene, renderer.xr.getCamera());
     });
 
     session.addEventListener('select', () => {
