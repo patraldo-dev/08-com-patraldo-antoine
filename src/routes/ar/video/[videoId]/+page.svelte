@@ -115,15 +115,6 @@
       new Promise((res) => setTimeout(res, 5000))
     ]);
 
-    // Wait for video to be ready (with timeout)
-    const readyPromise = new Promise((res, rej) => {
-      video.oncanplaythrough = () => res();
-      video.onerror = () => rej(new Error('Failed to load video stream'));
-    });
-    const timeoutPromise = new Promise((_, rej) =>
-      setTimeout(() => rej(new Error('Video load timed out (15s)')), 15000)
-    );
-    await Promise.race([readyPromise, timeoutPromise]);
     if (video.paused) await video.play();
 
     const texture = new THREE.VideoTexture(video);
