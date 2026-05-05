@@ -89,28 +89,10 @@
     video.playsInline = true;
     video.preload = 'auto';
 
-    // FIX: corrected stream URL (was missing dot before cloudflarestream.com)
-    const streamUrl = videoInfo.streamUrl ||
-      `https://customer-9kroafxwku5qm6fx.cloudflarestream.com/${params.videoId}/manifest/video.m3u8`;
-
-    // FIX: dynamic import hls.js only when needed (not on Safari which has native HLS)
-    // Pinned to a specific version to avoid silent breaking changes
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamUrl;
-    } else {
-      try {
-        const { default: Hls } = await import('https://cdn.jsdelivr.net/npm/hls.js@1.5.13/+esm');
-        if (Hls.isSupported()) {
-          const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MEDIA_ATTACHED, () => hls.loadSource(streamUrl));
-        } else {
-          throw new Error('HLS not supported on this device');
-        }
-      } catch (e) {
-        throw new Error('Failed to load HLS player: ' + e.message);
-      }
-    }
+    // Use direct MP4 (most reliable for VideoTexture)
+    const videoUrl = videoInfo.videoUrl || videoInfo.streamUrl;
+    video.src = videoUrl;
+    video.load();
 
     // Wait for video to be ready (with timeout)
     const readyPromise = new Promise((res, rej) => {

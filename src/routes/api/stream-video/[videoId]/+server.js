@@ -27,8 +27,9 @@ export async function GET({ params, platform }) {
       uid: video.uid,
       status: video.status,
       duration: video.duration,
-      // HLS manifest URL for streaming (works with hls.js)
       streamUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/manifest/video.m3u8`,
+      // Direct video URL (works without HLS)
+      videoUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/downloads/default.mp4`,
       thumbnail: video.thumbnail,
       aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9'
     });
