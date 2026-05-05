@@ -28,10 +28,12 @@ export async function GET({ params, platform }) {
       status: video.status,
       duration: video.duration,
       streamUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/manifest/video.m3u8`,
-      // Direct video URL (works without HLS)
-      videoUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/downloads/default.mp4`,
+      dashUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/manifest/video.mpd`,
+      videoUrl: video.download?.url || null,
       thumbnail: video.thumbnail,
-      aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9'
+      aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9',
+      // Debug: include raw video object keys
+      _debug: Object.keys(video)
     });
   } catch (e) {
     return json({ error: e.message }, { status: 500 });
