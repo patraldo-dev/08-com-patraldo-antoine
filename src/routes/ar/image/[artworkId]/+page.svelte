@@ -414,7 +414,6 @@
       });
     }
 
-    let currentMode = null;
     function updateUI() {
       closeBtn.textContent = placed ? '✕ Close AR' : 'Tap to place · ✕ Close AR';
       controlsBar.style.display = placed ? 'flex' : 'none';
