@@ -45,15 +45,13 @@
 
   async function launchAR() {
     if (!THREE || !videoInfo) return;
+    status = 'loading';
     try {
       await startAR(THREE);
       status = 'ar-active';
     } catch (e) {
-      console.error('[AR] Full error:', e);
+      console.error('[AR Video] Error:', e);
       errorMsg = e.message || 'AR failed to start';
-      if (e.message?.includes('hit-test')) errorMsg = 'Hit test not supported: ' + e.message;
-      else if (e.message?.includes('reference space')) errorMsg = 'Reference space not supported: ' + e.message;
-      else if (e.message?.includes('not supported')) errorMsg = 'Feature not supported: ' + e.message;
       status = 'error';
     }
   }
@@ -114,10 +112,15 @@
       }
     }
 
-    await new Promise((res, rej) => {
-      video.oncanplaythrough = res;
+    // Wait for video to be ready (with timeout)
+    const readyPromise = new Promise((res, rej) => {
+      video.oncanplaythrough = () => res();
       video.onerror = () => rej(new Error('Failed to load video stream'));
     });
+    const timeoutPromise = new Promise((_, rej) =>
+      setTimeout(() => rej(new Error('Video load timed out (15s)')), 15000)
+    );
+    await Promise.race([readyPromise, timeoutPromise]);
     if (video.paused) await video.play();
 
     const texture = new THREE.VideoTexture(video);
