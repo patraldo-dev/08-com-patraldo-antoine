@@ -1,4 +1,4 @@
-<!-- AR Video page — CF Stream videos as CanvasTexture in WebXR -->
+<!-- AR Video page — CF Stream videos as VideoTexture in WebXR -->
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -134,7 +134,16 @@
       new Promise((res) => setTimeout(res, 3000))
     ]);
 
-    // Reticle — created before setSession is fine, no texture involved
+    // Wait for video dimensions to be available
+    await new Promise((res) => {
+      if (video.videoWidth > 0 && video.videoHeight > 0) {
+        res();
+      } else {
+        video.addEventListener('loadedmetadata', res, { once: true });
+      }
+    });
+
+    // Reticle
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
     const reticleMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
@@ -145,7 +154,6 @@
 
     const viewerSpace = await session.requestReferenceSpace('viewer');
 
-    // Hoist all state before callbacks
     let placed = false;
     let lastHitPose = null;
     let currentMode = null;
@@ -171,19 +179,14 @@
     // FIX: setSession FIRST — changes the GL context
     await renderer.xr.setSession(session);
 
-    // FIX: create canvas texture AFTER setSession so it uploads to the correct GL context
+    // Create VideoTexture AFTER setSession
     const heightToWidthRatio = (videoInfo.aspectRatio === '9:16') ? 16 / 9
       : (videoInfo.aspectRatio === '4:3') ? 3 / 4
       : (videoInfo.aspectRatio === '1:1') ? 1
       : 9 / 16;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 1920;
-    canvas.height = video.videoHeight || 1080;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const texture = new THREE.CanvasTexture(canvas);
+    const texture = new THREE.VideoTexture(video);
+    texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = false;
@@ -195,31 +198,18 @@
     mesh.visible = false;
     scene.add(mesh);
 
-    // Debug overlay
-    const debugEl = document.createElement('div');
-    debugEl.style.cssText = 'position:fixed;top:70px;left:8px;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:12px;padding:10px;border-radius:6px;pointer-events:none;max-width:90vw;';
-    document.body.appendChild(debugEl);
-
     let isPlayRequested = false;
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
 
       // Keep video playing — WebXR compositor can pause it
-      if (video.paused && !isPlayRequested) {
+      if (video.paused && !isPlayRequested && placed) {
         isPlayRequested = true;
         video.play()
           .then(() => { isPlayRequested = false; })
           .catch((e) => { console.warn('[AR] play() failed:', e); isPlayRequested = false; });
       }
-
-      // Draw video frame to canvas each tick
-      if (!video.paused && video.readyState >= 2) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        texture.needsUpdate = true;
-      }
-
-      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight} placed:${placed}`;
 
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
@@ -261,7 +251,7 @@
       }
     });
 
-    // Auto-place if no hit-test — also show touch overlay immediately
+    // Auto-place if no hit-test
     if (!hitTestSource) {
       mesh.visible = true;
       mesh.matrixAutoUpdate = true;
@@ -272,7 +262,6 @@
 
     // --- Touch overlay ---
     const touchOverlay = document.createElement('div');
-    // FIX: show immediately if already placed (auto-place case)
     touchOverlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;display:${placed ? 'block' : 'none'};`;
     document.body.appendChild(touchOverlay);
 
@@ -385,7 +374,6 @@
       highlightBtn();
     }
 
-    // Call updateUI now that everything is wired up
     updateUI();
 
     // --- Touch gestures ---
@@ -466,7 +454,6 @@
       video.pause();
       video.src = '';
       video.remove();
-      debugEl.remove();
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
       uiContainer.remove();
