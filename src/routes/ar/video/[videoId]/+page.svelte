@@ -83,7 +83,6 @@
 
     // --- Video element ---
     const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
     video.loop = true;
     video.muted = true; // required for autoplay in WebXR
     video.playsInline = true;
@@ -91,6 +90,7 @@
 
     // Use direct MP4 (most reliable for VideoTexture)
     const videoUrl = videoInfo.videoUrl || videoInfo.streamUrl;
+    // No crossOrigin — CF Stream may not send CORS headers
     video.src = videoUrl;
     video.load();
 
