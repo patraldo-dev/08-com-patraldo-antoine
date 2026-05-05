@@ -1,4 +1,4 @@
-<!-- AR Video page — CF Stream videos as VideoTexture in WebXR -->
+<!-- AR Video page — CF Stream videos as CanvasTexture in WebXR -->
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -79,14 +79,12 @@
     scene.add(new THREE.AmbientLight(0xffffff, 1.5));
     scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
-    // --- Video element ---
-    // FIX: attach to DOM — WebXR VideoTexture requires video to be in the document
+    // --- Video element — hidden in DOM, required for WebXR ---
     const video = document.createElement('video');
     video.loop = true;
     video.muted = true;
     video.playsInline = true;
     video.preload = 'auto';
-    // Hidden but in DOM — required for WebXR VideoTexture to work
     video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;';
     document.body.appendChild(video);
 
@@ -118,10 +116,10 @@
       new Promise((res) => setTimeout(res, 8000))
     ]);
 
-    // Start playback before creating texture
+    // Start playback
     try { await video.play(); } catch (e) { console.warn('[AR] Initial play failed:', e); }
 
-    // Wait for actual frame data — currentTime must advance past 0
+    // Wait for actual frame data
     await Promise.race([
       new Promise((res) => {
         if (video.currentTime > 0) { res(); return; }
@@ -135,9 +133,17 @@
       new Promise((res) => setTimeout(res, 3000))
     ]);
 
-    // NOW create texture — video has real decoded frame data
-    const texture = new THREE.VideoTexture(video);
-    texture.colorSpace = THREE.SRGBColorSpace;
+    // --- Canvas texture approach ---
+    // Bypasses WebXR GL context mismatch that causes VideoTexture to show black
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1920;
+    canvas.height = video.videoHeight || 1080;
+    const ctx = canvas.getContext('2d');
+
+    // Draw first frame immediately
+    if (video.readyState >= 2) ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const texture = new THREE.CanvasTexture(canvas);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = false;
@@ -190,7 +196,7 @@
 
     await renderer.xr.setSession(session);
 
-    // Debug overlay — remove after confirming texture works
+    // Debug overlay
     const debugEl = document.createElement('div');
     debugEl.style.cssText = 'position:fixed;top:70px;left:8px;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:12px;padding:10px;border-radius:6px;pointer-events:none;max-width:90vw;';
     document.body.appendChild(debugEl);
@@ -208,12 +214,13 @@
           .catch((e) => { console.warn('[AR] play() failed:', e); isPlayRequested = false; });
       }
 
-      // Force texture update — required in WebXR context
+      // Draw current video frame to canvas each frame — bypasses GL context issue
       if (!video.paused && video.readyState >= 2) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         texture.needsUpdate = true;
       }
 
-      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight}`;
+      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight} canvas:${canvas.width}x${canvas.height}`;
 
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
@@ -456,7 +463,7 @@
     const cleanup = () => {
       video.pause();
       video.src = '';
-      video.remove(); // remove video element from DOM
+      video.remove();
       debugEl.remove();
       renderer.setAnimationLoop(null);
       renderer.domElement.remove();
