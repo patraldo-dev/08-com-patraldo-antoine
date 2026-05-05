@@ -194,6 +194,10 @@
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
+      // Force texture update — required in WebXR context
+      if (texture && video && !video.paused) {
+        texture.needsUpdate = true;
+      }
       if (video.paused && !isPlayRequested) {
         isPlayRequested = true;
         video.play()
