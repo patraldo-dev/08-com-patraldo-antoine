@@ -126,7 +126,7 @@
     font-size: 2.5rem;
     font-weight: 200;
     margin-bottom: 2rem;
-    color: #2a2a2a;
+    color: var(--color-text);
   }
   .filter-container {
     display: flex;
@@ -136,10 +136,10 @@
   .filter-select {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
     border-radius: 6px;
-    background: white;
-    color: #2a2a2a;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
     cursor: pointer;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -161,7 +161,7 @@
   .no-results {
     text-align: center;
     padding: 4rem 0;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
   }
   @media (max-width: 768px) {

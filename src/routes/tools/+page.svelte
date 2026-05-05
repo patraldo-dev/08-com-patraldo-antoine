@@ -83,7 +83,7 @@
 <style>
   .tools-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-raised) 100%);
     padding: 6rem 2rem 4rem;
   }
 
@@ -96,14 +96,14 @@
   .tools-header h1 {
     font-size: 3rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
     letter-spacing: -0.02em;
   }
 
   .subtitle {
     font-size: 1.25rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
   }
@@ -117,8 +117,8 @@
   }
 
   .tool-card {
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 16px;
     padding: 2.5rem;
     text-decoration: none;
@@ -133,13 +133,13 @@
 
   .tool-card.available {
     cursor: pointer;
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
 
   .tool-card.available:hover {
     transform: translateY(-8px);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
-    border-color: #000;
+    border-color: var(--color-text);
   }
 
   .tool-card.coming-soon {
@@ -171,13 +171,13 @@
   .tool-card h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
   }
 
   .tool-card p {
     font-size: 1rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0 0 1.5rem 0;
     flex: 1;
@@ -186,8 +186,8 @@
   .status-badge {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: #f0f0f0;
-    color: #666;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
     border-radius: 20px;
     font-size: 0.875rem;
     font-weight: 600;
@@ -196,8 +196,8 @@
   }
 
   .status-badge.live {
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
   }
 
   .tools-cta {
@@ -205,21 +205,21 @@
     margin: 0 auto;
     text-align: center;
     padding: 3rem 2rem;
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
   }
 
   .tools-cta h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
   }
 
   .tools-cta p {
     font-size: 1.125rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0 0 2rem 0;
   }
@@ -227,8 +227,8 @@
   .cta-button {
     display: inline-block;
     padding: 1rem 2.5rem;
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
     text-decoration: none;
     border-radius: 8px;
     font-weight: 600;
@@ -237,7 +237,7 @@
   }
 
   .cta-button:hover {
-    background: #333;
+    background: var(--color-text-dim);
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }

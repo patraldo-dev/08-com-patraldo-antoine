@@ -119,15 +119,15 @@
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: #f5f5f5;
+    background: var(--color-surface);
     border-radius: 8px;
     text-decoration: none;
-    color: #333;
+    color: var(--color-text);
     transition: background 0.2s;
   }
   
   .back-link:hover, .featured-link:hover {
-    background: #e0e0e0;
+    background: var(--color-border);
   }
   
   .video-container {
@@ -149,7 +149,7 @@
   .description {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: #444;
+    color: var(--color-text-dim);
     margin-bottom: 1.5rem;
   }
   
@@ -157,7 +157,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
   }

@@ -13,7 +13,8 @@
     document.documentElement.classList.toggle('dark', isDark);
   });
 
-  function toggle() {
+  function toggle(e) {
+    e?.stopPropagation();
     isDark = !isDark;
     document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');

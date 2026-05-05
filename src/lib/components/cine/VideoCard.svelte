@@ -1,7 +1,7 @@
 <!-- src/lib/components/cine/VideoCard.svelte -->
 <script>
   let { film, customerCode, cloudflareAccountHash = '' } = $props();
-  
+
   // Debug: Log the values
   $effect(() => {
     console.log('VideoCard Debug:');
@@ -11,23 +11,23 @@
     console.log('- cloudflareAccountHash:', cloudflareAccountHash);
     console.log('- Generated URL:', thumbnailUrl);
   });
-  
+
   // Reactive thumbnail URL
   const thumbnailUrl = $derived(
     film.thumbnail_url && cloudflareAccountHash
       ? `https://imagedelivery.net/${cloudflareAccountHash}/${film.thumbnail_url}/thumbnail`
       : ''
   );
-  
+
   let imageError = $state(false);
-  
+
   function formatDuration(seconds) {
     if (!seconds || seconds === 0) return '0:15';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
-  
+
   function handleImageError(event) {
     console.error('Image failed to load:', event.target.src);
     imageError = true;
@@ -37,8 +37,8 @@
 <a href={`/cine/watch/${film.id}`} class="video-card">
   <div class="thumbnail-container">
     {#if thumbnailUrl && !imageError}
-      <img 
-        src={thumbnailUrl} 
+      <img
+        src={thumbnailUrl}
         alt={film.title}
         loading="lazy"
         onerror={handleImageError}
@@ -58,12 +58,12 @@
         {/if}
       </div>
     {/if}
-    
+
     <div class="duration-badge">
       {formatDuration(film.duration)}
     </div>
   </div>
-  
+
   <div class="video-info">
     <h3>{film.title}</h3>
     {#if film.description}
@@ -86,20 +86,20 @@
     transition: transform 0.2s;
     cursor: pointer;
   }
-  
+
   .video-card:hover {
     transform: translateY(-4px);
   }
-  
+
   .thumbnail-container {
     position: relative;
     width: 100%;
     padding-bottom: 56.25%;
-    background: #1a1a1a;
+    background: var(--color-text);
     border-radius: 8px;
     overflow: hidden;
   }
-  
+
   .thumbnail-container img {
     position: absolute;
     top: 0;
@@ -108,7 +108,7 @@
     height: 100%;
     object-fit: cover;
   }
-  
+
   .thumbnail-placeholder {
     position: absolute;
     top: 0;
@@ -120,11 +120,11 @@
     justify-content: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
-  
+
   .play-icon {
     opacity: 0.8;
   }
-  
+
   .duration-badge {
     position: absolute;
     bottom: 8px;
@@ -136,32 +136,32 @@
     font-size: 0.85rem;
     font-weight: 500;
   }
-  
+
   .video-info {
     padding: 1rem 0;
   }
-  
+
   .video-info h3 {
     margin: 0 0 0.5rem;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--color-text);
   }
-  
+
   .description {
-    color: #aaa;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     margin: 0 0 0.5rem;
     line-height: 1.4;
   }
-  
+
   .metadata {
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
-  
+
   .type {
     text-transform: capitalize;
   }

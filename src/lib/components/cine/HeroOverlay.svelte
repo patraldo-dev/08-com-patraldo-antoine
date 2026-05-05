@@ -171,7 +171,7 @@
   
   .film-description {
     font-size: 1.1rem;
-    color: #e0e0e0;
+    color: var(--color-border);
     margin: 0 0 1rem;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
     line-height: 1.5;
