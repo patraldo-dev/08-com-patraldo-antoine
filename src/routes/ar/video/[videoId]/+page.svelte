@@ -192,6 +192,8 @@
 
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
+      // WebXR pauses video — force play
+      if (video.paused) video.play().catch(() => {});
       debugEl.textContent = 'paused:' + video.paused + ' time:' + video.currentTime.toFixed(2) + ' ready:' + video.readyState + ' size:' + video.videoWidth + 'x' + video.videoHeight + ' tex:' + (texture.image ? 'yes' : 'no');
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
