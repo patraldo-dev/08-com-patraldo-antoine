@@ -69,6 +69,7 @@
       </div>
 
       <div class="thumbnail-strip" bind:this={thumbnailStrip}>
+        <div class="scroll-spacer"></div>
         {#each artworks as artwork, i (artwork.id)}
           <button
             class="thumbnail {selectedArtwork?.id === artwork.id ? 'active' : ''}"
@@ -78,6 +79,7 @@
             <img src={getImageUrl(artwork)} alt={artwork.title} loading="lazy" />
           </button>
         {/each}
+        <div class="scroll-spacer right"></div>
       </div>
 
       <div class="nav-buttons">
@@ -195,10 +197,19 @@
     gap: 0.75rem;
     overflow-x: auto;
     flex: 1;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0;
     scrollbar-width: thin;
     scrollbar-color: #2c5e3d #e0e0e0;
     scroll-snap-type: x proximity;
+  }
+
+  .scroll-spacer {
+    flex-shrink: 0;
+    width: 0.25rem;
+  }
+
+  .scroll-spacer.right {
+    width: 0.75rem;
   }
 
   .thumbnail-strip::-webkit-scrollbar {
@@ -341,8 +352,16 @@
     .thumbnail-strip {
       width: 100%;
       justify-content: flex-start;
-      padding: 0.5rem 1rem;
-      scroll-padding: 0 1rem;
+      padding: 0.5rem 0;
+      scroll-padding: 0 0.5rem;
+    }
+
+    .scroll-spacer {
+      width: 0.5rem;
+    }
+
+    .scroll-spacer.right {
+      width: 0.5rem;
     }
 
     .thumbnail {
