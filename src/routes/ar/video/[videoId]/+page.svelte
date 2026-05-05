@@ -109,13 +109,17 @@
     }
     video.load();
 
-    // Wait for video with 5s fallback (canplaythrough may not fire in WebXR context)
-    await Promise.race([
-      new Promise((res) => { video.oncanplaythrough = res; }),
-      new Promise((res) => setTimeout(res, 5000))
-    ]);
+    // Wait for video to have actual frame data before creating texture
+    await new Promise((res) => {
+      video.onloadeddata = () => res();
+      video.onerror = () => res();
+      setTimeout(res, 5000);
+    });
 
-    if (video.paused) await video.play();
+    await video.play();
+
+    // Wait 2 frames so video paints its first frame before texture captures it
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
     const texture = new THREE.VideoTexture(video);
     texture.colorSpace = THREE.SRGBColorSpace;
