@@ -88,36 +88,32 @@
     video.playsInline = true;
     video.preload = 'auto';
 
-    // Use our stream proxy — handles CORS and signed tokens server-side
-    const proxyBase = `/api/stream-proxy/${params.videoId}`;
-    const hlsUrl = `${proxyBase}/manifest/video.m3u8`;
-    const mp4Url = `${proxyBase}/downloads/default.mp4`;
+    // HLS is public on CF Stream — use directly with hls.js
+    const streamUrl = videoInfo.streamUrl;
 
-    // Try native HLS first (Safari), then hls.js, then direct MP4
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = hlsUrl;
+      // Safari: native HLS
+      video.src = streamUrl;
     } else {
+      // Chrome: use hls.js
       try {
         const { default: Hls } = await import('https://cdn.jsdelivr.net/npm/hls.js@1.5.13/+esm');
         if (Hls.isSupported()) {
-          const hls = new Hls({
-            enableWorker: true,
-            lowLatencyMode: false,
-            xhrSetup: (xhr) => { xhr.withCredentials = false; }
-          });
+          const hls = new Hls();
           hls.attachMedia(video);
-          hls.on(Hls.Events.MEDIA_ATTACHED, () => hls.loadSource(hlsUrl));
-        } else {
-          // Fallback to direct MP4
-          video.src = mp4Url;
-          video.load();
+          hls.on(Hls.Events.MEDIA_ATTACHED, () => hls.loadSource(streamUrl));
         }
       } catch {
-        // hls.js failed to load — try direct MP4
-        video.src = mp4Url;
-        video.load();
+        console.warn('[AR] hls.js failed to load');
       }
     }
+    video.load();
+
+    // Wait for video with 5s fallback (canplaythrough may not fire in WebXR context)
+    await Promise.race([
+      new Promise((res) => { video.oncanplaythrough = res; }),
+      new Promise((res) => setTimeout(res, 5000))
+    ]);
 
     // Wait for video to be ready (with timeout)
     const readyPromise = new Promise((res, rej) => {

@@ -11,7 +11,6 @@ export async function GET({ params, platform }) {
   }
 
   try {
-    // 1. Get video info
     const res = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${videoId}`,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -24,34 +23,12 @@ export async function GET({ params, platform }) {
 
     const video = data.result;
 
-    // 2. Generate signed URL token (valid 1 hour)
-    const tokenRes = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${videoId}/token`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          maxAgeSeconds: 3600
-        })
-      }
-    );
-    const tokenData = await tokenRes.json();
-    const signedToken = tokenData.success ? tokenData.result.token : null;
-
-    // 3. Build direct video URL with signed token
-    const videoUrl = signedToken
-      ? `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/downloads/default.mp4?token=${signedToken}`
-      : null;
-
     return json({
       uid: video.uid,
       status: video.status,
       duration: video.duration,
+      // HLS is public — no proxy or signed token needed
       streamUrl: `https://customer-${customerCode}.cloudflarestream.com/${video.uid}/manifest/video.m3u8`,
-      videoUrl,
       thumbnail: video.thumbnail,
       aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9'
     });
