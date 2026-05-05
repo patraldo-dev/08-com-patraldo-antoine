@@ -251,7 +251,7 @@
 
   header p {
     margin: 0;
-    color: #666;
+    color: var(--color-text-muted);
   }
 
   .controls {
@@ -259,7 +259,7 @@
     justify-content: center;
     gap: 16px;
     padding: 16px;
-    background: #f9fafb;
+    background: var(--color-surface);
     border-radius: 8px;
   }
 
@@ -319,7 +319,7 @@
   }
 
   .sidebar {
-    background: #f9fafb;
+    background: var(--color-surface);
     border-radius: 12px;
     padding: 16px;
     display: flex;
@@ -332,7 +332,7 @@
     margin: 0;
     font-size: 1.125rem;
     padding-bottom: 8px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .artwork-list {
@@ -348,7 +348,7 @@
     align-items: center;
     gap: 12px;
     padding: 8px;
-    background: white;
+    background: var(--color-surface-raised);
     border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -356,7 +356,7 @@
   }
 
   .artwork-item:hover {
-    border-color: #d1d5db;
+    border-color: var(--color-border);
   }
 
   .artwork-item.active {
@@ -403,7 +403,7 @@
   }
 
   .manipulator-wrapper {
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
     min-height: 500px;
@@ -430,7 +430,7 @@
   }
 
   .artwork-details {
-    background: #f9fafb;
+    background: var(--color-surface);
     border-radius: 12px;
     padding: 20px;
   }
@@ -478,8 +478,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f9fafb;
-    border: 2px dashed #e5e7eb;
+    background: var(--color-surface);
+    border: 2px dashed var(--color-border);
     border-radius: 12px;
     min-height: 500px;
   }

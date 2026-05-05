@@ -107,7 +107,7 @@
 <style>
   .palettes-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-raised) 100%);
     padding: 6rem 2rem 4rem;
   }
 
@@ -119,7 +119,7 @@
 
   .back-link {
     display: inline-block;
-    color: #666;
+    color: var(--color-text-muted);
     text-decoration: none;
     margin-bottom: 2rem;
     transition: color 0.2s ease;
@@ -127,20 +127,20 @@
   }
 
   .back-link:hover {
-    color: #1a1a1a;
+    color: var(--color-text);
   }
 
   .page-header h1 {
     font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
     line-height: 1.2;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
     max-width: 600px;
     margin: 0 auto;
@@ -153,8 +153,8 @@
 
   /* Artist's Note */
   .artist-note {
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    border-left: 4px solid #1a1a1a;
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-raised) 100%);
+    border-left: 4px solid var(--color-text);
     border-radius: 12px;
     padding: 2.5rem;
     margin-bottom: 4rem;
@@ -167,14 +167,14 @@
     top: -10px;
     left: 20px;
     font-size: 4rem;
-    color: #e0e0e0;
+    color: var(--color-border);
     font-family: Georgia, serif;
     line-height: 1;
   }
 
   .note-text {
     font-size: 1.125rem;
-    color: #333;
+    color: var(--color-text-dim);
     line-height: 1.7;
     margin: 0 0 1rem 0;
     font-style: italic;
@@ -182,7 +182,7 @@
 
   .signature {
     text-align: right;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 1rem;
     margin: 0;
   }
@@ -195,7 +195,7 @@
   .info-section h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 2rem 0;
     text-align: center;
   }
@@ -209,15 +209,15 @@
   .step {
     display: flex;
     gap: 1rem;
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 1.5rem;
     transition: all 0.3s ease;
   }
 
   .step:hover {
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
@@ -226,8 +226,8 @@
     flex-shrink: 0;
     width: 40px;
     height: 40px;
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -239,13 +239,13 @@
   .step-content h3 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.5rem 0;
   }
 
   .step-content p {
     font-size: 0.95rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
   }
@@ -258,14 +258,14 @@
   .featured-palettes h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
     text-align: center;
   }
 
   .section-description {
     text-align: center;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 1.125rem;
     line-height: 1.6;
     margin: 0 0 3rem 0;
@@ -282,20 +282,20 @@
 
   .palette-card {
     display: block;
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     padding: 2rem;
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .palette-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
 
   .palette-visual {
@@ -313,7 +313,7 @@
     gap: 0.5rem;
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
-    color: #999;
+    color: var(--color-text-muted);
   }
 
   .year {
@@ -331,7 +331,7 @@
   .discovery-hint {
     display: block;
     font-size: 0.9rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-weight: 500;
     opacity: 0.7;
     transition: all 0.2s ease;
@@ -339,14 +339,14 @@
 
   .palette-card:hover .discovery-hint {
     opacity: 1;
-    color: #1a1a1a;
+    color: var(--color-text);
   }
 
   /* Call to Action */
   .cta {
     text-align: center;
     padding: 3rem 2rem;
-    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-dim) 100%);
     border-radius: 16px;
     color: white;
   }
@@ -369,8 +369,8 @@
   .button {
     display: inline-block;
     padding: 1rem 2.5rem;
-    background: white;
-    color: #1a1a1a;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
     text-decoration: none;
     border-radius: 8px;
     font-weight: 600;
@@ -378,7 +378,7 @@
   }
 
   .button:hover {
-    background: #f0f0f0;
+    background: var(--color-surface);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
   }

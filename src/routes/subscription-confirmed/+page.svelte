@@ -51,7 +51,7 @@
     padding: 0 2rem;
   }
   .confirmation-content {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 8px;
     padding: 3rem;
     text-align: center;
@@ -61,7 +61,7 @@
     font-size: 2.5rem;
     font-weight: 300;
     margin-bottom: 1.5rem;
-    color: #2a2a2a;
+    color: var(--color-text);
   }
   .icon {
     width: 80px;
@@ -77,7 +77,7 @@
   }
   p {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--color-text-dim);
     margin-bottom: 1.5rem;
   }
   .button {

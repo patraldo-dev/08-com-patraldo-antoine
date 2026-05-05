@@ -77,7 +77,7 @@
 </div>
 
 <style>
-  .story-page { background: #fafafa; min-height: 100vh; }
+  .story-page { background: var(--color-surface); min-height: 100vh; }
   
   .story-nav {
     display: flex;
@@ -107,7 +107,7 @@
   .story-container {
     max-width: 700px;
     margin: -50px auto 4rem;
-    background: white;
+    background: var(--color-surface-raised);
     padding: 3rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     border-radius: 8px;
@@ -117,10 +117,10 @@
   
   .story-container h1 {
     font-family: 'Georgia', serif;
-    color: #2c5e3d;
+    color: var(--color-green);
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    border-bottom: 2px solid #d4c9a8;
+    border-bottom: 2px solid var(--color-gold);
     padding-bottom: 1rem;
   }
   
@@ -128,7 +128,7 @@
   
   .content-block h2 {
     font-size: 1.8rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 1.5rem 0 1rem;
   }
   
@@ -136,13 +136,13 @@
     font-family: 'Georgia', serif;
     font-size: 1.15rem;
     line-height: 1.8;
-    color: #333;
+    color: var(--color-text-dim);
     white-space: pre-wrap; /* Preserves line breaks from your script */
   }
   
   .empty-state {
     font-style: italic;
-    color: #999;
+    color: var(--color-text-muted);
     text-align: center;
     padding: 2rem;
   }

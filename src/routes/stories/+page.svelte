@@ -93,27 +93,27 @@
 <style>
   .stories-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface) 100%);
   }
   
   .hero-simple {
     padding: 6rem 2rem 4rem;
     text-align: center;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface) 100%);
   }
   
   .hero-content h1 {
     font-family: 'Georgia', serif;
     font-size: 3.5rem;
     font-weight: 300;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0 0 1rem;
     letter-spacing: 1px;
   }
   
   .subtitle {
     font-size: 1.2rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     font-style: italic;
     max-width: 600px;
     margin: 0 auto;
@@ -129,7 +129,7 @@
   }
   
   .story-card {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -141,7 +141,7 @@
   .story-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-    border-color: #d4c9a8;
+    border-color: var(--color-gold);
   }
   
   .story-image {
@@ -149,7 +149,7 @@
     width: 100%;
     aspect-ratio: 4/3;
     overflow: hidden;
-    background: #f5f5f5;
+    background: var(--color-surface);
     pointer-events: none;
   }
   
@@ -200,7 +200,7 @@
   .story-info h2 {
     font-family: 'Georgia', serif;
     font-size: 1.5rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0 0 1rem;
     font-weight: 400;
   }
@@ -208,7 +208,7 @@
   .intro, .description {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0 0 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -219,7 +219,7 @@
   .year {
     display: inline-block;
     font-size: 0.85rem;
-    color: #999;
+    color: var(--color-text-muted);
     font-style: italic;
   }
   
@@ -231,7 +231,7 @@
   
   .btn-admin-edit {
     display: inline-block;
-    background: #2c5e3d;
+    background: var(--color-green);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -242,7 +242,7 @@
   }
   
   .btn-admin-edit:hover {
-    background: #234a31;
+    background: var(--color-green-hover);
   }
 
   .no-stories {
@@ -253,7 +253,7 @@
   
   .no-stories p {
     font-size: 1.2rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
   }
   
@@ -292,6 +292,6 @@
   }
 
 .stories-page .hero-content h1 {
-  color: #2c5e3d;
+  color: var(--color-green);
 }
 </style>

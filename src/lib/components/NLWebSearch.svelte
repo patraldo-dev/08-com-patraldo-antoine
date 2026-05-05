@@ -169,9 +169,9 @@ async function initializeSearch() {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #1a1a1a;
-    color: white;
-    border: 2px solid #2a2a2a;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
+    border: 2px solid var(--color-text-dim);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     display: flex;
@@ -183,7 +183,7 @@ async function initializeSearch() {
   
   .search-fab:hover {
     transform: scale(1.1);
-    background: #2a2a2a;
+    background: var(--color-text-dim);
     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
   }
   
@@ -213,7 +213,7 @@ async function initializeSearch() {
   }
   
   .search-modal {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     width: 100%;
     max-width: 700px;
@@ -240,14 +240,14 @@ async function initializeSearch() {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-border);
   }
   
   .search-header h2 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
   }
   
   .close-btn {
@@ -255,12 +255,12 @@ async function initializeSearch() {
     border: none;
     cursor: pointer;
     padding: 0.5rem;
-    color: #666;
+    color: var(--color-text-muted);
     transition: color 0.2s;
   }
   
   .close-btn:hover {
-    color: #1a1a1a;
+    color: var(--color-text);
   }
   
   .search-content {
@@ -277,14 +277,14 @@ async function initializeSearch() {
     align-items: center;
     justify-content: center;
     padding: 3rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
   
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #f0f0f0;
-    border-top-color: #1a1a1a;
+    border: 3px solid var(--color-surface);
+    border-top-color: var(--color-text);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 1rem;
@@ -296,23 +296,23 @@ async function initializeSearch() {
   
   .search-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid #e0e0e0;
-    background: #f8f9fa;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
     border-radius: 0 0 16px 16px;
   }
   
   .hint {
     margin: 0;
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
     text-align: center;
   }
   
   kbd {
     display: inline-block;
     padding: 0.125rem 0.375rem;
-    background: white;
-    border: 1px solid #ddd;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     font-size: 0.75rem;
     font-family: monospace;

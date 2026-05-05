@@ -138,19 +138,19 @@
     width: 100%;
     aspect-ratio: 1;
     object-fit: contain;
-    border: 2px solid #eee;
+    border: 2px solid var(--color-border);
     border-radius: 8px;
     cursor: pointer;
     transition: border-color 0.2s;
   }
   .artwork-card img.selected {
-    border-color: #1a1a1a;
-    box-shadow: 0 0 0 2px #1a1a1a;
+    border-color: var(--color-text);
+    box-shadow: 0 0 0 2px var(--color-text);
   }
   .artwork-card p {
     margin-top: 0.5rem;
     font-size: 0.9rem;
-    color: #333;
+    color: var(--color-text-dim);
   }
   .actions {
     text-align: center;
@@ -166,8 +166,8 @@
   }
   .format-btn {
     padding: 0.5rem 1rem;
-    border: 2px solid #ddd;
-    background: white;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface-raised);
     cursor: pointer;
     border-radius: 6px;
     font-size: 0.9rem;
@@ -175,16 +175,16 @@
   }
   .format-btn.active,
   .format-btn:hover {
-    background: #1a1a1a;
-    color: white;
-    border-color: #1a1a1a;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
+    border-color: var(--color-text);
   }
   .format-btn.active {
     font-weight: bold;
   }
   .primary {
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
@@ -197,7 +197,7 @@
   }
   .selection-hint {
     margin-top: 0.75rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
   }
 </style>

@@ -112,12 +112,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface) 100%);
     padding: 2rem;
   }
   
   .login-card {
-    background: white;
+    background: var(--color-surface-raised);
     padding: 3rem;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -128,24 +128,24 @@
   h1 {
     font-family: 'Georgia', serif;
     font-size: 2rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0 0 0.5rem;
     text-align: center;
   }
   
   .subtitle {
     text-align: center;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0 0 2rem;
   }
   
   .success-message {
-    background: #e8f5e9;
-    color: #2c5e3d;
+    background: var(--color-surface);
+    color: var(--color-green);
     padding: 1rem;
     border-radius: 6px;
     margin-bottom: 1.5rem;
-    border: 1px solid #c8e6c9;
+    border: 1px solid var(--color-border);
     text-align: center;
   }
   
@@ -172,12 +172,12 @@
   
   label {
     font-weight: 500;
-    color: #2c5e3d;
+    color: var(--color-green);
   }
   
   input {
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.2s;
@@ -185,18 +185,18 @@
   
   input:focus {
     outline: none;
-    border-color: #2c5e3d;
+    border-color: var(--color-green);
   }
   
   input:disabled {
-    background: #f5f5f5;
+    background: var(--color-surface);
     cursor: not-allowed;
   }
   
   .btn-login {
     width: 100%;
     padding: 0.875rem;
-    background: #2c5e3d;
+    background: var(--color-green);
     color: white;
     border: none;
     border-radius: 6px;
@@ -207,11 +207,11 @@
   }
   
   .btn-login:hover:not(:disabled) {
-    background: #1f4229;
+    background: var(--color-green-hover);
   }
   
   .btn-login:disabled {
-    background: #ccc;
+    background: var(--color-border);
     cursor: not-allowed;
   }
   
@@ -225,12 +225,12 @@
   
   .login-footer p {
     margin: 0;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.95rem;
   }
   
   .login-footer a {
-    color: #2c5e3d;
+    color: var(--color-green);
     text-decoration: none;
     font-weight: 500;
   }

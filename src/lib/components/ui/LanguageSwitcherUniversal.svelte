@@ -82,7 +82,7 @@
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: rgba(0, 0, 0, 0.05);
-    color: #2a2a2a;
+    color: var(--color-text);
     font-weight: 600;
     font-size: 0.85rem;
     display: flex;
@@ -95,13 +95,13 @@
   .lang-btn:hover {
     background: rgba(0, 0, 0, 0.08);
     transform: scale(1.05);
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: var(--color-border);
   }
 
   .lang-btn.active {
-    background: #1a1a1a;
-    color: white;
-    border-color: #1a1a1a;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
+    border-color: var(--color-text);
   }
 
   .lang-btn:active {
@@ -125,8 +125,8 @@
     }
     
     .mobile-view .lang-btn.active {
-      background: white;
-      color: #1a1a1a;
+      background: var(--color-surface-raised);
+      color: var(--color-text);
     }
   }
 

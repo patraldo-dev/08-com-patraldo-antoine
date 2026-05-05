@@ -204,9 +204,9 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #1a1a1a;
-    color: white;
-    border: 2px solid #2a2a2a;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
+    border: 2px solid var(--color-text-dim);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     display: flex;
@@ -218,7 +218,7 @@
   
   .assistant-fab:hover {
     transform: scale(1.1);
-    background: #2a2a2a;
+    background: var(--color-text-dim);
     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
   }
   
@@ -244,7 +244,7 @@
   }
   
   .assistant-modal {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     width: 100%;
     max-width: 600px;
@@ -271,20 +271,20 @@
     justify-content: space-between;
     align-items: flex-start;
     padding: 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-border);
   }
   
   .header-content h2 {
     margin: 0 0 0.25rem 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
   }
   
   .context-info {
     margin: 0;
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
   
   .header-actions {
@@ -297,7 +297,7 @@
     border: none;
     cursor: pointer;
     padding: 0.5rem;
-    color: #666;
+    color: var(--color-text-muted);
     transition: color 0.2s;
     display: flex;
     align-items: center;
@@ -305,7 +305,7 @@
   }
   
   .icon-btn:hover {
-    color: #1a1a1a;
+    color: var(--color-text);
   }
   
   .messages-container {
@@ -345,7 +345,7 @@
   }
   
   .message-content {
-    background: #f0f0f0;
+    background: var(--color-surface);
     padding: 0.75rem 1rem;
     border-radius: 12px;
     line-height: 1.5;
@@ -353,8 +353,8 @@
   }
   
   .message.assistant .message-content {
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
   }
   
   .message.user {
@@ -400,12 +400,12 @@
   
   .suggestions {
     padding: 0 1.5rem 1rem;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--color-surface);
   }
   
   .suggestions-title {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 1rem 0 0.75rem;
   }
   
@@ -420,8 +420,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
@@ -431,7 +431,7 @@
   
   .suggestion-btn:hover {
     background: #e8f0fe;
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
   
   .suggestion-icon {
@@ -442,14 +442,14 @@
     display: flex;
     gap: 0.5rem;
     padding: 1.5rem;
-    border-top: 1px solid #e0e0e0;
-    background: #f8f9fa;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
   }
   
   textarea {
     flex: 1;
     padding: 0.75rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
@@ -460,11 +460,11 @@
   
   textarea:focus {
     outline: none;
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
   
   textarea:disabled {
-    background: #f5f5f5;
+    background: var(--color-surface);
     cursor: not-allowed;
   }
   
@@ -472,8 +472,8 @@
     flex-shrink: 0;
     width: 44px;
     height: 44px;
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -484,12 +484,12 @@
   }
   
   .send-btn:hover:not(:disabled) {
-    background: #2a2a2a;
+    background: var(--color-text-dim);
     transform: scale(1.05);
   }
   
   .send-btn:disabled {
-    background: #ccc;
+    background: var(--color-text-muted);
     cursor: not-allowed;
   }
   

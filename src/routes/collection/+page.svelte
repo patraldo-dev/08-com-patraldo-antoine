@@ -477,7 +477,7 @@ $effect(() => {
     max-width: 1400px;
     margin: 0 auto;
     min-height: 100vh;
-    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface-raised) 100%);
   }
 
   .collection-page .layout {
@@ -499,25 +499,25 @@ $effect(() => {
   .collection-header h1 {
     font-size: 1.5rem !important;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.1rem 0 !important;
     letter-spacing: -0.02em;
   }
 
   .subtitle {
     font-size: 0.85rem !important;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0 0 0.25rem 0 !important;
   }
 
   .menu-toggle {
-    background: white;
-    border: 1px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     padding: 0.4rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #666;
+    color: var(--color-text-muted);
     margin-top: 0.5rem;
   }
 
@@ -529,10 +529,10 @@ $effect(() => {
     grid-template-columns: repeat(4, 1fr);
     gap: 0.25rem;
     padding: 0.5rem;
-    background: #f8f9fa;
+    background: var(--color-surface);
     border-radius: 6px;
     margin-bottom: 0.75rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--color-border);
   }
 
   .stat-item {
@@ -555,14 +555,14 @@ $effect(() => {
 
   .stat-number {
     font-weight: bold;
-    color: #2c5e3d;
+    color: var(--color-green);
     font-size: 0.9rem;
     line-height: 1;
   }
 
   .stat-label {
     font-size: 0.65rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-weight: 500;
     line-height: 1.1;
   }
@@ -571,11 +571,11 @@ $effect(() => {
      MOOD FILTER - COMPACT
      ─────────────────────────────────────── */
   .compact-mood-filter {
-    background: #f8f9fa;
+    background: var(--color-surface);
     border-radius: 8px;
     padding: 0.75rem;
     margin-bottom: 0.75rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--color-border);
   }
 
   .mood-filter-header {
@@ -587,13 +587,13 @@ $effect(() => {
 
   .filter-title {
     font-weight: 600;
-    color: #333;
+    color: var(--color-text-dim);
     font-size: 0.9rem;
   }
 
   .filter-prompt {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
   }
 
@@ -606,23 +606,23 @@ $effect(() => {
 
   .mood-buttons.compact .mood-button {
     padding: 0.3rem 0.6rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 1.5rem;
-    background: white;
-    color: #333;
+    background: var(--color-surface-raised);
+    color: var(--color-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.75rem;
   }
 
   .mood-buttons.compact .mood-button:hover {
-    border-color: #2c5e3d;
+    border-color: var(--color-green);
   }
 
   .mood-buttons.compact .mood-button.active {
-    background: #2c5e3d;
+    background: var(--color-green);
     color: white;
-    border-color: #2c5e3d;
+    border-color: var(--color-green);
   }
 
   .mood-active-filter {
@@ -632,7 +632,7 @@ $effect(() => {
     padding: 0.5rem 0.75rem;
     background: #e8f5e8;
     border-radius: 4px;
-    border-left: 3px solid #2c5e3d;
+    border-left: 3px solid var(--color-green);
     font-size: 0.8rem;
   }
 
@@ -641,7 +641,7 @@ $effect(() => {
     border: none;
     font-size: 1rem;
     cursor: pointer;
-    color: #666;
+    color: var(--color-text-muted);
     padding: 0;
     width: 18px;
     height: 18px;
@@ -651,12 +651,12 @@ $effect(() => {
      CONTROLS - COMPACT
      ─────────────────────────────────────── */
   .controls {
-    background: white;
+    background: var(--color-surface-raised);
     padding: 1rem;
     border-radius: 8px;
     margin-bottom: 1rem;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
   }
 
   .filters {
@@ -668,8 +668,8 @@ $effect(() => {
 
   .filter-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid #e0e0e0;
-    background: white;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -678,9 +678,9 @@ $effect(() => {
   }
 
   .filter-btn.active {
-    background: #1a1a1a;
+    background: var(--color-text);
     color: white;
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
 
   .sort-controls {
@@ -693,7 +693,7 @@ $effect(() => {
 
   .sort-controls select {
     padding: 0.4rem 0.75rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     font-size: 0.85rem;
   }
@@ -706,8 +706,8 @@ $effect(() => {
 
   .action-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid #e0e0e0;
-    background: white;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.8rem;
@@ -725,12 +725,12 @@ $effect(() => {
   }
 
   .artwork-card {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
   }
 
   .artwork-card:hover {
@@ -742,7 +742,7 @@ $effect(() => {
     position: relative;
     width: 100%;
     padding-top: 66.67%;
-    background: #f5f5f5;
+    background: var(--color-surface);
     overflow: hidden;
   }
 
@@ -772,7 +772,7 @@ $effect(() => {
   }
 
   .share-btn {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--color-surface-raised);
     border: none;
     width: 30px;
     height: 30px;
@@ -782,7 +782,7 @@ $effect(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
   }
 
@@ -791,7 +791,7 @@ $effect(() => {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--color-surface-raised);
     border: none;
     width: 32px;
     height: 32px;
@@ -853,20 +853,20 @@ $effect(() => {
   .card-title {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.25rem 0;
     line-height: 1.4;
   }
 
   .card-year {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--color-text-muted);
     margin: 0 0 0.25rem 0;
   }
 
   .last-viewed {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0;
   }
 
@@ -885,19 +885,19 @@ $effect(() => {
   .empty-state h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.75rem 0;
   }
 
   .empty-state p {
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     margin: 0 0 1.5rem 0;
   }
 
   .cta-button {
     display: inline-block;
-    background: #1a1a1a;
+    background: var(--color-text);
     color: white;
     padding: 0.6rem 1.5rem;
     border-radius: 6px;
@@ -928,7 +928,7 @@ $effect(() => {
     bottom: 0;
     width: 320px;
     max-width: 90vw;
-    background: white;
+    background: var(--color-surface-raised);
     z-index: 999;
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -938,7 +938,7 @@ $effect(() => {
 
   .menu-header {
     padding: 1.25rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -948,14 +948,14 @@ $effect(() => {
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
-    color: #1a1a1a;
+    color: var(--color-text);
   }
 
   .close-button {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #666;
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 0;
     width: 28px;
@@ -984,10 +984,10 @@ $effect(() => {
     background: none;
     border: none;
     text-align: left;
-    color: #1a1a1a;
+    color: var(--color-text);
     cursor: pointer;
     transition: background 0.2s ease;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid var(--color-surface);
     font-size: 0.9rem;
   }
 
@@ -1002,7 +1002,7 @@ $effect(() => {
 .mood-subtitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #2c5e3d;
+  color: var(--color-green);
   margin: 0.25rem 0 0 0;
 }
 

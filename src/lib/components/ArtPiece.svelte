@@ -192,7 +192,7 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
+    background: var(--color-surface-raised);
   }
 
   .art-piece:hover {
@@ -206,7 +206,7 @@
     height: 0;
     padding-bottom: 75%;
     overflow: hidden;
-    background: #f5f5f5;
+    background: var(--color-surface);
   }
 
   .media-container img,
@@ -305,8 +305,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: #f5f5f5;
-    color: #666;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 
@@ -321,9 +321,9 @@
   }
 
   .retry-btn {
-    background: #c9a87c;
+    background: var(--color-gold);
     border: none;
-    color: #1a1a1a;
+    color: var(--color-text);
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
@@ -341,7 +341,7 @@
 
   .info p {
     margin: 0 0 1rem;
-    color: #555;
+    color: var(--color-text-dim);
     font-size: 0.9rem;
   }
 

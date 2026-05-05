@@ -183,7 +183,7 @@
 <style>
   .wallpapers-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-raised) 100%);
     padding: 6rem 2rem 4rem;
   }
 
@@ -194,26 +194,26 @@
 
   .back-link {
     display: inline-block;
-    color: #666;
+    color: var(--color-text-muted);
     text-decoration: none;
     margin-bottom: 2rem;
     transition: color 0.2s ease;
   }
 
   .back-link:hover {
-    color: #1a1a1a;
+    color: var(--color-text);
   }
 
   .page-header h1 {
     font-size: 2.5rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 1rem 0;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
   }
 
@@ -227,8 +227,8 @@
 
   .device-btn {
     padding: 1rem 2rem;
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
@@ -236,14 +236,14 @@
   }
 
   .device-btn:hover {
-    border-color: #ccc;
+    border-color: var(--color-border);
     transform: translateY(-2px);
   }
 
   .device-btn.active {
-    background: #1a1a1a;
-    color: white;
-    border-color: #1a1a1a;
+    background: var(--color-text);
+    color: var(--color-surface-raised);
+    border-color: var(--color-text);
   }
 
   .wallpapers-grid {
@@ -255,8 +255,8 @@
   }
 
   .wallpaper-card {
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
@@ -266,14 +266,14 @@
   .wallpaper-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
   }
 
   .card-image {
     position: relative;
     width: 100%;
     padding-top: 66.67%;
-    background: #f5f5f5;
+    background: var(--color-surface);
     overflow: hidden;
   }
 
@@ -330,13 +330,13 @@
   .card-info h3 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.5rem 0;
   }
 
   .year {
     font-size: 0.875rem;
-    color: #999;
+    color: var(--color-text-muted);
   }
 
   /* Modal Styles */
@@ -355,7 +355,7 @@
   }
 
   .modal-content {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     max-width: 600px;
     width: 100%;
@@ -370,7 +370,7 @@
     background: none;
     border: none;
     font-size: 2rem;
-    color: #666;
+    color: var(--color-text-muted);
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -382,19 +382,19 @@
   }
 
   .close-btn:hover {
-    background: #f0f0f0;
+    background: var(--color-surface);
   }
 
   .modal-content h2 {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.5rem 0;
   }
 
   .modal-subtitle {
     font-size: 1rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0 0 2rem 0;
   }
 
@@ -406,8 +406,8 @@
 
   .size-option {
     padding: 1.5rem 1rem;
-    background: #f8f8f8;
-    border: 2px solid #e0e0e0;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -415,20 +415,20 @@
   }
 
   .size-option:hover {
-    background: white;
-    border-color: #1a1a1a;
+    background: var(--color-surface-raised);
+    border-color: var(--color-text);
     transform: translateY(-2px);
   }
 
   .size-name {
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin-bottom: 0.5rem;
   }
 
   .size-dimensions {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 768px) {
