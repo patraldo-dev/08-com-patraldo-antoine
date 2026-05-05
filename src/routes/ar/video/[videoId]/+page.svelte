@@ -107,7 +107,7 @@
 
     video.load();
 
-    // Wait for video to be ready to play
+    // Wait for video ready
     await Promise.race([
       new Promise((res) => {
         if (video.readyState >= 3) { res(); return; }
@@ -133,34 +133,7 @@
       new Promise((res) => setTimeout(res, 3000))
     ]);
 
-    // --- Canvas texture approach ---
-    // Bypasses WebXR GL context mismatch that causes VideoTexture to show black
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 1920;
-    canvas.height = video.videoHeight || 1080;
-    const ctx = canvas.getContext('2d');
-
-    // Draw first frame immediately
-    if (video.readyState >= 2) ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.generateMipmaps = false;
-
-    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16') ? 16 / 9
-      : (videoInfo.aspectRatio === '4:3') ? 3 / 4
-      : (videoInfo.aspectRatio === '1:1') ? 1
-      : 9 / 16;
-
-    const geo = new THREE.PlaneGeometry(0.5, 0.5 * heightToWidthRatio);
-    const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.matrixAutoUpdate = false;
-    mesh.visible = false;
-    scene.add(mesh);
-
-    // Reticle
+    // Reticle — created before setSession is fine, no texture involved
     const reticleGeo = new THREE.RingGeometry(0.03, 0.05, 32);
     reticleGeo.rotateX(-Math.PI / 2);
     const reticleMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
@@ -194,7 +167,32 @@
       throw new Error('No supported reference space');
     }
 
+    // FIX: setSession FIRST — changes the GL context
     await renderer.xr.setSession(session);
+
+    // FIX: create canvas texture AFTER setSession so it uploads to the correct GL context
+    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16') ? 16 / 9
+      : (videoInfo.aspectRatio === '4:3') ? 3 / 4
+      : (videoInfo.aspectRatio === '1:1') ? 1
+      : 9 / 16;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1920;
+    canvas.height = video.videoHeight || 1080;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
+
+    const geo = new THREE.PlaneGeometry(0.5, 0.5 * heightToWidthRatio);
+    const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.matrixAutoUpdate = false;
+    mesh.visible = false;
+    scene.add(mesh);
 
     // Debug overlay
     const debugEl = document.createElement('div');
@@ -214,13 +212,13 @@
           .catch((e) => { console.warn('[AR] play() failed:', e); isPlayRequested = false; });
       }
 
-      // Draw current video frame to canvas each frame — bypasses GL context issue
+      // Draw video frame to canvas each tick
       if (!video.paused && video.readyState >= 2) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         texture.needsUpdate = true;
       }
 
-      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight} canvas:${canvas.width}x${canvas.height}`;
+      debugEl.textContent = `paused:${video.paused} t:${video.currentTime.toFixed(2)} ready:${video.readyState} ${video.videoWidth}x${video.videoHeight} placed:${placed}`;
 
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
@@ -262,18 +260,19 @@
       }
     });
 
+    // Auto-place if no hit-test — also show touch overlay immediately
     if (!hitTestSource) {
       mesh.visible = true;
       mesh.matrixAutoUpdate = true;
       mesh.position.set(0, -0.5, -1.2);
       placed = true;
       reticle.visible = false;
-      updateUI();
     }
 
     // --- Touch overlay ---
     const touchOverlay = document.createElement('div');
-    touchOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;display:none;';
+    // FIX: show immediately if already placed (auto-place case)
+    touchOverlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;display:${placed ? 'block' : 'none'};`;
     document.body.appendChild(touchOverlay);
 
     // --- UI ---
@@ -334,7 +333,8 @@
       mesh.scale.set(1, 1, 1);
       mesh.matrixAutoUpdate = false;
       currentMode = null;
-      reticle.visible = true;
+      reticle.visible = !!hitTestSource;
+      touchOverlay.style.display = 'none';
       clearTimeout(hideTimer);
       updateUI();
     };
@@ -384,6 +384,7 @@
       highlightBtn();
     }
 
+    // Call updateUI now that everything is wired up
     updateUI();
 
     // --- Touch gestures ---
