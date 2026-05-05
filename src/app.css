@@ -1,3 +1,11 @@
+html.dark {
+  --color-bg: #0a0a0a;
+  --color-text: #e8e8e8;
+  --color-surface: #141417;
+  --color-border: #2a2a2e;
+  --color-nav-bg: rgba(14, 14, 17, 0.95);
+}
+
 /* ───────────────────────────────────────
    RESET + BASE STYLES
    ─────────────────────────────────────── */
@@ -13,8 +21,8 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: #fafafa;
-  color: #2a2a2a;
+  background: var(--color-bg);
+  color: var(--color-text);
   line-height: 1.6;
   font-size: 16px;
 }
@@ -34,6 +42,13 @@ body main {
    DESIGN TOKENS
    ─────────────────────────────────────── */
 :root {
+  /* Color tokens */
+  --color-bg: #fafafa;
+  --color-text: #2a2a2a;
+  --color-surface: #ffffff;
+  --color-border: #e0e0e0;
+  --color-nav-bg: rgba(255, 255, 255, 0.95);
+
   /* Spacing */
   --space-xs: 0.5rem;
   --space-sm: 1rem;

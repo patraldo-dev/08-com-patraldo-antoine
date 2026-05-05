@@ -4,6 +4,7 @@
   import { page } from '$app/stores';
   import { t } from '$lib/i18n';
   import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
+  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   
   // Svelte 5 Runes
   let isMenuOpen = $state(false);
@@ -181,6 +182,7 @@
 {/if}
     
     <LanguageSwitcherUniversal/>
+    <ThemeToggle/>
     
     <!-- Profile/Login container stays the same -->
     <div class="profile-container">
@@ -263,6 +265,7 @@
     
     <div class="mobile-lang-switcher">
       <LanguageSwitcherUniversal/>
+      <ThemeToggle/>
     </div>
   </div>
 </nav>
@@ -555,6 +558,9 @@
     position: absolute;
     top: 1.5rem;
     right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   
   /* Responsive */
