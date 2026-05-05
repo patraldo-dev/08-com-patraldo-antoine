@@ -132,7 +132,7 @@
 <style>
   .showcase-3d-section {
     padding: 4rem 2rem;
-    background: linear-gradient(180deg, #f5f5f5 0%, #fafafa 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg) 100%);
   }
 
   .showcase-header {
@@ -144,13 +144,13 @@
     font-family: 'Georgia', serif;
     font-size: 2.5rem;
     font-weight: 300;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0 0 1rem;
   }
 
   .subtitle {
     font-size: 1.1rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
   }
 
@@ -176,8 +176,8 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: #2c5e3d;
-    color: white;
+    background: var(--color-green);
+    color: var(--color-surface-raised);
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
@@ -188,7 +188,7 @@
   }
 
   .nav-btn:hover {
-    background: #1f4229;
+    background: var(--color-green-hover);
     transform: scale(1.1);
   }
 
@@ -199,7 +199,7 @@
     flex: 1;
     padding: 0.5rem 0;
     scrollbar-width: thin;
-    scrollbar-color: #2c5e3d #e0e0e0;
+    scrollbar-color: var(--color-green) var(--color-border);
     scroll-snap-type: x proximity;
   }
 
@@ -217,12 +217,12 @@
   }
 
   .thumbnail-strip::-webkit-scrollbar-track {
-    background: #e0e0e0;
+    background: var(--color-border);
     border-radius: 4px;
   }
 
   .thumbnail-strip::-webkit-scrollbar-thumb {
-    background: #2c5e3d;
+    background: var(--color-green);
     border-radius: 4px;
   }
 
@@ -235,17 +235,17 @@
     border: 3px solid transparent;
     cursor: pointer;
     transition: all 0.3s;
-    background: white;
+    background: var(--color-surface-raised);
   }
 
   .thumbnail:hover {
     transform: scale(1.05);
-    border-color: #2c5e3d;
+    border-color: var(--color-green);
   }
 
   .thumbnail.active {
-    border-color: #2c5e3d;
-    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.3);
+    border-color: var(--color-green);
+    box-shadow: 0 4px 12px rgba(44, 94, 61, 0.2);
   }
 
   .thumbnail img {
@@ -255,10 +255,10 @@
   }
 
   .viewer-container {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 32px var(--color-border);
   }
 
   .viewer-header {
@@ -266,26 +266,26 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-    border-bottom: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .viewer-header h3 {
     font-family: 'Georgia', serif;
     font-size: 1.5rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0;
   }
 
   .year {
     font-size: 1rem;
-    color: #999;
+    color: var(--color-text-muted);
     font-style: italic;
   }
 
   .ar-btn {
-    background: #c9a87c;
-    color: #1a1a1a;
+    background: var(--color-gold);
+    color: var(--color-text);
     border: none;
     padding: 0.4rem 1rem;
     border-radius: 20px;
@@ -301,7 +301,7 @@
 
   .manipulator-wrapper {
     height: 500px;
-    background: #f0f0f0;
+    background: var(--color-surface);
   }
 
   .viewer-instructions {
@@ -309,20 +309,20 @@
     justify-content: center;
     gap: 2rem;
     padding: 1.5rem;
-    background: #f8f7f4;
-    border-top: 1px solid #e0e0e0;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
   }
 
   .viewer-instructions p {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0;
   }
 
   .no-artwork {
     padding: 4rem;
     text-align: center;
-    color: #999;
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 768px) {

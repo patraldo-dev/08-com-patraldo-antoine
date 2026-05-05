@@ -88,7 +88,7 @@ if (response.ok) {
     gap: 0;
     border-radius: 6px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px var(--color-border);
   }
   input {
     flex: 1;
@@ -96,7 +96,8 @@ if (response.ok) {
     border: none;
     font-size: 1rem;
     outline: none;
-    background: white;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
     font-family: inherit;
   }
   button {
@@ -114,7 +115,7 @@ if (response.ok) {
     background: #5a6fd8;
   }
   button:disabled {
-    background: #ccc;
+    background: var(--color-text-muted);
     cursor: not-allowed;
   }
   .message {

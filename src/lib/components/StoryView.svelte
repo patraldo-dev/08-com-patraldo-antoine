@@ -176,8 +176,8 @@
               <div class="play-overlay">
                 <div class="play-button">
                   <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                    <circle cx="30" cy="30" r="28" fill="rgba(255,255,255,0.9)" stroke="#2c5e3d" stroke-width="2"/>
-                    <path d="M24 18 L24 42 L42 30 Z" fill="#2c5e3d"/>
+                    <circle cx="30" cy="30" r="28" fill="var(--color-surface-raised)" stroke="var(--color-green)" stroke-width="2"/>
+                    <path d="M24 18 L24 42 L42 30 Z" fill="var(--color-green)"/>
                   </svg>
                 </div>
                 <p class="play-hint">Click to watch video</p>
@@ -289,7 +289,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
     z-index: 100;
     overflow: hidden;
   }
@@ -301,31 +301,31 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #d4c9a8;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-gold);
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
     cursor: pointer;
     z-index: 10;
     font-family: 'Georgia', serif;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px var(--color-border);
     transition: all 0.3s ease;
   }
   
   .close-btn:hover {
-    background: white;
+    background: var(--color-surface-raised);
     transform: translateX(-5px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 16px var(--color-border);
   }
   
   .close-icon {
     font-size: 1.5rem;
-    color: #2c5e3d;
+    color: var(--color-green);
   }
   
   .close-text {
     font-size: 0.9rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
   }
   
   .story-content {
@@ -358,8 +358,8 @@
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
-    border: 8px solid white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border: 8px solid var(--color-surface-raised);
+    box-shadow: 0 10px 40px var(--color-border);
     border-radius: 4px;
     opacity: 1;
     transition: opacity 0.6s ease, transform 0.3s ease;
@@ -416,8 +416,8 @@
     width: 90%;
     max-width: 1200px;
     aspect-ratio: 16/9;
-    border: 8px solid white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border: 8px solid var(--color-surface-raised);
+    box-shadow: 0 10px 40px var(--color-border);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -438,8 +438,8 @@
   .sketch-loader {
     width: 60px;
     height: 60px;
-    border: 3px solid #d4c9a8;
-    border-top-color: #4a4a3c;
+    border: 3px solid var(--color-gold);
+    border-top-color: var(--color-text-dim);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -455,19 +455,19 @@
     transform: translate(-50%, -50%);
     text-align: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--color-surface-raised);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px var(--color-border);
   }
   
   .error-message p {
     margin: 0 0 1rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
   }
   
   .retry-btn {
     padding: 0.5rem 1rem;
-    background: #2c5e3d;
+    background: var(--color-green);
     color: white;
     border: none;
     border-radius: 4px;
@@ -476,7 +476,7 @@
   }
   
   .retry-btn:hover {
-    background: #234a31;
+    background: var(--color-green-hover);
   }
   
   .story-text {
@@ -488,7 +488,7 @@
   .story-text h1 {
     font-family: 'Georgia', serif;
     font-size: 2.5rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin-bottom: 1rem;
     line-height: 1.2;
   }
@@ -499,12 +499,12 @@
     gap: 1rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px dotted #d4c9a8;
+    border-bottom: 1px dotted var(--color-gold);
   }
   
   .date {
     font-style: italic;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
   
@@ -522,14 +522,14 @@
     font-family: 'Georgia', serif;
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     margin-bottom: 2rem;
   }
   
   .story-intro {
     font-style: italic;
     padding-left: 1rem;
-    border-left: 3px solid #d4c9a8;
+    border-left: 3px solid var(--color-gold);
   }
   
   /* Story Content Blocks */
@@ -540,7 +540,7 @@
   .story-heading {
     font-family: 'Georgia', serif;
     font-size: 1.8rem;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 2.5rem 0 1rem;
     font-weight: 600;
   }
@@ -549,7 +549,7 @@
     font-family: 'Georgia', serif;
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     white-space: pre-wrap;
   }
   
@@ -557,7 +557,7 @@
     margin: 2rem 0;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px var(--color-border);
   }
   
   .story-image img {
@@ -571,7 +571,7 @@
     aspect-ratio: 16/9;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px var(--color-border);
   }
   
   .story-video iframe {
@@ -586,7 +586,7 @@
     gap: 0.5rem;
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px dotted #d4c9a8;
+    border-top: 1px dotted var(--color-gold);
   }
   
   .tag {
@@ -594,7 +594,7 @@
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     font-size: 0.85rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
   }
   
   @media (max-width: 768px) {

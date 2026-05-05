@@ -185,12 +185,12 @@
     position: relative;
     width: 100%;
     height: 600px;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
-    border: 6px solid #d4c9a8;
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
+    border: 6px solid var(--color-gold);
     border-radius: 12px;
     box-shadow:
-      0 10px 30px rgba(0,0,0,0.2),
-      inset 0 0 15px rgba(212, 201, 168, 0.3);
+      0 10px 30px var(--color-border),
+      inset 0 0 15px rgba(201, 168, 124, 0.15);
     overflow: hidden;
     user-select: none;
     perspective: 1500px;
@@ -212,8 +212,8 @@
   
   .page-left {
     left: 0;
-    border-right: 1px dotted #ccc;
-    background: #fcfaf6;
+    border-right: 1px dotted var(--color-border);
+    background: var(--color-surface-raised);
     transform-origin: right center;
     transform-style: preserve-3d;
     backface-visibility: hidden;
@@ -221,7 +221,7 @@
   
   .page-right {
     right: 0;
-    background: #fcfaf6;
+    background: var(--color-surface-raised);
     transform-origin: left center;
     transform-style: preserve-3d;
     backface-visibility: hidden;
@@ -270,7 +270,7 @@
     font-size: 1.2rem;
     line-height: 1.6;
     text-align: center;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     opacity: 0.9;
     font-style: italic;
     padding: 0 1rem;
@@ -278,7 +278,7 @@
   
   .placeholder {
     font-size: 2rem;
-    color: #ddd;
+    color: var(--color-text-muted);
     font-style: italic;
   }
   
@@ -298,9 +298,9 @@
     max-height: 85%;
     object-fit: contain;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px var(--color-border);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #e0d8c4;
+    border: 1px solid var(--color-border);
   }
   
   .art-thumbnail img:hover {
@@ -310,7 +310,7 @@
   
   .sketch-title {
     font-size: 1rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     text-align: center;
     font-style: italic;
     max-width: 90%;
@@ -322,11 +322,11 @@
     transform: translateY(-50%);
     width: 50px;
     height: 50px;
-    border: 2px solid #d4c9a8;
-    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--color-gold);
+    background: var(--color-surface-raised);
     border-radius: 50%;
     font-size: 2rem;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -336,7 +336,7 @@
   }
   
   .nav-arrow:hover {
-    background: white;
+    background: var(--color-surface-raised);
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
@@ -355,9 +355,9 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.85rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-style: italic;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--color-surface-raised);
     padding: 0.5rem 1rem;
     border-radius: 20px;
   }

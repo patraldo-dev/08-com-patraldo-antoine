@@ -156,7 +156,7 @@
   }
   
   .modal-content {
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 16px;
     max-width: 900px;
     width: 100%;
@@ -164,14 +164,14 @@
     overflow-y: auto;
     position: relative;
     padding: 2.5rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
   
   .close-btn {
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
-    background: #f5f5f5;
+    background: var(--color-surface);
     border: none;
     width: 40px;
     height: 40px;
@@ -185,7 +185,7 @@
   }
   
   .close-btn:hover {
-    background: #e0e0e0;
+    background: var(--color-surface);
     transform: scale(1.1);
   }
   
@@ -270,21 +270,21 @@
   .bio-section h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin-bottom: 1rem;
   }
   
   .bio-section h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 2rem 0 1rem;
   }
   
   .bio-section h4 {
     font-size: 1rem;
     font-weight: 600;
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -293,13 +293,13 @@
   .intro {
     font-size: 1.125rem;
     line-height: 1.7;
-    color: #333;
+    color: var(--color-text-dim);
     margin-bottom: 2rem;
   }
   
   .bio-section p {
     line-height: 1.7;
-    color: #555;
+    color: var(--color-text-dim);
     margin-bottom: 1rem;
   }
   
@@ -312,15 +312,15 @@
   }
   
   .collab-card {
-    background: #f8f9fa;
+    background: var(--color-surface);
     padding: 1.5rem;
     border-radius: 12px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-border);
     transition: all 0.3s ease;
   }
   
   .collab-card:hover {
-    border-color: #1a1a1a;
+    border-color: var(--color-text);
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
@@ -333,7 +333,7 @@
   .collab-card h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin: 0 0 0.75rem 0;
   }
   
@@ -341,12 +341,12 @@
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.6;
-    color: #555;
+    color: var(--color-text-dim);
   }
   
   /* Tech Stack */
   .tech-stack {
-    background: #f8f9fa;
+    background: var(--color-surface);
     padding: 1.5rem;
     border-radius: 12px;
     margin-top: 2rem;
@@ -361,11 +361,11 @@
   .tech-tag {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: white;
-    border: 1px solid #e0e0e0;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     font-size: 0.875rem;
-    color: #333;
+    color: var(--color-text);
     font-weight: 500;
   }
   
@@ -373,13 +373,13 @@
   .contact-section h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-text);
     margin-bottom: 1rem;
   }
   
   .contact-section p {
     line-height: 1.7;
-    color: #555;
+    color: var(--color-text-dim);
     margin-bottom: 1.5rem;
   }
   

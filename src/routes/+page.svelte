@@ -219,7 +219,7 @@ $effect(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f8f7f4 0%, #edebe8 100%);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
     padding: 4rem 2rem;
     text-align: center;
   }
@@ -234,14 +234,14 @@ $effect(() => {
     font-weight: 100;
     margin: 0 0 0.5rem;
     letter-spacing: 2px;
-    color: #2c5e3d;
+    color: var(--color-green);
     line-height: 1.2;
   }
 
   .subtitle {
     font-size: 1.2rem;
     font-weight: 300;
-    color: #4a4a3c;
+    color: var(--color-text-dim);
     font-style: italic;
     margin: 0;
   }
@@ -249,7 +249,7 @@ $effect(() => {
   /* Section Labels */
   .showcase-label-section {
     padding: 0 2rem 2rem;
-    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg) 100%);
   }
 
   .showcase-label,
@@ -263,13 +263,13 @@ $effect(() => {
     font-family: 'Georgia', serif;
     font-size: 2rem;
     font-weight: 300;
-    color: #2c5e3d;
+    color: var(--color-green);
     margin: 0;
   }
   
   .sketchbook-section {
     padding: 4rem 0;
-    background: linear-gradient(180deg, #edebe8 0%, #fafafa 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg) 100%);
     min-height: 70vh;
   }
   
@@ -278,20 +278,20 @@ $effect(() => {
     margin: 0 auto;
     text-align: center;
     padding: 3rem 2rem;
-    background: white;
+    background: var(--color-surface-raised);
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px var(--color-border);
   }
   
   .no-data-message h3 {
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 1rem;
   }
   
   /* About Section - Video Full Width */
   .about-section {
     padding: 2rem 2rem;
-    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg) 100%);
   }
 
   .about-video-full {
@@ -306,8 +306,8 @@ $effect(() => {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 
-      0 20px 60px rgba(0,0,0,0.15),
-      0 0 0 8px white,
+      0 20px 60px var(--color-border),
+      0 0 0 8px var(--color-surface-raised),
       0 0 0 10px #d4c9a8;
   }
   
@@ -323,7 +323,7 @@ $effect(() => {
   /* Signup Section */
   .signup-section {
     padding: 4rem 0;
-    background: #f8f9fa;
+    background: var(--color-surface);
     text-align: center;
   }
   
@@ -346,7 +346,7 @@ $effect(() => {
   
   .signup-section p {
     margin-bottom: 2rem;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 1rem;
   }
   
