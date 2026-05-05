@@ -88,11 +88,36 @@
     video.playsInline = true;
     video.preload = 'auto';
 
-    // Use our proxy — keeps token server-side, avoids CORS issues
+    // Use our stream proxy — handles CORS and signed tokens server-side
     const proxyBase = `/api/stream-proxy/${params.videoId}`;
-    const videoUrl = `${proxyBase}/downloads/default.mp4`;
-    video.src = videoUrl;
-    video.load();
+    const hlsUrl = `${proxyBase}/manifest/video.m3u8`;
+    const mp4Url = `${proxyBase}/downloads/default.mp4`;
+
+    // Try native HLS first (Safari), then hls.js, then direct MP4
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    } else {
+      try {
+        const { default: Hls } = await import('https://cdn.jsdelivr.net/npm/hls.js@1.5.13/+esm');
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: false,
+            xhrSetup: (xhr) => { xhr.withCredentials = false; }
+          });
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MEDIA_ATTACHED, () => hls.loadSource(hlsUrl));
+        } else {
+          // Fallback to direct MP4
+          video.src = mp4Url;
+          video.load();
+        }
+      } catch {
+        // hls.js failed to load — try direct MP4
+        video.src = mp4Url;
+        video.load();
+      }
+    }
 
     // Wait for video to be ready (with timeout)
     const readyPromise = new Promise((res, rej) => {
