@@ -6,11 +6,11 @@
   
   let { artworks = [] } = $props();
   
-  let currentSpread = 0; // Track spreads (pairs) instead of individual pages
-  let selectedImage = null;
+  let currentSpread = $state(0);
+  let selectedImage = $state(null);
   let flipSound, selectSound;
-  let isFlipping = false;
-  let flipDirection = null; // 'forward' or 'backward'
+  let isFlipping = $state(false);
+  let flipDirection = $state(null);
   
   onMount(async () => {
     try {
@@ -69,7 +69,7 @@
     }
   }
   
-  function goBackToSketchbook() {
+    function goBackToSketchbook() {
     selectedImage = null;
   }
   
