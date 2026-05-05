@@ -555,13 +555,13 @@
     gap: 1.5rem;
     padding: 2rem;
     font-family: 'Inter', sans-serif;
-    color: var(--color-text-dim);
+    color: #333;
   }
   .ar-preview img {
     max-width: 300px;
     max-height: 300px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px var(--color-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   }
   .video-placeholder {
     width: 200px;
@@ -570,23 +570,23 @@
     align-items: center;
     justify-content: center;
     font-size: 4rem;
-    background: var(--color-surface);
+    background: #f0f0f0;
     border-radius: 12px;
   }
-  .video-label { margin: 0.5rem 0 0; color: var(--color-text-muted); font-size: 0.9rem; }
+  .video-label { margin: 0.5rem 0 0; color: #666; font-size: 0.9rem; }
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--color-border);
-    border-top-color: var(--color-green);
+    border: 3px solid #e0e0e0;
+    border-top-color: #2c5e3d;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .ar-page h2 { margin: 0; font-size: 1.5rem; color: var(--color-green); }
-  .ar-page p { margin: 0; color: var(--color-text-muted); text-align: center; max-width: 400px; }
+  .ar-page h2 { margin: 0; font-size: 1.5rem; color: #2c5e3d; }
+  .ar-page p { margin: 0; color: #666; text-align: center; max-width: 400px; }
   .launch-btn {
-    background: var(--color-green);
+    background: #2c5e3d;
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -599,13 +599,13 @@
   .launch-btn:hover { opacity: 0.9; }
   .back-link {
     background: transparent;
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
+    color: #666;
+    border: 1px solid #ddd;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
     text-decoration: none;
   }
-  .back-link:hover { background: var(--color-surface); }
+  .back-link:hover { background: #f5f5f5; }
 </style>
