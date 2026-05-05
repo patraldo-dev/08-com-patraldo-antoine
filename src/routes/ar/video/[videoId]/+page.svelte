@@ -202,6 +202,8 @@
           }
         }
       }
+      // Force video texture update each frame
+      texture.needsUpdate = true;
       renderer.render(scene, camera);
     });
 
