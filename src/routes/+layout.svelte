@@ -5,6 +5,7 @@
   import { page } from '$app/stores';
   import { locale, setLocale } from '$lib/i18n';
   import Navigation from '$lib/components/Navigation.svelte';
+  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
   import { browser } from '$app/environment';
   
@@ -85,7 +86,8 @@
 </script>
 
 <div class="app">
-  <Navigation {isAdmin} {username} />  
+  <Navigation {isAdmin} {username} />
+  <ThemeToggle />  
   <main class:full-height={isFullHeightPage}>
     <slot />
   </main>

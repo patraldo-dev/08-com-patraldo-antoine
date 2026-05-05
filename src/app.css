@@ -1,10 +1,5 @@
-html.dark {
-  --color-bg: #0a0a0a;
-  --color-text: #e8e8e8;
-  --color-surface: #141417;
-  --color-border: #2a2a2e;
-  --color-nav-bg: rgba(14, 14, 17, 0.95);
-}
+/* Prevent flash of wrong theme */
+html:not(.theme-init) body { opacity: 0; }
 
 /* ───────────────────────────────────────
    RESET + BASE STYLES
@@ -21,7 +16,7 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
   font-size: 16px;
@@ -42,12 +37,14 @@ body main {
    DESIGN TOKENS
    ─────────────────────────────────────── */
 :root {
-  /* Color tokens */
-  --color-bg: #fafafa;
-  --color-text: #2a2a2a;
-  --color-surface: #ffffff;
-  --color-border: #e0e0e0;
-  --color-nav-bg: rgba(255, 255, 255, 0.95);
+  /* Color tokens — light mode */
+  --color-bg: #faf9f7;
+  --color-text: #1a1a1a;
+  --color-surface: #f0eeeb;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-nav-bg: rgba(250, 249, 247, 0.85);
+  --color-accent: #9a7b4f;
+  --color-accent-hover: #85693e;
 
   /* Spacing */
   --space-xs: 0.5rem;
@@ -71,6 +68,16 @@ body main {
   /* Video hero z-index (for About page) */
   --z-hero-video: 1;
   --z-hero-overlay: 2;
+}
+
+html.dark {
+  --color-bg: #09090b;
+  --color-text: #e4e4e7;
+  --color-surface: #141417;
+  --color-border: #27272a;
+  --color-nav-bg: rgba(9, 9, 11, 0.8);
+  --color-accent: #c9a87c;
+  --color-accent-hover: #d4b98f;
 }
 
 /* ───────────────────────────────────────
