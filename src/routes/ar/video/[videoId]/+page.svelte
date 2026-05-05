@@ -110,17 +110,18 @@
     }
     video.load();
 
-    // Wait for video to have actual frame data before creating texture
+    // Wait for video to actually have decoded frames before creating texture
     await new Promise((res) => {
-      video.onloadeddata = () => res();
-      video.onerror = () => res();
-      setTimeout(res, 5000);
+      if (video.readyState >= 3) { res(); return; } // HAVE_FUTURE_DATA
+      video.addEventListener('timeupdate', function handler() {
+        if (video.currentTime > 0) {
+          video.removeEventListener('timeupdate', handler);
+          res();
+        }
+      });
+      // Timeout fallback
+      setTimeout(res, 10000);
     });
-
-    await video.play();
-
-    // Wait 2 frames so video paints its first frame before texture captures it
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
     const texture = new THREE.VideoTexture(video);
     texture.colorSpace = THREE.SRGBColorSpace;
