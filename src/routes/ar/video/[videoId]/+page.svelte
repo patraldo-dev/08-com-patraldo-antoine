@@ -192,7 +192,7 @@
     texture.generateMipmaps = false;
 
     const geo = new THREE.PlaneGeometry(0.5, 0.5 * heightToWidthRatio);
-    const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+    const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, opacity: 1 });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.matrixAutoUpdate = false;
     mesh.visible = false;
@@ -340,6 +340,29 @@
       });
     }
 
+    // Opacity slider (right side)
+    const sliderContainer = document.createElement('div');
+    sliderContainer.style.cssText = 'position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:10003;display:none;flex-direction:column;align-items:center;gap:4px;pointer-events:auto;';
+    uiContainer.appendChild(sliderContainer);
+
+    const sliderLabel = document.createElement('span');
+    sliderLabel.style.cssText = 'color:rgba(255,255,255,0.7);font-size:11px;background:rgba(0,0,0,0.5);padding:2px 6px;border-radius:4px;';
+    sliderLabel.textContent = 'Opacity';
+    sliderContainer.appendChild(sliderLabel);
+
+    const opacitySlider = document.createElement('input');
+    opacitySlider.type = 'range';
+    opacitySlider.min = '0.1';
+    opacitySlider.max = '1';
+    opacitySlider.step = '0.05';
+    opacitySlider.value = '1';
+    opacitySlider.style.cssText = '-webkit-appearance:slider-vertical;width:30px;height:120px;writing-mode:bt-lr;-webkit-writing-mode:vertical-lr;accent-color:#2c5e3d;background:transparent;cursor:pointer;';
+    opacitySlider.addEventListener('input', (e) => {
+      mesh.material.opacity = parseFloat(e.target.value);
+      sliderLabel.textContent = Math.round(e.target.value * 100) + '%';
+    });
+    sliderContainer.appendChild(opacitySlider);
+
     function showControls() {
       uiContainer.style.opacity = '1';
       hintEl.style.opacity = '1';
@@ -347,6 +370,9 @@
       triggerBtn.style.display = 'none';
       clearTimeout(hideTimer);
       hideTimer = setTimeout(hideControls, 4000);
+      sliderContainer.style.display = 'flex';
+      sliderContainer.style.opacity = '1';
+      sliderLabel.textContent = Math.round(mesh.material.opacity * 100) + '%';
     }
 
     function hideControls() {
@@ -354,6 +380,8 @@
       hintEl.style.opacity = '0';
       controlsBar.style.opacity = '0';
       triggerBtn.style.display = 'block';
+      sliderContainer.style.display = 'flex';
+      sliderContainer.style.opacity = '0.4';
     }
 
     function updateUI() {
