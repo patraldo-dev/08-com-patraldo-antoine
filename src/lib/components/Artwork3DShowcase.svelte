@@ -107,7 +107,9 @@
         </div>
         
         <div class="manipulator-wrapper">
-          <Image3DManipulator {imageUrl} />
+          {#key imageUrl}
+            <Image3DManipulator {imageUrl} />
+          {/key}
         </div>
 
         <div class="viewer-instructions">
@@ -193,9 +195,10 @@
     gap: 0.75rem;
     overflow-x: auto;
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.5rem 1.25rem 0.5rem 0.5rem;
     scrollbar-width: thin;
     scrollbar-color: #2c5e3d #e0e0e0;
+    scroll-snap-type: x proximity;
   }
 
   .thumbnail-strip::-webkit-scrollbar {
