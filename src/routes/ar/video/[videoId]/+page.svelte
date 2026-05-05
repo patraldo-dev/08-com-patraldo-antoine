@@ -184,8 +184,15 @@
 
     await renderer.xr.setSession(session);
 
+    // On-screen debug overlay
+    const debugEl = document.createElement('div');
+    debugEl.id = 'ar-debug';
+    debugEl.style.cssText = 'position:fixed;top:70px;left:8px;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:12px;padding:10px;border-radius:6px;pointer-events:none;max-width:90vw;';
+    document.body.appendChild(debugEl);
+
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
+      debugEl.textContent = 'paused:' + video.paused + ' time:' + video.currentTime.toFixed(2) + ' ready:' + video.readyState + ' size:' + video.videoWidth + 'x' + video.videoHeight + ' tex:' + (texture.image ? 'yes' : 'no');
       if (hitTestSource) {
         const results = frame.getHitTestResults(hitTestSource);
         if (results.length > 0) {
