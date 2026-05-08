@@ -68,7 +68,7 @@
 
   async function startAR(THREE) {
     const session = await navigator.xr.requestSession('immersive-ar', {
-      optionalFeatures: ['hit-test', 'dom-overlay', 'local-floor'],
+      optionalFeatures: ['hit-test', 'dom-overlay', 'local-floor', 'plane-detection', 'mesh-detection', 'anchors'],
       domOverlay: { root: document.body }
     });
 
@@ -130,6 +130,8 @@
     let currentMode = null;
     let isTileMode = false;
     let isTattooMode = false;
+    let placedAnchorUID = null;
+    let pinMesh = null;
     const activeMesh = () => isTileMode ? tileMesh : mesh;
 
     // Hit test is optional — may not be available on all devices
@@ -166,6 +168,92 @@
 
     await renderer.xr.setSession(session);
 
+    // --- Anchor re-localization ---
+    session.addEventListener('anchorsupdated', (event) => {
+      for (const anchor of event.data) {
+        if (anchor.anchorUID === placedAnchorUID) {
+          const pose = localSpace.getPose(anchor.anchorSpace);
+          if (pose) {
+            const m = new THREE.Matrix4().fromArray(pose.transform.matrix);
+            mesh.position.setFromMatrixPosition(m);
+            mesh.quaternion.setFromRotationMatrix(m);
+          }
+        }
+      }
+    });
+
+    // --- Plane detection ---
+    let planeMonitor = null;
+    let detectedPlanes = [];
+    try {
+      planeMonitor = await session.requestPlaneDetection();
+    } catch (e) {
+      console.warn('[AR] Plane detection not available');
+    }
+    session.addEventListener('planesdetected', (event) => {
+      detectedPlanes = event.data || [];
+    });
+
+    const planeGroup = new THREE.Group();
+    planeGroup.visible = false;
+    scene.add(planeGroup);
+    const planeMeshMap = new Map(); // plane.id -> THREE.Mesh
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0x2c5e3d, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+
+    function updatePlaneVisuals() {
+      const activeIds = new Set();
+      for (const plane of detectedPlanes) {
+        activeIds.add(plane.id);
+        const polygon = plane.polygon;
+        if (!polygon || polygon.length < 3) continue;
+        const positions = new Float32Array((polygon.length) * 3);
+        for (let i = 0; i < polygon.length; i++) {
+          positions[i * 3] = polygon[i].x;
+          positions[i * 3 + 1] = polygon[i].y;
+          positions[i * 3 + 2] = polygon[i].z;
+        }
+        let triIndices = [];
+        for (let i = 1; i < polygon.length - 1; i++) {
+          triIndices.push(0, i, i + 1);
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setIndex(triIndices);
+        geo.computeVertexNormals();
+        const m = new THREE.Mesh(geo, planeMat);
+        // Dispose old mesh
+        const old = planeMeshMap.get(plane.id);
+        if (old) { old.geometry.dispose(); planeGroup.remove(old); }
+        planeGroup.add(m);
+        planeMeshMap.set(plane.id, m);
+      }
+      // Remove stale planes
+      for (const [id, mesh] of planeMeshMap) {
+        if (!activeIds.has(id)) {
+          mesh.geometry.dispose();
+          planeGroup.remove(mesh);
+          planeMeshMap.delete(id);
+        }
+      }
+    }
+
+    // --- Mesh detection ---
+    let meshMonitor = null;
+    try {
+      meshMonitor = await session.requestMeshDetection();
+    } catch (e) {
+      console.warn('[AR] Mesh detection not available');
+    }
+
+    const meshGroup = new THREE.Group();
+    meshGroup.visible = false;
+    scene.add(meshGroup);
+    let lastMeshFetch = 0;
+
+    // --- Toggle state ---
+    let showPlanes = false;
+    let showMesh = false;
+
     renderer.setAnimationLoop((time, frame) => {
       if (!frame) return;
 
@@ -192,6 +280,37 @@
           }
         }
       }
+
+      // Update plane visuals
+      if (showPlanes && detectedPlanes.length > 0) {
+        updatePlaneVisuals();
+      }
+
+      // Periodically fetch mesh geometry
+      if (showMesh && meshMonitor && time - lastMeshFetch > 500) {
+        lastMeshFetch = time;
+        (async () => {
+          try {
+            const meshSets = await meshMonitor.getMeshSets();
+            for (const ms of meshSets) {
+              const geoData = await ms.mesh.geometry();
+              if (!geoData || !geoData.vertices || geoData.vertices.length === 0) continue;
+              const positions = new Float32Array(geoData.vertices.length * 3);
+              for (let i = 0; i < geoData.vertices.length; i++) {
+                positions[i * 3] = geoData.vertices[i].x;
+                positions[i * 3 + 1] = geoData.vertices[i].y;
+                positions[i * 3 + 2] = geoData.vertices[i].z;
+              }
+              const threeGeo = new THREE.BufferGeometry();
+              threeGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+              const threeMat = new THREE.PointsMaterial({ color: 0x44aa99, size: 0.01 });
+              const points = new THREE.Points(threeGeo, threeMat);
+              meshGroup.add(points);
+            }
+          } catch (e) { /* Mesh not ready yet */ }
+        })();
+      }
+
       renderer.render(scene, camera);
     });
 
@@ -384,11 +503,66 @@
     };
     controlsBar.appendChild(tattooBtn);
 
+    const planeToggle = document.createElement('button');
+    planeToggle.style.cssText = btnStyle;
+    planeToggle.textContent = '📐 Planes OFF';
+    planeToggle.onclick = () => {
+      showPlanes = !showPlanes;
+      planeGroup.visible = showPlanes;
+      planeToggle.textContent = showPlanes ? '📐 Planes ON' : '📐 Planes OFF';
+      showControls();
+    };
+    controlsBar.appendChild(planeToggle);
+
+    const meshToggle = document.createElement('button');
+    meshToggle.style.cssText = btnStyle;
+    meshToggle.textContent = '🔲 Mesh OFF';
+    meshToggle.onclick = () => {
+      showMesh = !showMesh;
+      meshGroup.visible = showMesh;
+      meshToggle.textContent = showMesh ? '🔲 Mesh ON' : '🔲 Mesh OFF';
+      showControls();
+    };
+    controlsBar.appendChild(meshToggle);
+
+    // --- Pin (anchor) button ---
+    const pinBtn = document.createElement('button');
+    pinBtn.style.cssText = btnStyle;
+    pinBtn.textContent = '📌 Pin';
+    pinBtn.onclick = async () => {
+      if (!lastHitPose) return;
+      try {
+        const anchor = await session.createAnchor(lastHitPose.transform, localSpace);
+        placedAnchorUID = anchor.anchorUID;
+        pinBtn.textContent = '📌 Pinned!';
+        pinBtn.style.borderColor = '#4ade80';
+        pinBtn.disabled = true;
+        // Show pin indicator above artwork
+        const pinGeo = new THREE.SphereGeometry(0.01, 16, 16);
+        const pinMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
+        pinMesh = new THREE.Mesh(pinGeo, pinMat);
+        pinMesh.position.set(0, 0.3, 0);
+        mesh.add(pinMesh);
+        console.log('[AR] Anchor created:', anchor.anchorUID);
+      } catch (e) {
+        pinBtn.textContent = '📌 N/A';
+        pinBtn.disabled = true;
+        console.warn('[AR] Anchor not available');
+      }
+      showControls();
+    };
+    controlsBar.appendChild(pinBtn);
+
     const resetBtn = document.createElement('button');
     resetBtn.style.cssText = btnStyle;
     resetBtn.textContent = '🔄 Reset';
     resetBtn.onclick = () => {
       placed = false;
+      placedAnchorUID = null;
+      if (pinMesh) { mesh.remove(pinMesh); pinMesh.geometry.dispose(); pinMesh.material.dispose(); pinMesh = null; }
+      pinBtn.textContent = '📌 Pin';
+      pinBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+      pinBtn.disabled = false;
       mesh.visible = false;
       tileMesh.visible = false;
       isTileMode = false;
@@ -404,7 +578,7 @@
     };
     controlsBar.appendChild(resetBtn);
 
-    const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, tattooBtn, resetBtn];
+    const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, tattooBtn, pinBtn, planeToggle, meshToggle, resetBtn];
     function highlightBtn() {
       allBtns.forEach((b, i) => {
         const active = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') || (i === 3 && isTileMode) || (i === 4 && isTattooMode);
@@ -547,6 +721,10 @@
       tileMat.dispose();
       reticleGeo.dispose();
       reticleMat.dispose();
+      planeMat.dispose();
+      for (const [, m] of planeMeshMap) { m.geometry.dispose(); }
+      planeMeshMap.clear();
+      meshGroup.traverse((child) => { if (child.geometry) child.geometry.dispose(); if (child.material) child.material.dispose(); });
       // Remove event listeners
       window.removeEventListener('resize', handleResize);
       // Remove any leftover AR elements
