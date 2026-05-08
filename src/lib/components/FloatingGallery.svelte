@@ -30,16 +30,19 @@
   let mouseX = 0, mouseY = 0;
   let isVisible = false;
 
+  // Each artwork orbits independently
   const placements = GALLERY_IDS.map((_, i) => {
     const n = GALLERY_IDS.length;
-    const angle = ((i / (n - 1)) - 0.5) * Math.PI * 0.7;
+    const baseAngle = (i / n) * Math.PI * 2;
     return {
-      angle,
-      radius: 2.8,
-      rotSpeed: 0.0005 + Math.random() * 0.0008,
-      bobSpeed: 0.3 + Math.random() * 0.3,
-      bobAmp: 0.06 + Math.random() * 0.06,
-      baseY: 0,
+      baseAngle,
+      orbitRadius: 2.0 + Math.random() * 0.5,
+      orbitSpeed: 0.06 + i * 0.02,
+      bobSpeed: 0.5 + Math.random() * 0.4,
+      bobAmp: 0.2 + Math.random() * 0.15,
+      baseY: (Math.random() - 0.5) * 0.4,
+      swaySpeed: 0.15 + Math.random() * 0.2,
+      swayAmp: 0.03 + Math.random() * 0.02,
     };
   });
 
@@ -64,27 +67,30 @@
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
-    scene.fog = new THREE.Fog(0x0a0a0a, 8, 18);
+    scene.fog = new THREE.Fog(0x0a0a0a, 8, 16);
 
-    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 0.3, isMobile ? 6 : 5);
+    camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 0.5, isMobile ? 4.8 : 4.2);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    // CRITICAL: allow vertical scroll to pass through
     renderer.domElement.style.touchAction = 'pan-y';
     container.appendChild(renderer.domElement);
 
+    // Warm ambient + point lights
     scene.add(new THREE.AmbientLight(0xffffff, 1));
-    const warm = new THREE.PointLight(0xd4c9a8, 1.2, 15);
-    warm.position.set(3, 3, 3);
+    const warm = new THREE.PointLight(0xd4c9a8, 1.5, 12);
+    warm.position.set(2, 3, 2);
     scene.add(warm);
+    const cool = new THREE.PointLight(0x6b8aff, 0.4, 10);
+    cool.position.set(-3, 1, -2);
+    scene.add(cool);
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
 
-    const planeSize = isMobile ? 1.6 : 2.4;
+    const planeSize = isMobile ? 1.4 : 2.2;
 
     for (let i = 0; i < GALLERY_IDS.length; i++) {
       const art = GALLERY_IDS[i];
@@ -103,29 +109,34 @@
         });
 
         const mesh = new THREE.Mesh(geometry, material);
-        const px = Math.sin(placement.angle) * placement.radius;
-        const pz = Math.cos(placement.angle) * placement.radius - placement.radius;
-        mesh.position.set(px, placement.baseY, pz);
-        mesh.lookAt(0, mesh.position.y, camera.position.z);
         mesh.userData = { index: i, title: art.title, ...placement };
-
         scene.add(mesh);
         meshes.push(mesh);
       });
     }
 
-    // Particles
-    const particleCount = 60;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 14;
+    // Flowing particles — golden dust motes
+    const particleCount = 100;
+    const pPositions = new Float32Array(particleCount * 3);
+    const pVelocities = [];
+    for (let i = 0; i < particleCount; i++) {
+      pPositions[i * 3] = (Math.random() - 0.5) * 10;
+      pPositions[i * 3 + 1] = (Math.random() - 0.5) * 6;
+      pPositions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      pVelocities.push({
+        vx: (Math.random() - 0.5) * 0.004,
+        vy: 0.003 + Math.random() * 0.005,
+        vz: (Math.random() - 0.5) * 0.003,
+      });
     }
     const particleGeom = new THREE.BufferGeometry();
-    particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMat = new THREE.PointsMaterial({ color: 0xd4c9a8, size: 0.02, transparent: true, opacity: 0.3 });
-    scene.add(new THREE.Points(particleGeom, particleMat));
+    particleGeom.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0xd4c9a8, size: 0.03, transparent: true, opacity: 0.4 });
+    const particles = new THREE.Points(particleGeom, particleMat);
+    scene.add(particles);
 
-    // Only mouse parallax on desktop — no touch listeners at all
+    scene.userData = { particleGeom, pVelocities, particleCount };
+
     container.addEventListener('mousemove', onMouseMove);
     window.addEventListener('resize', onResize);
 
@@ -150,26 +161,48 @@
     animationId = requestAnimationFrame(animate);
     const time = performance.now() * 0.001;
 
-    if (camera) {
-      camera.position.x += (mouseX * 0.8 - camera.position.x) * 0.02;
-      camera.position.y += (0.3 - mouseY * 0.3 - camera.position.y) * 0.02;
-      camera.lookAt(0, 0, 0);
-    }
+    // Camera: gentle auto-orbit + mouse parallax
+    const autoX = Math.sin(time * 0.08) * 0.4;
+    const autoY = Math.cos(time * 0.05) * 0.15;
+    camera.position.x += (mouseX * 0.6 + autoX - camera.position.x) * 0.025;
+    camera.position.y += (0.5 + autoY - mouseY * 0.2 - camera.position.y) * 0.025;
+    camera.lookAt(0, 0, 0);
 
+    // Artworks: orbiting + bobbing + swaying
     for (const mesh of meshes) {
       const d = mesh.userData;
-      mesh.position.y = d.baseY + Math.sin(time * d.bobSpeed) * d.bobAmp;
-      mesh.rotation.y += d.rotSpeed;
+      const angle = d.baseAngle + time * d.orbitSpeed;
+      mesh.position.x = Math.sin(angle) * d.orbitRadius;
+      mesh.position.z = Math.cos(angle) * d.orbitRadius - 1;
+      mesh.position.y = d.baseY
+        + Math.sin(time * d.bobSpeed) * d.bobAmp
+        + Math.sin(time * d.swaySpeed) * d.swayAmp;
+      // Always face camera
+      mesh.lookAt(camera.position.x, mesh.position.y, camera.position.z);
     }
+
+    // Particle drift — flowing upward
+    const { particleGeom, pVelocities, particleCount } = scene.userData;
+    const pos = particleGeom.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+      const v = pVelocities[i];
+      pos[i * 3] += v.vx;
+      pos[i * 3 + 1] += v.vy;
+      pos[i * 3 + 2] += v.vz;
+      if (pos[i * 3 + 1] > 4) {
+        pos[i * 3 + 1] = -3;
+        pos[i * 3] = (Math.random() - 0.5) * 10;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      }
+    }
+    particleGeom.attributes.position.needsUpdate = true;
 
     if (renderer && scene && camera) renderer.render(scene, camera);
   }
 
   onDestroy(() => {
     if (animationId) cancelAnimationFrame(animationId);
-    if (browser) {
-      window.removeEventListener('resize', onResize);
-    }
+    if (browser) window.removeEventListener('resize', onResize);
     if (renderer) renderer.dispose();
     for (const m of meshes) {
       m.geometry?.dispose();
