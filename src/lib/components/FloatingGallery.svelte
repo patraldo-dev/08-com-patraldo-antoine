@@ -3,6 +3,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { t } from '$lib/i18n';
 
   let { artworks = [] } = $props();
 
@@ -178,8 +179,8 @@
 
 <div class="floating-gallery" bind:this={container}>
   <div class="gallery-overlay">
-    <h2 class="gallery-title">Floating Gallery</h2>
-    <p class="gallery-subtitle">Move to explore</p>
+    <h2 class="gallery-title">{$t('floatingGallery.title')}</h2>
+    <p class="gallery-subtitle">{$t('floatingGallery.subtitle')}</p>
   </div>
 </div>
 

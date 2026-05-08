@@ -67,6 +67,8 @@
   "pages.home.herotitle": "Antoine Patraldo",
   "pages.home.explore3D": "Explore in 3D",
   "pages.home.explore3DSubtitle": "Interact with artworks in three dimensions—rotate, zoom, and explore",
+  "floatingGallery.title": "Floating Gallery",
+  "floatingGallery.subtitle": "Move to explore",
   "pages.home.noArtwork3D": "No artworks available for 3D viewing",
   "3dart_dragRotate": "Drag to rotate",
   "3dart_scrollZoom": "Scroll to zoom",
