@@ -3,6 +3,7 @@
   import StoryView from '$lib/components/StoryView.svelte';
   import EmailSignup from '$lib/components/EmailSignup.svelte';
   import Artwork3DShowcase from '$lib/components/Artwork3DShowcase.svelte';
+  import FloatingGallery from '$lib/components/FloatingGallery.svelte';
   import { t, locale } from '$lib/i18n';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -143,6 +144,13 @@ $effect(() => {
     onclose={handleCloseStory}
   />
 {:else}
+  <!-- Hero: Floating Gallery -->
+  {#if data?.artworks?.length > 0}
+    <section class="floating-gallery-section">
+      <FloatingGallery artworks={data.artworks} />
+    </section>
+  {/if}
+
   <!-- Hero Section - Removed, name is in page title -->
   
   <!-- About Section - Video Only -->
@@ -214,6 +222,12 @@ $effect(() => {
   </section>
 
 <style>
+  .floating-gallery-section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   .hero-simple {
     min-height: 60vh;
     display: flex;
