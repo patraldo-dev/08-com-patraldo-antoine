@@ -7,7 +7,6 @@
 
   let { artworks = [] } = $props();
 
-  // Only artworks with clean segment=foreground results
   const GALLERY_ARTWORK_IDS = [
     '12c79899-fb93-4885-508f-d2da0a2fbf00', // Hans
     'bd4602b0-149d-42f8-e872-f697b64c7d00', // Barzango
@@ -19,7 +18,7 @@
     .filter(a => GALLERY_ARTWORK_IDS.includes(a.image_id))
     .map(a => ({ id: a.image_id, title: a.display_name || a.title }));
 
-  function segmentUrl(imageId, width = 400) {
+  function segmentUrl(imageId, width = 500) {
     return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/segment=foreground,width=${width}`;
   }
 
@@ -33,13 +32,13 @@
 
   const placements = GALLERY_IDS.map((_, i) => {
     const n = GALLERY_IDS.length;
-    const angle = ((i / (n - 1)) - 0.5) * Math.PI * 0.6;
+    const angle = ((i / (n - 1)) - 0.5) * Math.PI * 0.7;
     return {
       angle,
-      radius: 4,
-      rotSpeed: 0.0006 + Math.random() * 0.001,
+      radius: 2.8,
+      rotSpeed: 0.0005 + Math.random() * 0.0008,
       bobSpeed: 0.3 + Math.random() * 0.3,
-      bobAmp: 0.08 + Math.random() * 0.08,
+      bobAmp: 0.06 + Math.random() * 0.06,
       baseY: 0,
     };
   });
@@ -47,7 +46,6 @@
   onMount(async () => {
     if (!browser || GALLERY_IDS.length === 0) return;
 
-    // Intersection observer — only render when visible
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !isVisible) {
         isVisible = true;
@@ -62,19 +60,22 @@
   async function initScene() {
     THREE = await import('three');
 
+    const isMobile = container.clientWidth < 768;
+
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
-    scene.fog = new THREE.Fog(0x0a0a0a, 10, 22);
+    scene.fog = new THREE.Fog(0x0a0a0a, 8, 18);
 
-    camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 0.5, 7);
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 0.3, isMobile ? 6 : 5);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // CRITICAL: allow vertical scroll to pass through
+    renderer.domElement.style.touchAction = 'pan-y';
     container.appendChild(renderer.domElement);
 
-    // Lights
     scene.add(new THREE.AmbientLight(0xffffff, 1));
     const warm = new THREE.PointLight(0xd4c9a8, 1.2, 15);
     warm.position.set(3, 3, 3);
@@ -83,16 +84,18 @@
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
 
+    const planeSize = isMobile ? 1.6 : 2.4;
+
     for (let i = 0; i < GALLERY_IDS.length; i++) {
       const art = GALLERY_IDS[i];
-      const url = segmentUrl(art.id, 400);
+      const url = segmentUrl(art.id, isMobile ? 350 : 500);
       const placement = placements[i];
 
       loader.load(url, (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
         const aspect = texture.image.height / texture.image.width;
-        const planeH = 1.8 * aspect;
-        const geometry = new THREE.PlaneGeometry(1.8, planeH);
+        const planeH = planeSize * aspect;
+        const geometry = new THREE.PlaneGeometry(planeSize, planeH);
         const material = new THREE.MeshBasicMaterial({
           map: texture,
           transparent: true,
@@ -103,7 +106,7 @@
         const px = Math.sin(placement.angle) * placement.radius;
         const pz = Math.cos(placement.angle) * placement.radius - placement.radius;
         mesh.position.set(px, placement.baseY, pz);
-        mesh.lookAt(0, mesh.position.y, 7);
+        mesh.lookAt(0, mesh.position.y, camera.position.z);
         mesh.userData = { index: i, title: art.title, ...placement };
 
         scene.add(mesh);
@@ -112,18 +115,18 @@
     }
 
     // Particles
-    const particleCount = 80;
+    const particleCount = 60;
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 16;
+      positions[i] = (Math.random() - 0.5) * 14;
     }
     const particleGeom = new THREE.BufferGeometry();
     particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMat = new THREE.PointsMaterial({ color: 0xd4c9a8, size: 0.03, transparent: true, opacity: 0.4 });
+    const particleMat = new THREE.PointsMaterial({ color: 0xd4c9a8, size: 0.02, transparent: true, opacity: 0.3 });
     scene.add(new THREE.Points(particleGeom, particleMat));
 
+    // Only mouse parallax on desktop — no touch listeners at all
     container.addEventListener('mousemove', onMouseMove);
-    container.addEventListener('touchmove', onTouchMove, { passive: true });
     window.addEventListener('resize', onResize);
 
     animate();
@@ -133,14 +136,6 @@
     const rect = container.getBoundingClientRect();
     mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-  }
-
-  function onTouchMove(e) {
-    if (e.touches.length === 1) {
-      const rect = container.getBoundingClientRect();
-      mouseX = ((e.touches[0].clientX - rect.left) / rect.width - 0.5) * 2;
-      mouseY = ((e.touches[0].clientY - rect.top) / rect.height - 0.5) * 2;
-    }
   }
 
   function onResize() {
@@ -156,8 +151,8 @@
     const time = performance.now() * 0.001;
 
     if (camera) {
-      camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.02;
-      camera.position.y += (0.5 - mouseY * 0.4 - camera.position.y) * 0.02;
+      camera.position.x += (mouseX * 0.8 - camera.position.x) * 0.02;
+      camera.position.y += (0.3 - mouseY * 0.3 - camera.position.y) * 0.02;
       camera.lookAt(0, 0, 0);
     }
 
@@ -193,21 +188,16 @@
 <style>
   .floating-gallery {
     width: 100%;
-    height: 70vh;
-    min-height: 400px;
+    height: 60vh;
+    min-height: 350px;
     position: relative;
     overflow: hidden;
     background: #0a0a0a;
-    cursor: grab;
-  }
-
-  .floating-gallery:active {
-    cursor: grabbing;
   }
 
   .gallery-overlay {
     position: absolute;
-    bottom: 2rem;
+    bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -240,12 +230,13 @@
     display: block;
     width: 100% !important;
     height: 100% !important;
+    touch-action: pan-y !important;
   }
 
   @media (max-width: 768px) {
     .floating-gallery {
-      height: 50vh;
-      min-height: 300px;
+      height: 45vh;
+      min-height: 280px;
     }
     .gallery-title {
       font-size: 1.1rem;
