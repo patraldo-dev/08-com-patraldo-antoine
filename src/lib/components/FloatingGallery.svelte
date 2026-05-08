@@ -7,11 +7,17 @@
 
   let { artworks = [] } = $props();
 
-  // Pick artworks with white/light backgrounds (best for segment=foreground)
-  const GALLERY_IDS = artworks.map(a => ({
-    id: a.image_id,
-    title: a.display_name || a.title,
-  }));
+  // Only artworks with clean segment=foreground results
+  const GALLERY_ARTWORK_IDS = [
+    '12c79899-fb93-4885-508f-d2da0a2fbf00', // Hans
+    'bd4602b0-149d-42f8-e872-f697b64c7d00', // Barzango
+    '5c7fb409-1aa2-45a9-8466-296077e18e00', // Alena la Alien
+    'f8a136eb-363e-4a24-0f54-70bb4f4bf800', // Mujer
+  ];
+
+  const GALLERY_IDS = artworks
+    .filter(a => GALLERY_ARTWORK_IDS.includes(a.image_id))
+    .map(a => ({ id: a.image_id, title: a.display_name || a.title }));
 
   function segmentUrl(imageId, width = 400) {
     return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/segment=foreground,width=${width}`;

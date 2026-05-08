@@ -144,13 +144,6 @@ $effect(() => {
     onclose={handleCloseStory}
   />
 {:else}
-  <!-- Hero: Floating Gallery -->
-  {#if data?.artworks?.length > 0}
-    <section class="floating-gallery-section">
-      <FloatingGallery artworks={data.artworks} />
-    </section>
-  {/if}
-
   <!-- Hero Section - Removed, name is in page title -->
   
   <!-- About Section - Video Only -->
@@ -181,6 +174,13 @@ $effect(() => {
       </div>
     </div>
   </section>
+
+  <!-- Floating Gallery -->
+  {#if data?.artworks?.length > 0}
+    <section class="floating-gallery-section">
+      <FloatingGallery artworks={data.artworks} />
+    </section>
+  {/if}
 
   <!-- 3D Showcase Section -->
   {#if data?.artworks?.length > 0}
