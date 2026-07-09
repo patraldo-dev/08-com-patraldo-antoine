@@ -409,7 +409,7 @@
         arRenderer.dispose();
         arActive = false;
       });
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.error('[AR] Failed:', e);
       arActive = false;
       alert('No se pudo iniciar AR: ' + e.message);
@@ -436,7 +436,7 @@
         supportsAR = await navigator.xr.isSessionSupported('immersive-ar');
         console.log('[3D] AR support:', supportsAR);
       }
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.error('[3D] Setup failed:', e);
     }
     

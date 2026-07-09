@@ -15,8 +15,10 @@
 
   const { data } = $props();
 
+  /** @type {any} */
   let selectedArtwork = $state(null);
   let showAboutDetail = $state(false);
+  /** @type {any} */
   let dailyVideo = $state(null); // ← ADD THIS LINE
 
 $effect(() => {

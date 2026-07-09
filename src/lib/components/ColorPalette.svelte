@@ -23,7 +23,7 @@
       
       try {
         await extractColors();
-      } catch (err) {
+      } catch (/** @type {any} */ err) {
         console.error('Failed to extract colors:', err);
         error = 'Could not extract colors';
         debugInfo = {
@@ -60,7 +60,7 @@
         
         console.log('✅ Colors extracted:', colors.length);
         loading = false;
-      } catch (err) {
+      } catch (/** @type {any} */ err) {
         console.error('❌ Color extraction error:', err);
         error = 'Color extraction failed';
         debugInfo = {
@@ -119,7 +119,7 @@
       await navigator.clipboard.writeText(hex);
       copiedIndex = index;
       setTimeout(() => copiedIndex = -1, 2000);
-    } catch (err) {
+    } catch (/** @type {any} */ err) {
       console.error('Failed to copy:', err);
     }
   }

@@ -25,7 +25,9 @@
 		"wrangler": "^4.47.0"
 	},
 	"dependencies": {
+		"@iwsdk/core": "^0.3.1",
 		"colorthief": "^2.6.0",
+		"elics": "^3.4.1",
 		"jspdf": "^3.0.4",
 		"matter-js": "^0.20.0",
 		"three": "^0.182.0"

@@ -1,17 +1,25 @@
 // src/routes/api/ai-assistant/+server.js
 export async function POST({ request, locals, platform }) {
+  const env = platform?.env;
+  if (!env?.DB || !env?.AI) {
+    return new Response(JSON.stringify({ error: 'Server not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const { message, artworkId, conversationHistory } = await request.json();
-    
+
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
-    
+
     // Build context from database
-    const context = await buildContext(platform.env.DB, artworkId, message);
+    const context = await buildContext(env.DB, artworkId, message);
     
     // Create system prompt with context
     const systemPrompt = createSystemPrompt(context);
@@ -24,7 +32,7 @@ export async function POST({ request, locals, platform }) {
     ];
     
     // Call Workers AI
-    const aiResponse = await platform.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    const aiResponse = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
       messages,
       max_tokens: 512,
       temperature: 0.7
@@ -36,7 +44,7 @@ export async function POST({ request, locals, platform }) {
       headers: { 'Content-Type': 'application/json' }
     });
     
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('AI Assistant error:', error);
     return new Response(JSON.stringify({ 
       error: 'Failed to process request',
@@ -128,7 +136,7 @@ async function buildContext(db, artworkId, message) {
       context.knowledge = generalKnowledge.results || [];
     }
     
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Context building error:', error);
   }
   

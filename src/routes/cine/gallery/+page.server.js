@@ -45,7 +45,7 @@ export async function load({ platform, locals }) {
       customerCode: platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE || '',
       cloudflareAccountHash: platform.env.CLOUDFLARE_IMAGES_ACCOUNT_HASH || ''
     };
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     console.error('Gallery load error:', err);
     throw error(500, `Failed to load gallery: ${err.message}`);
   }

@@ -8,10 +8,13 @@ export async function GET({ params, platform, locals }) {
 
   const { imgId } = params;
 
+  const env = platform?.env;
+  if (!env) return json({ error: 'Server not configured' }, { status: 500 });
+
   try {
-    // Get secrets from platform.env
-    const apiToken = (await platform.env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
-    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    // Get secrets from env
+    const apiToken = (await env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
+    const accountId = env.CLOUDFLARE_ACCOUNT_ID;
 
     // Fetch image details from Cloudflare
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1/${imgId}`, {
@@ -39,7 +42,7 @@ export async function GET({ params, platform, locals }) {
       size: image.size,
       uploaded: image.uploaded
     });
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     console.error('Get image metadata error:', err);
     throw error(500, err.message || 'Failed to fetch image metadata');
   }

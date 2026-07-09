@@ -43,7 +43,7 @@ export async function GET({ params, platform }) {
       content: results || []
     });
     
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Error fetching story content:', error);
     return json(
       { 

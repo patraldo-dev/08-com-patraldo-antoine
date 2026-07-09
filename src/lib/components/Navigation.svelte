@@ -166,6 +166,7 @@
     <!-- Regular links just close menu on click -->
     <a href="/stories" onclick={handleRegularLink}>{$t('common.navStories')}</a>
     <a href="/cine" onclick={handleRegularLink}>{$t('common.navCine')}</a>
+    <a href="/worlds" onclick={handleRegularLink}>{$t('common.navWorlds')}</a>
     <a href="/tools" onclick={handleRegularLink}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={handleRegularLink}>{$t('common.navCollection')}</a>
 
@@ -244,6 +245,7 @@
     <!-- Regular links -->
     <a href="/stories" onclick={handleRegularLink}>{$t('common.navStories')}</a>
     <a href="/cine" onclick={handleRegularLink}>{$t('common.navCine')}</a>
+    <a href="/worlds" onclick={handleRegularLink}>{$t('common.navWorlds')}</a>
     <a href="/tools" onclick={handleRegularLink}>{$t('common.navTools')}</a>
     <a href="/collection" onclick={handleRegularLink}>{$t('common.navCollection')}</a>
 

@@ -51,7 +51,7 @@
     try {
       await startAR(THREE);
       status = 'ar-active';
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.error('[AR] Full error:', e);
       errorMsg = e.message || 'AR failed to start';
       // Make it clearer what failed
@@ -67,6 +67,7 @@
   }
 
   async function startAR(THREE) {
+    if (!navigator.xr) throw new Error('WebXR not supported on this device');
     const session = await navigator.xr.requestSession('immersive-ar', {
       optionalFeatures: ['hit-test', 'dom-overlay', 'local-floor', 'plane-detection', 'mesh-detection', 'anchors'],
       domOverlay: { root: document.body }

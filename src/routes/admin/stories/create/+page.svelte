@@ -3,6 +3,8 @@
   import { page } from '$app/stores';
   
   let { data } = $props();
+  /** @type {{ form?: any, [key: string]: any }} */
+  const d = data ?? {};
 
   // Initialize local state from URL params (Initial Load)
   const params = $page.url.searchParams;
@@ -15,16 +17,16 @@
 
   // Define reactive form state
   let formState = $state({
-    title: data.form?.title || params.get('title') || '',
-    slug: data.form?.slug || generateSlug(params.get('title')),
-    chapterTitle: data.form?.chapterTitle || 'Chapter 1',
-    artId: data.form?.artworkId || params.get('artwork_id') || '',
-    content: data.form?.content || ''
+    title: d.form?.title || params.get('title') || '',
+    slug: d.form?.slug || generateSlug(params.get('title')),
+    chapterTitle: d.form?.chapterTitle || 'Chapter 1',
+    artId: d.form?.artworkId || params.get('artwork_id') || '',
+    content: d.form?.content || ''
   });
 
   // Update slug automatically when title changes
   $effect(() => {
-    if (!data.form?.slug && !params.get('title')) {
+    if (!d.form?.slug && !params.get('title')) {
        formState.slug = generateSlug(formState.title);
     }
   });
@@ -36,8 +38,8 @@
   <!-- FIX: Move the <form> tag here to wrap BOTH panels -->
   <form method="POST" use:enhance class="writer-layout">
     
-    {#if data.form?.error}
-      <p class="error">{data.form.error}</p>
+    {#if d.form?.error}
+      <p class="error">{d.form.error}</p>
     {/if}
 
     <!-- Sidebar / Meta Data -->

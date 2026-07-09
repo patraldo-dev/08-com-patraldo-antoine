@@ -6,6 +6,9 @@ export async function POST({ request, platform, locals }) {
     throw error(403, 'Forbidden: Admin access required');
   }
 
+  const env = platform?.env;
+  if (!env) throw error(500, 'Server not configured');
+
   try {
     // Parse the form data
     const formData = await request.formData();
@@ -15,9 +18,9 @@ export async function POST({ request, platform, locals }) {
       throw error(400, 'No file provided');
     }
 
-    // Get secrets from platform.env
-    const apiToken = (await platform.env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
-    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    // Get secrets from env
+    const apiToken = (await env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
+    const accountId = env.CLOUDFLARE_ACCOUNT_ID;
 
     if (!apiToken) {
       console.error('Missing CLOUDFLARE_API_TOKEN');
@@ -60,7 +63,7 @@ export async function POST({ request, platform, locals }) {
       imageId: data.result.id,
       filename: file.name
     });
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     console.error('Upload image error:', err);
     throw error(500, err.message || 'Failed to upload image');
   }

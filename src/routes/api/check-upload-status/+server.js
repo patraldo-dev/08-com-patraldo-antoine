@@ -1,12 +1,15 @@
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, platform }) {
+  const env = platform?.env;
+  if (!env) return json({ error: 'Server not configured' }, { status: 500 });
+
   try {
     const { imageId } = await request.json();
-    
+
     // Get secrets from platform.env
-    const apiToken = (await platform.env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
-    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    const apiToken = (await env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
+    const accountId = env.CLOUDFLARE_ACCOUNT_ID;
     
     // Check the image status with Cloudflare
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1/${imageId}`, {
@@ -24,13 +27,13 @@ export async function POST({ request, platform }) {
     // If the image is no longer in draft status, it's been uploaded
     if (!data.result.draft) {
       // Get the pending upload details
-      const pendingUpload = await platform.env.ARTWORKS_DB.prepare('SELECT * FROM pending_uploads WHERE image_id = ?')
+      const pendingUpload = await env.ARTWORKS_DB.prepare('SELECT * FROM pending_uploads WHERE image_id = ?')
         .bind(imageId)
         .first();
       
       if (pendingUpload) {
         // Add the artwork to the database
-        const { success } = await platform.env.ARTWORKS_DB.prepare(`
+        const { success } = await env.ARTWORKS_DB.prepare(`
           INSERT INTO artworks (title, type, image_id, description, year)
           VALUES (?, ?, ?, ?, ?)
         `).bind(
@@ -46,7 +49,7 @@ export async function POST({ request, platform }) {
         }
         
         // Remove the pending upload
-        await platform.env.ARTWORKS_DB.prepare('DELETE FROM pending_uploads WHERE image_id = ?')
+        await env.ARTWORKS_DB.prepare('DELETE FROM pending_uploads WHERE image_id = ?')
           .bind(imageId)
           .run();
         
@@ -66,7 +69,7 @@ export async function POST({ request, platform }) {
       success: true,
       status: 'pending'
     });
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Error checking upload status:', error);
     return json({ error: error.message }, { status: 500 });
   }

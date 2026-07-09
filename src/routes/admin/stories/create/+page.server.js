@@ -52,7 +52,7 @@ export const actions = {
       // 6. REDIRECT
       throw redirect(303, `/stories/${storySlug}/chapter-1`);
 
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       // Do not redirect if there is an error. Return the error to the form.
       console.error("Error saving story:", e);
       return { error: e.message };

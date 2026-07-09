@@ -1,5 +1,6 @@
 {
   "common.navCine": "Cine",
+  "common.navWorlds": "Worlds",
   "common.navhome": "Home",
   "common.navwork": "Work",
   "common.navabout": "About",
@@ -64,6 +65,11 @@
   "pages.home.sketchbook": "Sketchbook",
   "pages.home.metadescription": "Where spontaneous art meets innovative animation—a collaboration bringing colored pencil drawings to life through open-source AI tools and creative storytelling.",
   "pages.home.metatitle": "Antoine Patraldo - Interactive Stories",
+  "pages.worlds.metaTitle": "Antoine Patraldo - Worlds",
+  "pages.worlds.title": "Worlds",
+  "pages.worlds.subtitle": "Enter a world through an artwork",
+  "pages.worlds.tapHint": "Tap an artwork to travel",
+  "pages.worlds.bootError": "The worlds could not load.",
   "pages.home.herotitle": "Antoine Patraldo",
   "pages.home.explore3D": "Explore in 3D",
   "pages.home.explore3DSubtitle": "Interact with artworks in three dimensions—rotate, zoom, and explore",

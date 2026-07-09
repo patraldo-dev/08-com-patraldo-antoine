@@ -1,8 +1,10 @@
 import { json } from '@sveltejs/kit';
 
 export async function GET({ platform }) {
+  const db = platform?.env?.ARTWORKS_DB;
+  if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
-    const { results } = await platform.env.ARTWORKS_DB.prepare('SELECT * FROM artworks ORDER BY created_at DESC').all();
+    const { results } = await db.prepare('SELECT * FROM artworks ORDER BY created_at DESC').all();
     return json(results);
   } catch (error) {
     console.error('Error fetching artworks:', error);
@@ -11,10 +13,12 @@ export async function GET({ platform }) {
 }
 
 export async function POST({ request, platform }) {
+  const db = platform?.env?.ARTWORKS_DB;
+  if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
     const { title, type, image_id, video_id, description, year, featured } = await request.json();
-    
-    const { success, results } = await platform.env.ARTWORKS_DB.prepare(`
+
+    const { success, results } = await db.prepare(`
       INSERT INTO artworks (title, type, image_id, video_id, description, year, featured)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).bind(title, type, image_id, video_id, description, year, featured ? 1 : 0).run();

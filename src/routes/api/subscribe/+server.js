@@ -2,22 +2,30 @@
 import { getTranslation } from '$lib/i18n/server';
 
 export async function POST({ request, platform }) {
+  const env = platform?.env;
+  if (!env?.DB) {
+    return new Response(
+      JSON.stringify({ message: 'Server not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const { email, locale = 'es' } = await request.json(); // Default to Spanish
     const origin = request.headers.get('origin') || 'https://antoine.patraldo.com';
-    
+
     // Get translation function
     const t = getTranslation(locale);
-    
+
     if (!email || !isValidEmail(email)) {
       return new Response(
         JSON.stringify({ message: t('subscription.validEmailRequired') }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
-    
+
     // Check if email already exists (regardless of confirmation status)
-    const existingSubscriber = await platform.env.DB.prepare(`
+    const existingSubscriber = await env.DB.prepare(`
       SELECT * FROM subscribers 
       WHERE email = ? AND type = 'art-updates'
     `).bind(email).first();
@@ -40,14 +48,14 @@ export async function POST({ request, platform }) {
       }
       
       // Case 2: Pending confirmation - update token but keep status
-      const result = await platform.env.DB.prepare(`
+      const result = await env.DB.prepare(`
         UPDATE subscribers 
         SET token = ?, token_expires_at = ?, locale = ?
         WHERE email = ? AND type = 'art-updates'
       `).bind(token, expiresAt.toISOString(), locale, email).run();
     } else {
       // Case 3: New subscriber - insert record
-      const result = await platform.env.DB.prepare(`
+      const result = await env.DB.prepare(`
         INSERT INTO subscribers (email, type, token, token_expires_at, confirmed, created_at, locale)
         VALUES (?, 'art-updates', ?, ?, 0, datetime('now'), ?)
       `).bind(email, token, expiresAt.toISOString(), locale).run();
@@ -61,7 +69,7 @@ export async function POST({ request, platform }) {
     
     // Try to send verification email, but don't fail if it doesn't work
     try {
-      await sendVerificationEmail(email, platform.env, token, expiresAt, origin, locale, t);
+      await sendVerificationEmail(email, env, token, expiresAt, origin, locale, t);
       console.log('Verification email sent successfully');
       
       return new Response(
@@ -71,7 +79,7 @@ export async function POST({ request, platform }) {
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
-    } catch (emailError) {
+    } catch (/** @type {any} */ emailError) {
       console.error('Failed to send verification email:', emailError);
       
       return new Response(
@@ -83,7 +91,7 @@ export async function POST({ request, platform }) {
       );
     }
     
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Subscription error:', error);
     
     // Fallback to Spanish for errors
@@ -181,7 +189,7 @@ async function sendEmail(to, subject, htmlContent, env) {
       }
       
       return await response.json();
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       console.error(`Email sending attempt ${attempt} failed:`, error.message);
       
       if (attempt === maxRetries) {

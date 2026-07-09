@@ -84,7 +84,7 @@ export async function load({ params, platform }) {
       } : null
     };
 
-  } catch (e) {
+  } catch (/** @type {any} */ e) {
     if (e.status) throw e; 
     console.error('Error loading chapter:', e);
     throw error(500, 'Failed to load story chapter');

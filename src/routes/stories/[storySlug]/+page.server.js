@@ -13,7 +13,10 @@ export async function load({ platform, params, locals, cookies }) {
     const langSuffix = ['es', 'en', 'fr'].includes(langCode) ? langCode : 'es';
     
     // Fetch story
-    const story = await platform.env.DB_stories.prepare(`
+    const storyDb = platform?.env?.DB_stories;
+    if (!storyDb) throw error(500, 'Database not configured');
+
+    const story = await storyDb.prepare(`
       SELECT 
         id,
         slug,
@@ -31,7 +34,7 @@ export async function load({ platform, params, locals, cookies }) {
     }
     
     // Fetch chapters for this story
-    const chaptersResult = await platform.env.DB_stories.prepare(`
+    const chaptersResult = await storyDb.prepare(`
       SELECT 
         slug,
         chapter_number,
@@ -48,7 +51,7 @@ export async function load({ platform, params, locals, cookies }) {
       chapters: chaptersResult.results || [],
       preferredLanguage 
     };
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     if (err.status === 404) throw err;
     console.error('Error loading story:', err);
     throw error(500, 'Failed to load story');

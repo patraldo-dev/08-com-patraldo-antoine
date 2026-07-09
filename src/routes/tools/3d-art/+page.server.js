@@ -44,7 +44,7 @@ export async function load({ platform }) {
     
     return { artworks };
     
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('=== ERROR ===');
     console.error('Message:', error.message);
     console.error('Stack:', error.stack);

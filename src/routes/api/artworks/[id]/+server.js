@@ -1,11 +1,13 @@
 import { json } from '@sveltejs/kit';
 
 export async function PUT({ request, platform, params }) {
+  const db = platform?.env?.ARTWORKS_DB;
+  if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
     const { id } = params;
     const { title, type, image_id, video_id, description, year, featured } = await request.json();
-    
-    const { success } = await platform.env.ARTWORKS_DB.prepare(`
+
+    const { success } = await db.prepare(`
       UPDATE artworks 
       SET title = ?, type = ?, image_id = ?, video_id = ?, description = ?, year = ?, featured = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?

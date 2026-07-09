@@ -65,7 +65,7 @@
       checkingStatus = true;
       statusCheckInterval = setInterval(checkUploadStatus, 2000); // Check every 2 seconds
       
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       console.error('Upload error:', error);
       uploadMessage = `Error: ${error.message}`;
       uploadSuccess = false;
@@ -114,7 +114,7 @@
       }
       // If still pending, continue polling
       
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       console.error('Status check error:', error);
       clearInterval(statusCheckInterval);
       checkingStatus = false;

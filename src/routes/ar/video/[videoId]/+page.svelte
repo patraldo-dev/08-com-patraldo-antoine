@@ -18,7 +18,7 @@
       if (!res.ok) throw new Error('Video not found');
       videoInfo = await res.json();
       posterUrl = videoInfo.thumbnail || '';
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       errorMsg = 'Failed to load video info: ' + e.message;
       status = 'error';
       return;
@@ -46,7 +46,7 @@
     try {
       await startAR(THREE);
       status = 'ar-active';
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.error('[AR Video] Error:', e);
       errorMsg = e.message || 'AR failed to start';
       status = 'error';
@@ -54,6 +54,7 @@
   }
 
   async function startAR(THREE) {
+    if (!navigator.xr) throw new Error('WebXR not supported on this device');
     const session = await navigator.xr.requestSession('immersive-ar', {
       optionalFeatures: ['hit-test', 'dom-overlay', 'local-floor', 'plane-detection', 'mesh-detection', 'anchors'],
       domOverlay: { root: document.body }
@@ -118,7 +119,7 @@
     ]);
 
     // Start playback
-    try { await video.play(); } catch (e) { console.warn('[AR] Initial play failed:', e); }
+    try { await video.play(); } catch (/** @type {any} */ e) { console.warn('[AR] Initial play failed:', e); }
 
     // Wait for actual frame data
     await Promise.race([
@@ -164,7 +165,7 @@
     let hitTestSource = null;
     try {
       hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.warn('[AR] Hit test not available');
     }
 
@@ -200,7 +201,7 @@
     let detectedPlanes = [];
     try {
       planeMonitor = await session.requestPlaneDetection();
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.warn('[AR] Plane detection not available');
     }
     session.addEventListener('planesdetected', (event) => {
@@ -252,7 +253,7 @@
     let meshMonitor = null;
     try {
       meshMonitor = await session.requestMeshDetection();
-    } catch (e) {
+    } catch (/** @type {any} */ e) {
       console.warn('[AR] Mesh detection not available');
     }
 
@@ -346,7 +347,7 @@
               const points = new THREE.Points(threeGeo, threeMat);
               meshGroup.add(points);
             }
-          } catch (e) { /* Mesh not ready yet */ }
+          } catch (/** @type {any} */ e) { /* Mesh not ready yet */ }
         })();
       }
 
@@ -471,7 +472,7 @@
         pinMesh.position.set(0, 0.3, 0);
         mesh.add(pinMesh);
         console.log('[AR] Anchor created:', anchor.anchorUID);
-      } catch (e) {
+      } catch (/** @type {any} */ e) {
         pinBtn.textContent = '📌 N/A';
         pinBtn.disabled = true;
         console.warn('[AR] Anchor not available');

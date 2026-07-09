@@ -1,11 +1,14 @@
 export async function GET({ url, platform }) {
+  const db = platform?.env?.DB;
+  if (!db) return new Response('Server not configured', { status: 500 });
+
   try {
     const token = url.searchParams.get('token');
     if (!token) {
       return new Response('Invalid verification token', { status: 400 });
     }
-    
-    const subscriber = await platform.env.DB.prepare(`
+
+    const subscriber = await db.prepare(`
       SELECT email, token_expires_at FROM subscribers 
       WHERE token = ? AND type = 'art-updates'
     `).bind(token).first();
@@ -19,7 +22,7 @@ export async function GET({ url, platform }) {
     }
     
     // Update subscriber as confirmed
-    await platform.env.DB.prepare(`
+    await db.prepare(`
       UPDATE subscribers 
       SET confirmed = 1, token = NULL, token_expires_at = NULL 
       WHERE email = ? AND type = 'art-updates'

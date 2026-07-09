@@ -1,5 +1,6 @@
 {
   "common.navCine": "Cine",
+  "common.navWorlds": "Mundos",
   "common.navhome": "Inicio",
   "common.navwork": "Obra",
   "common.navabout": "Acerca de",
@@ -64,6 +65,11 @@
   "pages.home.sketchbook": "Cuaderno de Bocetos",
   "pages.home.metadescription": "Donde el arte espontáneo se encuentra con la animación innovadora—una colaboración que da vida a dibujos de lápices de colores mediante herramientas de IA de código abierto y narrativa creativa.",
   "pages.home.metatitle": "Antoine Patraldo - Historias interactivas",
+  "pages.worlds.metaTitle": "Antoine Patraldo - Mundos",
+  "pages.worlds.title": "Mundos",
+  "pages.worlds.subtitle": "Entra a un mundo a través de una obra",
+  "pages.worlds.tapHint": "Toca una obra para viajar",
+  "pages.worlds.bootError": "Los mundos no pudieron cargar.",
   "pages.home.herotitle": "Antoine Patraldo",
   "pages.home.explore3D": "Explorar en 3D",
   "pages.home.explore3DSubtitle": "Interactúa con las obras en tres dimensiones—rota, acerca y explora",

@@ -1,13 +1,16 @@
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, platform }) {
+  const env = platform?.env;
+  if (!env) return json({ error: 'Server not configured' }, { status: 500 });
+
   try {
     // Get metadata from the request
     const { metadata } = await request.json();
-    
+
     // Get secrets from platform.env
-    const apiToken = (await platform.env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
-    const accountId = platform.env.CLOUDFLARE_ACCOUNT_ID;
+    const apiToken = (await env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
+    const accountId = env.CLOUDFLARE_ACCOUNT_ID;
     
     // Request a one-time upload URL from Cloudflare
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v2/direct_upload`, {
@@ -28,7 +31,7 @@ export async function POST({ request, platform }) {
     }
     
     // Store the pending upload in the database
-    const { success } = await platform.env.ARTWORKS_DB.prepare(`
+    const { success } = await env.ARTWORKS_DB.prepare(`
       INSERT INTO pending_uploads (image_id, title, description, year, status)
       VALUES (?, ?, ?, ?, ?)
     `).bind(
@@ -48,7 +51,7 @@ export async function POST({ request, platform }) {
       uploadURL: data.result.uploadURL,
       imageId: data.result.id
     });
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Error generating upload URL:', error);
     return json({ error: error.message }, { status: 500 });
   }

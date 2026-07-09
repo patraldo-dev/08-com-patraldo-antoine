@@ -1,0 +1,72 @@
+{
+  "$schema": "portal-scene.v1",
+  "world": {
+    "id": "reyes",
+    "names": {
+      "es": "Reyes",
+      "en": "The Kings",
+      "fr": "Les Rois"
+    },
+    "descriptions": {
+      "es": "Coronas de otros cielos",
+      "en": "Crowns from other skies",
+      "fr": "Couronnes d'autres cieux"
+    },
+    "art": "26fe40df-7745-41dc-7491-97cb36a32f00"
+  },
+  "palette": {
+    "primary": "#d4af37",
+    "secondary": "#1b3a8f",
+    "accent": "#f0d97a",
+    "background": "#050410",
+    "fog_color": "#08081c",
+    "fog_density": 0.012,
+    "safe_text_color": "#f0d97a"
+  },
+  "lighting": {
+    "ambient": { "color": "#0a0a24", "intensity": 0.6 },
+    "key_light": { "color": "#d4af37", "intensity": 3.2, "distance": 20, "position": [2, 3, 2] },
+    "rim_light": { "color": "#1b3a8f", "intensity": 2.6, "distance": 16, "position": [-3, 1, -2] },
+    "under_light": { "color": "#3a5fd4", "intensity": 1.7, "distance": 9, "position": [0, -2, 1] }
+  },
+  "ambient_particles": {
+    "count": 540,
+    "spawn_radius": 8,
+    "size": 0.05,
+    "opacity": 0.7,
+    "color_range": { "hue_start": 0.12, "hue_span": 0.06, "saturation": 0.8, "lightness_min": 0.55, "lightness_max": 0.85 },
+    "drift_speed": 0.02
+  },
+  "narrative_texts": {
+    "es": [
+      "❝ Los reyes no tienen reino, solo color ❞",
+      "❝ Cada corona es una constelación ❞",
+      "❝ Gobiernan el silencio entre estrellas ❞"
+    ],
+    "en": [
+      "❝ The kings have no kingdom, only color ❞",
+      "❝ Every crown is a constellation ❞",
+      "❝ They rule the silence between stars ❞"
+    ],
+    "fr": [
+      "❝ Les rois n'ont de royaume que la couleur ❞",
+      "❝ Chaque couronne est une constellation ❞",
+      "❝ Ils règnent sur le silence entre les étoiles ❞"
+    ]
+  },
+  "environment_art": [
+    "26fe40df-7745-41dc-7491-97cb36a32f00",
+    "65dfe0b8-5b3f-4501-a3ee-c99d301a1800"
+  ],
+  "portal_links": [
+    { "target": "cosmos", "art": "5c28fef5-cff0-4ddd-b4af-100d29bad100" },
+    { "target": "jardin", "art": "e9fd4477-84f5-4a57-ac67-aba89d28b000" },
+    { "target": "ciudad", "art": "62355ddb-0f6c-4251-5d8e-37a455e44000" },
+    { "target": "fiesta", "art": "bd4602b0-149d-42f8-e872-f697b64c7d00" }
+  ],
+  "audio": {},
+  "camera": {
+    "orbit": { "radius_a": 6.2, "radius_b": 5.2, "height": 2.4, "speed": 0.028 }
+  },
+  "environment": { "type": "space" }
+}

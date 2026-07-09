@@ -33,7 +33,7 @@ export async function GET({ params, platform }) {
     }
 
     return json(artwork);
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Get artwork transform error:', error);
     return json({ error: error.message }, { status: 500 });
   }
@@ -76,7 +76,7 @@ export async function POST({ params, request, platform }) {
     }
 
     return json({ success: true });
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Save transform error:', error);
     return json({ error: error.message }, { status: 500 });
   }
@@ -106,7 +106,7 @@ export async function DELETE({ params, platform }) {
     await resetArtworkTransform(db, artworkId);
 
     return json({ success: true });
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     console.error('Reset transform error:', error);
     return json({ error: error.message }, { status: 500 });
   }

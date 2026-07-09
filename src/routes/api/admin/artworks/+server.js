@@ -92,7 +92,7 @@ export async function POST({ request, platform, locals }) {
       storyId: storyId
     });
     
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     console.error('Save artwork error:', err);
     throw error(500, err.message || 'Failed to save artwork');
   }

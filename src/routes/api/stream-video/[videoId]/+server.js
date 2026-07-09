@@ -2,9 +2,11 @@ import { json } from '@sveltejs/kit';
 
 export async function GET({ params, platform }) {
   const { videoId } = params;
-  const token = await platform.env.CLOUDFLARE_API_TOKEN.get();
-  const accountId = platform.env.CF_ACCOUNT_ID;
-  const customerCode = platform.env.CLOUDFLARE_STREAM_CUSTOMER_CODE;
+  const env = platform?.env;
+  if (!env) return json({ error: 'Stream not configured' }, { status: 500 });
+  const token = await env.CLOUDFLARE_API_TOKEN.get();
+  const accountId = env.CF_ACCOUNT_ID;
+  const customerCode = env.CLOUDFLARE_STREAM_CUSTOMER_CODE;
 
   if (!token || !accountId || !customerCode) {
     return json({ error: 'Stream not configured' }, { status: 500 });
@@ -32,7 +34,7 @@ export async function GET({ params, platform }) {
       thumbnail: video.thumbnail,
       aspectRatio: video.meta?.aspect_ratio || video.aspectRatio || '16:9'
     });
-  } catch (e) {
+  } catch (/** @type {any} */ e) {
     return json({ error: e.message }, { status: 500 });
   }
 }

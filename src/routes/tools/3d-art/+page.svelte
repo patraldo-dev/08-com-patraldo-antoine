@@ -71,7 +71,7 @@
         saveMessage = $t('3dart_saveFailed') + ' ' + result.error;
         messageType = 'error';
       }
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       console.error('Save error:', error);
       saveMessage = $t('3dart_unknownError') + ' ' + error.message;
       messageType = 'error';
@@ -104,7 +104,7 @@
         saveMessage = $t('3dart_resetFailed') + ' ' + result.error;
         messageType = 'error';
       }
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       console.error('Reset error:', error);
       saveMessage = $t('3dart_unknownError') + ' ' + error.message;
       messageType = 'error';

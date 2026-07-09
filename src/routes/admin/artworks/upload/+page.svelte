@@ -95,7 +95,7 @@
       
       step = 3;
       
-    } catch (err) {
+    } catch (/** @type {any} */ err) {
       error = err.message;
     } finally {
       isUploading = false;
@@ -133,7 +133,7 @@
       const today = new Date().toISOString().split('T')[0];
       description = `Uploaded on ${today}. Filename: ${data.filename || title + '.jpg'}`;
       
-    } catch (err) {
+    } catch (/** @type {any} */ err) {
       console.error('Error fetching metadata:', err);
     } finally {
       isFetching = false;
@@ -210,7 +210,7 @@
         step = 1;
       }, 2000);
       
-    } catch (err) {
+    } catch (/** @type {any} */ err) {
       error = err.message;
     } finally {
       isSaving = false;

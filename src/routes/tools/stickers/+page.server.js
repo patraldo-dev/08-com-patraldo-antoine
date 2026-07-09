@@ -1,8 +1,11 @@
 // src/routes/tools/stickers/+page.server.js
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform }) {
+  const db = platform?.env?.ARTWORKS_DB;
+  if (!db) return { artworks: [] };
+
   // Query only published artworks with image_id
-  const { results } = await platform.env.ARTWORKS_DB.prepare(`
+  const { results } = await db.prepare(`
     SELECT id, display_name, title, image_id
     FROM artworks
     WHERE published = 1 AND image_id IS NOT NULL
