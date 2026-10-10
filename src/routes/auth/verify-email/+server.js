@@ -1,3 +1,4 @@
+import { env } from 'cloudflare:workers';
 // src/routes/auth/verify-email/+server.js
 export async function GET({ url, platform }) {
     try {
@@ -7,7 +8,7 @@ export async function GET({ url, platform }) {
             return new Response('Invalid verification token', { status: 400 });
         }
         
-        const db = platform?.env?.DB_users;
+        const db = env?.DB_users;
         if (!db) {
             return new Response('Database unavailable', { status: 500 });
         }

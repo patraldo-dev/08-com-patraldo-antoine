@@ -1,16 +1,17 @@
 import { json, error } from '@sveltejs/kit';
 import { CineDatabase } from '#lib/server/cine-db.js';
+import { env } from 'cloudflare:workers';
 
 /**
  * @type {import('./$types').RequestHandler}
  */
 export async function GET({ platform, locals, url }) {
-  if (!platform?.env?.DB) {
+  if (!env?.DB) {
     throw error(500, 'Database not configured');
   }
 
   try {
-    const db = new CineDatabase(platform.env.DB);
+    const db = new CineDatabase(env.DB);
     const locale = locals.locale || url.searchParams.get('locale') || 'es';
     const films = await db.getAllFilms();
     

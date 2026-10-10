@@ -1,9 +1,10 @@
 // src/routes/api/auth/signup/+server.js
 import { json } from '@sveltejs/kit';
 import { hashPassword } from '#lib/auth-helpers.js';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform }) {
-    const db = platform?.env?.DB_users;
+    const db = env?.DB_users;
     if (!db) return json({ error: 'DB unavailable' }, { status: 500 });
     
     const { username, email, password } = await request.json();
@@ -36,8 +37,8 @@ export async function POST({ request, platform }) {
     try {
         const confirmUrl = `https://antoine.patraldo.com/auth/verify-email?token=${encodeURIComponent(emailVerificationToken)}`;
         
-        const mailgunDomain = platform.env.MAILGUN_DOMAIN || 'patraldo.com';
-        const mailgunApiKey = platform.env.MAILGUN_API_KEY;
+        const mailgunDomain = env.MAILGUN_DOMAIN || 'patraldo.com';
+        const mailgunApiKey = env.MAILGUN_API_KEY;
         
         if (mailgunApiKey) {
             const formData = new FormData();

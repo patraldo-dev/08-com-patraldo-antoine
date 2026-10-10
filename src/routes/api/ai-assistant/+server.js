@@ -1,6 +1,6 @@
+import { env } from 'cloudflare:workers';
 // src/routes/api/ai-assistant/+server.js
 export async function POST({ request, locals, platform }) {
-  const env = platform?.env;
   if (!env?.DB || !env?.AI) {
     return new Response(JSON.stringify({ error: 'Server not configured' }), {
       status: 500,

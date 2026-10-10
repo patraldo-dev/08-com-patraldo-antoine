@@ -1,12 +1,13 @@
 // src/routes/api/story/[id]/+server.js
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ params, platform }) {
   const { id } = params;
   
   try {
-    const db = platform?.env?.ARTWORKS_DB;
+    const db = env?.ARTWORKS_DB;
     
     if (!db) {
       return json(

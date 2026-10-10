@@ -1,3 +1,4 @@
+import { env } from 'cloudflare:workers';
 // src/hooks.server.js
 const SESSION_EXPIRES_IN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -70,14 +71,14 @@ export async function handle({ event, resolve }) {
     console.log('🔍 [Auth Debug] Starting auth check');
     
     // Try to get DB binding
-    const db = event.platform?.env?.DB_users;
+    const db = env?.DB_users;
     
     if (!db) {
         console.error('❌ DB_users binding not found');
         console.error('Platform exists:', !!event.platform);
-        console.error('Platform.env exists:', !!event.platform?.env);
-        if (event.platform?.env) {
-            console.error('Available bindings:', Object.keys(event.platform.env));
+        console.error('Platform.env exists:', !!env);
+        if (env) {
+            console.error('Available bindings:', Object.keys(env));
         }
         return resolve(event);
     }

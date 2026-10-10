@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform, params, locals, cookies }) {
@@ -13,7 +14,7 @@ export async function load({ platform, params, locals, cookies }) {
     const langSuffix = ['es', 'en', 'fr'].includes(langCode) ? langCode : 'es';
     
     // Fetch story
-    const storyDb = platform?.env?.DB_stories;
+    const storyDb = env?.DB_stories;
     if (!storyDb) throw error(500, 'Database not configured');
 
     const story = await storyDb.prepare(`

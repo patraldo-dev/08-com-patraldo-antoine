@@ -1,3 +1,4 @@
+import { env } from 'cloudflare:workers';
 // src/routes/sitemap.xml/+server.js
 export async function GET({ locals }) {
   const baseUrl = 'https://antoine.patraldo.com';
@@ -8,7 +9,7 @@ export async function GET({ locals }) {
   
   try {
     // Fetch all published artworks (both regular and cinematic)
-    const artworks = await locals.platform.env.DB.prepare(
+    const artworks = await locals.env.DB.prepare(
       `SELECT 
         id, 
         slug, 

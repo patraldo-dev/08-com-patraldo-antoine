@@ -4,6 +4,7 @@ import {
   getArtworkWithTransform,
   resetArtworkTransform
 } from '#lib/db/artwork-transforms.js';
+import { env } from 'cloudflare:workers';
 
 /**
  * GET - Retrieve artwork with transformation data
@@ -12,7 +13,7 @@ import {
 export async function GET({ params, platform }) {
   const { id } = params;
   
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   
   if (!db) {
     console.error('ARTWORKS_DB not available');
@@ -46,7 +47,7 @@ export async function GET({ params, platform }) {
 export async function POST({ params, request, platform }) {
   const { id } = params;
   
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   
   if (!db) {
     console.error('ARTWORKS_DB not available');
@@ -89,7 +90,7 @@ export async function POST({ params, request, platform }) {
 export async function DELETE({ params, platform }) {
   const { id } = params;
   
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   
   if (!db) {
     console.error('ARTWORKS_DB not available');

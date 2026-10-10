@@ -1,12 +1,11 @@
 import { json, error } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform, locals }) {
   // Use locals from hooks instead of session KV
   if (!locals.user || !locals.isAdmin) {
     throw error(403, 'Forbidden: Admin access required');
   }
-
-  const env = platform?.env;
   if (!env) throw error(500, 'Server not configured');
 
   try {

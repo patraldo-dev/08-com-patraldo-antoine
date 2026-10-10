@@ -1,9 +1,10 @@
 // src/routes/tools/palettes/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+import { env } from 'cloudflare:workers';
 
 export async function load({ platform }) {
   try {
-    const db = platform?.env?.ARTWORKS_DB;
+    const db = env?.ARTWORKS_DB;
     
     if (!db) {
       return { artworks: [] };

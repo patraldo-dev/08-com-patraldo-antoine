@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function PUT({ request, platform, params }) {
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
     const { id } = params;

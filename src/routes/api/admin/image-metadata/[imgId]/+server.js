@@ -1,4 +1,5 @@
 import { json, error } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function GET({ params, platform, locals }) {
   // Use locals from hooks instead of session KV
@@ -7,8 +8,6 @@ export async function GET({ params, platform, locals }) {
   }
 
   const { imgId } = params;
-
-  const env = platform?.env;
   if (!env) return json({ error: 'Server not configured' }, { status: 500 });
 
   try {

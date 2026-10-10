@@ -1,10 +1,11 @@
 // src/routes/tools/wallpapers/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+import { env } from 'cloudflare:workers';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform }) {
   try {
-    const db = platform?.env?.ARTWORKS_DB;
+    const db = env?.ARTWORKS_DB;
 
     if (!db) {
       console.warn('DB not available');

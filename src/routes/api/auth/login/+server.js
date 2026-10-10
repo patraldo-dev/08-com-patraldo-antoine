@@ -1,9 +1,10 @@
 // src/routes/api/auth/login/+server.js
 import { json } from '@sveltejs/kit';
 import { verifyPassword, generateSessionToken } from '#lib/auth-helpers.js';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform, cookies }) {
-    const db = platform?.env?.DB_users;
+    const db = env?.DB_users;
     if (!db) return json({ error: 'DB unavailable' }, { status: 500 });
     
     const { identifier, password } = await request.json();

@@ -1,5 +1,6 @@
 // src/routes/admin/stories/create/+page.server.js
 import { error, redirect } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export const actions = {
   default: async ({ request, platform }) => {
@@ -11,8 +12,8 @@ export const actions = {
     const artworkId = formData.get('artworkId'); 
 
     // 1. GET BINDINGS
-    const dbStories = platform?.env?.stories_db;
-    const dbArtworks = platform?.env?.ARTWORKS_DB;
+    const dbStories = env?.stories_db;
+    const dbArtworks = env?.ARTWORKS_DB;
 
     // 2. SECURITY CHECK (Show error on screen if bindings missing)
     if (!dbStories) {

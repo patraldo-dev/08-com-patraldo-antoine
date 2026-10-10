@@ -1,7 +1,8 @@
+import { env } from 'cloudflare:workers';
 export async function load({ platform }) {
   console.log('=== Load function START ===');
   
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   console.log('DB available:', !!db);
   
   if (!db) {

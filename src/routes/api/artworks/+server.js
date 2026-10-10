@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function GET({ platform }) {
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
     const { results } = await db.prepare('SELECT * FROM artworks ORDER BY created_at DESC').all();
@@ -13,7 +14,7 @@ export async function GET({ platform }) {
 }
 
 export async function POST({ request, platform }) {
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   if (!db) return json({ error: 'Server not configured' }, { status: 500 });
   try {
     const { title, type, image_id, video_id, description, year, featured } = await request.json();

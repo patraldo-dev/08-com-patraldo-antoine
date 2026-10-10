@@ -1,13 +1,14 @@
 // src/routes/stories/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+import { env } from 'cloudflare:workers';
 
 export async function load({ platform, locals }) {  // ✅ Changed from 'event' to 'locals'
   // 1. GET AUTH STATUS FROM HOOK (The Single Source of Truth)
   // We don't check headers or cookies manually here.
   const isAdmin = locals.user?.role === 'admin';  // ✅ Use locals directly
   
-  const dbStories = platform?.env?.stories_db;
-  const dbArtworks = platform?.env?.ARTWORKS_DB;
+  const dbStories = env?.stories_db;
+  const dbArtworks = env?.ARTWORKS_DB;
   
   if (!dbStories || !dbArtworks) {
     console.log("Stories Index: Database bindings missing.");

@@ -1,8 +1,9 @@
 // src/routes/api/auth/logout/+server.js
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ cookies, platform }) {
-  const db = platform?.env?.DB_users;
+  const db = env?.DB_users;
   const sessionId = cookies.get('session');
   
   // Delete session from database

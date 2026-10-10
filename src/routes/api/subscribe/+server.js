@@ -1,8 +1,8 @@
 // src/routes/api/subscribe/+server.js
 import { getTranslation } from '#lib/i18n/server.js';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform }) {
-  const env = platform?.env;
   if (!env?.DB) {
     return new Response(
       JSON.stringify({ message: 'Server not configured' }),

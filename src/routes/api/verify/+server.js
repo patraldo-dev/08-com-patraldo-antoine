@@ -1,8 +1,9 @@
 //src/routes/api/subscribe/+server.js
 import { getTranslation } from '#lib/i18n/server.js';
+import { env } from 'cloudflare:workers';
 
 export async function GET({ url, platform, request }) {
-  const db = platform?.env?.DB;
+  const db = env?.DB;
   if (!db) return new Response('Server not configured', { status: 500 });
 
   try {

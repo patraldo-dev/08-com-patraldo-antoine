@@ -1,8 +1,8 @@
 // src/routes/cine/+page.server.js
 import { CineDatabase } from '#lib/server/cine-db.js';
+import { env } from 'cloudflare:workers';
 
 export async function load({ platform, locals }) {
-  const env = platform?.env;
   if (!env?.ARTWORKS_DB) {
     return {
       film: null,

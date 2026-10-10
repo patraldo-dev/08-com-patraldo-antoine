@@ -1,5 +1,6 @@
 // src/routes/api/admin/artworks/+server.js
 import { json, error } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform, locals }) {
   // Use locals from hooks instead of session KV
@@ -7,8 +8,8 @@ export async function POST({ request, platform, locals }) {
     throw error(403, 'Forbidden: Admin access required');
   }
   
-  const artworksDb = platform?.env?.ARTWORKS_DB;
-  const storiesDb = platform?.env?.stories_db;
+  const artworksDb = env?.ARTWORKS_DB;
+  const storiesDb = env?.stories_db;
   
   if (!artworksDb) {
     throw error(500, 'Artworks database not available');

@@ -1,7 +1,8 @@
+import { env } from 'cloudflare:workers';
 // src/routes/tools/stickers/+page.server.js
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform }) {
-  const db = platform?.env?.ARTWORKS_DB;
+  const db = env?.ARTWORKS_DB;
   if (!db) return { artworks: [] };
 
   // Query only published artworks with image_id

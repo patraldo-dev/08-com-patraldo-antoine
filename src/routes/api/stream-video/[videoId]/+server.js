@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function GET({ params, platform }) {
   const { videoId } = params;
-  const env = platform?.env;
   if (!env) return json({ error: 'Stream not configured' }, { status: 500 });
   const token = await env.CLOUDFLARE_API_TOKEN.get();
   const accountId = env.CF_ACCOUNT_ID;

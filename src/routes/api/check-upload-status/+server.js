@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function POST({ request, platform }) {
-  const env = platform?.env;
   if (!env) return json({ error: 'Server not configured' }, { status: 500 });
 
   try {
     const { imageId } = await request.json();
 
-    // Get secrets from platform.env
+    // Get secrets from env
     const apiToken = (await env.CLOUDFLARE_API_TOKEN?.get?.()) ?? null;
     const accountId = env.CLOUDFLARE_ACCOUNT_ID;
     

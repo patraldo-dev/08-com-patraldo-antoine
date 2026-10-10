@@ -1,11 +1,12 @@
 import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 import { error } from '@sveltejs/kit';
+import { env } from 'cloudflare:workers';
 
 export async function load({ params, platform }) {
   const { storySlug, chapterSlug } = params;
   
-  const dbArtworks = platform?.env?.ARTWORKS_DB;
-  const dbStories = platform?.env?.stories_db;
+  const dbArtworks = env?.ARTWORKS_DB;
+  const dbStories = env?.stories_db;
 
   if (!dbStories || !dbArtworks) {
     throw error(503, 'Database connection unavailable');

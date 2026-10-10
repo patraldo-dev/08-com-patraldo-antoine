@@ -1,11 +1,12 @@
 // src/routes/worlds/+page.server.js
 import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+import { env } from 'cloudflare:workers';
 
 // Load published artworks so the engine can bind live collection pieces to
 // portal doorways (falling back to explicit `art` bindings in each world config).
 export async function load({ platform, url }) {
 	const artworks = [];
-	// `platform.env` holds Cloudflare bindings (D1, etc.) at runtime; cast to
+	// `env` holds Cloudflare bindings (D1, etc.) at runtime; cast to
 	// any because wrangler bindings aren't reflected in the TS platform types.
 	/** @type {any} */
 	const pf = platform;

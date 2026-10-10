@@ -1,5 +1,6 @@
+import { env } from 'cloudflare:workers';
 export async function GET({ url, platform }) {
-  const db = platform?.env?.DB;
+  const db = env?.DB;
   if (!db) return new Response('Server not configured', { status: 500 });
 
   try {
