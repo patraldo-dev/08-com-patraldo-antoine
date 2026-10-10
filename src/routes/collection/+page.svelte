@@ -2,7 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { t } from '$lib/i18n';
+  import { t } from '#lib/i18n/index.js';
   import { 
     getAllVisits, 
     getAllFavorites, 
@@ -10,7 +10,7 @@
     getVisitStats,
     clearAllVisits,
     exportVisitData 
-  } from '$lib/utils/visitTracker.js';
+  } from '#lib/utils/visitTracker.js';
   
   const { data } = $props();
   const { allArtworks } = data;

@@ -1,6 +1,6 @@
 <!-- src/lib/components/cine/HeroOverlay.svelte -->
 <script>
-  import { t } from '$lib/i18n';
+  import { t } from '#lib/i18n/index.js';
   import { onMount } from 'svelte';
   
   let { film } = $props();

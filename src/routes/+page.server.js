@@ -1,5 +1,5 @@
 // src/routes/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 /**
  * Shuffle array using seeded random

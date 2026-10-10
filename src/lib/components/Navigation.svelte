@@ -1,15 +1,14 @@
-<!-- src/lib/components/Navigation.svelte -->
 <script>
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { t } from '$lib/i18n';
-  import LanguageSwitcherUniversal from '$lib/components/ui/LanguageSwitcherUniversal.svelte';
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+  import { page } from '$app/state';
+  import { t } from '#lib/i18n/index.js';
+  import LanguageSwitcherUniversal from '#lib/components/ui/LanguageSwitcherUniversal.svelte';
+  import ThemeToggle from '#lib/components/ThemeToggle.svelte';
 
   // Svelte 5 Runes
   let isMenuOpen = $state(false);
   let isProfileOpen = $state(false);
-  let currentPath = $derived($page.url.pathname);
+  let currentPath = $derived(page.url.pathname);
   let isOnHomePage = $derived(currentPath === '/');
 
   // Accept props
@@ -152,11 +151,10 @@
   }
 </script>
 
-<nav>
-  <a href="/" class="logo-link">
-    <h1>ANTOINE PATRALDO</h1>
-  </a>
+<!-- src/lib/components/Navigation.svelte -->
 
+<nav>
+  <a href="/" class="logo-link"><h1>ANTOINE PATRALDO</h1></a>
   <!-- Desktop Menu -->
   <div class="nav-links desktop-menu">
     <!-- Hash links use handleHashLink -->
@@ -173,17 +171,17 @@
     <!-- Hash link -->
     <a href="/#contact" onclick={(e) => handleHashLink(e, '#contact')}>{$t('common.navContact')}</a>
 
-<!-- Admin Dropdown - DESKTOP -->
-{#if isAdmin}
-  <div class="admin-dropdown">
-    <span class="admin-link">🔧 Admin</span>
-    <div class="dropdown-menu">
+    <!-- Admin Dropdown - DESKTOP -->
+    {#if isAdmin}
+      <div class="admin-dropdown">
+        <span class="admin-link">🔧 Admin</span>
+        <div class="dropdown-menu">
       <a href="/admin/analytics" onclick={(e) => handleLinkClick(e, '/admin/analytics')}>📊 Analytics</a>
       <a href="/admin/artworks/upload" onclick={(e) => handleLinkClick(e, '/admin/artworks/upload')}>📤 Upload Artwork</a>
       <a href="/admin/stories/create" onclick={(e) => handleLinkClick(e, '/admin/stories/create')}>✍️ Create Story</a>
-    </div>
-  </div>
-{/if}
+        </div>
+      </div>
+    {/if}
 
     <LanguageSwitcherUniversal/>
     <ThemeToggle/>
@@ -191,17 +189,44 @@
     <!-- Profile/Login container stays the same -->
     <div class="profile-container">
       {#if !isAuthenticated}
-        <a href="/login" class="profile-trigger login-svg" onclick={handleRegularLink} title={$t('common.login')}>
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="18" r="18" fill="var(--color-surface)"/>
-            <path fill="var(--color-green)" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"/>
+        <a
+          href="/login"
+          class="profile-trigger login-svg"
+          onclick={handleRegularLink}
+          title={$t('common.login')}
+        >
+          <svg
+            width="36"
+            height="36"
+            viewBox="0 0 36 36"
+            fill="none"
+          >
+            <circle cx="18" cy="18" r="18" fill="var(--color-surface)"></circle>
+
+            <path
+              fill="var(--color-green)"
+              d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"
+            ></path>
           </svg>
         </a>
       {:else}
-        <div class="profile-trigger" onclick={toggleProfile} title={username}>
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="18" r="18" fill="var(--color-green)"/>
-            <path fill="var(--color-bg)" d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"/>
+        <div
+          class="profile-trigger"
+          onclick={toggleProfile}
+          title={username}
+        >
+          <svg
+            width="36"
+            height="36"
+            viewBox="0 0 36 36"
+            fill="none"
+          >
+            <circle cx="18" cy="18" r="18" fill="var(--color-green)"></circle>
+
+            <path
+              fill="var(--color-bg)"
+              d="M16.94 21.398a1.78 1.78 0 0 1 1.868 0l5.659 3.503a.593.593 0 0 1 .192.816l-.311.503a.59.59 0 0 1-.816.191l-5.658-3.503-5.66 3.503a.59.59 0 0 1-.814-.191l-.311-.503a.59.59 0 0 1 .191-.816zM17.87 10.5a4.677 4.677 0 1 1 0 9.353 4.677 4.677 0 0 1 0-9.353m0 1.775a2.901 2.901 0 1 0 .001 5.802 2.901 2.901 0 0 0-.001-5.802"
+            ></path>
           </svg>
         </div>
 
@@ -216,8 +241,20 @@
               </a>
             {/if}
             <button class="logout-btn" onclick={handleLogout}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 0.5rem;">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m0 0L9 7m0-3l3 3m6.447 2.472A6.5 6.5 0 0 1 19 12a6.5 6.5 0 0 1-7.553 6.472M13 13a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                style="margin-right: 0.5rem;"
+              >
+                <path
+                  d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m0 0L9 7m0-3l3 3m6.447 2.472A6.5 6.5 0 0 1 19 12a6.5 6.5 0 0 1-7.553 6.472M13 13a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
               </svg>
               {$t('common.logout')}
             </button>
@@ -255,7 +292,7 @@
     {#if isAuthenticated}
       <div class="mobile-profile-section">
         <div class="mobile-profile-header">
-          <div class="mobile-avatar">^<br>o</div>
+          <div class="mobile-avatar">^<br />o</div>
           <span class="mobile-username">{username}</span>
         </div>
         {#if isAdmin}
@@ -431,8 +468,13 @@
     left: 12px;
   }
 
-  .menu-line:first-child { top: 16px; }
-  .menu-line:last-child { bottom: 16px; }
+  .menu-line:first-child {
+    top: 16px;
+  }
+
+  .menu-line:last-child {
+    bottom: 16px;
+  }
 
   .menu-button.open .menu-line:first-child {
     transform: rotate(45deg);
@@ -582,24 +624,23 @@
   }
 
 .admin-dropdown { position: relative; }
-.admin-link {
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
+  .admin-link {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
 .admin-link:hover { background: var(--color-surface); }
-.dropdown-menu {
+  .dropdown-menu {
   position: absolute; top: calc(100% + 0.5rem); right: 0;
   background: var(--color-surface-raised); border-radius: 8px; box-shadow: 0 4px 20px var(--color-border);
   padding: 0.5rem 0; min-width: 200px; display: none;
-}
+  }
 .admin-dropdown:hover .dropdown-menu { display: block; }
-.dropdown-menu a {
+  .dropdown-menu a {
   display: block; padding: 0.75rem 1.25rem; color: var(--color-text);
   text-decoration: none; font-size: 0.95rem;
-}
+  }
 .dropdown-menu a:hover { background: var(--color-surface); color: var(--color-green); }
 
 </style>
-

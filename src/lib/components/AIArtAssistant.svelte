@@ -1,6 +1,6 @@
 <!-- src/lib/components/AIArtAssistant.svelte -->
 <script>
-  import { t } from '$lib/i18n';
+  import { t } from '#lib/i18n/index.js';
   
   let isOpen = $state(false);
   let messages = $state([]);

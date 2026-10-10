@@ -1,9 +1,8 @@
-<!-- src/lib/components/FloatingGallery.svelte -->
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
-  import { t } from '$lib/i18n';
+  import { browser } from '$app/env';
+  import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+  import { t } from '#lib/i18n/index.js';
 
   let { artworks = [] } = $props();
 
@@ -11,12 +10,10 @@
     '12c79899-fb93-4885-508f-d2da0a2fbf00', // Hans
     'bd4602b0-149d-42f8-e872-f697b64c7d00', // Barzango
     '5c7fb409-1aa2-45a9-8466-296077e18e00', // Alena la Alien
-    'f8a136eb-363e-4a24-0f54-70bb4f4bf800', // Mujer
+    'f8a136eb-363e-4a24-0f54-70bb4f4bf800' // Mujer
   ];
 
-  const GALLERY_IDS = artworks
-    .filter(a => GALLERY_ARTWORK_IDS.includes(a.image_id))
-    .map(a => ({ id: a.image_id, title: a.display_name || a.title }));
+  const GALLERY_IDS = artworks.filter((a) => GALLERY_ARTWORK_IDS.includes(a.image_id)).map((a) => ({ id: a.image_id, title: a.display_name || a.title }));
 
   function segmentUrl(imageId, width = 500) {
     return `https://imagedelivery.net/${CF_IMAGES_ACCOUNT_HASH}/${imageId}/segment=foreground,width=${width}`;
@@ -33,7 +30,7 @@
   // Each artwork orbits independently
   const placements = GALLERY_IDS.map((_, i) => {
     const n = GALLERY_IDS.length;
-    const baseAngle = (i / n) * Math.PI * 2;
+    const baseAngle = i / n * Math.PI * 2;
     return {
       baseAngle,
       orbitRadius: 2.0 + Math.random() * 0.5,
@@ -210,6 +207,8 @@
     }
   });
 </script>
+
+<!-- src/lib/components/FloatingGallery.svelte -->
 
 <div class="floating-gallery" bind:this={container}>
   <div class="gallery-overlay">

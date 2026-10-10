@@ -1,8 +1,7 @@
-<!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { browser } from '$app/env';
+  import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
   const { params } = $props();
 
@@ -207,7 +206,7 @@
         activeIds.add(plane.id);
         const polygon = plane.polygon;
         if (!polygon || polygon.length < 3) continue;
-        const positions = new Float32Array((polygon.length) * 3);
+        const positions = new Float32Array(polygon.length * 3);
         for (let i = 0; i < polygon.length; i++) {
           positions[i * 3] = polygon[i].x;
           positions[i * 3 + 1] = polygon[i].y;
@@ -582,7 +581,7 @@
     const allBtns = [wallBtn, galleryBtn, floorBtn, tileBtn, tattooBtn, pinBtn, planeToggle, meshToggle, resetBtn];
     function highlightBtn() {
       allBtns.forEach((b, i) => {
-        const active = (i === 0 && currentMode === 'wall') || (i === 1 && currentMode === 'gallery') || (i === 2 && currentMode === 'floor') || (i === 3 && isTileMode) || (i === 4 && isTattooMode);
+        const active = i === 0 && currentMode === 'wall' || i === 1 && currentMode === 'gallery' || i === 2 && currentMode === 'floor' || i === 3 && isTileMode || i === 4 && isTattooMode;
         b.style.borderColor = active ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
         b.style.background = active ? 'rgba(44,94,61,0.8)' : 'rgba(0,0,0,0.8)';
       });
@@ -625,77 +624,77 @@
     touchOverlay.addEventListener('touchstart', (e) => {
       if (placed && uiContainer.style.opacity !== '1') showControls();
 
-      if (e.touches.length === 1) {
-        e.preventDefault();
-        isDragging = true;
-        isPinching = false;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        touchStartRotX = activeMesh().rotation.x;
-        touchStartRotY = activeMesh().rotation.y;
-        touchStartRotZ = activeMesh().rotation.z;
-        touchStartPosX = activeMesh().position.x;
-        touchStartPosY = activeMesh().position.y;
-      } else if (e.touches.length === 2) {
-        e.preventDefault();
-        isDragging = false;
-        isPinching = true;
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        lastPinchDist = Math.sqrt(dx * dx + dy * dy);
-        lastPinchAngle = angleBetweenTouches(e.touches[0], e.touches[1]);
-        lastPinchCenter = {
-          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
-        };
-      }
+        if (e.touches.length === 1) {
+          e.preventDefault();
+          isDragging = true;
+          isPinching = false;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchStartRotX = activeMesh().rotation.x;
+          touchStartRotY = activeMesh().rotation.y;
+          touchStartRotZ = activeMesh().rotation.z;
+          touchStartPosX = activeMesh().position.x;
+          touchStartPosY = activeMesh().position.y;
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
+          isDragging = false;
+          isPinching = true;
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+          lastPinchAngle = angleBetweenTouches(e.touches[0], e.touches[1]);
+          lastPinchCenter = {
+            x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+            y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+          };
+        }
     }, { passive: false });
 
     touchOverlay.addEventListener('touchmove', (e) => {
-      if (!placed) return;
-      e.preventDefault();
-      const m = activeMesh();
+        if (!placed) return;
+        e.preventDefault();
+        const m = activeMesh();
 
-      if (e.touches.length === 2 && isPinching) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
+        if (e.touches.length === 2 && isPinching) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
 
-        // Pinch = zoom
-        if (lastPinchDist > 0) {
-          const factor = dist / lastPinchDist;
-          m.scale.multiplyScalar(factor);
-          const s = Math.max(0.05, Math.min(5, m.scale.x));
-          m.scale.set(s, s, s);
+          // Pinch = zoom
+          if (lastPinchDist > 0) {
+            const factor = dist / lastPinchDist;
+            m.scale.multiplyScalar(factor);
+            const s = Math.max(0.05, Math.min(5, m.scale.x));
+            m.scale.set(s, s, s);
+          }
+          lastPinchDist = dist;
+
+          // Twist = rotate Z (spin on surface)
+          const angleDelta = angle - lastPinchAngle;
+          m.rotation.z = m.rotation.z + angleDelta;
+          lastPinchAngle = angle;
+
+          // Two-finger drag = pan
+          const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+          const pdx = cx - lastPinchCenter.x;
+          const pdy = cy - lastPinchCenter.y;
+          m.position.x = m.position.x + pdx * 0.002;
+          m.position.y = m.position.y - pdy * 0.002;
+          lastPinchCenter = { x: cx, y: cy };
+          return;
         }
-        lastPinchDist = dist;
 
-        // Twist = rotate Z (spin on surface)
-        const angleDelta = angle - lastPinchAngle;
-        m.rotation.z = m.rotation.z + angleDelta;
-        lastPinchAngle = angle;
+        if (!isDragging || e.touches.length !== 1) return;
 
-        // Two-finger drag = pan
-        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        const pdx = cx - lastPinchCenter.x;
-        const pdy = cy - lastPinchCenter.y;
-        m.position.x = m.position.x + pdx * 0.002;
-        m.position.y = m.position.y - pdy * 0.002;
-        lastPinchCenter = { x: cx, y: cy };
-        return;
-      }
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
 
-      if (!isDragging || e.touches.length !== 1) return;
-
-      const dx = e.touches[0].clientX - touchStartX;
-      const dy = e.touches[0].clientY - touchStartY;
-
-      // 1 finger: rotate X + Y
-      m.rotation.x = touchStartRotX + dy * 0.01;
-      m.rotation.y = touchStartRotY + dx * 0.01;
-      m.rotation.z = touchStartRotZ;
+        // 1 finger: rotate X + Y
+        m.rotation.x = touchStartRotX + dy * 0.01;
+        m.rotation.y = touchStartRotY + dx * 0.01;
+        m.rotation.z = touchStartRotZ;
     }, { passive: false });
 
     touchOverlay.addEventListener('touchend', () => {
@@ -711,7 +710,14 @@
       uiContainer.remove();
       renderer.dispose();
       // Clean only styles we may have set
-      ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
+      [
+        'overflow',
+        'position',
+        'top',
+        'width',
+        'height',
+        'touchAction'
+      ].forEach((p) => {
         document.body.style.removeProperty(p);
       });
       texture.dispose();
@@ -729,7 +735,7 @@
       // Remove event listeners
       window.removeEventListener('resize', handleResize);
       // Remove any leftover AR elements
-      document.querySelectorAll('#ar-ui, [style*="z-index:9999"]').forEach(el => el.remove());
+      document.querySelectorAll('#ar-ui, [style*="z-index:9999"]').forEach((el) => el.remove());
       touchOverlay.remove();
       // Force full page reload to reset all state
       window.location.replace('/');
@@ -740,9 +746,8 @@
   }
 </script>
 
-<svelte:head>
-  <title>AR — Antoine Patraldo</title>
-</svelte:head>
+<!-- Isolated AR page — does NOT touch Image3DManipulator or Artwork3DShowcase -->
+<svelte:head><title>AR — Antoine Patraldo</title></svelte:head>
 
 {#if status === 'ar-active'}
   <!-- AR canvas covers everything — show nothing from Svelte -->

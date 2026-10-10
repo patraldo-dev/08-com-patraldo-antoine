@@ -1,6 +1,6 @@
 // src/routes/api/auth/signup/+server.js
 import { json } from '@sveltejs/kit';
-import { hashPassword } from '$lib/auth-helpers.js';
+import { hashPassword } from '#lib/auth-helpers.js';
 
 export async function POST({ request, platform }) {
     const db = platform?.env?.DB_users;

@@ -1,9 +1,9 @@
 <script>
   import { onMount } from 'svelte';
-  import { t } from '$lib/i18n/index.js';
-  import Image3DManipulator from '$lib/components/Image3DManipulator.svelte';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
-  import { getThumbnailUrl } from '$lib/cloudflare/images.js';
+  import { t } from '#lib/i18n/index.js';
+  import Image3DManipulator from '#lib/components/Image3DManipulator.svelte';
+  import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
+  import { getThumbnailUrl } from '#lib/cloudflare/images.js';
   
   let { data } = $props();
   

@@ -1,4 +1,4 @@
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 /**
  * Cloudflare Images utility functions

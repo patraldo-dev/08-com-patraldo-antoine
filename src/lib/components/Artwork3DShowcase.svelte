@@ -1,10 +1,10 @@
 <!-- src/lib/components/Artwork3DShowcase.svelte -->
 <script>
-  import { t } from '$lib/i18n';
+  import { t } from '#lib/i18n/index.js';
   import Image3DManipulator from './Image3DManipulator.svelte';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
   import { onMount } from 'svelte';
-  import { checkARSupport } from '$lib/ar-detect.js';
+  import { checkARSupport } from '#lib/ar-detect.js';
 
   let { artworks } = $props();
 

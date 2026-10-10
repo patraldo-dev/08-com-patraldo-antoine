@@ -1,5 +1,5 @@
 // src/routes/cine/gallery/+page.server.js
-import { CineDatabase } from '$lib/server/cine-db.js';
+import { CineDatabase } from '#lib/server/cine-db.js';
 import { error } from '@sveltejs/kit';
 
 export async function load({ platform, locals }) {

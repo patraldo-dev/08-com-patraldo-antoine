@@ -1,7 +1,7 @@
 <!-- src/routes/tools/stickers/+page.svelte -->
 <script>
-  import { generateStickerSheet } from '$lib/utils/generateStickerSheet.mjs';
-  import { t } from '$lib/i18n';
+  import { generateStickerSheet } from '#lib/utils/generateStickerSheet.mjs';
+  import { t } from '#lib/i18n/index.js';
 
   const { data } = $props();
 

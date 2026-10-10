@@ -1,5 +1,5 @@
 // src/routes/tools/wallpapers/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ platform }) {

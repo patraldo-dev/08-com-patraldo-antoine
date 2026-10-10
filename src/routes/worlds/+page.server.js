@@ -1,5 +1,5 @@
 // src/routes/worlds/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 // Load published artworks so the engine can bind live collection pieces to
 // portal doorways (falling back to explicit `art` bindings in each world config).

@@ -1,4 +1,4 @@
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 import { error } from '@sveltejs/kit';
 
 export async function load({ params, platform }) {

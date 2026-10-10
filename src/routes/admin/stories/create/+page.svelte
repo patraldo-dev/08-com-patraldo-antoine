@@ -1,14 +1,14 @@
 <script>
   import { enhance } from '$app/forms';
-  import { page } from '$app/stores';
-  
+  import { page } from '$app/state';
+
   let { data } = $props();
   /** @type {{ form?: any, [key: string]: any }} */
   const d = data ?? {};
 
   // Initialize local state from URL params (Initial Load)
-  const params = $page.url.searchParams;
-  
+  const params = page.url.searchParams;
+
   // Helper to generate slug
   const generateSlug = (text) => {
     if (!text) return '';
@@ -37,7 +37,7 @@
   
   <!-- FIX: Move the <form> tag here to wrap BOTH panels -->
   <form method="POST" use:enhance class="writer-layout">
-    
+
     {#if d.form?.error}
       <p class="error">{d.form.error}</p>
     {/if}
@@ -129,7 +129,7 @@
     cursor: pointer;
     font-weight: bold;
   }
-  
+
   .btn-primary:hover { background: #333; }
 
   .error { color: red; background: #fee; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid red; }

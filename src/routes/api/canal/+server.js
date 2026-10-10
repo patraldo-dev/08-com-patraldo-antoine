@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { CineDatabase } from '$lib/server/cine-db.js';
+import { CineDatabase } from '#lib/server/cine-db.js';
 
 /**
  * @type {import('./$types').RequestHandler}

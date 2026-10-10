@@ -1,14 +1,13 @@
-<!-- src/routes/subscription-confirmed/+page.svelte -->
 <script>
-  import { page } from '$app/stores';
-  import { t } from '$lib/i18n';
+  import { page } from '$app/state';
+  import { t } from '#lib/i18n/index.js';
   
   // Get locale from URL
-  import { locale } from '$lib/i18n';
+  import { locale } from '#lib/i18n/index.js';
   
   // Set locale from URL param
   import { onMount } from 'svelte';
-  import { setLocale } from '$lib/i18n';
+  import { setLocale } from '#lib/i18n/index.js';
   
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,9 +18,15 @@
   });
 </script>
 
+<!-- src/routes/subscription-confirmed/+page.svelte -->
+
 <svelte:head>
   <title>{$t('subscription.confirmedTitle')} | Antoine Patraldo</title>
-  <meta name="description" content="{$t('subscription.confirmedDescription')}" />
+
+  <meta
+    name="description"
+    content={$t('subscription.confirmedDescription')}
+  />
 </svelte:head>
 
 <section class="confirmation">

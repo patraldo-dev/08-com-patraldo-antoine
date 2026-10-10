@@ -1,7 +1,7 @@
 <script>
-  import { t } from '$lib/i18n';
-  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
-  import VideoCard from '$lib/components/cine/VideoCard.svelte';
+  import { t } from '#lib/i18n/index.js';
+  import VideoPlayer from '#lib/components/cine/VideoPlayer.svelte';
+  import VideoCard from '#lib/components/cine/VideoCard.svelte';
   
   let { data } = $props();
   

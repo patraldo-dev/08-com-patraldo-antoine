@@ -3,7 +3,7 @@ import {
   saveArtworkTransform, 
   getArtworkWithTransform,
   resetArtworkTransform
-} from '$lib/db/artwork-transforms.js';
+} from '#lib/db/artwork-transforms.js';
 
 /**
  * GET - Retrieve artwork with transformation data

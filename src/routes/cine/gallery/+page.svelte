@@ -1,7 +1,7 @@
 <!-- src/routes/cine/gallery/+page.svelte -->
 <script>
-  import { t } from '$lib/i18n';
-  import VideoCard from '$lib/components/cine/VideoCard.svelte';
+  import { t } from '#lib/i18n/index.js';
+  import VideoCard from '#lib/components/cine/VideoCard.svelte';
   
   let { data } = $props();
 </script>

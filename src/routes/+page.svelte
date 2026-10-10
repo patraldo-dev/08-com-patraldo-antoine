@@ -1,16 +1,16 @@
 <script>
-  import Sketchbook from '$lib/components/Sketchbook.svelte';
-  import StoryView from '$lib/components/StoryView.svelte';
-  import EmailSignup from '$lib/components/EmailSignup.svelte';
-  import Artwork3DShowcase from '$lib/components/Artwork3DShowcase.svelte';
-  import FloatingGallery from '$lib/components/FloatingGallery.svelte';
-  import { t, locale } from '$lib/i18n';
-  import { page } from '$app/stores';
+  import Sketchbook from '#lib/components/Sketchbook.svelte';
+  import StoryView from '#lib/components/StoryView.svelte';
+  import EmailSignup from '#lib/components/EmailSignup.svelte';
+  import Artwork3DShowcase from '#lib/components/Artwork3DShowcase.svelte';
+  import FloatingGallery from '#lib/components/FloatingGallery.svelte';
+  import { t, locale } from '#lib/i18n/index.js';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { trackVisit } from '$lib/utils/visitTracker.js';
-  import AboutDetailModal from '$lib/components/AboutDetailModal.svelte';
-  import { browser } from '$app/environment';
+  import { trackVisit } from '#lib/utils/visitTracker.js';
+  import AboutDetailModal from '#lib/components/AboutDetailModal.svelte';
+  import { browser } from '$app/env';
   import { onNavigate } from '$app/navigation';
 
   const { data } = $props();
@@ -21,81 +21,81 @@
   /** @type {any} */
   let dailyVideo = $state(null); // ← ADD THIS LINE
 
-$effect(() => {
-  if (browser) {
-    const updateModalState = () => {
-      const wasOpen = showAboutDetail;
-      showAboutDetail = window.location.hash === '#about-detail';
-      
-      // Restore scroll when modal closes
-      if (wasOpen && !showAboutDetail) {
+  $effect(() => {
+    if (browser) {
+      const updateModalState = () => {
+        const wasOpen = showAboutDetail;
+        showAboutDetail = window.location.hash === '#about-detail';
+
+        // Restore scroll when modal closes
+        if (wasOpen && !showAboutDetail) {
+          document.body.style.overflow = '';
+        }
+      };
+
+      updateModalState(); // Initial check
+
+      const handleHashChange = () => {
+        updateModalState();
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      return () => {
+        window.removeEventListener('hashchange', handleHashChange);
         document.body.style.overflow = '';
-      }
-    };
-
-    updateModalState(); // Initial check
-
-    const handleHashChange = () => {
-      updateModalState();
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-      document.body.style.overflow = '';
-    };
-  }
-});
+      };
+    }
+  });
 
 
-$effect(() => {
-  if (data.videos.length > 0 && !dailyVideo) {
-    // Hourly rotation: seed random with current hour (0-23)
-    const now = new Date();
-    const hour = now.getHours();
-    const seed = hour / 24; // 0 to 1
-    const videoIndex = Math.floor(seed * data.videos.length);
-    dailyVideo = data.videos[videoIndex];
+  $effect(() => {
+    if (data.videos.length > 0 && !dailyVideo) {
+      // Hourly rotation: seed random with current hour (0-23)
+      const now = new Date();
+      const hour = now.getHours();
+      const seed = hour / 24; // 0 to 1
+      const videoIndex = Math.floor(seed * data.videos.length);
+      dailyVideo = data.videos[videoIndex];
 
-    // Set up hourly reset (at the top of next hour)
-    const nextHour = new Date(now);
-    nextHour.setHours(nextHour.getHours() + 1);
-    nextHour.setMinutes(0, 0, 0); // Top of next hour
+      // Set up hourly reset (at the top of next hour)
+      const nextHour = new Date(now);
+      nextHour.setHours(nextHour.getHours() + 1);
+      nextHour.setMinutes(0, 0, 0); // Top of next hour
 
-    const msUntilNextHour = nextHour - now;
+      const msUntilNextHour = nextHour - now;
 
     const hourTimeout = setTimeout(() => {
-      dailyVideo = null; // This will trigger re-selection
-      console.log('Top of hour - rotating video');
+          dailyVideo = null; // This will trigger re-selection
+          console.log('Top of hour - rotating video');
     }, msUntilNextHour);
 
-    return () => clearTimeout(hourTimeout);
-  }
-});
-
-// Watch for hash changes to open specific artworks
-$effect(() => {
-  const hash = $page.url.hash;
-  if (hash && hash.startsWith('#artwork-')) {
-    const artworkId = hash.replace('#artwork-', '');
-    const artwork = data.artworks.find(a => a.id == artworkId);
-    if (artwork) {
-      selectedArtwork = artwork;
-      
-      trackVisit(artwork.id, {
-        display_name: artwork.display_name || artwork.title,
-        title: artwork.title
-      });
+      return () => clearTimeout(hourTimeout);
     }
-  }
-});
+  });
+
+  // Watch for hash changes to open specific artworks
+  $effect(() => {
+    const hash = page.url.hash;
+    if (hash && hash.startsWith('#artwork-')) {
+      const artworkId = hash.replace('#artwork-', '');
+      const artwork = data.artworks.find((a) => a.id == artworkId);
+      if (artwork) {
+        selectedArtwork = artwork;
+
+        trackVisit(artwork.id, {
+          display_name: artwork.display_name || artwork.title,
+          title: artwork.title
+        });
+      }
+    }
+  });
 
     // Also handle initial page load with hash
   onMount(() => {
     const hash = window.location.hash;
     if (hash && hash.startsWith('#artwork-')) {
       const artworkId = hash.replace('#artwork-', '');
-      const artwork = data.artworks.find(a => a.id == artworkId);
+      const artwork = data.artworks.find((a) => a.id == artworkId);
       if (artwork) {
         selectedArtwork = artwork;
       }
@@ -214,14 +214,14 @@ $effect(() => {
 {/if}
 
 
-  <!-- Email Signup Section -->
-  <section id="contact" class="signup-section">
-    <div class="container">
-      <h3>{$t('pages.home.signupTitle')}</h3>
-      <p>{$t('pages.home.signupDescription')}</p>
-      <EmailSignup />
-    </div>
-  </section>
+<!-- Email Signup Section -->
+<section id="contact" class="signup-section">
+  <div class="container">
+    <h3>{$t('pages.home.signupTitle')}</h3>
+    <p>{$t('pages.home.signupDescription')}</p>
+    <EmailSignup />
+  </div>
+</section>
 
 <style>
   .floating-gallery-section {
@@ -445,75 +445,75 @@ $effect(() => {
   cursor: pointer;
 }
 
-.video-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  padding: 2rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
-}
-
-.video-wrapper:hover .video-overlay {
-  opacity: 1;
-}
-
-.video-overlay span {
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 500;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-/* Mobile: Always show the overlay hint since there's no hover */
-@media (max-width: 768px) {
   .video-overlay {
-    opacity: 0.8;
-    padding: 1rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
   }
-  
+
+  .video-wrapper:hover .video-overlay {
+    opacity: 1;
+  }
+
   .video-overlay span {
-    font-size: 0.95rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
-}
 
-/* Touch devices: Show overlay by default */
-@media (hover: none) and (pointer: coarse) {
+  /* Mobile: Always show the overlay hint since there's no hover */
+  @media (max-width: 768px) {
+    .video-overlay {
+      opacity: 0.8;
+      padding: 1rem;
+    }
+  
+    .video-overlay span {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Touch devices: Show overlay by default */
+  @media (hover: none) and (pointer: coarse) {
+    .video-overlay {
+      opacity: 0.8;
+    }
+  }
+
+  .click-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    cursor: pointer;
+  }
+
   .video-overlay {
-    opacity: 0.8;
-  }
-}
-
-.click-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  cursor: pointer;
-}
-
-.video-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  padding: 2rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
   z-index: 3; /* Above click overlay */
-}
+  }
 
 </style>

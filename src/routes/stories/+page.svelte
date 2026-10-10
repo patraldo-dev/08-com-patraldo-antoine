@@ -1,7 +1,7 @@
 <!-- src/routes/stories/+page.svelte -->
 <script>
-  import { t } from '$lib/i18n';
-  import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+  import { t } from '#lib/i18n/index.js';
+  import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
   import { goto } from '$app/navigation';
   
   // Ensure you are receiving isAdmin

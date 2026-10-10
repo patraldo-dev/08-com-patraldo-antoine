@@ -1,7 +1,7 @@
 <!-- src/lib/components/Sketchbook.svelte -->
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { locale, t } from '$lib/i18n';
+  import { locale, t } from '#lib/i18n/index.js';
   import StoryView from './StoryView.svelte';
   
   let { artworks = [] } = $props();

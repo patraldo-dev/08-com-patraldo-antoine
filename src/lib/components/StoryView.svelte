@@ -1,10 +1,9 @@
-<!-- src/lib/components/StoryView.svelte -->
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '#lib/config.js';
   import InkReveal from './ui/InkReveal.svelte';
   import VideoDetailView from './VideoDetailView.svelte';
-  import ColorPalette from '$lib/components/ColorPalette.svelte';  
+  import ColorPalette from '#lib/components/ColorPalette.svelte';  
   import { goto, beforeNavigate } from '$app/navigation';
   
   let { artwork, isAdmin = false, onclose } = $props();
@@ -71,8 +70,10 @@
       }
     }
   }
-  
-  beforeNavigate(() => {
+
+  beforeNavigate(({ shallow }) => {
+    if (shallow) return;
+
     restoreScrolling();
   });
   
@@ -111,6 +112,8 @@
     goto(`/admin/stories/create?artwork_id=${artwork.id}&title=${slug}`);
   }
 </script>
+
+<!-- src/lib/components/StoryView.svelte -->
 
 {#if showVideoDetail}
   <VideoDetailView 
@@ -175,9 +178,25 @@
             {#if hasVideo && artwork.type === 'still'}
               <div class="play-overlay">
                 <div class="play-button">
-                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                    <circle cx="30" cy="30" r="28" fill="var(--color-surface-raised)" stroke="var(--color-green)" stroke-width="2"/>
-                    <path d="M24 18 L24 42 L42 30 Z" fill="var(--color-green)"/>
+                  <svg
+                    width="60"
+                    height="60"
+                    viewBox="0 0 60 60"
+                    fill="none"
+                  >
+                    <circle
+                      cx="30"
+                      cy="30"
+                      r="28"
+                      fill="var(--color-surface-raised)"
+                      stroke="var(--color-green)"
+                      stroke-width="2"
+                    ></circle>
+
+                    <path
+                      d="M24 18 L24 42 L42 30 Z"
+                      fill="var(--color-green)"
+                    ></path>
                   </svg>
                 </div>
                 <p class="play-hint">Click to watch video</p>
@@ -233,7 +252,7 @@
         <!-- Multi-media Story Content -->
         {#if hasStoryContent}
           {#each storyContent as item, index}
-            <InkReveal delay={800 + (index * 200)}>
+            <InkReveal delay={800 + index * 200}>
               <div class="story-block {item.content_type}">
                 {#if item.content_type === 'heading'}
                   <h2 class="story-heading">{item.content_text}</h2>
@@ -269,7 +288,7 @@
         
         <!-- Tags (if you implement them) -->
         {#if artwork.tags && artwork.tags.length > 0}
-          <InkReveal delay={1000 + (storyContent.length * 200)}>
+          <InkReveal delay={1000 + storyContent.length * 200}>
             <div class="tags">
               {#each artwork.tags as tag}
                 <span class="tag">#{tag}</span>

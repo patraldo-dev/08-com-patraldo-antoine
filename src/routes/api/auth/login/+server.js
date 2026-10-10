@@ -1,6 +1,6 @@
 // src/routes/api/auth/login/+server.js
 import { json } from '@sveltejs/kit';
-import { verifyPassword, generateSessionToken } from '$lib/auth-helpers.js';
+import { verifyPassword, generateSessionToken } from '#lib/auth-helpers.js';
 
 export async function POST({ request, platform, cookies }) {
     const db = platform?.env?.DB_users;

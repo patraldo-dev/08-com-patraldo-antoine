@@ -1,7 +1,7 @@
 <!-- src/lib/components/VideoDetailView.svelte -->
 <script>
   import { onMount } from 'svelte';
-  import { checkARSupport } from '$lib/ar-detect.js';
+  import { checkARSupport } from '#lib/ar-detect.js';
   
   let { artwork, onclose } = $props();
   

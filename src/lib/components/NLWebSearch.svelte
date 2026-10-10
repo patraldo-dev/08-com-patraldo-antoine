@@ -1,8 +1,7 @@
-<!-- src/lib/components/NLWebSearch.svelte -->
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { t } from '$lib/i18n';
+  import { browser } from '$app/env';
+  import { t } from '#lib/i18n/index.js';
   
   let isOpen = $state(false);
   let searchLoaded = $state(false);
@@ -28,51 +27,51 @@
       cssDropdown.remove();
     };
   });
-  
-async function initializeSearch() {
-  if (chatInstance) {
-    chatInstance.destroy();
-    chatInstance = null;
-  }
-  
-  if (!browser) return;
-  
-  try {
-    const { NLWebDropdownChat } = await Promise.race([
-      import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js'),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
- ]);
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    chatInstance = new NLWebDropdownChat({
-      containerId: 'nlweb-search-container',
-      site: 'https://antoine.patraldo.com',
-      placeholder: $t('search.placeholder'),
-      endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
-      language: navigator.language.split('-')[0] || 'es',
+
+  async function initializeSearch() {
+    if (chatInstance) {
+      chatInstance.destroy();
+      chatInstance = null;
+    }
+
+    if (!browser) return;
+
+    try {
+      const { NLWebDropdownChat } = await Promise.race([
+        import('https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev/nlweb-dropdown-chat.js'),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+      ]);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      chatInstance = new NLWebDropdownChat({
+        containerId: 'nlweb-search-container',
+        site: 'https://antoine.patraldo.com',
+        placeholder: $t('search.placeholder'),
+        endpoint: 'https://proud-wildflower-e16c-nlweb.chef-tech.workers.dev',
+        language: navigator.language.split('-')[0] || 'es',
       acceptLanguage: navigator.language || 'es',
-    });
-    
-    searchLoaded = true;
-    
-    // Focus input for Enter key
+      });
+
+      searchLoaded = true;
+
+      // Focus input for Enter key
     setTimeout(() => {
-      const input = document.querySelector('#nlweb-search-container input, #nlweb-search-container textarea, [data-search-input]');
-      if (input) {
-        input.focus();
+          const input = document.querySelector('#nlweb-search-container input, #nlweb-search-container textarea, [data-search-input]');
+          if (input) {
+            input.focus();
         input.select();  // Highlight text for easy replace
-      }
+          }
     }, 300);
     
   } catch (error) {
-    console.error('Failed to load NLWeb search:', error);
+      console.error('Failed to load NLWeb search:', error);
+    }
   }
-}
 
   
   function toggleSearch() {
     if (Date.now() - lastSearch < 3000) return;
-      lastSearch = Date.now();
+    lastSearch = Date.now();
 
     if (!isOpen) {
       // Opening: recreate fresh instance
@@ -113,8 +112,7 @@ async function initializeSearch() {
   }
 </script>
 
-
-
+<!-- src/lib/components/NLWebSearch.svelte -->
 <!-- Floating Search Button -->
 <button 
   class="search-fab" 

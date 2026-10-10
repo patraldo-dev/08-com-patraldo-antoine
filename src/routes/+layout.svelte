@@ -1,13 +1,12 @@
-<!-- src/routes/+layout.svelte -->
 <script>
   import '../app.css';
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { locale, setLocale } from '$lib/i18n';
-  import Navigation from '$lib/components/Navigation.svelte';
-  import AIArtAssistant from '$lib/components/AIArtAssistant.svelte';
-  import { browser } from '$app/environment';
-  
+  import { page } from '$app/state';
+  import { locale, setLocale } from '#lib/i18n/index.js';
+  import Navigation from '#lib/components/Navigation.svelte';
+  import AIArtAssistant from '#lib/components/AIArtAssistant.svelte';
+  import { browser } from '$app/env';
+
   // Only destructure 'data'. DO NOT destructure 'isAdmin' here.
   let { data } = $props();
   
@@ -23,8 +22,8 @@
   });
   
   // Reactive state for page layout
-  let isFullHeightPage = $derived($page.url.pathname === '/about');
-  
+  let isFullHeightPage = $derived(page.url.pathname === '/about');
+
   // Initialize locale on client
   onMount(() => {
     //1. Check localStorage for preferred language
@@ -84,16 +83,13 @@
   });
 </script>
 
+<!-- src/routes/+layout.svelte -->
+
 <div class="app">
-  <Navigation {isAdmin} {username} />  
-  <main class:full-height={isFullHeightPage}>
-    <slot />
-  </main>
-  
-  <footer>
-    <p>&copy; 2026 Antoine Patraldo. All rights reserved.</p>
-  </footer>
-<AIArtAssistant />
+  <Navigation isAdmin={isAdmin} username={username} />
+  <main class:full-height={isFullHeightPage}><slot></slot></main>
+  <footer><p>© 2026 Antoine Patraldo. All rights reserved.</p></footer>
+  <AIArtAssistant />
 </div>
 
 <!-- Keep all your existing styles -->

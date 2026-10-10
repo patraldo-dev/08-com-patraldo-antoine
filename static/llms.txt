@@ -1,0 +1,19 @@
+# Antoine Patraldo — Interactive Portfolio
+
+> Interactive art portfolio of Antoine Patraldo: still and video artworks, AR-viewable pieces, story collections, and browser-based 3D worlds. Artwork media is delivered via Cloudflare Images and Cloudflare Stream.
+
+## Explore
+
+- [Home](https://antoine.patraldo.com/): Main gallery of artworks; each piece can open full size.
+- [Collection](https://antoine.patraldo.com/collection): The artwork collection.
+- [Stories](https://antoine.patraldo.com/stories): Narrative collections; individual stories are served at /stories/<slug>.
+- [Cine gallery](https://antoine.patraldo.com/cine/gallery): Video works, playable via Cloudflare Stream; watch pages at /cine/watch/<id>.
+- [Worlds](https://antoine.patraldo.com/worlds): Browser-based 3D worlds.
+
+## Augmented reality
+
+- Individual artworks expose AR view links of the form /ar/image/<id> and /ar/video/<id>, which open the piece in AR on supported mobile devices.
+
+## Access
+
+- [Sign up](https://antoine.patraldo.com/signup) / [Log in](https://antoine.patraldo.com/login): optional viewer account.

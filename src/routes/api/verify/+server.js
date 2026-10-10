@@ -1,5 +1,5 @@
 //src/routes/api/subscribe/+server.js
-import { getTranslation } from '$lib/i18n/server';
+import { getTranslation } from '#lib/i18n/server.js';
 
 export async function GET({ url, platform, request }) {
   const db = platform?.env?.DB;

@@ -1,7 +1,6 @@
-<!-- AR Video page — CF Stream videos as VideoTexture in WebXR -->
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
 
   const { params } = $props();
 
@@ -119,7 +118,11 @@
     ]);
 
     // Start playback
-    try { await video.play(); } catch (/** @type {any} */ e) { console.warn('[AR] Initial play failed:', e); }
+    try {
+      await video.play();
+    } catch (/** @type {any} */ e) {
+      console.warn('[AR] Initial play failed:', e);
+    }
 
     // Wait for actual frame data
     await Promise.race([
@@ -220,7 +223,7 @@
         activeIds.add(plane.id);
         const polygon = plane.polygon;
         if (!polygon || polygon.length < 3) continue;
-        const positions = new Float32Array((polygon.length) * 3);
+        const positions = new Float32Array(polygon.length * 3);
         for (let i = 0; i < polygon.length; i++) {
           positions[i * 3] = polygon[i].x;
           positions[i * 3 + 1] = polygon[i].y;
@@ -267,10 +270,9 @@
     let showMesh = false;
 
     // Create VideoTexture AFTER setSession
-    const heightToWidthRatio = (videoInfo.aspectRatio === '9:16') ? 16 / 9
-      : (videoInfo.aspectRatio === '4:3') ? 3 / 4
-      : (videoInfo.aspectRatio === '1:1') ? 1
-      : 9 / 16;
+    const heightToWidthRatio = videoInfo.aspectRatio === '9:16'
+      ? 16 / 9
+      : videoInfo.aspectRatio === '4:3' ? 3 / 4 : videoInfo.aspectRatio === '1:1' ? 1 : 9 / 16;
 
     const texture = new THREE.VideoTexture(video);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -347,7 +349,9 @@
               const points = new THREE.Points(threeGeo, threeMat);
               meshGroup.add(points);
             }
-          } catch (/** @type {any} */ e) { /* Mesh not ready yet */ }
+          } catch (/** @type {any} */ e) {
+            /* Mesh not ready yet */
+          }
         })();
       }
 
@@ -506,7 +510,7 @@
 
     function highlightBtn() {
       allBtns.forEach((b, i) => {
-        const active = (i === 1 && currentMode === 'wall') || (i === 2 && currentMode === 'gallery');
+        const active = i === 1 && currentMode === 'wall' || i === 2 && currentMode === 'gallery';
         b.style.borderColor = active ? '#2c5e3d' : 'rgba(255,255,255,0.2)';
         b.style.background = active ? 'rgba(44,94,61,0.8)' : 'rgba(0,0,0,0.8)';
       });
@@ -588,59 +592,59 @@
     }
 
     touchOverlay.addEventListener('touchstart', (e) => {
-      if (placed && uiContainer.style.opacity !== '1') showControls();
-      if (e.touches.length === 1) {
-        e.preventDefault();
+        if (placed && uiContainer.style.opacity !== '1') showControls();
+        if (e.touches.length === 1) {
+          e.preventDefault();
         isDragging = true; isPinching = false;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        touchStartRotX = mesh.rotation.x;
-        touchStartRotY = mesh.rotation.y;
-        touchStartRotZ = mesh.rotation.z;
-      } else if (e.touches.length === 2) {
-        e.preventDefault();
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchStartRotX = mesh.rotation.x;
+          touchStartRotY = mesh.rotation.y;
+          touchStartRotZ = mesh.rotation.z;
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
         isDragging = false; isPinching = true;
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        lastPinchDist = Math.sqrt(dx * dx + dy * dy);
-        lastPinchAngle = angleBetweenTouches(e.touches[0], e.touches[1]);
-        lastPinchCenter = {
-          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
-        };
-      }
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+          lastPinchAngle = angleBetweenTouches(e.touches[0], e.touches[1]);
+          lastPinchCenter = {
+            x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+            y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+          };
+        }
     }, { passive: false });
 
     touchOverlay.addEventListener('touchmove', (e) => {
-      if (!placed) return;
-      e.preventDefault();
-      if (e.touches.length === 2 && isPinching) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
-        if (lastPinchDist > 0) {
-          const factor = dist / lastPinchDist;
-          mesh.scale.multiplyScalar(factor);
-          const s = Math.max(0.05, Math.min(5, mesh.scale.x));
-          mesh.scale.set(s, s, s);
+        if (!placed) return;
+        e.preventDefault();
+        if (e.touches.length === 2 && isPinching) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const angle = angleBetweenTouches(e.touches[0], e.touches[1]);
+          if (lastPinchDist > 0) {
+            const factor = dist / lastPinchDist;
+            mesh.scale.multiplyScalar(factor);
+            const s = Math.max(0.05, Math.min(5, mesh.scale.x));
+            mesh.scale.set(s, s, s);
+          }
+          lastPinchDist = dist;
+          mesh.rotation.z += angle - lastPinchAngle;
+          lastPinchAngle = angle;
+          const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+          mesh.position.x += (cx - lastPinchCenter.x) * 0.002;
+          mesh.position.y -= (cy - lastPinchCenter.y) * 0.002;
+          lastPinchCenter = { x: cx, y: cy };
+          return;
         }
-        lastPinchDist = dist;
-        mesh.rotation.z += angle - lastPinchAngle;
-        lastPinchAngle = angle;
-        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        mesh.position.x += (cx - lastPinchCenter.x) * 0.002;
-        mesh.position.y -= (cy - lastPinchCenter.y) * 0.002;
-        lastPinchCenter = { x: cx, y: cy };
-        return;
-      }
-      if (!isDragging || e.touches.length !== 1) return;
-      const dx = e.touches[0].clientX - touchStartX;
-      const dy = e.touches[0].clientY - touchStartY;
-      mesh.rotation.x = touchStartRotX + dy * 0.01;
-      mesh.rotation.y = touchStartRotY + dx * 0.01;
-      mesh.rotation.z = touchStartRotZ;
+        if (!isDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+        mesh.rotation.x = touchStartRotX + dy * 0.01;
+        mesh.rotation.y = touchStartRotY + dx * 0.01;
+        mesh.rotation.z = touchStartRotZ;
     }, { passive: false });
 
     touchOverlay.addEventListener('touchend', () => {
@@ -669,11 +673,19 @@
       planeMeshMap.clear();
       meshGroup.traverse((child) => { if (child.geometry) child.geometry.dispose(); if (child.material) child.material.dispose(); });
       window.removeEventListener('resize', handleResize);
-      ['overflow', 'position', 'top', 'width', 'height', 'touchAction'].forEach(p => {
+
+      [
+        'overflow',
+        'position',
+        'top',
+        'width',
+        'height',
+        'touchAction'
+      ].forEach((p) => {
         document.body.style.removeProperty(p);
       });
       document.documentElement.style.cssText = '';
-      document.querySelectorAll('#ar-ui-video, [style*="z-index:9999"]').forEach(el => el.remove());
+      document.querySelectorAll('#ar-ui-video, [style*="z-index:9999"]').forEach((el) => el.remove());
       window.location.replace('/');
     };
 
@@ -681,9 +693,8 @@
   }
 </script>
 
-<svelte:head>
-  <title>AR Video — Antoine Patraldo</title>
-</svelte:head>
+<!-- AR Video page — CF Stream videos as VideoTexture in WebXR -->
+<svelte:head><title>AR Video — Antoine Patraldo</title></svelte:head>
 
 {#if status === 'ar-active'}
   <!-- AR canvas covers everything -->

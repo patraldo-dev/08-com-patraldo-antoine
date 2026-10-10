@@ -1,7 +1,7 @@
 <script>
-  import { t } from '$lib/i18n';
+  import { t } from '#lib/i18n/index.js';
   import { onMount } from 'svelte';
-  import { checkARSupport } from '$lib/ar-detect.js';
+  import { checkARSupport } from '#lib/ar-detect.js';
   
   let { open = false, onClose, dailyVideo } = $props();
 

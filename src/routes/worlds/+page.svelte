@@ -1,14 +1,7 @@
-<!--
-	src/routes/worlds/+page.svelte — Antoine's Worlds & Portals.
-
-	Boots the IWSDK ECS engine: a set of themed worlds connected by portals,
-	where each portal is a framed Antoine artwork that opens into another world.
-	Runs flat on the page (xr: offer 'none') — the precursor-to-VR mode.
--->
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { t } from '$lib/i18n';
+  import { browser } from '$app/env';
+  import { t } from '#lib/i18n/index.js';
 
   const { data } = $props();
   /** @type {{ artworks?: any[], startWorld?: string|null, cfHash?: string }} */
@@ -47,15 +40,14 @@
 
         // Resolve the start world: ?world= query, then a random pick so each
         // visit is a small surprise.
-        const queryWorld = (d.startWorld && configs[d.startWorld])
-          ? d.startWorld
-          : null;
+        const queryWorld = d.startWorld && configs[d.startWorld] ? d.startWorld : null;
+
         const candidates = WORLD_IDS.filter((id) => configs[id]);
         const startWorld = queryWorld
           || candidates[Math.floor(Math.random() * candidates.length)];
 
         // Dynamic import keeps IWSDK in a client-only chunk.
-        const { bootWorldEngine } = await import('$lib/worlds-ecs/world-builder.js');
+        const { bootWorldEngine } = await import('#lib/worlds-ecs/world-builder.js');
 
         await bootWorldEngine(containerEl, configs, d.artworks || [], startWorld);
         if (cancelled) return;
@@ -74,12 +66,20 @@
   });
 </script>
 
+<!--
+	src/routes/worlds/+page.svelte — Antoine's Worlds & Portals.
+
+	Boots the IWSDK ECS engine: a set of themed worlds connected by portals,
+	where each portal is a framed Antoine artwork that opens into another world.
+	Runs flat on the page (xr: offer 'none') — the precursor-to-VR mode.
+-->
+
 <svelte:head>
   <title>{$t('pages.worlds.metaTitle')}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </svelte:head>
 
-<svelte:window />
+<svelte:window></svelte:window>
 
 <!-- Fullscreen scene container -->
 <div

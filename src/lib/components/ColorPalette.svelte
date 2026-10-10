@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  
-  let { 
-    imageUrl, 
-    artworkTitle = 'Artwork', 
+  import { browser } from '$app/env';
+
+  let {
+    imageUrl,
+    artworkTitle = 'Artwork',
     compact = false,
     preview = false
   } = $props();
@@ -26,11 +26,7 @@
       } catch (/** @type {any} */ err) {
         console.error('Failed to extract colors:', err);
         error = 'Could not extract colors';
-        debugInfo = {
-          error: err.message,
-          imageUrl: imageUrl,
-          type: typeof imageUrl
-        };
+        debugInfo = { error: err.message, imageUrl, type: typeof imageUrl };
         loading = false;
       }
     }
@@ -52,22 +48,14 @@
       try {
         const colorThief = new ColorThief();
         const palette = colorThief.getPalette(img, 6);
-        
-        colors = palette.map(rgb => ({
-          rgb,
-          hex: rgbToHex(rgb[0], rgb[1], rgb[2])
-        }));
-        
+
+        colors = palette.map((rgb) => ({ rgb, hex: rgbToHex(rgb[0], rgb[1], rgb[2]) }));
         console.log('✅ Colors extracted:', colors.length);
         loading = false;
       } catch (/** @type {any} */ err) {
         console.error('❌ Color extraction error:', err);
         error = 'Color extraction failed';
-        debugInfo = {
-          stage: 'extraction',
-          error: err.message,
-          imageUrl: imageUrl
-        };
+        debugInfo = { stage: 'extraction', error: err.message, imageUrl };
         loading = false;
       }
     };
@@ -81,7 +69,7 @@
       error = 'Failed to load image';
       debugInfo = {
         stage: 'loading',
-        imageUrl: imageUrl,
+        imageUrl,
         errorType: e.type,
         imageComplete: img.complete,
         naturalWidth: img.naturalWidth
@@ -94,21 +82,17 @@
     
     // Set a timeout to catch hanging loads
     setTimeout(() => {
-      if (loading && !img.complete) {
-        console.error('⏱️ Image load timeout');
-        error = 'Image load timeout';
-        debugInfo = {
-          stage: 'timeout',
-          imageUrl: imageUrl,
-          imageComplete: img.complete
-        };
-        loading = false;
-      }
+        if (loading && !img.complete) {
+          console.error('⏱️ Image load timeout');
+          error = 'Image load timeout';
+          debugInfo = { stage: 'timeout', imageUrl, imageComplete: img.complete };
+          loading = false;
+        }
     }, 10000); // 10 second timeout
   }
   
   function rgbToHex(r, g, b) {
-    return '#' + [r, g, b].map(x => {
+    return '#' + [r, g, b].map((x) => {
       const hex = x.toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     }).join('');
@@ -136,10 +120,7 @@
   function downloadJSON() {
     const data = {
       artwork: artworkTitle,
-      colors: colors.map(c => ({
-        hex: c.hex,
-        rgb: c.rgb
-      }))
+      colors: colors.map((c) => ({ hex: c.hex, rgb: c.rgb }))
     };
     
     const content = JSON.stringify(data, null, 2);
@@ -170,7 +151,7 @@
   }
   
   function shareToMastodon() {
-    const text = `Color palette from "${artworkTitle}" by Antoine Patraldo\n${colors.map(c => c.hex).join(' ')}`;
+    const text = `Color palette from "${artworkTitle}" by Antoine Patraldo\n${colors.map((c) => c.hex).join(' ')}`;
     const url = `https://mastodon.social/share?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   }
@@ -212,7 +193,7 @@
           <div
             class="color-swatch preview-swatch"
             style="background-color: {color.hex}"
-            title="{color.hex}"
+            title={color.hex}
           ></div>
         {:else}
           <button

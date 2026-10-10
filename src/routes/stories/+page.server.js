@@ -1,5 +1,5 @@
 // src/routes/stories/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 export async function load({ platform, locals }) {  // ✅ Changed from 'event' to 'locals'
   // 1. GET AUTH STATUS FROM HOOK (The Single Source of Truth)

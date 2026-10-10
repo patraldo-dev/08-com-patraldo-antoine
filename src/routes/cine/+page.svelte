@@ -1,8 +1,8 @@
 <!-- src/routes/cine/+page.svelte -->
 <script>
-  import { t } from '$lib/i18n';
-  import VideoPlayer from '$lib/components/cine/VideoPlayer.svelte';
-  import HeroOverlay from '$lib/components/cine/HeroOverlay.svelte';
+  import { t } from '#lib/i18n/index.js';
+  import VideoPlayer from '#lib/components/cine/VideoPlayer.svelte';
+  import HeroOverlay from '#lib/components/cine/HeroOverlay.svelte';
 
   let { data } = $props();
 </script>

@@ -1,8 +1,8 @@
 <script>
-  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '#lib/config.js';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { checkARSupport } from '$lib/ar-detect.js';
+  import { checkARSupport } from '#lib/ar-detect.js';
 
   let { artwork } = $props();
 
@@ -128,7 +128,7 @@
         👤 Ver en AR
       </button>
     {:else if arStatus === 'teaser'}
-      <a class="ar-badge teaser" href="/ar/image/{artwork.imageId}" onclick={(e) => e.stopPropagation();}>👤 AR</a>
+      <a class="ar-badge teaser" href="/ar/image/{artwork.imageId}" onclick={(e) => e.stopPropagation()}>👤 AR</a>
     {/if}
     {#if artwork.type === 'animation' && artwork.videoId}
       {#if arStatus === 'supported'}
@@ -136,7 +136,7 @@
           👁️ Ver en AR
         </button>
       {:else if arStatus === 'teaser'}
-        <a class="ar-badge video teaser" href="/ar/video/{artwork.videoId}" onclick={(e) => e.stopPropagation();}>👁️ AR</a>
+        <a class="ar-badge video teaser" href="/ar/video/{artwork.videoId}" onclick={(e) => e.stopPropagation()}>👁️ AR</a>
       {/if}
     {/if}
   </div>

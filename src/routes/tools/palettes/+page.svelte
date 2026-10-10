@@ -1,7 +1,7 @@
 <!-- src/routes/tools/palettes/+page.svelte -->
 <script>
-  import { t } from '$lib/i18n';
-  import ColorPalette from '$lib/components/ColorPalette.svelte';
+  import { t } from '#lib/i18n/index.js';
+  import ColorPalette from '#lib/components/ColorPalette.svelte';
   let { data } = $props();
 </script>
 

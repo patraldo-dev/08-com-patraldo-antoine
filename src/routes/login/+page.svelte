@@ -1,20 +1,19 @@
-<!-- src/routes/login/+page.svelte -->
 <script>
-  import { t } from '$lib/i18n';
-  import { page } from '$app/stores';
-  
+  import { t } from '#lib/i18n/index.js';
+  import { page } from '$app/state';
+
   let identifier = '';
   let password = '';
   let error = '';
   let success = '';
   let isLoading = false;
-  
-  const verified = $page.url.searchParams.get('verified');
-    if (verified === 'success') {
-      success = t('auth.login.emailVerified'); // No $ prefix
-    } else if (verified === 'already') {
-      success = t('auth.login.alreadyVerified');
-    }
+
+  const verified = page.url.searchParams.get('verified');
+  if (verified === 'success') {
+    success = t('auth.login.emailVerified'); // No $ prefix
+  } else if (verified === 'already') {
+    success = t('auth.login.alreadyVerified');
+  }
 
   async function handleLogin() {
     if (!identifier || !password) {
@@ -50,9 +49,8 @@
   }
 </script>
 
-<svelte:head>
-  <title>{$t('auth.login.title')} | Antoine Patraldo</title>
-</svelte:head>
+<!-- src/routes/login/+page.svelte -->
+<svelte:head><title>{$t('auth.login.title')} | Antoine Patraldo</title></svelte:head>
 
 <div class="login-page">
   <div class="login-card">

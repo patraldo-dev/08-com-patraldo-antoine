@@ -1,6 +1,6 @@
 <script>
   import ArtPiece from './ArtPiece.svelte';
-  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '$lib/config.js';
+  import { CF_IMAGES_ACCOUNT_HASH, CUSTOM_DOMAIN } from '#lib/config.js';
   
   // Function to create Cloudflare Images URL with custom domain and variant
   function createImageUrl(imageId, variant = '') {

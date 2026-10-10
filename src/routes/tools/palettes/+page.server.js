@@ -1,5 +1,5 @@
 // src/routes/tools/palettes/+page.server.js
-import { CF_IMAGES_ACCOUNT_HASH } from '$lib/config.js';
+import { CF_IMAGES_ACCOUNT_HASH } from '#lib/config.js';
 
 export async function load({ platform }) {
   try {
