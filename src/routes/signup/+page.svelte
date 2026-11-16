@@ -1,6 +1,7 @@
 <!-- src/routes/signup/+page.svelte -->
 <script>
     import { t } from '#lib/i18n/index.js';
+    import { get } from 'svelte/store';
     import { goto } from '$app/navigation';
     
     let username = '';
@@ -13,7 +14,7 @@
     
     async function handleSignup() {
         if (password !== confirmPassword) {
-            error = t('auth.signup.passwordsMismatch');  // ✅ Add t() and quotes
+            error = get(t)('auth.signup.passwordsMismatch');  // ✅ Add t() and quotes
             return;
         }
         
@@ -31,7 +32,7 @@
             const result = await response.json();
             
             if (response.ok) {
-                success = t('auth.signup.success');  // ✅ Add t() and quotes
+                success = get(t)('auth.signup.success');  // ✅ Add t() and quotes
                 username = '';
                 email = '';
                 password = '';
@@ -41,11 +42,11 @@
                     goto('/login');
                 }, 3000);
             } else {
-                error = result.error || t('auth.signup.signupFailed');  // ✅ Add t() and quotes
+                error = result.error || get(t)('auth.signup.signupFailed');  // ✅ Add t() and quotes
             }
         } catch (err) {
             console.error('Signup error:', err);
-            error = t('auth.signup.networkError');  // ✅ Add t() and quotes
+            error = get(t)('auth.signup.networkError');  // ✅ Add t() and quotes
         } finally {
             isLoading = false;
         }

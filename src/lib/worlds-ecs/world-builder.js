@@ -14,8 +14,11 @@
 //  reference (same World.create boot, same teardown/rebuild, same
 //  camera-orbit + narrative systems), with the cube→portal split.
 // ═══════════════════════════════════════════════════════════
-import { World, Transform } from '@iwsdk/core';
+// elics must be imported BEFORE @iwsdk/core — vite 8 stopped pinning chunk
+// order, and the reversed order can initialize the ECS chunk cycle wrong
+// (same fix as patrouch.ca's portals-ecs after the vite-8 upgrade).
 import { createComponent, createSystem, Types } from 'elics';
+import { World, Transform } from '@iwsdk/core';
 import * as THREE from 'three';
 
 // Cloudflare Images account hash (shared with the rest of the site).

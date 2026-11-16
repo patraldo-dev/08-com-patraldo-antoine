@@ -7,8 +7,14 @@ const OUTPUT_FILE = 'scripts/generated-routes.json';
 
 // Routes to exclude from sitemap
 const EXCLUDE_PATTERNS = [
-  /^api\//,           // API routes
-  /^admin\//,         // Admin routes
+  /^api(\/|$)/,       // API routes
+  /^admin(\/|$)/,     // Admin routes (auth-gated, 403 for crawlers)
+  /^auth(\/|$)/,      // Auth endpoints (no public pages)
+  /^ar(\/|$)/,        // AR viewers (app-like, no indexable page at /ar)
+  /^node_modules(\/|$)/, // Never a route (stray tool caches)
+  /^login$/,          // Auth pages — not for crawlers
+  /^signup$/,
+  /^sitemap\.xml$/,   // Self-reference
   /\[.*\]/,           // Dynamic routes like [id]
   /^\+/,              // SvelteKit files (+page, +layout, etc)
   /^subscription-confirmed/, // One-time pages
@@ -49,8 +55,11 @@ function scanDirectory(dir, baseRoute = '') {
           continue;
         }
         
-        // Check if directory has a +page.svelte (makes it a valid route)
-        const hasPage = items.includes('+page.svelte') || items.includes('+page.server.js');
+        // Check if THIS directory has a +page file (makes it a valid route).
+        // Must read the child's own entries — checking the parent listing
+        // let every sibling dir (node_modules, ar, auth…) pass as a route.
+        const childEntries = readdirSync(fullPath);
+        const hasPage = childEntries.includes('+page.svelte') || childEntries.includes('+page.server.js');
         
         if (hasPage && !baseRoute.includes(item)) {
           // This is a valid route

@@ -1,6 +1,7 @@
 <script>
   import { t } from '#lib/i18n/index.js';
   import { page } from '$app/state';
+  import { get } from 'svelte/store';
 
   let identifier = '';
   let password = '';
@@ -10,14 +11,14 @@
 
   const verified = page.url.searchParams.get('verified');
   if (verified === 'success') {
-    success = t('auth.login.emailVerified'); // No $ prefix
+    success = get(t)('auth.login.emailVerified');
   } else if (verified === 'already') {
-    success = t('auth.login.alreadyVerified');
+    success = get(t)('auth.login.alreadyVerified');
   }
 
   async function handleLogin() {
     if (!identifier || !password) {
-      error = t('auth.login.enterCredentials');
+      error = get(t)('auth.login.enterCredentials');
       return;
     }
     
@@ -38,11 +39,11 @@
         const destination = result.user?.role === 'admin' ? '/admin' : '/';
         window.location.href = destination;
       } else {
-        error = result.error || t('auth.login.invalidCredentials');
+        error = result.error || get(t)('auth.login.invalidCredentials');
       }
     } catch (err) {
       console.error('Login error:', err);
-      error = t('auth.login.networkError');
+      error = get(t)('auth.login.networkError');
     } finally {
       isLoading = false;
     }

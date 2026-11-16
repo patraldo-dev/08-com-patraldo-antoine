@@ -2,6 +2,7 @@
 <script>
   import { generateStickerSheet } from '#lib/utils/generateStickerSheet.mjs';
   import { t } from '#lib/i18n/index.js';
+  import { get } from 'svelte/store';
 
   const { data } = $props();
 
@@ -44,7 +45,7 @@
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Sheet generation failed:', err);
-      alert(t('sticker.error'));
+      alert(get(t)('sticker.error'));
     } finally {
       isGenerating = false;
     }
