@@ -14,12 +14,14 @@
   let error = $state(null);
   let debugInfo = $state(null); // Add debug info
   let copiedIndex = $state(-1);
-  let ColorThief = $state(null);
-  
+  /** colorthief v3 getPalette — named export, no class/default (plain var: not rendered). */
+  /** @type {((source: any, options?: { colorCount?: number }) => Promise<any[] | null>) | null} */
+  let getPalette = null;
+
   onMount(async () => {
     if (browser) {
-      const ColorThiefModule = await import('colorthief');
-      ColorThief = ColorThiefModule.default;
+      const colorthief = await import('colorthief');
+      getPalette = colorthief.getPalette;
       
       try {
         await extractColors();
@@ -43,13 +45,14 @@
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     
-    img.onload = () => {
+    img.onload = async () => {
       console.log('✅ Image loaded successfully');
       try {
-        const colorThief = new ColorThief();
-        const palette = colorThief.getPalette(img, 6);
+        // colorthief v3: async, options object, rich Color objects
+        const palette = await getPalette(img, { colorCount: 6 });
+        if (!palette) throw new Error('No colors extracted');
 
-        colors = palette.map((rgb) => ({ rgb, hex: rgbToHex(rgb[0], rgb[1], rgb[2]) }));
+        colors = palette.map((color) => ({ rgb: color.array(), hex: color.hex() }));
         console.log('✅ Colors extracted:', colors.length);
         loading = false;
       } catch (/** @type {any} */ err) {
@@ -89,13 +92,6 @@
           loading = false;
         }
     }, 10000); // 10 second timeout
-  }
-  
-  function rgbToHex(r, g, b) {
-    return '#' + [r, g, b].map((x) => {
-      const hex = x.toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
-    }).join('');
   }
   
   async function copyToClipboard(hex, index) {
