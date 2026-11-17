@@ -259,6 +259,9 @@
   "search.loading": "Chargement de la recherche...",
   "search.toOpen": "pour ouvrir",
   "search.toClose": "pour fermer",
+  "search.noResults": "Aucun résultat. Essayez avec d'autres mots.",
+  "search.error": "La recherche est indisponible pour le moment. Réessayez plus tard.",
+  "search.searching": "Recherche…",
   
   "sticker.title": "Autocollants Imprimables",
   "sticker.description": "Sélectionnez vos œuvres préférées pour créer une planche personnalisée d'autocollants. Téléchargez le PNG et imprimez-le chez vous ou via un service professionnel.",

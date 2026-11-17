@@ -259,6 +259,9 @@
   "search.loading": "Loading search...",
   "search.toOpen": "to open",
   "search.toClose": "to close",
+  "search.noResults": "No results found. Try different words.",
+  "search.error": "Search is unavailable right now. Please try again later.",
+  "search.searching": "Searching…",
   
   "sticker.title": "Printable Stickers",
   "sticker.description": "Select your favorite artworks to create a custom sticker sheet. Download the PNG and print at home or through a professional service.",

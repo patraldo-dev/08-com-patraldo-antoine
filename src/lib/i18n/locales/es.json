@@ -259,6 +259,9 @@
   "search.loading": "Cargando búsqueda...",
   "search.toOpen": "para abrir",
   "search.toClose": "para cerrar",
+  "search.noResults": "No se encontraron resultados. Prueba con otras palabras.",
+  "search.error": "La búsqueda no está disponible ahora mismo. Inténtalo más tarde.",
+  "search.searching": "Buscando…",
   
   "sticker.title": "Calcomanías para Imprimir",
   "sticker.description": "Selecciona tus obras favoritas para crear una hoja personalizada de calcomanías. Descarga el PNG e imprímelo en casa o mediante un servicio profesional.",

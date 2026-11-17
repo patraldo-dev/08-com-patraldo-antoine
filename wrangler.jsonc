@@ -27,6 +27,13 @@
   "ai": {
     "binding": "AI"
   },
+  "ai_search": [
+    {
+      "binding": "AI_SEARCH",
+      "instance_name": "proud-wildflower-e16c",
+      "remote": true
+    }
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": ".svelte-kit/cloudflare"

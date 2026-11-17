@@ -5,6 +5,7 @@
   import { locale, setLocale } from '#lib/i18n/index.js';
   import Navigation from '#lib/components/Navigation.svelte';
   import AIArtAssistant from '#lib/components/AIArtAssistant.svelte';
+  import NLWebSearch from '#lib/components/NLWebSearch.svelte';
   import { browser } from '$app/env';
 
   // Only destructure 'data'. DO NOT destructure 'isAdmin' here.
@@ -90,6 +91,7 @@
   <main class:full-height={isFullHeightPage}><slot></slot></main>
   <footer><p>© 2026 Antoine Patraldo. All rights reserved.</p></footer>
   <AIArtAssistant />
+  <NLWebSearch />
 </div>
 
 <!-- Keep all your existing styles -->
